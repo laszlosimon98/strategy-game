@@ -1,4 +1,5 @@
 import Cell from "./cell";
+import grass from "../../assets/grass.png";
 
 interface WorldInterface {}
 
@@ -18,7 +19,7 @@ export class World implements WorldInterface {
     for (let i = 0; i < this.rows; ++i) {
       board.push([]);
       for (let j = 0; j < this.cols; ++j) {
-        board[i].push(new Cell(i, j));
+        board[i].push(new Cell(i, j, grass));
       }
     }
     return board;
@@ -26,7 +27,13 @@ export class World implements WorldInterface {
 
   draw = (): void => {
     // this.board.map((rows) => rows.map((cols) => cols.drawNormalGrid()));
-    this.board.map((rows) => rows.map((cols) => cols.drawIsometricGrid()));
+
+    this.board.map((rows) =>
+      rows.map((cols) => {
+        cols.drawImage();
+        cols.drawIsometricGrid();
+      })
+    );
   };
 
   getBoard = (): Cell[][] => {
