@@ -1,12 +1,7 @@
-import { ctx } from "../../init";
+import { canvasHeight, canvasWidth, ctx } from "../../init";
 import { TILESIZE } from "../../settings";
 
-type CoordsType = [number, number];
-
-type IsometricWorldType = {
-  isometricCoords: CoordsType[];
-  renderPos: CoordsType;
-};
+import type { CoordsType, IsometricWorldType } from "../../types/coordsType";
 
 class Cell {
   private x: number;
@@ -16,9 +11,6 @@ class Cell {
   private isometricWorld: IsometricWorldType;
 
   private image: HTMLImageElement;
-
-  private screenWidth: number;
-  private screenHeight: number;
 
   private horizontalPos: number;
   private verticalPos: number;
@@ -30,10 +22,8 @@ class Cell {
     this.image = new Image();
     this.image.src = imageSrc;
 
-    this.screenWidth = window.innerWidth;
-    this.screenHeight = window.innerHeight;
-    this.horizontalPos = this.screenWidth / 2;
-    this.verticalPos = this.screenHeight / 4;
+    this.horizontalPos = canvasWidth / 2;
+    this.verticalPos = canvasHeight / 4;
 
     this.normalCoords = this.createNormalCoords();
 
@@ -44,13 +34,37 @@ class Cell {
     this.isometricWorld = {
       isometricCoords: calcCoords,
       renderPos: [
-        calcCoords[0][0] + this.screenWidth / 2 - TILESIZE,
-        calcCoords[0][1] + this.screenHeight / 4 - 1,
+        calcCoords[0][0] + this.horizontalPos - TILESIZE,
+        calcCoords[0][1] + this.verticalPos - 1,
       ],
     };
   }
 
-  drawNormalGrid = () => {
+  setImageSrc = (src: string): void => {
+    this.image.src = src;
+  };
+
+  resize = (): void => {
+    this.horizontalPos = canvasWidth / 2;
+    this.verticalPos = canvasHeight / 4;
+
+    this.normalCoords = this.createNormalCoords();
+
+    const calcCoords: CoordsType[] = this.normalCoords.map((coords) =>
+      this.convertNormalCoordsToIsometricCords(coords)
+    );
+
+    this.isometricWorld = {
+      ...this.isometricWorld,
+      isometricCoords: calcCoords,
+      renderPos: [
+        calcCoords[0][0] + this.horizontalPos - TILESIZE,
+        calcCoords[0][1] + this.verticalPos - 1,
+      ],
+    };
+  };
+
+  drawNormalGrid = (): void => {
     ctx.beginPath();
     const coords = this.normalCoords;
 
@@ -71,7 +85,7 @@ class Cell {
     ctx.stroke();
   };
 
-  drawIsometricGrid = () => {
+  drawIsometricGrid = (): void => {
     ctx.beginPath();
     const coords = this.isometricWorld.isometricCoords;
 
@@ -92,7 +106,7 @@ class Cell {
     ctx.stroke();
   };
 
-  drawImage = () => {
+  drawImage = (): void => {
     ctx.drawImage(this.image, ...this.isometricWorld.renderPos);
   };
 
