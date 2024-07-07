@@ -5,16 +5,21 @@ import { canvasHeight, canvasWidth } from "../../init";
 import { TILESIZE } from "../../settings";
 
 import type { CoordsType } from "../../types/coordsType";
+import Camera from "../camera/camera";
 
 export class World {
   private rows: number;
   private cols: number;
   private board: Cell[][];
+  private camera: Camera;
 
-  constructor(rows: number, cols: number) {
+  constructor(rows: number, cols: number, camera: Camera) {
     this.rows = rows;
     this.cols = cols;
     this.board = this.createBoard();
+    this.camera = camera;
+    console.log(`width: ${this.camera.x}, ${this.camera.x + this.camera.w}`);
+    console.log(`height: ${this.camera.y}, ${this.camera.y + this.camera.h}`);
   }
 
   getBoard = (): Cell[][] => {
@@ -49,23 +54,59 @@ export class World {
     this.board[x][y].setImageSrc(water);
   };
 
+  isCoordsCollideWithCamera = (coords: CoordsType): boolean => {
+    const [x, y] = coords;
+    const xAxis = x > this.camera.x && x < this.camera.x + this.camera.w;
+    const yAxis = y > this.camera.y && y < this.camera.y + this.camera.h;
+
+    return xAxis && yAxis;
+  };
+
   draw = (): void => {
     // this.board.map((rows) => rows.map((cols) => cols.drawNormalGrid()));
-
-    this.board.map((rows) =>
-      rows.map((cols) => {
-        cols.drawImage();
-        cols.drawIsometricGrid();
-      })
+    const xStart = Math.floor(Math.max(0, this.camera.x / TILESIZE));
+    const xEnd = Math.floor(
+      Math.min(
+        canvasWidth / TILESIZE,
+        (this.camera.x + this.camera.w) / TILESIZE + 1
+      )
     );
+    const yStart = Math.floor(Math.max(0, this.camera.y / TILESIZE));
+    const yEnd = Math.floor(
+      Math.min(
+        canvasHeight / TILESIZE,
+        (this.camera.y + this.camera.h) / TILESIZE + 1
+      )
+    );
+
+    for (let x = xStart; x < xEnd; ++x) {
+      for (let y = yStart; y < yEnd; ++y) {
+        this.board[x][y].drawImage();
+        this.board[x][y].drawIsometricGrid();
+      }
+    }
+
+    // this.board.map((cells) =>
+    //   cells.map((cell) => {
+    //     const coords = cell.getCoords();
+    //     for (let i = 0; i < coords.length; ++i) {
+    //       const currentCoords = coords[i];
+    //       if (this.isCoordsCollideWithCamera(currentCoords)) {
+    //         cell.drawImage();
+    //         cell.drawIsometricGrid();
+    //         break;
+    //       }
+    //     }
+    //   })
+    // );
   };
 
   update = (dt: number): void => {};
 
   resize = (): void => {
-    this.board.map((rows) =>
-      rows.map((cols) => {
-        cols.resize();
+    this.board.map((cells) =>
+      cells.map((cell) => {
+        cell.resize();
       })
     );
   };

@@ -22,8 +22,8 @@ class Cell {
     this.image = new Image();
     this.image.src = imageSrc;
 
-    this.horizontalPos = canvasWidth / 2;
-    this.verticalPos = canvasHeight / 4;
+    this.horizontalPos = 0;
+    this.verticalPos = 0;
 
     this.normalCoords = this.createNormalCoords();
 
@@ -39,6 +39,14 @@ class Cell {
       ],
     };
   }
+
+  update = (dt: number): void => {
+    this.x += -dt;
+  };
+
+  getCoords = (): CoordsType[] => {
+    return this.isometricWorld.isometricCoords;
+  };
 
   setImageSrc = (src: string): void => {
     this.image.src = src;
