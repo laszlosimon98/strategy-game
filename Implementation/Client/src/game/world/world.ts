@@ -1,12 +1,12 @@
 import Cell from "./cell";
 import grass from "../../assets/grass.png";
 import water from "../../assets/water.png";
-import tower from "../../assets/tower.png";
-import { canvasHeight, canvasWidth } from "../../init";
-import { TILESIZE } from "../../settings";
+import { CAMERA_SPEED, COLS, ROWS, TILESIZE } from "../../settings";
 
 import type { CoordsType } from "../../types/coordsType";
 import Camera from "../camera/camera";
+import { offset } from "../game";
+import { canvasHeight, canvasWidth } from "../../init";
 
 export class World {
   private rows: number;
@@ -19,8 +19,6 @@ export class World {
     this.cols = cols;
     this.board = this.createBoard();
     this.camera = camera;
-    console.log(`width: ${this.camera.x}, ${this.camera.x + this.camera.w}`);
-    console.log(`height: ${this.camera.y}, ${this.camera.y + this.camera.h}`);
   }
 
   getBoard = (): Cell[][] => {
@@ -39,8 +37,10 @@ export class World {
   };
 
   getCoords = (e: MouseEvent): CoordsType => {
-    const world_x = e.clientX - canvasWidth / 2;
-    const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
+    // const world_x = e.clientX - canvasWidth / 2;
+    // const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
+    const world_x = e.clientX - offset.x;
+    const world_y = e.clientY - offset.y;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;
@@ -53,40 +53,27 @@ export class World {
 
   setTile = (x: number, y: number) => {
     this.board[x][y].setImageSrc(water);
-    this.board[x][y].setBuilding(tower);
-  };
-
-  isCoordsCollideWithCamera = (coords: CoordsType): boolean => {
-    const [x, y] = coords;
-    const xAxis = x > this.camera.x && x < this.camera.x + this.camera.w;
-    const yAxis = y > this.camera.y && y < this.camera.y + this.camera.h;
-
-    return xAxis && yAxis;
   };
 
   draw = (): void => {
     // this.board.map((rows) => rows.map((cols) => cols.drawNormalGrid()));
-    // const xStart = Math.floor(Math.max(0, this.camera.x / TILESIZE));
-    // const xEnd = Math.floor(
-    //   Math.min(
-    //     canvasWidth / TILESIZE,
-    //     (this.camera.x + this.camera.w) / TILESIZE + 1
-    //   )
-    // );
-    // const yStart = Math.floor(Math.max(0, this.camera.y / TILESIZE));
-    // const yEnd = Math.floor(
-    //   Math.min(
-    //     canvasHeight / TILESIZE,
-    //     (this.camera.y + this.camera.h) / TILESIZE + 1
-    //   )
-    // );
-
+    // const { dx: offsetX, dy: offsetY } = this.camera.getOffset();
+    // const xStart = Math.max(0, Math.floor(offsetX / TILESIZE + 1));
+    // const xEnd = ROWS;
+    // const yStart = 0;
+    // const yEnd = COLS;
+    // console.log(xStart);
     // for (let x = xStart; x < xEnd; ++x) {
     //   for (let y = yStart; y < yEnd; ++y) {
-    //     this.board[x][y].drawImage();
-    //     this.board[x][y].drawIsometricGrid();
+    //     this.board[x][y].drawNormalGrid();
     //   }
     // }
+    // // for (let x = xStart; x < xEnd; ++x) {
+    // //   for (let y = yStart; y < yEnd; ++y) {
+    // //     this.board[x][y].drawIsometricGrid();
+    // //     this.board[x][y].drawImage();
+    // //   }
+    // // }
     for (let i = 0; i < this.board.length; ++i) {
       for (let j = 0; j < this.board[i].length; ++j) {
         this.board[i][j].drawIsometricGrid();
@@ -95,9 +82,12 @@ export class World {
     }
   };
 
-  update = (dt: number, dir: { x: number; y: number }): void => {
-    const speed = 20;
-    const dirVector = { x: dir.x * speed * dt, y: dir.y * speed * dt };
+  update = (dt: number): void => {
+    const { dx: dirX, dy: dirY } = this.camera.getDir();
+    const dirVector = {
+      x: dirX,
+      y: dirY,
+    };
 
     for (let i = 0; i < this.board.length; ++i) {
       for (let j = 0; j < this.board[i].length; ++j) {
