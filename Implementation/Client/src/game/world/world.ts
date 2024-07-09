@@ -1,6 +1,7 @@
 import Cell from "./cell";
 import grass from "../../assets/grass.png";
 import water from "../../assets/water.png";
+import tower from "../../assets/tower.png";
 import { canvasHeight, canvasWidth } from "../../init";
 import { TILESIZE } from "../../settings";
 
@@ -52,6 +53,7 @@ export class World {
 
   setTile = (x: number, y: number) => {
     this.board[x][y].setImageSrc(water);
+    this.board[x][y].setBuilding(tower);
   };
 
   isCoordsCollideWithCamera = (coords: CoordsType): boolean => {
@@ -64,44 +66,45 @@ export class World {
 
   draw = (): void => {
     // this.board.map((rows) => rows.map((cols) => cols.drawNormalGrid()));
-    const xStart = Math.floor(Math.max(0, this.camera.x / TILESIZE));
-    const xEnd = Math.floor(
-      Math.min(
-        canvasWidth / TILESIZE,
-        (this.camera.x + this.camera.w) / TILESIZE + 1
-      )
-    );
-    const yStart = Math.floor(Math.max(0, this.camera.y / TILESIZE));
-    const yEnd = Math.floor(
-      Math.min(
-        canvasHeight / TILESIZE,
-        (this.camera.y + this.camera.h) / TILESIZE + 1
-      )
-    );
+    // const xStart = Math.floor(Math.max(0, this.camera.x / TILESIZE));
+    // const xEnd = Math.floor(
+    //   Math.min(
+    //     canvasWidth / TILESIZE,
+    //     (this.camera.x + this.camera.w) / TILESIZE + 1
+    //   )
+    // );
+    // const yStart = Math.floor(Math.max(0, this.camera.y / TILESIZE));
+    // const yEnd = Math.floor(
+    //   Math.min(
+    //     canvasHeight / TILESIZE,
+    //     (this.camera.y + this.camera.h) / TILESIZE + 1
+    //   )
+    // );
 
-    for (let x = xStart; x < xEnd; ++x) {
-      for (let y = yStart; y < yEnd; ++y) {
-        this.board[x][y].drawImage();
-        this.board[x][y].drawIsometricGrid();
+    // for (let x = xStart; x < xEnd; ++x) {
+    //   for (let y = yStart; y < yEnd; ++y) {
+    //     this.board[x][y].drawImage();
+    //     this.board[x][y].drawIsometricGrid();
+    //   }
+    // }
+    for (let i = 0; i < this.board.length; ++i) {
+      for (let j = 0; j < this.board[i].length; ++j) {
+        this.board[i][j].drawIsometricGrid();
+        this.board[i][j].drawImage();
       }
     }
-
-    // this.board.map((cells) =>
-    //   cells.map((cell) => {
-    //     const coords = cell.getCoords();
-    //     for (let i = 0; i < coords.length; ++i) {
-    //       const currentCoords = coords[i];
-    //       if (this.isCoordsCollideWithCamera(currentCoords)) {
-    //         cell.drawImage();
-    //         cell.drawIsometricGrid();
-    //         break;
-    //       }
-    //     }
-    //   })
-    // );
   };
 
-  update = (dt: number): void => {};
+  update = (dt: number, dir: { x: number; y: number }): void => {
+    const speed = 20;
+    const dirVector = { x: dir.x * speed * dt, y: dir.y * speed * dt };
+
+    for (let i = 0; i < this.board.length; ++i) {
+      for (let j = 0; j < this.board[i].length; ++j) {
+        this.board[i][j].update(dirVector);
+      }
+    }
+  };
 
   resize = (): void => {
     this.board.map((cells) =>

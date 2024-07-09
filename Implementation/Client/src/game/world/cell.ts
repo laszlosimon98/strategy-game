@@ -11,6 +11,7 @@ class Cell {
   private isometricWorld: IsometricWorldType;
 
   private image: HTMLImageElement;
+  private building: HTMLImageElement;
 
   private horizontalPos: number;
   private verticalPos: number;
@@ -21,6 +22,8 @@ class Cell {
 
     this.image = new Image();
     this.image.src = imageSrc;
+
+    this.building = new Image();
 
     this.horizontalPos = 0;
     this.verticalPos = 0;
@@ -37,11 +40,34 @@ class Cell {
         calcCoords[0][0] + this.horizontalPos - TILESIZE,
         calcCoords[0][1] + this.verticalPos - 1,
       ],
+      buildingPos: [
+        calcCoords[0][0] + this.horizontalPos - TILESIZE * 2,
+        calcCoords[0][1] + this.verticalPos - 1 - this.building.height,
+      ],
     };
   }
 
-  update = (dt: number): void => {
-    this.x += -dt;
+  update = (dir: { x: number; y: number }): void => {
+    this.x += dir.x;
+    this.y += dir.y;
+
+    this.normalCoords = this.createNormalCoords();
+    const calcCoords: CoordsType[] = this.normalCoords.map((coords) =>
+      this.convertNormalCoordsToIsometricCords(coords)
+    );
+
+    this.isometricWorld = {
+      ...this.isometricWorld,
+      isometricCoords: calcCoords,
+      renderPos: [
+        calcCoords[0][0] + this.horizontalPos - TILESIZE,
+        calcCoords[0][1] + this.verticalPos - 1,
+      ],
+      buildingPos: [
+        calcCoords[2][0] + this.horizontalPos - this.building.width / 2,
+        calcCoords[2][1] + this.verticalPos - 1 - this.building.height,
+      ],
+    };
   };
 
   getCoords = (): CoordsType[] => {
@@ -50,6 +76,10 @@ class Cell {
 
   setImageSrc = (src: string): void => {
     this.image.src = src;
+  };
+
+  setBuilding = (src: string): void => {
+    this.building.src = src;
   };
 
   resize = (): void => {
@@ -66,6 +96,10 @@ class Cell {
       ...this.isometricWorld,
       isometricCoords: calcCoords,
       renderPos: [
+        calcCoords[0][0] + this.horizontalPos - TILESIZE,
+        calcCoords[0][1] + this.verticalPos - 1,
+      ],
+      buildingPos: [
         calcCoords[0][0] + this.horizontalPos - TILESIZE,
         calcCoords[0][1] + this.verticalPos - 1,
       ],
@@ -116,6 +150,7 @@ class Cell {
 
   drawImage = (): void => {
     ctx.drawImage(this.image, ...this.isometricWorld.renderPos);
+    ctx.drawImage(this.building, ...this.isometricWorld.buildingPos);
   };
 
   private createNormalCoords = (): CoordsType[] => {

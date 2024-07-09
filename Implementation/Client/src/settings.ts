@@ -1,4 +1,5 @@
 export const TILESIZE = 32;
-export const ROWS = 100;
-export const COLS = 100;
+// 65 x 65
+export const ROWS = 65;
+export const COLS = 65;
 export const FPS = 10;
