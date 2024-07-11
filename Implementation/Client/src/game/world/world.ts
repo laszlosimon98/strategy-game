@@ -1,12 +1,13 @@
 import Cell from "./cell";
 import grass from "../../assets/grass.png";
+import grassWithFlowers from "../../assets/grasswithflowers.png";
+import grassWithRocks from "../../assets/grasswithrocks.png";
 import water from "../../assets/water.png";
-import { CAMERA_SPEED, COLS, ROWS, TILESIZE } from "../../settings";
+import { TILESIZE } from "../../settings";
 
 import type { CoordsType } from "../../types/coordsType";
 import Camera from "../camera/camera";
-import { offset } from "../game";
-import { canvasHeight, canvasWidth } from "../../init";
+import { canvasWidth, canvasHeight } from "../../init";
 
 export class World {
   private rows: number;
@@ -30,17 +31,27 @@ export class World {
     for (let i = 0; i < this.rows; ++i) {
       board.push([]);
       for (let j = 0; j < this.cols; ++j) {
-        board[i].push(new Cell(i, j, grass));
+        const rnd = Math.floor(Math.random() * 100);
+        let tile = "";
+        if (rnd < 5) {
+          const rnd2 = Math.random();
+          if (rnd2 < 0.5) {
+            tile = grassWithRocks;
+          } else {
+            tile = grassWithFlowers;
+          }
+        } else {
+          tile = grass;
+        }
+        board[i].push(new Cell(i, j, tile));
       }
     }
     return board;
   };
 
   getCoords = (e: MouseEvent): CoordsType => {
-    // const world_x = e.clientX - canvasWidth / 2;
-    // const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
-    const world_x = e.clientX - offset.x;
-    const world_y = e.clientY - offset.y;
+    const world_x = e.clientX - canvasWidth / 2;
+    const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;
@@ -56,28 +67,10 @@ export class World {
   };
 
   draw = (): void => {
-    // this.board.map((rows) => rows.map((cols) => cols.drawNormalGrid()));
-    // const { dx: offsetX, dy: offsetY } = this.camera.getOffset();
-    // const xStart = Math.max(0, Math.floor(offsetX / TILESIZE + 1));
-    // const xEnd = ROWS;
-    // const yStart = 0;
-    // const yEnd = COLS;
-    // console.log(xStart);
-    // for (let x = xStart; x < xEnd; ++x) {
-    //   for (let y = yStart; y < yEnd; ++y) {
-    //     this.board[x][y].drawNormalGrid();
-    //   }
-    // }
-    // // for (let x = xStart; x < xEnd; ++x) {
-    // //   for (let y = yStart; y < yEnd; ++y) {
-    // //     this.board[x][y].drawIsometricGrid();
-    // //     this.board[x][y].drawImage();
-    // //   }
-    // // }
     for (let i = 0; i < this.board.length; ++i) {
       for (let j = 0; j < this.board[i].length; ++j) {
-        this.board[i][j].drawIsometricGrid();
         this.board[i][j].drawImage();
+        this.board[i][j].drawIsometricGrid();
       }
     }
   };

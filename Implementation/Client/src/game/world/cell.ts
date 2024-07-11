@@ -25,8 +25,11 @@ class Cell {
 
     this.building = new Image();
 
-    this.horizontalPos = 0;
-    this.verticalPos = 0;
+    // this.horizontalPos = canvasWidth / 2 - TILESIZE;
+    // this.verticalPos = -canvasHeight / 2;
+
+    this.horizontalPos = canvasWidth / 2;
+    this.verticalPos = canvasHeight / 4;
 
     this.normalCoords = this.createNormalCoords();
 
@@ -36,19 +39,17 @@ class Cell {
 
     this.isometricWorld = {
       isometricCoords: calcCoords,
-      renderPos: [
-        calcCoords[0][0] + this.horizontalPos - TILESIZE,
-        calcCoords[0][1] + this.verticalPos - 1,
-      ],
-      buildingPos: [
-        calcCoords[0][0] + this.horizontalPos - TILESIZE * 2,
-        calcCoords[0][1] + this.verticalPos - this.building.height,
-      ],
+      renderPos: [0, 0],
+      buildingPos: [0, 0],
     };
   }
 
   getBuildingPos = (): CoordsType => {
     return this.isometricWorld.buildingPos;
+  };
+
+  getRenderPos = (): CoordsType => {
+    return this.isometricWorld.renderPos;
   };
 
   update = (dir: { x: number; y: number }): void => {
