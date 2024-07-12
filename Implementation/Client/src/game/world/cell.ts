@@ -11,7 +11,6 @@ class Cell {
   private isometricWorld: IsometricWorldType;
 
   private image: HTMLImageElement;
-  private building: HTMLImageElement;
 
   private horizontalPos: number;
   private verticalPos: number;
@@ -22,8 +21,6 @@ class Cell {
 
     this.image = new Image();
     this.image.src = imageSrc;
-
-    this.building = new Image();
 
     // this.horizontalPos = canvasWidth / 2 - TILESIZE;
     // this.verticalPos = -canvasHeight / 2;
@@ -39,8 +36,14 @@ class Cell {
 
     this.isometricWorld = {
       isometricCoords: calcCoords,
-      renderPos: [0, 0],
-      buildingPos: [0, 0],
+      renderPos: [
+        calcCoords[0][0] + this.horizontalPos - TILESIZE,
+        calcCoords[0][1] + this.verticalPos - 1,
+      ],
+      buildingPos: [
+        calcCoords[2][0] + this.horizontalPos,
+        calcCoords[2][1] + this.verticalPos,
+      ],
     };
   }
 
@@ -69,8 +72,8 @@ class Cell {
         calcCoords[0][1] + this.verticalPos - 1,
       ],
       buildingPos: [
-        calcCoords[2][0] + this.horizontalPos - this.building.width / 2,
-        calcCoords[2][1] + this.verticalPos - this.building.height,
+        calcCoords[2][0] + this.horizontalPos,
+        calcCoords[2][1] + this.verticalPos,
       ],
     };
   };
@@ -81,10 +84,6 @@ class Cell {
 
   setImageSrc = (src: string): void => {
     this.image.src = src;
-  };
-
-  setBuilding = (src: string): void => {
-    this.building.src = src;
   };
 
   resize = (): void => {

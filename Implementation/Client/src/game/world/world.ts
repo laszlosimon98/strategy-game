@@ -1,8 +1,8 @@
 import Cell from "./cell";
-import grass from "../../assets/grass.png";
-import grassWithFlowers from "../../assets/grasswithflowers.png";
-import grassWithRocks from "../../assets/grasswithrocks.png";
-import water from "../../assets/water.png";
+import grass from "../../assets/grounds/grass_0.png";
+import grassWithFlowers from "../../assets/grounds/grass_1.png";
+import grassWithRocks from "../../assets/grounds/grass_2.png";
+import water from "../../assets/grounds/water.png";
 import { TILESIZE } from "../../settings";
 
 import type { CoordsType } from "../../types/coordsType";
@@ -33,7 +33,7 @@ export class World {
       for (let j = 0; j < this.cols; ++j) {
         const rnd = Math.floor(Math.random() * 100);
         let tile = "";
-        if (rnd < 5) {
+        if (rnd < 8) {
           const rnd2 = Math.random();
           if (rnd2 < 0.5) {
             tile = grassWithRocks;
@@ -49,9 +49,11 @@ export class World {
     return board;
   };
 
-  getCoords = (e: MouseEvent): CoordsType => {
-    const world_x = e.clientX - canvasWidth / 2;
-    const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
+  getCoords = (pos: CoordsType): CoordsType => {
+    // const world_x = e.clientX - canvasWidth / 2;
+    // const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
+    const world_x = pos[0] - canvasWidth / 2;
+    const world_y = pos[1] - canvasHeight / 4 - TILESIZE / 2;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;
