@@ -7,7 +7,7 @@ import tree2 from "../assets/trees/tree2.png";
 import tree3 from "../assets/trees/tree3.png";
 import obstacleRock from "../assets/obstacles/rock_obstacle.png";
 import obstacleBush from "../assets/obstacles/bush_obstacle.png";
-import mine from "../assets/buildings/goldmine.png";
+import test from "../assets/buildings/resources/woodcutter.png";
 import { CoordsType } from "../types/coordsType";
 
 class Game {
@@ -101,7 +101,7 @@ class Game {
         this.tile = obstacleRock;
         break;
       case "6":
-        this.tile = mine;
+        this.tile = test;
         break;
       default:
         this.tile = "";
