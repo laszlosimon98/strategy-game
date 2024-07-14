@@ -1,5 +1,5 @@
 resources
-[] - woodcutter
+[x] - woodcutter
 [] - forester
 [] - stonecutter
 [] - sawmill
@@ -29,3 +29,6 @@ army
 
 utils
 [] - storage
+[x] - small residence
+[] - medium residence
+[] - large residence

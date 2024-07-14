@@ -2,7 +2,6 @@ import Cell from "./cell";
 import grass from "../../assets/grounds/grass_0.png";
 import grassWithFlowers from "../../assets/grounds/grass_1.png";
 import grassWithRocks from "../../assets/grounds/grass_2.png";
-import water from "../../assets/grounds/water.png";
 import { TILESIZE } from "../../settings";
 
 import type { CoordsType } from "../../types/coordsType";
@@ -65,7 +64,7 @@ export class World {
   };
 
   setTile = (x: number, y: number) => {
-    this.board[x][y].setImageSrc(water);
+    // this.board[x][y].setImageSrc(water);
   };
 
   draw = (): void => {

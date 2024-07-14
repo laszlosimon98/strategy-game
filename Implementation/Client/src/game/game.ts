@@ -2,12 +2,15 @@ import { canvasHeight, canvasWidth, ctx } from "../init";
 import { COLS, ROWS } from "../settings";
 import Camera from "./camera/camera";
 import { World } from "./world/world";
-import tree1 from "../assets/trees/tree1.png";
-import tree2 from "../assets/trees/tree2.png";
-import tree3 from "../assets/trees/tree3.png";
-import obstacleRock from "../assets/obstacles/rock_obstacle.png";
-import obstacleBush from "../assets/obstacles/bush_obstacle.png";
-import test from "../assets/buildings/resources/woodcutter.png";
+// import tree1 from "../assets/trees/tree1.png";
+// import tree2 from "../assets/trees/tree2.png";
+// import tree3 from "../assets/trees/tree3.png";
+// import obstacleRock from "../assets/obstacles/rock_obstacle.png";
+// import obstacleBush from "../assets/obstacles/bush_obstacle.png";
+import test1 from "../assets/buildings/tower.png";
+import test2 from "../assets/buildings/woodcutter.png";
+import test3 from "../assets/buildings/forester.png";
+import test4 from "../assets/buildings/sawmill.png";
 import { CoordsType } from "../types/coordsType";
 
 class Game {
@@ -86,22 +89,16 @@ class Game {
   chooseObstacle = (e: KeyboardEvent): void => {
     switch (e.key) {
       case "1":
-        this.tile = tree1;
+        this.tile = test1;
         break;
       case "2":
-        this.tile = tree2;
+        this.tile = test2;
         break;
       case "3":
-        this.tile = tree3;
+        this.tile = test3;
         break;
       case "4":
-        this.tile = obstacleBush;
-        break;
-      case "5":
-        this.tile = obstacleRock;
-        break;
-      case "6":
-        this.tile = test;
+        this.tile = test4;
         break;
       default:
         this.tile = "";
