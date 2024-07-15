@@ -1,8 +1,8 @@
 resources
 [x] - woodcutter
-[] - forester
+[x] - forester
 [] - stonecutter
-[] - sawmill
+[x] - sawmill
 [] - well
 [] - iron / coal / gold mines
 
@@ -23,7 +23,7 @@ weapon & tool
 
 army
 [] - barack
-[] - tower
+[x] - tower
 [] - castle
 [] - training camp
 

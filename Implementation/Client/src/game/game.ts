@@ -7,7 +7,7 @@ import { World } from "./world/world";
 // import tree3 from "../assets/trees/tree3.png";
 // import obstacleRock from "../assets/obstacles/rock_obstacle.png";
 // import obstacleBush from "../assets/obstacles/bush_obstacle.png";
-import test1 from "../assets/buildings/tower.png";
+import test1 from "../assets/buildings/small_residence.png";
 import test2 from "../assets/buildings/woodcutter.png";
 import test3 from "../assets/buildings/forester.png";
 import test4 from "../assets/buildings/sawmill.png";
