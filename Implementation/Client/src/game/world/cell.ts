@@ -22,11 +22,11 @@ class Cell {
     this.image = new Image();
     this.image.src = imageSrc;
 
-    // this.horizontalPos = canvasWidth / 2 - TILESIZE;
-    // this.verticalPos = -canvasHeight / 2;
+    this.horizontalPos = canvasWidth / 2 - TILESIZE;
+    this.verticalPos = -canvasHeight / 2;
 
-    this.horizontalPos = canvasWidth / 2;
-    this.verticalPos = canvasHeight / 4;
+    // this.horizontalPos = canvasWidth / 2;
+    // this.verticalPos = canvasHeight / 4;
 
     this.normalCoords = this.createNormalCoords();
 

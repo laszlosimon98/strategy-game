@@ -51,8 +51,11 @@ export class World {
   getCoords = (pos: CoordsType): CoordsType => {
     // const world_x = e.clientX - canvasWidth / 2;
     // const world_y = e.clientY - canvasHeight / 4 - TILESIZE / 2;
-    const world_x = pos[0] - canvasWidth / 2;
-    const world_y = pos[1] - canvasHeight / 4 - TILESIZE / 2;
+    // const world_x = pos[0] - canvasWidth / 2;
+    // const world_y = pos[1] - canvasHeight / 4 - TILESIZE / 2;
+
+    const world_x = pos[0] - canvasWidth / 2 + TILESIZE;
+    const world_y = pos[1] + canvasHeight / 2 - TILESIZE / 2;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;
@@ -71,7 +74,7 @@ export class World {
     for (let i = 0; i < this.board.length; ++i) {
       for (let j = 0; j < this.board[i].length; ++j) {
         this.board[i][j].drawImage();
-        this.board[i][j].drawIsometricGrid();
+        // this.board[i][j].drawIsometricGrid();
       }
     }
   };
