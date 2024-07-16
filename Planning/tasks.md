@@ -23,7 +23,7 @@ weapon & tool
 
 army
 [] - barack
-[x] - tower
+[] - tower
 [] - castle
 [] - training camp
 
