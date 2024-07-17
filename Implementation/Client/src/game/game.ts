@@ -13,7 +13,8 @@ import smallResidence from "../assets/buildings/small_residence.png";
 import woodcutter from "../assets/buildings/woodcutter.png";
 import forester from "../assets/buildings/forester.png";
 import sawmill from "../assets/buildings/sawmill.png";
-import tower from "../assets/buildings/tower.png";
+import tower from "../assets/buildings/towerold.png";
+import character from "../assets/character.png";
 
 import { CoordsType } from "../types/coordsType";
 
@@ -43,33 +44,33 @@ class Game {
     this.buildings = [];
     this.tile = "";
 
-    for (let i = 0; i < this.board.length; ++i) {
-      for (let j = 0; j < this.board[i].length; ++j) {
-        const rnd = Math.floor(Math.random() * 100);
+    // for (let i = 0; i < this.board.length; ++i) {
+    //   for (let j = 0; j < this.board[i].length; ++j) {
+    //     const rnd = Math.floor(Math.random() * 100);
 
-        const coords: CoordsType = this.board[i][j].getBuildingPos();
+    //     const coords: CoordsType = this.board[i][j].getBuildingPos();
 
-        if (rnd < 20) {
-          const rnd2 = Math.floor(Math.random() * 100);
+    //     if (rnd < 20) {
+    //       const rnd2 = Math.floor(Math.random() * 100);
 
-          if (rnd2 < 1) {
-            this.tile = obstacleBush;
-          } else if (rnd2 < 2) {
-            this.tile = obstacleRock;
-          } else if (rnd2 < 5) {
-            this.tile = tree1;
-          } else if (rnd2 < 15) {
-            this.tile = tree2;
-          } else if (rnd2 < 25) {
-            this.tile = tree3;
-          }
-        } else {
-          this.tile = "";
-        }
+    //       if (rnd2 < 1) {
+    //         this.tile = obstacleBush;
+    //       } else if (rnd2 < 2) {
+    //         this.tile = obstacleRock;
+    //       } else if (rnd2 < 5) {
+    //         this.tile = tree1;
+    //       } else if (rnd2 < 15) {
+    //         this.tile = tree2;
+    //       } else if (rnd2 < 25) {
+    //         this.tile = tree3;
+    //       }
+    //     } else {
+    //       this.tile = "";
+    //     }
 
-        this.handleBuild(coords, this.natures);
-      }
-    }
+    //     this.handleBuild(coords, this.natures);
+    //   }
+    // }
 
     window.addEventListener("mousedown", (e) => {
       const [posX, posY] = [e.clientX, e.clientY];
@@ -110,6 +111,9 @@ class Game {
         break;
       case "5":
         this.tile = smallResidence;
+        break;
+      case "6":
+        this.tile = character;
         break;
       default:
         this.tile = "";
