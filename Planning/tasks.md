@@ -20,11 +20,11 @@ weapon & tool
 [] - gold smelter
 
 army
-[] - barack
-[] - tower
+[x] - guardhouse
+[x] - watchtower
 [] - castle
 
-utils
+other
 [] - storage
 [x] - small residence
 [x] - medium residence
