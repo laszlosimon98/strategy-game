@@ -74,7 +74,7 @@ export class World {
     for (let i = 0; i < this.board.length; ++i) {
       for (let j = 0; j < this.board[i].length; ++j) {
         this.board[i][j].drawImage();
-        // this.board[i][j].drawIsometricGrid();
+        this.board[i][j].drawIsometricGrid();
       }
     }
   };

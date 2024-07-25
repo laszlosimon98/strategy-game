@@ -1,10 +1,10 @@
 resources
 [x] - woodcutter
 [x] - forester
-[] - stonecutter
+[x] - stonecutter
 [x] - sawmill
-[] - well
-[] - iron / coal / gold mines
+[x] - well
+[x] - iron / coal / gold mines
 
 food
 [] - farm
@@ -12,8 +12,6 @@ food
 [] - bakery
 [] - pig farm
 [] - butcher
-[] - hunter ???
-[] - fisher ?
 
 weapon & tool
 [] - iron smelter
@@ -25,10 +23,9 @@ army
 [] - barack
 [] - tower
 [] - castle
-[] - training camp
 
 utils
 [] - storage
 [x] - small residence
-[] - medium residence
-[] - large residence
+[x] - medium residence
+[x] - large residence

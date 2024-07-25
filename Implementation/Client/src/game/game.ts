@@ -10,11 +10,11 @@ import obstacleRock from "../assets/obstacles/rock_obstacle.png";
 import obstacleBush from "../assets/obstacles/bush_obstacle.png";
 
 import smallResidence from "../assets/buildings/small_residence.png";
-import woodcutter from "../assets/buildings/woodcutter.png";
+import woodcutter from "../assets/buildings/test.png";
 import forester from "../assets/buildings/forester.png";
 import sawmill from "../assets/buildings/sawmill.png";
 import tower from "../assets/buildings/towerold.png";
-import character from "../assets/character.png";
+import character from "../assets/buildings/well.png";
 
 import { CoordsType } from "../types/coordsType";
 
@@ -178,13 +178,13 @@ class Game {
     });
 
     this.buildings.map((building, index) => {
-      if (index === 2) {
-        ctx.save();
-        ctx.globalAlpha = 0.5;
-        ctx.fillStyle = "rgb(255, 0, 0)";
-      }
+      // if (index === 2) {
+      //   ctx.save();
+      //   ctx.globalAlpha = 0.5;
+      //   ctx.fillStyle = "rgb(255, 0, 0)";
+      // }
       ctx.drawImage(building.image, ...building.pos);
-      ctx.restore();
+      // ctx.restore();
     });
   };
 }
