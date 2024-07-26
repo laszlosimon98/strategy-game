@@ -7,9 +7,9 @@ resources
 [x] - iron / coal / gold mines
 
 food
-[] - farm
-[] - mill
-[] - bakery
+[x] - farm
+[x] - mill
+[x] - bakery
 [] - pig farm
 [] - butcher
 
