@@ -14,12 +14,13 @@ food
 [] - butcher
 
 weapon & tool
-[] - iron smelter
-[] - weapon
-[] - tool
-[] - gold smelter
+[x] - iron smelter
+[x] - weapon
+[x] - tool
+[x] - gold smelter
 
-army
+military
+[x] - barrack
 [x] - guardhouse
 [x] - watchtower
 [] - castle
