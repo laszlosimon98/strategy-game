@@ -10,7 +10,7 @@ food
 [x] - farm
 [x] - mill
 [x] - bakery
-[] - pig farm
+[x] - pig farm
 [] - butcher
 
 weapon & tool
