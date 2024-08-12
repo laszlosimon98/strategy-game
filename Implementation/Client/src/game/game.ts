@@ -1,22 +1,14 @@
 import { canvasHeight, canvasWidth, ctx } from "../init";
-import { COLS, ROWS, TILESIZE } from "../settings";
+import { COLS, ROWS } from "../settings";
 import Camera from "./camera/camera";
 import { World } from "./world/world";
 
-import tree1 from "../assets/trees/tree1.png";
-import tree2 from "../assets/trees/tree2.png";
-import tree3 from "../assets/trees/tree3.png";
 import obstacleRock from "../assets/obstacles/rock_obstacle.png";
 import obstacleBush from "../assets/obstacles/bush_obstacle.png";
-
-import smallResidence from "../assets/buildings/small_residence.png";
-import woodcutter from "../assets/buildings/test.png";
-import forester from "../assets/buildings/forester.png";
-import sawmill from "../assets/buildings/sawmill.png";
-import tower from "../assets/buildings/towerold.png";
-import character from "../assets/buildings/well.png";
+import stonecutter from "../assets/buildings/stonecutter.png";
 
 import { CoordsType } from "../types/coordsType";
+import { readDir } from "./utils/importImages";
 
 class Game {
   private world: World;
@@ -98,22 +90,7 @@ class Game {
   chooseObstacle = (e: KeyboardEvent): void => {
     switch (e.key) {
       case "1":
-        this.tile = woodcutter;
-        break;
-      case "2":
-        this.tile = forester;
-        break;
-      case "3":
-        this.tile = sawmill;
-        break;
-      case "4":
-        this.tile = tower;
-        break;
-      case "5":
-        this.tile = smallResidence;
-        break;
-      case "6":
-        this.tile = character;
+        this.tile = stonecutter;
         break;
       default:
         this.tile = "";
