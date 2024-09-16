@@ -3,6 +3,9 @@ export const ctx: CanvasRenderingContext2D = canvas.getContext(
   "2d"
 ) as CanvasRenderingContext2D;
 
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
 export let canvasWidth = canvas.width;
 export let canvasHeight = canvas.height;
 
