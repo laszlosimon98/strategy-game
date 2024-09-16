@@ -4,7 +4,7 @@ import { GameState } from "../../enums/gameState";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
-import { TextFieldWithImage } from "../components/textFieldWithImage";
+import { TextImage } from "../components/textFieldWithImage";
 
 export class MainMenu extends GUI {
   private newGame: Button;
@@ -12,7 +12,7 @@ export class MainMenu extends GUI {
   private statistic: Button;
   private login: Button;
   private registration: Button;
-  private namePlate: TextFieldWithImage;
+  private namePlate: TextImage;
 
   constructor(title: string) {
     super(title);
@@ -57,13 +57,14 @@ export class MainMenu extends GUI {
       GameState.Registration
     );
 
-    this.namePlate = new TextFieldWithImage(
+    this.namePlate = new TextImage(
       buttonPos.mainMenu.namePlate,
       buttonSize.width,
       buttonSize.height,
-      buttonImages.empty,
-      "Játékos"
+      "Játékos",
+      buttonImages.empty
     );
+    this.namePlate.setCenter();
 
     this.buttons.push(this.newGame);
     this.buttons.push(this.description);

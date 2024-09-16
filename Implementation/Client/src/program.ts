@@ -1,4 +1,5 @@
 import { GameState } from "./enums/gameState";
+import { titles } from "./gui/imports/titles";
 import { Description } from "./gui/pages/description";
 import { GUI } from "./gui/pages/gui";
 import { Join } from "./gui/pages/join";
@@ -9,6 +10,7 @@ import { NewGame } from "./gui/pages/newGame";
 import { Registration } from "./gui/pages/registration";
 import { Statistic } from "./gui/pages/statistic";
 import { canvasHeight, canvasWidth, ctx } from "./init";
+import { bcgColor } from "./settings";
 
 export class Program {
   private state: GameState;
@@ -16,7 +18,8 @@ export class Program {
 
   constructor() {
     this.state = GameState.MainMenu;
-    this.gui = new MainMenu("Menu");
+    // this.gui = new MainMenu(titles.menu);
+    this.gui = new Login(titles.login);
 
     document.addEventListener("mousedown", (e: MouseEvent) => {
       if (this.state !== GameState.Game) {
@@ -36,41 +39,42 @@ export class Program {
   private updateGui(state: GameState): void {
     switch (state) {
       case GameState.MainMenu:
-        this.gui = new MainMenu("Menu");
+        this.gui = new MainMenu(titles.menu);
         break;
       case GameState.Statistic:
-        this.gui = new Statistic("Statisztika");
+        this.gui = new Statistic(titles.statistic);
         break;
       case GameState.Description:
-        this.gui = new Description("Játékmenet");
+        this.gui = new Description(titles.description);
         break;
       case GameState.Login:
-        this.gui = new Login("Bejelentkezés");
+        this.gui = new Login(titles.login);
         break;
       case GameState.Registration:
-        this.gui = new Registration("Regisztráció");
+        this.gui = new Registration(titles.registration);
         break;
       case GameState.NewGame:
-        this.gui = new NewGame("Új játék");
+        this.gui = new NewGame(titles.newGame);
         break;
       case GameState.JoinGame:
-        this.gui = new Join("Csatlakozas");
+        this.gui = new Join("");
         break;
       case GameState.Lobby:
-        this.gui = new Lobby("Váró");
+        this.gui = new Lobby(titles.lobby);
         break;
     }
   }
 
   draw(): void {
-    ctx.beginPath();
-
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = "#b58b5e";
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    this.gui.draw();
 
-    ctx.closePath();
+    if (this.state !== GameState.Game) {
+      ctx.fillStyle = bcgColor;
+      this.gui.draw();
+    } else {
+      ctx.fillStyle = "#000";
+    }
   }
 
   update(dt: number): void {}

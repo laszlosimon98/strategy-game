@@ -1,0 +1,28 @@
+Mit kell implementálni Szerver oldalon?
+	- bejelentkezés, regisztráció (opcionális)
+	- statisztika lekérdezése (csak bejelentkezve)
+	- csatlakozási kód generálás
+	- csatlakozott játékosok lekérdezése
+
+	- kezdeti játék állapot létrehozása
+		- pálya generálás (akadályok, fa, kő, stb.)
+		- játékosok kezdeti állapotának meghatározása
+			- kezdeti épületek koordinátái
+			- kezdeti nyersanyag készlet
+	- állapot változás
+		- ház építés
+		- ház elbontása
+		- fa kivágása
+		- kőfejtés
+		- ellenséges erődítmény elfoglalása
+		- határváltozás
+		- unit útvonalak (valszeg egy tömb lesz az érített cellák koordinátáival)
+
+Mit kell implementálni Kliens oldalon?
+	- GUI
+	- Kamera mozgás
+	- Assetek
+	- Animációk
+	- A kijelölt elem jelzése, pl épület, unit, építendő épület
+	- UI elemek, pl menü
+	- raktár

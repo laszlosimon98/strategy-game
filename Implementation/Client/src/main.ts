@@ -1,11 +1,14 @@
 import init from "./init";
 import { Program } from "./program";
 import { FPS } from "./settings";
+import { serverCommunication } from "./temp/temp";
 
 const main = () => {
   init();
 
   const program: Program = new Program();
+
+  // serverCommunication();
 
   const fps: number = FPS;
   const perfectFrameTime: number = 1000;

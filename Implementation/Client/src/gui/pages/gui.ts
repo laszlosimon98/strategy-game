@@ -1,13 +1,17 @@
+import { ctx } from "../../init";
+import { titleSize } from "../../settings";
 import { Button } from "../components/button";
+import { titlePos } from "./pos/titlePos";
 
 export class GUI {
-  // EZ NEM string LESZ HANEM Image
-  protected title: string;
+  protected title: HTMLImageElement;
   protected buttons: Button[];
 
   protected constructor(title: string) {
-    this.title = title;
     this.buttons = new Array<Button>();
+
+    this.title = new Image();
+    this.title.src = title;
   }
 
   getButtons(): Button[] {
@@ -19,6 +23,14 @@ export class GUI {
   }
 
   draw() {
+    ctx.drawImage(
+      this.title,
+      titlePos.x,
+      titlePos.y,
+      titleSize.width,
+      titleSize.height
+    );
+
     this.buttons.map((button) => {
       button.draw();
     });
