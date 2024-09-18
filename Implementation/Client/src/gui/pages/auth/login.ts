@@ -6,7 +6,6 @@ export class Login extends Auth {
   }
 
   handleAuth = () => {
-    console.log(this.nameInput.getText());
-    console.log(this.passwordInput.getText());
+    console.log(this.getInputData());
   };
 }

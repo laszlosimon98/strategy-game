@@ -8,11 +8,19 @@ export class Text extends GUIComponents {
   protected metrics: TextMetrics;
 
   private isCentered: boolean;
+  protected isSecret: boolean;
 
-  constructor(pos: PosType, width: number, height: number, text: string) {
+  constructor(
+    pos: PosType,
+    width: number,
+    height: number,
+    text: string,
+    isSecret: boolean
+  ) {
     super(pos, width, height);
 
     this.text = text;
+    this.isSecret = isSecret;
 
     this.isCentered = false;
     this.metrics = ctx.measureText(this.text);
@@ -25,7 +33,12 @@ export class Text extends GUIComponents {
   draw(): void {
     ctx.fillStyle = textColor;
     ctx.fillText(
-      this.text,
+      !this.isSecret
+        ? this.text
+        : this.text.replace(
+            /\w+/g,
+            new Array(this.text.length).fill("*").join("")
+          ),
       this.isCentered
         ? this.pos.x + this.width / 2 - this.metrics.width / 2
         : this.pos.x + 5,

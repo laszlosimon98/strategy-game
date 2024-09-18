@@ -1,10 +1,10 @@
 import { buttonSize } from "../../settings";
-import { Button } from "../components/button";
+import { Button } from "../components/buttonComponents/button";
 import { GameState } from "../../enums/gameState";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
-import { TextImage } from "../components/textFieldWithImage";
+import { TextImage } from "../components/textComponents/textImage";
 
 export class MainMenu extends GUI {
   private newGame: Button;

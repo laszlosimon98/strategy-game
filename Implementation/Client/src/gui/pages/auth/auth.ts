@@ -6,13 +6,14 @@ import { GUI } from "../gui";
 import { buttonPos } from "../pos/buttonPos";
 import { canvasHeight, canvasWidth } from "../../../init";
 import { TextInput } from "../../components/textComponents/textInput";
+import { AuthType } from "../../../types/authType";
 
 export class Auth extends GUI {
   protected backButton: Button;
   protected actionButton: Button;
 
-  protected nameInput: TextInput;
-  protected passwordInput: TextInput;
+  private nameInput: TextInput;
+  private passwordInput: TextInput;
 
   constructor(
     title: string,
@@ -45,7 +46,8 @@ export class Auth extends GUI {
       400,
       40,
       "",
-      "#90460C"
+      "#90460C",
+      false
     );
 
     this.passwordInput = new TextInput(
@@ -53,7 +55,8 @@ export class Auth extends GUI {
       400,
       40,
       "",
-      "#90460C"
+      "#90460C",
+      true
     );
 
     window.addEventListener(
@@ -70,6 +73,13 @@ export class Auth extends GUI {
       (e: KeyboardEvent) => this.handleKeyDown(e),
       { signal: this.controller.signal }
     );
+  }
+
+  protected getInputData(): AuthType {
+    return {
+      username: this.nameInput.getText(),
+      password: this.passwordInput.getText(),
+    };
   }
 
   handleInputSelect(mouseX: number, mouseY: number): void {

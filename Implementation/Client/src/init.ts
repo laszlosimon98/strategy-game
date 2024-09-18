@@ -19,6 +19,7 @@ const init = () => {
 
     document.body.scrollTop = 0;
     document.body.style.overflow = "hidden";
+    ctx.font = "28px Arial";
   };
 
   updateCanvasSize();

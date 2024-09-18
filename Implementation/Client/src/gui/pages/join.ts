@@ -1,5 +1,5 @@
 import { buttonSize } from "../../settings";
-import { Button } from "../components/button";
+import { Button } from "../components/buttonComponents/button";
 import { GameState } from "../../enums/gameState";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";

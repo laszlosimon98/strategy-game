@@ -1,6 +1,6 @@
 import { ctx } from "../../init";
 import { titleSize } from "../../settings";
-import { Button } from "../components/button";
+import { Button } from "../components/buttonComponents/button";
 import { titlePos } from "./pos/titlePos";
 
 export class GUI {

@@ -6,6 +6,7 @@ import { Text } from "./text";
 
 export class TextInput extends Text {
   private backgroundColor: string;
+
   private isSelected: boolean;
 
   constructor(
@@ -13,9 +14,10 @@ export class TextInput extends Text {
     width: number,
     height: number,
     text: string,
-    backgroundColor: string
+    backgroundColor: string,
+    isSecret: boolean
   ) {
-    super(pos, width, height, text);
+    super(pos, width, height, text, isSecret);
 
     this.backgroundColor = backgroundColor;
     this.isSelected = false;
@@ -44,7 +46,11 @@ export class TextInput extends Text {
     } else if (key.match(/^[a-zA-Z0-9]+$/) && key.length === 1) {
       this.text += key;
     }
-    this.metrics = ctx.measureText(this.text);
+    this.metrics = ctx.measureText(
+      !this.isSecret
+        ? this.text
+        : new Array(this.text.length).fill("*").join("")
+    );
   }
 
   toggleSelected(mousePos: MousePos): void {

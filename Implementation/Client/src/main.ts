@@ -6,7 +6,7 @@ import { serverCommunication } from "./temp/temp";
 const main = () => {
   init();
 
-  const program: Program = new Program();
+  const program: Program = new Program(new AbortController());
 
   // serverCommunication();
 
