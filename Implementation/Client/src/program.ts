@@ -21,8 +21,8 @@ export class Program {
     this.state = GameState.MainMenu;
     this.gui = new MainMenu(titles.menu);
 
-    window.addEventListener(
-      "mousedown",
+    document.addEventListener(
+      "click",
       (e: MouseEvent) => {
         if (this.state !== GameState.Game) {
           const [mouseX, mouseY] = [e.clientX, e.clientY];
@@ -68,7 +68,7 @@ export class Program {
         this.gui = new NewGame(titles.newGame);
         break;
       case GameState.JoinGame:
-        this.gui = new Join("");
+        this.gui = new Join(titles.connect);
         break;
       case GameState.Lobby:
         this.gui = new Lobby(titles.lobby);

@@ -1,9 +1,13 @@
 import { ButtonSize } from "./types/guiTypes";
 
-// GUI
+// GUI - POS
 export const buttonSize: ButtonSize = { width: 192, height: 60 };
 export const titleSize: ButtonSize = { width: 288, height: 90 };
+export const inputBackgroundColor = "#90460C";
+
 export const buttonMargin: number = 75;
+
+// GUI - COLORS
 export const bcgColor = "#F1C585";
 export const textColor = "#F1C585";
 

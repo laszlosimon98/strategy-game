@@ -25,10 +25,6 @@ export class Button extends MenuComponent {
     return this.navigateState;
   }
 
-  handleCallback(callback: Function): void {
-    callback();
-  }
-
   isClicked(mouseX: number, mouseY: number): boolean {
     const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;
     const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.height;

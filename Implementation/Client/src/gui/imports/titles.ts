@@ -5,6 +5,7 @@ import registration from "../../assets/GUI/titles/regisztralas.png";
 import statistic from "../../assets/GUI/titles/statisztika.png";
 import newGame from "../../assets/GUI/titles/ujJatek.png";
 import lobby from "../../assets/GUI/titles/varo.png";
+import connect from "../../assets/GUI/titles/csatlakozas.png";
 
 export const titles = {
   login,
@@ -14,4 +15,5 @@ export const titles = {
   statistic,
   newGame,
   lobby,
+  connect,
 };

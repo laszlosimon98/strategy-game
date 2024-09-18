@@ -62,7 +62,8 @@ export class MainMenu extends GUI {
       buttonSize.width,
       buttonSize.height,
       "Játékos",
-      buttonImages.empty
+      buttonImages.empty,
+      false
     );
     this.namePlate.setCenter();
 

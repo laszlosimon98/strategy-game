@@ -6,8 +6,9 @@ import { Text } from "./text";
 
 export class TextInput extends Text {
   private backgroundColor: string;
-
   private isSelected: boolean;
+
+  private readonly controller: AbortController;
 
   constructor(
     pos: PosType,
@@ -19,8 +20,28 @@ export class TextInput extends Text {
   ) {
     super(pos, width, height, text, isSecret);
 
+    this.controller = new AbortController();
+
     this.backgroundColor = backgroundColor;
     this.isSelected = false;
+
+    document.addEventListener(
+      "click",
+      (e: MouseEvent) => {
+        this.toggleSelected({ x: e.clientX, y: e.clientY });
+      },
+      { signal: this.controller.signal }
+    );
+
+    document.addEventListener(
+      "keydown",
+      (e: KeyboardEvent) => {
+        if (this.isSelected) {
+          this.updateText(e.key);
+        }
+      },
+      { signal: this.controller.signal }
+    );
   }
 
   draw(): void {
@@ -59,11 +80,11 @@ export class TextInput extends Text {
     this.isSelected = x && y;
   }
 
-  getSelected(): boolean {
-    return this.isSelected;
-  }
-
   getText(): string {
     return this.text;
+  }
+
+  removeEventListeners(): void {
+    this.controller.abort();
   }
 }

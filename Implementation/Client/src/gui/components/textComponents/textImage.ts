@@ -10,9 +10,10 @@ export class TextImage extends Text {
     width: number,
     height: number,
     text: string,
-    imageSrc: string
+    imageSrc: string,
+    isSecret: boolean
   ) {
-    super(pos, width, height, text);
+    super(pos, width, height, text, isSecret);
 
     this.image = new Image();
     this.image.src = imageSrc;
