@@ -14,38 +14,34 @@ import { Registration } from "./gui/pages/auth/registration";
 import { buttonImages } from "./gui/imports/buttons";
 
 export class Program {
-  private state: GameState;
   private gui: GUI;
 
   constructor(private readonly controller: AbortController) {
-    this.state = GameState.MainMenu;
     this.gui = new MainMenu(titles.menu);
 
     document.addEventListener(
       "click",
-      (e: MouseEvent) => {
-        if (this.state !== GameState.Game) {
-          const [mouseX, mouseY] = [e.clientX, e.clientY];
+      () => {
+        const isAnyButtonClicked = this.gui
+          .getButtons()
+          .some((btn) => btn.isButtonClicked() && btn.isSuccessFull());
 
+        if (isAnyButtonClicked) {
           this.gui.getButtons().map((button) => {
-            if (button.isClicked(mouseX, mouseY)) {
-              this.state = button.getState();
-              this.gui.clearbuttons();
-              this.updateGui(this.state);
-
-              if (this.state === GameState.Game) {
-                this.controller.abort();
-              }
-            }
+            button.removeEventListener();
           });
+
+          if (this.gui.getState() !== GameState.Game) {
+            this.updateGUIState();
+          }
         }
       },
       { signal: this.controller.signal }
     );
   }
 
-  private updateGui(state: GameState): void {
-    switch (state) {
+  updateGUIState(): void {
+    switch (this.gui.getState()) {
       case GameState.MainMenu:
         this.gui = new MainMenu(titles.menu);
         break;
@@ -80,7 +76,7 @@ export class Program {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    if (this.state !== GameState.Game) {
+    if (this.gui.getState() !== GameState.Game) {
       ctx.fillStyle = bcgColor;
       this.gui.draw();
     } else {

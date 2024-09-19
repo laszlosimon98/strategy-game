@@ -12,19 +12,15 @@ export class Join extends GUI {
   private joinButton: Button;
   private codeInput: TextInput;
 
-  private readonly controller: AbortController;
-
   constructor(title: string) {
     super(title);
-
-    this.controller = new AbortController();
 
     this.backButton = new Button(
       buttonPos.default.back,
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      GameState.NewGame
+      () => this.setState(GameState.NewGame)
     );
 
     this.joinButton = new Button(
@@ -32,7 +28,7 @@ export class Join extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.join,
-      GameState.Lobby
+      () => this.setState(GameState.Lobby)
     );
 
     this.buttons.push(this.joinButton);
@@ -45,20 +41,6 @@ export class Join extends GUI {
       "",
       inputBackgroundColor,
       false
-    );
-
-    document.addEventListener(
-      "click",
-      (e: MouseEvent) => {
-        if (
-          this.backButton.isClicked(e.clientX, e.clientY) ||
-          this.joinButton.isClicked(e.clientX, e.clientY)
-        ) {
-          this.codeInput.removeEventListeners();
-          this.controller.abort();
-        }
-      },
-      { signal: this.controller.signal }
     );
   }
 

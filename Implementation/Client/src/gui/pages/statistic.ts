@@ -16,7 +16,7 @@ export class Statistic extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      GameState.MainMenu
+      () => this.setState(GameState.MainMenu)
     );
 
     this.buttons.push(this.backButton);

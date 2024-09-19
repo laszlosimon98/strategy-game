@@ -1,9 +1,12 @@
+import { GameState } from "../../enums/gameState";
 import { ctx } from "../../init";
 import { titleSize } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { titlePos } from "./pos/titlePos";
 
 export class GUI {
+  private state: GameState;
+
   protected title: HTMLImageElement;
   protected buttons: Button[];
 
@@ -12,14 +15,19 @@ export class GUI {
 
     this.title = new Image();
     this.title.src = title;
+    this.state = GameState.MainMenu;
+  }
+
+  getState(): GameState {
+    return this.state;
+  }
+
+  setState(state: GameState): void {
+    this.state = state;
   }
 
   getButtons(): Button[] {
     return this.buttons;
-  }
-
-  clearbuttons(): void {
-    this.buttons = [];
   }
 
   draw() {

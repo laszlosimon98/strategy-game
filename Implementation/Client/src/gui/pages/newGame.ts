@@ -18,7 +18,7 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.create,
-      GameState.Lobby
+      () => this.setState(GameState.Lobby)
     );
 
     this.join = new Button(
@@ -26,7 +26,7 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.join,
-      GameState.JoinGame
+      () => this.setState(GameState.JoinGame)
     );
 
     this.backButton = new Button(
@@ -34,7 +34,7 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      GameState.MainMenu
+      () => this.setState(GameState.MainMenu)
     );
 
     this.buttons.push(this.create);

@@ -17,7 +17,7 @@ export class Lobby extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.start,
-      GameState.Game
+      () => this.setState(GameState.Game)
     );
 
     this.backButton = new Button(
@@ -25,7 +25,7 @@ export class Lobby extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      GameState.NewGame
+      () => this.setState(GameState.NewGame)
     );
 
     this.buttons.push(this.start);

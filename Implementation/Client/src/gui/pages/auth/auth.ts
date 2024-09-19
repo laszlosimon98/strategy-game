@@ -15,11 +15,7 @@ export class Auth extends GUI {
   private nameInput: TextInput;
   private passwordInput: TextInput;
 
-  constructor(
-    title: string,
-    actionButtonImage: string,
-    private readonly controller: AbortController
-  ) {
+  constructor(title: string, actionButtonImage: string) {
     super(title);
 
     this.backButton = new Button(
@@ -27,7 +23,7 @@ export class Auth extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      GameState.MainMenu
+      () => this.handleLeave()
     );
 
     this.actionButton = new Button(
@@ -35,7 +31,7 @@ export class Auth extends GUI {
       buttonSize.width,
       buttonSize.height,
       actionButtonImage,
-      GameState.MainMenu
+      () => this.handleNext()
     );
 
     this.buttons.push(this.backButton);
@@ -58,15 +54,6 @@ export class Auth extends GUI {
       inputBackgroundColor,
       true
     );
-
-    document.addEventListener(
-      "click",
-      (e: MouseEvent) => {
-        this.handleAuthClick(e.clientX, e.clientY);
-        this.handleLeave(e.clientX, e.clientY);
-      },
-      { signal: this.controller.signal }
-    );
   }
 
   protected getInputData(): AuthType {
@@ -76,23 +63,27 @@ export class Auth extends GUI {
     };
   }
 
-  handleAuthClick(mouseX: number, mouseY: number) {
-    if (this.actionButton.isClicked(mouseX, mouseY)) {
+  handleLeave(): void {
+    this.removeInputEventListerners();
+    this.setState(GameState.MainMenu);
+  }
+
+  handleNext(): void {
+    try {
       this.handleAuth();
-      this.removeEventListeners();
-      this.removeInputEventListerners();
+      this.handleLeave();
+    } catch (error: any) {
+      console.log(error.message);
     }
-  }
 
-  handleLeave(mouseX: number, mouseY: number) {
-    if (this.backButton.isClicked(mouseX, mouseY)) {
-      this.removeEventListeners();
-      this.removeInputEventListerners();
-    }
-  }
-
-  removeEventListeners(): void {
-    this.controller.abort();
+    // if (isError) {
+    //   // alert(error);
+    //   console.error(error);
+    //   return;
+    // } else {
+    //   console.log("asdf");
+    //   this.handleLeave();
+    // }
   }
 
   removeInputEventListerners(): void {
@@ -100,7 +91,9 @@ export class Auth extends GUI {
     this.passwordInput.removeEventListeners();
   }
 
-  handleAuth(): void {}
+  handleAuth(): [boolean, string] {
+    return [false, ""];
+  }
 
   draw(): void {
     super.draw();

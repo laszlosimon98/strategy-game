@@ -1,33 +1,57 @@
-import { GameState } from "../../../enums/gameState";
 import { PosType } from "../../../types/guiTypes";
 import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
-  private navigateState: GameState;
+  private isClicked: boolean;
+  private controller: AbortController;
+  private isSuccess: boolean;
 
   constructor(
     pos: PosType,
     width: number,
     height: number,
     imageSrc: string,
-    navigateState: GameState
+    fn: Function
   ) {
     super(pos, width, height, imageSrc);
 
-    this.navigateState = navigateState;
+    this.isClicked = false;
+    this.isSuccess = false;
+    this.controller = new AbortController();
+
+    document.addEventListener(
+      "mousedown",
+      (e: MouseEvent) => {
+        this.setClicked(e.clientX, e.clientY);
+
+        if (this.isClicked) {
+          fn();
+          this.isSuccess = true;
+        }
+      },
+      { signal: this.controller.signal }
+    );
+  }
+
+  private setClicked(mouseX: number, mouseY: number): void {
+    const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;
+    const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.height;
+    this.isClicked = x && y;
   }
 
   draw() {
     super.draw();
   }
 
-  getState(): GameState {
-    return this.navigateState;
+  isButtonClicked(): boolean {
+    return this.isClicked;
   }
 
-  isClicked(mouseX: number, mouseY: number): boolean {
-    const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;
-    const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.height;
-    return x && y;
+  isSuccessFull(): boolean {
+    return this.isSuccess;
+  }
+
+  removeEventListener(): void {
+    this.controller.abort();
   }
 }
