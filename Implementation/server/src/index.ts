@@ -15,6 +15,10 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket: Socket) => {
   console.log(socket.id);
+
+  socket.on("createGameServer", (data) => {
+    console.log(data);
+  });
 });
 
 httpServer.listen(PORT, () => {
