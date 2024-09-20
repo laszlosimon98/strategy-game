@@ -1,12 +1,12 @@
 import { buttonSize, inputBackgroundColor } from "../../../settings";
 import { Button } from "../../components/buttonComponents/button";
-import { GameState } from "../../../enums/gameState";
 import { buttonImages } from "../../imports/buttons";
 import { GUI } from "../gui";
 import { buttonPos } from "../pos/buttonPos";
 import { canvasHeight, canvasWidth } from "../../../init";
 import { TextInput } from "../../components/textComponents/textInput";
 import { AuthType } from "../../../types/authType";
+import { GameState } from "../../../enums/gameState";
 
 export class Auth extends GUI {
   protected backButton: Button;
@@ -23,7 +23,7 @@ export class Auth extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      () => this.handleLeave()
+      GameState.MainMenu
     );
 
     this.actionButton = new Button(
@@ -31,11 +31,9 @@ export class Auth extends GUI {
       buttonSize.width,
       buttonSize.height,
       actionButtonImage,
+      GameState.MainMenu,
       () => this.handleNext()
     );
-
-    this.buttons.push(this.backButton);
-    this.buttons.push(this.actionButton);
 
     this.nameInput = new TextInput(
       { x: canvasWidth / 2 - 100, y: canvasHeight / 2 - 50 },
@@ -54,6 +52,11 @@ export class Auth extends GUI {
       inputBackgroundColor,
       true
     );
+
+    this.buttons.push(this.backButton);
+    this.buttons.push(this.actionButton);
+    this.inputs.push(this.nameInput);
+    this.inputs.push(this.passwordInput);
   }
 
   protected getInputData(): AuthType {
@@ -63,32 +66,15 @@ export class Auth extends GUI {
     };
   }
 
-  handleLeave(): void {
-    this.removeInputEventListerners();
-    this.setState(GameState.MainMenu);
-  }
-
   handleNext(): void {
-    try {
-      this.handleAuth();
-      this.handleLeave();
-    } catch (error: any) {
-      console.log(error.message);
+    const [isError, error] = this.handleAuth();
+
+    if (isError) {
+      this.actionButton.setState(GameState.Registration);
+      console.error(error);
+    } else {
+      this.actionButton.setState(GameState.MainMenu);
     }
-
-    // if (isError) {
-    //   // alert(error);
-    //   console.error(error);
-    //   return;
-    // } else {
-    //   console.log("asdf");
-    //   this.handleLeave();
-    // }
-  }
-
-  removeInputEventListerners(): void {
-    this.nameInput.removeEventListeners();
-    this.passwordInput.removeEventListeners();
   }
 
   handleAuth(): [boolean, string] {

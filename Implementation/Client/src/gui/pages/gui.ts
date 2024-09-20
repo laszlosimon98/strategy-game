@@ -1,33 +1,28 @@
-import { GameState } from "../../enums/gameState";
 import { ctx } from "../../init";
 import { titleSize } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
+import { TextInput } from "../components/textComponents/textInput";
 import { titlePos } from "./pos/titlePos";
 
 export class GUI {
-  private state: GameState;
-
   protected title: HTMLImageElement;
   protected buttons: Button[];
+  protected inputs: TextInput[];
 
   protected constructor(title: string) {
     this.buttons = new Array<Button>();
+    this.inputs = new Array<TextInput>();
 
     this.title = new Image();
     this.title.src = title;
-    this.state = GameState.MainMenu;
-  }
-
-  getState(): GameState {
-    return this.state;
-  }
-
-  setState(state: GameState): void {
-    this.state = state;
   }
 
   getButtons(): Button[] {
     return this.buttons;
+  }
+
+  getInputs(): TextInput[] {
+    return this.inputs;
   }
 
   draw() {

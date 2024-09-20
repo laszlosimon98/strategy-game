@@ -1,6 +1,6 @@
+import { GameState } from "../../enums/gameState";
 import { buttonSize } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
-import { GameState } from "../../enums/gameState";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
@@ -18,7 +18,7 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.create,
-      () => this.setState(GameState.Lobby)
+      GameState.Lobby
     );
 
     this.join = new Button(
@@ -26,7 +26,7 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.join,
-      () => this.setState(GameState.JoinGame)
+      GameState.JoinGame
     );
 
     this.backButton = new Button(
@@ -34,7 +34,7 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      () => this.setState(GameState.MainMenu)
+      GameState.MainMenu
     );
 
     this.buttons.push(this.create);

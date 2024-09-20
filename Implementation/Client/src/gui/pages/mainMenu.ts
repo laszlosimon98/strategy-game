@@ -1,10 +1,10 @@
 import { buttonSize } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
-import { GameState } from "../../enums/gameState";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
+import { GameState } from "../../enums/gameState";
 
 export class MainMenu extends GUI {
   private newGame: Button;
@@ -22,7 +22,7 @@ export class MainMenu extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.newGame,
-      () => this.setState(GameState.NewGame)
+      GameState.NewGame
     );
 
     this.description = new Button(
@@ -30,7 +30,7 @@ export class MainMenu extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.description,
-      () => this.setState(GameState.Description)
+      GameState.Description
     );
 
     this.statistic = new Button(
@@ -38,7 +38,7 @@ export class MainMenu extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.statistic,
-      () => this.setState(GameState.Statistic)
+      GameState.Statistic
     );
 
     this.login = new Button(
@@ -46,7 +46,7 @@ export class MainMenu extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.login,
-      () => this.setState(GameState.Login)
+      GameState.Login
     );
 
     this.registration = new Button(
@@ -54,7 +54,7 @@ export class MainMenu extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.registration,
-      () => this.setState(GameState.Registration)
+      GameState.Registration
     );
 
     this.namePlate = new TextImage(

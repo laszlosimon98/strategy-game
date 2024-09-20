@@ -1,14 +1,11 @@
 import { ctx } from "../../../init";
 import { textColor, bcgColor } from "../../../settings";
 import { PosType } from "../../../types/guiTypes";
-import { MousePos } from "../../../types/mouseTypes";
 import { Text } from "./text";
 
 export class TextInput extends Text {
   private backgroundColor: string;
   private isSelected: boolean;
-
-  private readonly controller: AbortController;
 
   constructor(
     pos: PosType,
@@ -20,28 +17,8 @@ export class TextInput extends Text {
   ) {
     super(pos, width, height, text, isSecret);
 
-    this.controller = new AbortController();
-
     this.backgroundColor = backgroundColor;
     this.isSelected = false;
-
-    document.addEventListener(
-      "click",
-      (e: MouseEvent) => {
-        this.toggleSelected({ x: e.clientX, y: e.clientY });
-      },
-      { signal: this.controller.signal }
-    );
-
-    document.addEventListener(
-      "keydown",
-      (e: KeyboardEvent) => {
-        if (this.isSelected) {
-          this.updateText(e.key);
-        }
-      },
-      { signal: this.controller.signal }
-    );
   }
 
   draw(): void {
@@ -74,17 +51,20 @@ export class TextInput extends Text {
     );
   }
 
-  toggleSelected(mousePos: MousePos): void {
-    const x = mousePos.x > this.pos.x && mousePos.x < this.pos.x + this.width;
-    const y = mousePos.y > this.pos.y && mousePos.y < this.pos.y + this.height;
-    this.isSelected = x && y;
-  }
-
   getText(): string {
     return this.text;
   }
 
-  removeEventListeners(): void {
-    this.controller.abort();
+  clearText(): void {
+    this.text = "";
+    this.metrics = ctx.measureText("");
+  }
+
+  setIsSelected(isSelected: boolean): void {
+    this.isSelected = isSelected;
+  }
+
+  getIsSelected(): boolean {
+    return this.isSelected;
   }
 }
