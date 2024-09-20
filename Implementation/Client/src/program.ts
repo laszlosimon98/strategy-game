@@ -51,7 +51,7 @@ export class Program {
       this.handleMouseMoveEvent(e)
     );
 
-    document.addEventListener("keypress", (e: KeyboardEvent) =>
+    document.addEventListener("keydown", (e: KeyboardEvent) =>
       this.handleKeyBoardEvent(e)
     );
   }
