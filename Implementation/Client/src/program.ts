@@ -47,12 +47,20 @@ export class Program {
       signal: this.controller.signal,
     });
 
-    document.addEventListener("mousemove", (e: MouseEvent) =>
-      this.handleMouseMoveEvent(e)
+    document.addEventListener(
+      "mousemove",
+      (e: MouseEvent) => this.handleMouseMoveEvent(e),
+      {
+        signal: this.controller.signal,
+      }
     );
 
-    document.addEventListener("keydown", (e: KeyboardEvent) =>
-      this.handleKeyBoardEvent(e)
+    document.addEventListener(
+      "keydown",
+      (e: KeyboardEvent) => this.handleKeyBoardEvent(e),
+      {
+        signal: this.controller.signal,
+      }
     );
   }
 

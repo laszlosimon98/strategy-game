@@ -70,10 +70,10 @@ export class Auth extends GUI {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
-      this.actionButton.setState(GameState.Registration);
+      this.actionButton.setNextState(GameState.Registration);
       console.error(error);
     } else {
-      this.actionButton.setState(GameState.MainMenu);
+      this.actionButton.setNextState(GameState.MainMenu);
     }
   }
 

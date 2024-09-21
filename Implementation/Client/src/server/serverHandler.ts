@@ -1,17 +1,18 @@
 import { io, Socket } from "socket.io-client";
 
 export class ServerHandler {
-  private static readonly io: Socket = io("http://localhost:3000");
+  private static readonly socket: Socket = io("http://localhost:3000");
   private constructor() {}
 
   static sendMessage(event: string, data: any) {
-    this.io.emit(event, data);
+    this.socket.emit(event, data);
   }
 
-  static receiveMessage(event: string): any {
-    let result: any;
-    this.io.on(event, (data) => (result = data));
+  static receiveMessage(event: string, callback: Function) {
+    this.socket.on(event, (data: any) => callback(data));
+  }
 
-    return result;
+  static getId(): string | undefined {
+    return this.socket.id;
   }
 }

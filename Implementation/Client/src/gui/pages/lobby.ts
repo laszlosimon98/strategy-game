@@ -1,13 +1,17 @@
 import { GameState } from "../../enums/gameState";
-import { buttonSize } from "../../settings";
+import { ServerHandler } from "../../server/serverHandler";
+import { blackColor, buttonSize, margin } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
+import { Text } from "../components/textComponents/text";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
+import { titlePos } from "./pos/titlePos";
 
 export class Lobby extends GUI {
   private backButton: Button;
   private start: Button;
+  private gameCode: Text;
 
   constructor(title: string) {
     super(title);
@@ -30,5 +34,37 @@ export class Lobby extends GUI {
 
     this.buttons.push(this.start);
     this.buttons.push(this.backButton);
+
+    this.gameCode = new Text(
+      { x: titlePos.x - margin * 2, y: titlePos.y + margin * 2.5 },
+      0,
+      0,
+      "Játék Kód:",
+      false,
+      blackColor
+    );
+
+    ServerHandler.receiveMessage(
+      "game:created",
+      ({ code }: { code: string }) => {
+        this.gameCode.setText(this.gameCode.getText() + " " + code);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:newPlayer",
+      ({ message }: { message: string }) => {
+        console.log(message);
+      }
+    );
+
+    ServerHandler.receiveMessage("game:code", ({ code }: { code: string }) => {
+      this.gameCode.setText(this.gameCode.getText() + " " + code);
+    });
+  }
+
+  draw(): void {
+    super.draw();
+    this.gameCode.draw();
   }
 }

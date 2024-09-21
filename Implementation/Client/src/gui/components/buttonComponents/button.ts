@@ -4,7 +4,6 @@ import { PosType } from "../../../types/guiTypes";
 import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
-  private isSuccess: boolean;
   private nextState: GameState;
   private func: Function[];
 
@@ -19,7 +18,6 @@ export class Button extends MenuComponent {
     ...fn: Function[]
   ) {
     super(pos, width, height, imageSrc);
-    this.isSuccess = false;
     this.nextState = nextState;
     this.func = fn;
 
@@ -46,10 +44,6 @@ export class Button extends MenuComponent {
     }
   }
 
-  isSuccessFull(): boolean {
-    return this.isSuccess;
-  }
-
   click(): void {
     this.func.map((fn) => fn());
   }
@@ -58,7 +52,7 @@ export class Button extends MenuComponent {
     return this.nextState;
   }
 
-  setState(state: GameState): void {
+  setNextState(state: GameState): void {
     this.nextState = state;
   }
 }

@@ -1,4 +1,5 @@
 import { GameState } from "../../enums/gameState";
+import { ServerHandler } from "../../server/serverHandler";
 import { buttonSize } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
@@ -18,7 +19,8 @@ export class NewGame extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.create,
-      GameState.Lobby
+      GameState.Lobby,
+      () => this.handleCreate()
     );
 
     this.join = new Button(
@@ -40,5 +42,9 @@ export class NewGame extends GUI {
     this.buttons.push(this.create);
     this.buttons.push(this.join);
     this.buttons.push(this.backButton);
+  }
+
+  private handleCreate() {
+    ServerHandler.sendMessage("game:create", {});
   }
 }

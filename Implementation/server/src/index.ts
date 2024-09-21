@@ -1,25 +1,24 @@
 import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+import { gameHandler } from "./handlers/gameHandler";
 
 const PORT = 3000;
 
 const app = express();
 const httpServer = createServer(app);
 
-const io = new Server(httpServer, {
+const io: Server = new Server(httpServer, {
   cors: {
     origin: ["http://localhost:5173"],
   },
 });
 
-io.on("connection", (socket: Socket) => {
-  console.log(socket.id);
+const onConnecton = (socket: Socket) => {
+  gameHandler(io, socket);
+};
 
-  socket.on("createGameServer", (data) => {
-    console.log(data);
-  });
-});
+io.on("connection", onConnecton);
 
 httpServer.listen(PORT, () => {
   console.log(`Game server is listening on port ${PORT}`);

@@ -1,11 +1,11 @@
 import { canvasHeight, canvasWidth } from "../../../init";
-import { buttonMargin, buttonSize } from "../../../settings";
+import { buttonSize, margin } from "../../../settings";
 
 export const buttonPos = {
   mainMenu: {
     newGame: {
       x: canvasWidth / 2 - buttonSize.width / 2,
-      y: canvasHeight / 2 - buttonMargin,
+      y: canvasHeight / 2 - margin,
     },
     description: {
       x: canvasWidth / 2 - buttonSize.width / 2,
@@ -13,41 +13,41 @@ export const buttonPos = {
     },
     statistic: {
       x: canvasWidth / 2 - buttonSize.width / 2,
-      y: canvasHeight / 2 + buttonMargin,
+      y: canvasHeight / 2 + margin,
     },
     login: {
-      x: canvasWidth - buttonSize.width - buttonMargin,
-      y: buttonMargin / 2,
+      x: canvasWidth - buttonSize.width - margin,
+      y: margin / 2,
     },
     registration: {
-      x: canvasWidth - buttonSize.width - buttonMargin,
-      y: buttonSize.height / 2 + buttonMargin,
+      x: canvasWidth - buttonSize.width - margin,
+      y: buttonSize.height / 2 + margin,
     },
     namePlate: {
-      x: buttonMargin,
-      y: buttonMargin,
+      x: margin,
+      y: margin,
     },
   },
   statistic: {
     back: {
-      x: buttonMargin * 2,
-      y: canvasHeight - buttonSize.height - buttonMargin,
+      x: margin * 2,
+      y: canvasHeight - buttonSize.height - margin,
     },
   },
   description: {
     back: {
-      x: buttonMargin * 2,
-      y: canvasHeight - buttonSize.height - buttonMargin,
+      x: margin * 2,
+      y: canvasHeight - buttonSize.height - margin,
     },
   },
   newGame: {
     back: {
       x: canvasWidth / 2 - buttonSize.width / 2,
-      y: canvasHeight / 2 - buttonSize.height / 2 + buttonMargin * 2,
+      y: canvasHeight / 2 - buttonSize.height / 2 + margin * 2,
     },
     create: {
       x: canvasWidth / 2 - buttonSize.width / 2,
-      y: canvasHeight / 2 - buttonSize.height / 2 - buttonMargin,
+      y: canvasHeight / 2 - buttonSize.height / 2 - margin,
     },
     join: {
       x: canvasWidth / 2 - buttonSize.width / 2,
@@ -56,12 +56,12 @@ export const buttonPos = {
   },
   default: {
     back: {
-      x: canvasWidth / 2 - buttonSize.width / 2 - buttonMargin * 3,
-      y: canvasHeight - buttonSize.height - buttonMargin,
+      x: canvasWidth / 2 - buttonSize.width / 2 - margin * 3,
+      y: canvasHeight - buttonSize.height - margin,
     },
     next: {
-      x: canvasWidth / 2 - buttonSize.width / 2 + buttonMargin * 3,
-      y: canvasHeight - buttonSize.height - buttonMargin,
+      x: canvasWidth / 2 - buttonSize.width / 2 + margin * 3,
+      y: canvasHeight - buttonSize.height - margin,
     },
   },
 };

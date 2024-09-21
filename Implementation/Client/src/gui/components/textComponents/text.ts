@@ -9,13 +9,15 @@ export class Text extends GUIComponents {
 
   private isCentered: boolean;
   protected isSecret: boolean;
+  private color: string;
 
   constructor(
     pos: PosType,
     width: number,
     height: number,
     text: string,
-    isSecret: boolean
+    isSecret: boolean,
+    color?: string
   ) {
     super(pos, width, height);
 
@@ -24,14 +26,25 @@ export class Text extends GUIComponents {
 
     this.isCentered = false;
     this.metrics = ctx.measureText(this.text);
+
+    this.color = color ? color : textColor;
   }
 
   setCenter(): void {
     this.isCentered = true;
   }
 
+  setText(text: string): void {
+    this.text = text;
+  }
+
+  getText(): string {
+    return this.text;
+  }
+
   draw(): void {
-    ctx.fillStyle = textColor;
+    ctx.save();
+    ctx.fillStyle = this.color;
     ctx.fillText(
       !this.isSecret
         ? this.text
@@ -44,5 +57,6 @@ export class Text extends GUIComponents {
         : this.pos.x + 5,
       this.pos.y + this.height - 13
     );
+    ctx.restore();
   }
 }
