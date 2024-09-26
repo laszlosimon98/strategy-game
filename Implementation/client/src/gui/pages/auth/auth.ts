@@ -1,12 +1,17 @@
-import { buttonSize, inputBackgroundColor } from "../../../settings";
+import {
+  blackColor,
+  buttonSize,
+  inputBackgroundColor,
+} from "../../../settings";
 import { Button } from "../../components/buttonComponents/button";
 import { buttonImages } from "../../imports/buttons";
 import { GUI } from "../gui";
 import { buttonPos } from "../pos/buttonPos";
-import { canvasHeight, canvasWidth } from "../../../init";
 import { TextInput } from "../../components/textComponents/textInput";
 import { AuthType } from "../../../types/authType";
 import { GameState } from "../../../enums/gameState";
+import { Text } from "../../components/textComponents/text";
+import { inputPos } from "../pos/inputPos";
 
 export class Auth extends GUI {
   protected backButton: Button;
@@ -14,6 +19,9 @@ export class Auth extends GUI {
 
   private nameInput: TextInput;
   private passwordInput: TextInput;
+
+  private nameText: Text;
+  private passwordText: Text;
 
   constructor(title: string, actionButtonImage: string) {
     super(title);
@@ -36,8 +44,8 @@ export class Auth extends GUI {
     );
 
     this.nameInput = new TextInput(
-      { x: canvasWidth / 2 - 100, y: canvasHeight / 2 - 50 },
-      400,
+      { ...inputPos.auth.name },
+      600,
       40,
       "",
       inputBackgroundColor,
@@ -45,8 +53,8 @@ export class Auth extends GUI {
     );
 
     this.passwordInput = new TextInput(
-      { x: canvasWidth / 2 - 100, y: canvasHeight / 2 + 50 },
-      400,
+      { ...inputPos.auth.password },
+      600,
       40,
       "",
       inputBackgroundColor,
@@ -57,6 +65,32 @@ export class Auth extends GUI {
     this.buttons.push(this.actionButton);
     this.inputs.push(this.nameInput);
     this.inputs.push(this.passwordInput);
+
+    this.nameText = new Text(
+      { ...inputPos.auth.name },
+      0,
+      0,
+      "Felhasználó név: ",
+      false,
+      blackColor
+    );
+
+    this.passwordText = new Text(
+      { ...inputPos.auth.password },
+      0,
+      0,
+      "Jelszó: ",
+      false,
+      blackColor
+    );
+  }
+
+  draw(): void {
+    super.draw();
+    this.nameInput.draw();
+    this.passwordInput.draw();
+    this.nameText.draw();
+    this.passwordText.draw();
   }
 
   protected getInputData(): AuthType {
@@ -79,11 +113,5 @@ export class Auth extends GUI {
 
   handleAuth(): [boolean, string] {
     return [false, ""];
-  }
-
-  draw(): void {
-    super.draw();
-    this.nameInput.draw();
-    this.passwordInput.draw();
   }
 }

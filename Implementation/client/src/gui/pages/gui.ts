@@ -38,4 +38,6 @@ export class GUI {
       button.draw();
     });
   }
+
+  update(): void {}
 }

@@ -45,7 +45,7 @@ export class Button extends MenuComponent {
   }
 
   click(): void {
-    this.func.map((fn) => fn());
+    this.func.forEach((fn) => fn());
   }
 
   getNextState(): GameState {

@@ -5,9 +5,8 @@ import { FPS } from "./settings";
 const main = () => {
   init();
 
-  const program: Program = new Program(new AbortController());
+  const program: Program = new Program();
 
-  const fps: number = FPS;
   const perfectFrameTime: number = 1000;
   let lastFrameTime: number = performance.now();
 
@@ -18,7 +17,7 @@ const main = () => {
     program.draw();
     program.update(dt);
 
-    setTimeout(() => requestAnimationFrame(next), perfectFrameTime / fps);
+    setTimeout(() => requestAnimationFrame(next), perfectFrameTime / FPS);
   };
 
   next();

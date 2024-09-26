@@ -8,11 +8,7 @@ export class ServerHandler {
     this.socket.emit(event, data);
   }
 
-  static receiveMessage(event: string, callback: Function) {
+  static receiveMessage(event: string, callback: Function): void {
     this.socket.on(event, (data: any) => callback(data));
-  }
-
-  static getId(): string | undefined {
-    return this.socket.id;
   }
 }

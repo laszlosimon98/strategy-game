@@ -5,6 +5,7 @@ import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
 import { GameState } from "../../enums/gameState";
+import { globalState } from "../../data/data";
 
 export class MainMenu extends GUI {
   private newGame: Button;
@@ -61,7 +62,7 @@ export class MainMenu extends GUI {
       buttonPos.mainMenu.namePlate,
       buttonSize.width,
       buttonSize.height,
-      "Játékos",
+      globalState.playerName,
       buttonImages.empty,
       false
     );
@@ -77,5 +78,11 @@ export class MainMenu extends GUI {
   draw(): void {
     super.draw();
     this.namePlate.draw();
+  }
+
+  update(): void {
+    if (this.namePlate.getText() !== globalState.playerName) {
+      this.namePlate.setText(globalState.playerName);
+    }
   }
 }

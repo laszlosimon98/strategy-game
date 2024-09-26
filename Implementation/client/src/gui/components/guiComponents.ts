@@ -13,7 +13,7 @@ export class GUIComponents {
 
   draw(): void {}
 
-  update(): void {}
+  update(mousePos: any): void {}
 
   isMouseHover(mouseX: number, mouseY: number) {
     const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;

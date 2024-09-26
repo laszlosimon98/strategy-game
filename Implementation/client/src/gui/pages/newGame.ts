@@ -1,3 +1,4 @@
+import { globalState } from "../../data/data";
 import { GameState } from "../../enums/gameState";
 import { ServerHandler } from "../../server/serverHandler";
 import { buttonSize } from "../../settings";
@@ -45,6 +46,8 @@ export class NewGame extends GUI {
   }
 
   private handleCreate() {
-    ServerHandler.sendMessage("game:create", {});
+    ServerHandler.sendMessage("connect:create", {
+      name: globalState.playerName,
+    });
   }
 }

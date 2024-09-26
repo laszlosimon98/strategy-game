@@ -8,15 +8,19 @@ import { inputPos } from "./pos/inputPos";
 import { GameState } from "../../enums/gameState";
 import { Text } from "../components/textComponents/text";
 import { ServerHandler } from "../../server/serverHandler";
+import { globalState } from "../../data/data";
 
 export class Join extends GUI {
   private backButton: Button;
   private joinButton: Button;
   private codeInput: TextInput;
   private codeText: Text;
+  private isCodeValid: boolean;
 
   constructor(title: string) {
     super(title);
+
+    this.isCodeValid = true;
 
     this.backButton = new Button(
       buttonPos.default.back,
@@ -36,7 +40,7 @@ export class Join extends GUI {
     );
 
     this.codeInput = new TextInput(
-      { x: inputPos.code.x, y: inputPos.code.y },
+      { ...inputPos.code },
       750,
       40,
       "",
@@ -45,10 +49,7 @@ export class Join extends GUI {
     );
 
     this.codeText = new Text(
-      {
-        x: inputPos.code.x,
-        y: inputPos.code.y,
-      },
+      { ...inputPos.code },
       0,
       0,
       "Játék kód:",
@@ -61,15 +62,10 @@ export class Join extends GUI {
     this.inputs.push(this.codeInput);
 
     ServerHandler.receiveMessage(
-      "game:joined",
+      "connect:joined",
       ({ status }: { status: string }) => {
-        if (status === "failed") {
-          console.log("failed");
-          this.joinButton.setNextState(GameState.JoinGame);
-          console.log(this.joinButton);
-        } else {
-          this.joinButton.setNextState(GameState.Lobby);
-        }
+        this.isCodeValid = status === "success";
+        console.log("server");
       }
     );
   }
@@ -81,6 +77,16 @@ export class Join extends GUI {
   }
 
   private handleJoin(): void {
-    ServerHandler.sendMessage("game:join", { code: this.codeInput.getText() });
+    ServerHandler.sendMessage("connect:join", {
+      code: this.codeInput.getText(),
+      name: globalState.playerName,
+    });
+
+    if (!this.isCodeValid) {
+      this.joinButton.setNextState(GameState.JoinGame);
+    } else {
+      this.joinButton.setNextState(GameState.Lobby);
+    }
+    console.log(this.joinButton.getNextState());
   }
 }

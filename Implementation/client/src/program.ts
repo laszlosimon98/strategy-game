@@ -23,7 +23,7 @@ export class Program {
   private buttons?: Button[];
   private inputs?: TextInput[];
 
-  constructor(private readonly controller: AbortController) {
+  constructor() {
     this.currentState = GameState.MainMenu;
     this.mousePos = { x: 0, y: 0 };
 
@@ -43,24 +43,14 @@ export class Program {
 
     this.buttons = this.guiElements[this.currentState]?.getButtons();
 
-    document.addEventListener("click", () => this.handleMouseClickEvent(), {
-      signal: this.controller.signal,
-    });
+    document.addEventListener("click", () => this.handleMouseClickEvent());
 
-    document.addEventListener(
-      "mousemove",
-      (e: MouseEvent) => this.handleMouseMoveEvent(e),
-      {
-        signal: this.controller.signal,
-      }
+    document.addEventListener("mousemove", (e: MouseEvent) =>
+      this.handleMouseMoveEvent(e)
     );
 
-    document.addEventListener(
-      "keydown",
-      (e: KeyboardEvent) => this.handleKeyBoardEvent(e),
-      {
-        signal: this.controller.signal,
-      }
+    document.addEventListener("keydown", (e: KeyboardEvent) =>
+      this.handleKeyBoardEvent(e)
     );
   }
 
@@ -78,9 +68,10 @@ export class Program {
 
   update(dt: number): void {
     this.buttons?.map((btn) => btn.update(this.mousePos));
+    this.guiElements.MainMenu?.update();
   }
 
-  private createNewGUIElement(state: GameState, gui: GUI): void {
+  createNewGUIElement(state: GameState, gui: GUI): void {
     this.guiElements = {
       ...this.guiElements,
       [state]: gui,
@@ -93,6 +84,7 @@ export class Program {
     this.buttons?.map((btn) => {
       if (btn.isMouseHover(x, y)) {
         btn.click();
+
         this.setState(btn.getNextState());
         this.updateButtons();
         this.updateInputs();

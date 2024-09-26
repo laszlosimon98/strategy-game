@@ -29,7 +29,8 @@ export class Lobby extends GUI {
       buttonSize.width,
       buttonSize.height,
       buttonImages.back,
-      GameState.NewGame
+      GameState.NewGame,
+      () => this.handleLeaveRoom()
     );
 
     this.buttons.push(this.start);
@@ -45,26 +46,40 @@ export class Lobby extends GUI {
     );
 
     ServerHandler.receiveMessage(
-      "game:created",
+      "connect:created",
       ({ code }: { code: string }) => {
         this.gameCode.setText(this.gameCode.getText() + " " + code);
       }
     );
 
     ServerHandler.receiveMessage(
-      "game:newPlayer",
-      ({ message }: { message: string }) => {
-        console.log(message);
+      "connect:newPlayer",
+      ({ id, message }: { id: string; message: string }) => {
+        console.warn(id, message);
       }
     );
 
-    ServerHandler.receiveMessage("game:code", ({ code }: { code: string }) => {
-      this.gameCode.setText(this.gameCode.getText() + " " + code);
+    ServerHandler.receiveMessage(
+      "connect:code",
+      ({ code }: { code: string }) => {
+        this.gameCode.setText(this.gameCode.getText() + " " + code);
+      }
+    );
+
+    ServerHandler.receiveMessage("connect:playerLeft", (message: string) => {
+      console.error(message);
     });
   }
 
   draw(): void {
     super.draw();
     this.gameCode.draw();
+  }
+
+  handleLeaveRoom(): void {
+    ServerHandler.sendMessage(
+      "connect:disconnect",
+      this.gameCode.getText().split(" ")[2]
+    );
   }
 }

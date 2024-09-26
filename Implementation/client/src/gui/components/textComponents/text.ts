@@ -36,6 +36,7 @@ export class Text extends GUIComponents {
 
   setText(text: string): void {
     this.text = text;
+    this.metrics = ctx.measureText(this.text);
   }
 
   getText(): string {

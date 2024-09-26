@@ -1,6 +1,9 @@
 import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
+
+import { authHandler } from "./handlers/authHandler";
+import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler";
 
 const PORT = 3000;
@@ -15,7 +18,10 @@ const io: Server = new Server(httpServer, {
 });
 
 const onConnecton = (socket: Socket) => {
+  console.log(socket.id);
+  connectionHandler(io, socket);
   gameHandler(io, socket);
+  // authHandler();
 };
 
 io.on("connection", onConnecton);
