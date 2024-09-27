@@ -1,5 +1,5 @@
 import { ctx } from "../../init";
-import { titleSize } from "../../settings";
+import { TITLE_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { TextInput } from "../components/textComponents/textInput";
 import { titlePos } from "./pos/titlePos";
@@ -30,8 +30,8 @@ export class GUI {
       this.title,
       titlePos.x,
       titlePos.y,
-      titleSize.width,
-      titleSize.height
+      TITLE_SIZE.width,
+      TITLE_SIZE.height
     );
 
     this.buttons.map((button) => {

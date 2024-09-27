@@ -1,21 +1,21 @@
 import { ButtonSize } from "./types/guiTypes";
 
 // GUI - POS
-export const buttonSize: ButtonSize = { width: 192, height: 60 };
-export const titleSize: ButtonSize = { width: 288, height: 90 };
-export const inputBackgroundColor = "#90460C";
+export const BUTTON_SIZE: ButtonSize = { width: 192, height: 60 };
+export const TITLE_SIZE: ButtonSize = { width: 288, height: 90 };
+export const INPUT_BACKGROUND_COLOR = "#90460C";
 
-export const margin: number = 75;
+export const MARGIN: number = 75;
 
 // GUI - COLORS
-export const bcgColor = "#F1C585";
-export const textColor = "#F1C585";
+export const BACKGROUND_COLOR = "#F1C585";
+export const TEXT_COLOR = "#F1C585";
 
-export const blackColor = "#000";
-export const errorColor = "#b80606";
-export const infoColor = "#1f6e02";
+export const BLACK_COLOR = "#000";
+export const ERROR_COLOR = "#b80606";
+export const INFO_COLOR = "#1f6e02";
 
-export const TILESIZE = 48;
+export const TILE_SIZE = 48;
 // 65 x 65
 export const ROWS = 46;
 export const COLS = 46;

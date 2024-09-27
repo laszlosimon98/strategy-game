@@ -1,4 +1,3 @@
-import { buttonSize } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
@@ -6,6 +5,7 @@ import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
 import { GameState } from "../../enums/gameState";
 import { globalState } from "../../data/data";
+import { BUTTON_SIZE } from "../../settings";
 
 export class MainMenu extends GUI {
   private newGame: Button;
@@ -20,48 +20,48 @@ export class MainMenu extends GUI {
 
     this.newGame = new Button(
       buttonPos.mainMenu.newGame,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.newGame,
       GameState.NewGame
     );
 
     this.description = new Button(
       buttonPos.mainMenu.description,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.description,
       GameState.Description
     );
 
     this.statistic = new Button(
       buttonPos.mainMenu.statistic,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.statistic,
       GameState.Statistic
     );
 
     this.login = new Button(
       buttonPos.mainMenu.login,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.login,
       GameState.Login
     );
 
     this.registration = new Button(
       buttonPos.mainMenu.registration,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.registration,
       GameState.Registration
     );
 
     this.namePlate = new TextImage(
       buttonPos.mainMenu.namePlate,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       globalState.playerName,
       buttonImages.empty,
       false

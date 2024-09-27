@@ -8,7 +8,5 @@ export type TeamType = {
 };
 
 export type initialStateType = {
-  data: {
-    [code: string]: TeamType;
-  };
+  [code: string]: TeamType;
 };

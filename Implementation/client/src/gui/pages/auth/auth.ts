@@ -1,7 +1,7 @@
 import {
-  blackColor,
-  buttonSize,
-  inputBackgroundColor,
+  BLACK_COLOR,
+  BUTTON_SIZE,
+  INPUT_BACKGROUND_COLOR,
 } from "../../../settings";
 import { Button } from "../../components/buttonComponents/button";
 import { buttonImages } from "../../imports/buttons";
@@ -28,16 +28,16 @@ export class Auth extends GUI {
 
     this.backButton = new Button(
       buttonPos.default.back,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.back,
       GameState.MainMenu
     );
 
     this.actionButton = new Button(
       buttonPos.default.next,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       actionButtonImage,
       GameState.MainMenu,
       () => this.handleNext()
@@ -48,7 +48,7 @@ export class Auth extends GUI {
       600,
       40,
       "",
-      inputBackgroundColor,
+      INPUT_BACKGROUND_COLOR,
       false
     );
 
@@ -57,7 +57,7 @@ export class Auth extends GUI {
       600,
       40,
       "",
-      inputBackgroundColor,
+      INPUT_BACKGROUND_COLOR,
       true
     );
 
@@ -72,7 +72,7 @@ export class Auth extends GUI {
       0,
       "Felhasználó név: ",
       false,
-      blackColor
+      BLACK_COLOR
     );
 
     this.passwordText = new Text(
@@ -81,7 +81,7 @@ export class Auth extends GUI {
       0,
       "Jelszó: ",
       false,
-      blackColor
+      BLACK_COLOR
     );
   }
 

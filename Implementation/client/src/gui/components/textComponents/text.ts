@@ -1,5 +1,5 @@
 import { canvasWidth, ctx } from "../../../init";
-import { textColor } from "../../../settings";
+import { TEXT_COLOR } from "../../../settings";
 import { PosType } from "../../../types/guiTypes";
 import { GUIComponents } from "../guiComponents";
 
@@ -27,7 +27,7 @@ export class Text extends GUIComponents {
     this.isCentered = false;
     this.metrics = ctx.measureText(this.text);
 
-    this.color = color ? color : textColor;
+    this.color = color ? color : TEXT_COLOR;
   }
 
   setCenter(): void {

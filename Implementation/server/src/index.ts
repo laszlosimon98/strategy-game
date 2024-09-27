@@ -18,7 +18,6 @@ const io: Server = new Server(httpServer, {
 });
 
 const onConnecton = (socket: Socket) => {
-  console.log(socket.id);
   connectionHandler(io, socket);
   gameHandler(io, socket);
   // authHandler();

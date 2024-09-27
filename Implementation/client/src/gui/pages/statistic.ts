@@ -1,5 +1,5 @@
 import { GameState } from "../../enums/gameState";
-import { buttonSize } from "../../settings";
+import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
@@ -13,8 +13,8 @@ export class Statistic extends GUI {
 
     this.backButton = new Button(
       buttonPos.statistic.back,
-      buttonSize.width,
-      buttonSize.height,
+      BUTTON_SIZE.width,
+      BUTTON_SIZE.height,
       buttonImages.back,
       GameState.MainMenu
     );

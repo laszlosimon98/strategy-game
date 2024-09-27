@@ -1,5 +1,5 @@
 import { ctx } from "../../../init";
-import { textColor, bcgColor } from "../../../settings";
+import { BACKGROUND_COLOR, TEXT_COLOR } from "../../../settings";
 import { PosType } from "../../../types/guiTypes";
 import { Text } from "./text";
 
@@ -25,7 +25,7 @@ export class TextInput extends Text {
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
 
-    ctx.fillStyle = textColor;
+    ctx.fillStyle = TEXT_COLOR;
     if (this.isSelected) {
       ctx.fillText(
         "|",
@@ -34,7 +34,7 @@ export class TextInput extends Text {
       );
     }
 
-    ctx.fillStyle = bcgColor;
+    ctx.fillStyle = BACKGROUND_COLOR;
     super.draw();
   }
 

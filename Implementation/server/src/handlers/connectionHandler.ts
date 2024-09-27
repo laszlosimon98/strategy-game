@@ -5,15 +5,14 @@ import type {
   PlayerType,
   TeamType,
 } from "../types/stateType";
+import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "../settings";
 
-const initialState: initialStateType = {
-  data: {},
-};
+const initialState: initialStateType = {};
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const generateCode = (): string => {
     let result = "";
-    for (let i = 0; i < 6; ++i) {
+    for (let i = 0; i < CONNECTION_CODE_LENGTH; ++i) {
       result += Math.floor(Math.random() * 10).toString();
     }
     return result;
@@ -33,10 +32,10 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     };
 
     if (!isRoomExists(code)) {
-      initialState.data[code] = newTeam;
+      initialState[code] = newTeam;
     }
 
-    initialState.data[code].players.push(player);
+    initialState[code].players.push(player);
   };
 
   const createGame = ({ name }: { name: string }) => {
@@ -58,7 +57,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (getRoomSize(code) >= 4) {
+    if (getRoomSize(code) >= MAX_PLAYER) {
       socket.emit("connect:error:roomIsFull", "A váró megtelt!");
       return;
     }
@@ -79,28 +78,34 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     const currentRoom = Array.from(socket.rooms)[1];
 
     if (currentRoom) {
+      const user = initialState[currentRoom].players.find(
+        (player) => player.playerId === socket.id
+      );
+
+      playerleftMessage(currentRoom, user!.name);
+
       if (code !== "transport close") {
         socket.leave(currentRoom);
       }
 
-      const user = initialState.data[currentRoom].players.find(
-        (player) => player.playerId === socket.id
-      );
-
-      initialState.data[currentRoom].players = initialState.data[
+      initialState[currentRoom].players = initialState[
         currentRoom
       ].players.filter((player) => player.playerId !== socket.id);
-
-      playerleftMessage(currentRoom, user!.name);
     }
   };
 
   const newPlayerMessage = (code: string, name: string) => {
-    io.to(code).emit("connect:newPlayer", `${name} csatlakozott a váróhoz!`);
+    io.to(code).emit("connect:newPlayer", {
+      players: initialState[code].players,
+      message: `${name} csatlakozott a váróhoz!`,
+    });
   };
 
   const playerleftMessage = (code: string, name: string) => {
-    io.to(code).emit("connect:playerLeft", `${name} elhagyta a várót!`);
+    io.to(code).emit("connect:playerLeft", {
+      id: socket.id,
+      message: `${name} elhagyta a várót!`,
+    });
   };
 
   socket.on("connect:create", createGame);

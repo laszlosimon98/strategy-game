@@ -9,12 +9,12 @@ import { MainMenu } from "./gui/pages/mainMenu";
 import { NewGame } from "./gui/pages/newGame";
 import { Statistic } from "./gui/pages/statistic";
 import { canvasHeight, canvasWidth, ctx } from "./init";
-import { bcgColor } from "./settings";
 import { Registration } from "./gui/pages/auth/registration";
 import { buttonImages } from "./gui/imports/buttons";
 import { Button } from "./gui/components/buttonComponents/button";
 import { MousePos } from "./types/mouseTypes";
 import { TextInput } from "./gui/components/textComponents/textInput";
+import { BACKGROUND_COLOR } from "./settings";
 
 export class Program {
   private currentState: GameState;
@@ -65,7 +65,7 @@ export class Program {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     if (this.currentState !== GameState.Game) {
-      ctx.fillStyle = bcgColor;
+      ctx.fillStyle = BACKGROUND_COLOR;
       this.guiElements[this.currentState]?.draw();
     } else {
       ctx.fillStyle = "#000";
