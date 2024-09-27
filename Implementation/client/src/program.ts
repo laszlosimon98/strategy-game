@@ -43,7 +43,9 @@ export class Program {
 
     this.buttons = this.guiElements[this.currentState]?.getButtons();
 
-    document.addEventListener("click", () => this.handleMouseClickEvent());
+    document.addEventListener("mousedown", (e: MouseEvent) =>
+      this.handleMouseClickEvent(e)
+    );
 
     document.addEventListener("mousemove", (e: MouseEvent) =>
       this.handleMouseMoveEvent(e)
@@ -51,6 +53,10 @@ export class Program {
 
     document.addEventListener("keydown", (e: KeyboardEvent) =>
       this.handleKeyBoardEvent(e)
+    );
+
+    document.addEventListener("contextmenu", (e: MouseEvent) =>
+      e.preventDefault()
     );
   }
 
@@ -78,7 +84,7 @@ export class Program {
     };
   }
 
-  private handleMouseClickEvent(): void {
+  private handleMouseClickEvent(e: MouseEvent): void {
     const { x, y } = this.mousePos;
 
     this.buttons?.map((btn) => {

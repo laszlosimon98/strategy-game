@@ -1,4 +1,4 @@
-import { ctx } from "../../../init";
+import { canvasWidth, ctx } from "../../../init";
 import { textColor } from "../../../settings";
 import { PosType } from "../../../types/guiTypes";
 import { GUIComponents } from "../guiComponents";
@@ -43,6 +43,10 @@ export class Text extends GUIComponents {
     return this.text;
   }
 
+  setColor(color: string): void {
+    this.color = color;
+  }
+
   draw(): void {
     ctx.save();
     ctx.fillStyle = this.color;
@@ -54,7 +58,7 @@ export class Text extends GUIComponents {
             new Array(this.text.length).fill("*").join("")
           ),
       this.isCentered
-        ? this.pos.x + this.width / 2 - this.metrics.width / 2
+        ? this.pos.x + canvasWidth / 2 - this.metrics.width / 2
         : this.pos.x + 5,
       this.pos.y + this.height - 13
     );

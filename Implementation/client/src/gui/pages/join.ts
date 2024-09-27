@@ -60,14 +60,6 @@ export class Join extends GUI {
     this.buttons.push(this.joinButton);
     this.buttons.push(this.backButton);
     this.inputs.push(this.codeInput);
-
-    ServerHandler.receiveMessage(
-      "connect:joined",
-      ({ status }: { status: string }) => {
-        this.isCodeValid = status === "success";
-        console.log("server");
-      }
-    );
   }
 
   draw(): void {
@@ -81,12 +73,21 @@ export class Join extends GUI {
       code: this.codeInput.getText(),
       name: globalState.playerName,
     });
+  }
 
-    if (!this.isCodeValid) {
-      this.joinButton.setNextState(GameState.JoinGame);
-    } else {
-      this.joinButton.setNextState(GameState.Lobby);
-    }
-    console.log(this.joinButton.getNextState());
+  private handleError(): void {
+    ServerHandler.receiveMessage(
+      "connect:error:wrongCode",
+      (message: string) => {
+        console.error(message);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "connect:error:roomIsFull",
+      (message: string) => {
+        console.error(message);
+      }
+    );
   }
 }

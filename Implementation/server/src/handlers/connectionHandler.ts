@@ -1,17 +1,19 @@
 import { Server, Socket } from "socket.io";
 
-type stateType = {
-  players: Array<{ id: string; name: string; code: string }>;
-};
+import type {
+  initialStateType,
+  PlayerType,
+  TeamType,
+} from "../types/stateType";
 
-const state: stateType = {
-  players: [],
+const initialState: initialStateType = {
+  data: {},
 };
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const generateCode = (): string => {
     let result = "";
-    for (let i = 0; i < 1; ++i) {
+    for (let i = 0; i < 6; ++i) {
       result += Math.floor(Math.random() * 10).toString();
     }
     return result;
@@ -21,68 +23,88 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     return io.sockets.adapter.rooms.has(code);
   };
 
-  const addPlayer = (code: string, name: string): void => {
-    state.players.push({
-      id: socket.id,
-      name,
-      code,
-    });
+  const getRoomSize = (code: string): number => {
+    return io.sockets.adapter.rooms.get(code)!.size;
+  };
+
+  const addPlayer = (code: string, player: PlayerType): void => {
+    const newTeam: TeamType = {
+      players: [],
+    };
+
+    if (!isRoomExists(code)) {
+      initialState.data[code] = newTeam;
+    }
+
+    initialState.data[code].players.push(player);
   };
 
   const createGame = ({ name }: { name: string }) => {
-    const code = "111";
+    const code = generateCode();
+    const newPlayer: PlayerType = {
+      playerId: socket.id,
+      name,
+    };
+
+    addPlayer(code, newPlayer);
     socket.join(code);
-
-    addPlayer(code, name);
-
-    socket.emit("connect:created", { id: socket.id, code });
-
-    io.to(code).emit("connect:newPlayer", {
-      id: socket.id,
-      message: "New player",
-    });
+    socket.emit("connect:code", { code });
+    newPlayerMessage(code, name);
   };
 
   const joinGame = ({ code, name }: { code: string; name: string }) => {
-    let status: string = "failed";
-
-    if (isRoomExists(code)) {
-      status = "success";
-      socket.join(code);
-      addPlayer(code, name);
-
-      socket.emit("connect:code", { code });
-
-      io.to(code).emit("connect:newPlayer", {
-        id: socket.id,
-        message: "New player",
-      });
+    if (!isRoomExists(code)) {
+      socket.emit("connect:error:wrongCode", "Helytelen csatlakozási kód!");
+      return;
     }
 
-    console.log(state);
+    if (getRoomSize(code) >= 4) {
+      socket.emit("connect:error:roomIsFull", "A váró megtelt!");
+      return;
+    }
 
-    socket.emit("connect:joined", { id: socket.id, status });
+    const newPlayer: PlayerType = {
+      playerId: socket.id,
+      name,
+    };
+
+    addPlayer(code, newPlayer);
+    socket.join(code);
+
+    socket.emit("connect:code", { code });
+    newPlayerMessage(code, name);
   };
 
   const disconnect = (code: string) => {
-    const user = state.players.find((player) => player.id === socket.id);
-    state.players = state.players.filter((player) => player.id !== socket.id);
-    console.log(state);
+    const currentRoom = Array.from(socket.rooms)[1];
 
-    if (user) {
+    if (currentRoom) {
       if (code !== "transport close") {
-        socket.leave(code);
+        socket.leave(currentRoom);
       }
 
-      io.to(user!.code).emit(
-        "connect:playerLeft",
-        `${socket.id} player left the server`
+      const user = initialState.data[currentRoom].players.find(
+        (player) => player.playerId === socket.id
       );
+
+      initialState.data[currentRoom].players = initialState.data[
+        currentRoom
+      ].players.filter((player) => player.playerId !== socket.id);
+
+      playerleftMessage(currentRoom, user!.name);
     }
+  };
+
+  const newPlayerMessage = (code: string, name: string) => {
+    io.to(code).emit("connect:newPlayer", `${name} csatlakozott a váróhoz!`);
+  };
+
+  const playerleftMessage = (code: string, name: string) => {
+    io.to(code).emit("connect:playerLeft", `${name} elhagyta a várót!`);
   };
 
   socket.on("connect:create", createGame);
   socket.on("connect:join", joinGame);
   socket.on("connect:disconnect", disconnect);
-  socket.on("disconnect", disconnect);
+  socket.on("disconnecting", disconnect);
 };

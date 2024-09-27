@@ -1,6 +1,13 @@
+import { globalState } from "../../data/data";
 import { GameState } from "../../enums/gameState";
 import { ServerHandler } from "../../server/serverHandler";
-import { blackColor, buttonSize, margin } from "../../settings";
+import {
+  blackColor,
+  buttonSize,
+  errorColor,
+  infoColor,
+  margin,
+} from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { Text } from "../components/textComponents/text";
 import { buttonImages } from "../imports/buttons";
@@ -12,6 +19,7 @@ export class Lobby extends GUI {
   private backButton: Button;
   private start: Button;
   private gameCode: Text;
+  private info: Text;
 
   constructor(title: string) {
     super(title);
@@ -45,41 +53,36 @@ export class Lobby extends GUI {
       blackColor
     );
 
-    ServerHandler.receiveMessage(
-      "connect:created",
-      ({ code }: { code: string }) => {
-        this.gameCode.setText(this.gameCode.getText() + " " + code);
-      }
-    );
+    this.info = new Text({ x: 0, y: titlePos.y + margin * 3 }, 0, 0, "", false);
 
-    ServerHandler.receiveMessage(
-      "connect:newPlayer",
-      ({ id, message }: { id: string; message: string }) => {
-        console.warn(id, message);
-      }
-    );
+    this.info.setCenter();
 
     ServerHandler.receiveMessage(
       "connect:code",
       ({ code }: { code: string }) => {
-        this.gameCode.setText(this.gameCode.getText() + " " + code);
+        globalState.code = code;
+        this.gameCode.setText(`Játék Kód: ${globalState.code}`);
       }
     );
 
+    ServerHandler.receiveMessage("connect:newPlayer", (message: string) => {
+      this.info.setText(message);
+      this.info.setColor(infoColor);
+    });
+
     ServerHandler.receiveMessage("connect:playerLeft", (message: string) => {
-      console.error(message);
+      this.info.setText(message);
+      this.info.setColor(errorColor);
     });
   }
 
   draw(): void {
     super.draw();
     this.gameCode.draw();
+    this.info.draw();
   }
 
   handleLeaveRoom(): void {
-    ServerHandler.sendMessage(
-      "connect:disconnect",
-      this.gameCode.getText().split(" ")[2]
-    );
+    ServerHandler.sendMessage("connect:disconnect", globalState.code);
   }
 }
