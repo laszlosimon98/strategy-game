@@ -3,7 +3,7 @@ import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
-import { GameState } from "../../enums/gameState";
+import { PageState } from "../../enums/pageState";
 import { globalState } from "../../data/data";
 import { BUTTON_SIZE } from "../../settings";
 
@@ -23,7 +23,7 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.newGame,
-      () => (globalState.state = GameState.NewGame)
+      () => (globalState.state = PageState.NewGame)
     );
 
     this.description = new Button(
@@ -31,7 +31,7 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.description,
-      () => (globalState.state = GameState.Description)
+      () => (globalState.state = PageState.Description)
     );
 
     this.statistic = new Button(
@@ -39,7 +39,7 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.statistic,
-      () => (globalState.state = GameState.Statistic)
+      () => (globalState.state = PageState.Statistic)
     );
 
     this.login = new Button(
@@ -47,7 +47,7 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.login,
-      () => (globalState.state = GameState.Login)
+      () => (globalState.state = PageState.Login)
     );
 
     this.registration = new Button(
@@ -55,7 +55,7 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.registration,
-      () => (globalState.state = GameState.Registration)
+      () => (globalState.state = PageState.Registration)
     );
 
     this.namePlate = new TextImage(

@@ -1,4 +1,3 @@
-import { GameState } from "../../../enums/gameState";
 import { ctx } from "../../../init";
 import { PosType } from "../../../types/guiTypes";
 import { MenuComponent } from "./menuComponent";
@@ -37,6 +36,10 @@ export class Button extends MenuComponent {
 
   click(): void {
     this.func.forEach((fn) => fn());
+  }
+
+  setImage(imageSrc: string) {
+    this.image.src = imageSrc;
   }
 
   async handleError(): Promise<any> {}

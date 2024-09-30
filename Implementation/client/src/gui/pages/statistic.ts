@@ -1,5 +1,5 @@
 import { globalState } from "../../data/data";
-import { GameState } from "../../enums/gameState";
+import { PageState } from "../../enums/pageState";
 import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
@@ -17,7 +17,7 @@ export class Statistic extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      () => (globalState.state = GameState.MainMenu)
+      () => (globalState.state = PageState.MainMenu)
     );
 
     this.buttons.push(this.backButton);

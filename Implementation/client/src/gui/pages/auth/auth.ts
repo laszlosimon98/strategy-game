@@ -9,7 +9,7 @@ import { GUI } from "../gui";
 import { buttonPos } from "../pos/buttonPos";
 import { TextInput } from "../../components/textComponents/textInput";
 import { AuthType } from "../../../types/authType";
-import { GameState } from "../../../enums/gameState";
+import { PageState } from "../../../enums/pageState";
 import { Text } from "../../components/textComponents/text";
 import { inputPos } from "../pos/inputPos";
 import { globalState } from "../../../data/data";
@@ -32,7 +32,7 @@ export class Auth extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      () => (globalState.state = GameState.MainMenu)
+      () => (globalState.state = PageState.MainMenu)
     );
 
     this.actionButton = new Button(
@@ -104,12 +104,12 @@ export class Auth extends GUI {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
-      // this.actionButton.setNextState(GameState.Registration);
-      globalState.state = GameState.Registration;
+      // this.actionButton.setNextState(PageState.Registration);
+      globalState.state = PageState.Registration;
       console.error(error);
     } else {
-      globalState.state = GameState.MainMenu;
-      // this.actionButton.setNextState(GameState.MainMenu);
+      globalState.state = PageState.MainMenu;
+      // this.actionButton.setNextState(PageState.MainMenu);
     }
   }
 

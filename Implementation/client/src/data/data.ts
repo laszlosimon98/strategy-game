@@ -1,7 +1,8 @@
-import { GameState } from "../enums/gameState";
+import { PageState } from "../enums/pageState";
+import { faker } from "@faker-js/faker";
 
 export const globalState = {
-  playerName: "Játékos",
+  playerName: faker.person.firstName(),
   code: "",
-  state: GameState.MainMenu,
+  state: PageState.MainMenu,
 };

@@ -1,4 +1,4 @@
-import { GameState } from "./enums/gameState";
+import { PageState } from "./enums/pageState";
 import { titles } from "./gui/imports/titles";
 import { Description } from "./gui/pages/description";
 import { GUI } from "./gui/pages/gui";
@@ -18,28 +18,26 @@ import { BACKGROUND_COLOR } from "./settings";
 import { globalState } from "./data/data";
 
 export class Program {
-  // private currentState: GameState;
-  private guiElements: Partial<Record<GameState, GUI>>;
+  private guiElements: Partial<Record<PageState, GUI>>;
   private mousePos: MousePos;
   private buttons?: Button[];
   private inputs?: TextInput[];
 
   constructor() {
-    // this.currentState = GameState.MainMenu;
     this.mousePos = { x: 0, y: 0 };
 
     this.guiElements = {
-      [GameState.MainMenu]: new MainMenu(titles.menu),
-      [GameState.Registration]: new Registration(
+      [PageState.MainMenu]: new MainMenu(titles.menu),
+      [PageState.Registration]: new Registration(
         titles.registration,
         buttonImages.registration
       ),
-      [GameState.Login]: new Login(titles.login, buttonImages.login),
-      [GameState.Statistic]: new Statistic(titles.statistic),
-      [GameState.Description]: new Description(titles.description),
-      [GameState.NewGame]: new NewGame(titles.newGame),
-      [GameState.Lobby]: new Lobby(titles.lobby),
-      [GameState.JoinGame]: new Join(titles.join),
+      [PageState.Login]: new Login(titles.login, buttonImages.login),
+      [PageState.Statistic]: new Statistic(titles.statistic),
+      [PageState.Description]: new Description(titles.description),
+      [PageState.NewGame]: new NewGame(titles.newGame),
+      [PageState.Lobby]: new Lobby(titles.lobby),
+      [PageState.JoinGame]: new Join(titles.join),
     };
 
     this.buttons = this.guiElements[globalState.state]?.getButtons();
@@ -65,7 +63,7 @@ export class Program {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    if (globalState.state !== GameState.Game) {
+    if (globalState.state !== PageState.Game) {
       ctx.fillStyle = BACKGROUND_COLOR;
       this.guiElements[globalState.state]?.draw();
     } else {
@@ -75,10 +73,10 @@ export class Program {
 
   update(dt: number): void {
     this.buttons?.map((btn) => btn.update(this.mousePos));
-    this.guiElements.MainMenu?.update();
+    this.guiElements[globalState.state]?.update();
   }
 
-  createNewGUIElement(state: GameState, gui: GUI): void {
+  createNewGUIElement(state: PageState, gui: GUI): void {
     this.guiElements = {
       ...this.guiElements,
       [state]: gui,

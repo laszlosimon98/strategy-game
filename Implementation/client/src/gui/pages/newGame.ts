@@ -1,5 +1,5 @@
 import { globalState } from "../../data/data";
-import { GameState } from "../../enums/gameState";
+import { PageState } from "../../enums/pageState";
 import { ServerHandler } from "../../server/serverHandler";
 import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
@@ -28,7 +28,7 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.join,
-      () => (globalState.state = GameState.JoinGame)
+      () => (globalState.state = PageState.JoinGame)
     );
 
     this.backButton = new Button(
@@ -36,7 +36,7 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      () => (globalState.state = GameState.MainMenu)
+      () => (globalState.state = PageState.MainMenu)
     );
 
     this.buttons.push(this.create);
@@ -48,6 +48,6 @@ export class NewGame extends GUI {
     ServerHandler.sendMessage("connect:create", {
       name: globalState.playerName,
     });
-    globalState.state = GameState.Lobby;
+    globalState.state = PageState.Lobby;
   }
 }

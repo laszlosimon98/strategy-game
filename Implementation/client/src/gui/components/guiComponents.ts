@@ -20,4 +20,28 @@ export class GUIComponents {
     const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.height;
     return x && y;
   }
+
+  getPos(): PosType {
+    return this.pos;
+  }
+
+  setPos(pos: PosType) {
+    this.pos = { ...pos };
+  }
+
+  getWidth(): number {
+    return this.width;
+  }
+
+  setWidth(width: number): void {
+    this.width = width;
+  }
+
+  getHeight(): number {
+    return this.height;
+  }
+
+  setHeight(height: number): void {
+    this.width = height;
+  }
 }

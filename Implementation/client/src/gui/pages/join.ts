@@ -4,7 +4,7 @@ import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
 import { TextInput } from "../components/textComponents/textInput";
 import { inputPos } from "./pos/inputPos";
-import { GameState } from "../../enums/gameState";
+import { PageState } from "../../enums/pageState";
 import { Text } from "../components/textComponents/text";
 import { ServerHandler } from "../../server/serverHandler";
 import { globalState } from "../../data/data";
@@ -81,11 +81,11 @@ export class Join extends GUI {
       );
 
       if (error) {
-        globalState.state = GameState.JoinGame;
+        globalState.state = PageState.JoinGame;
         this.errorMessage.setText(error);
         this.codeInput.setText("");
       } else {
-        globalState.state = GameState.Lobby;
+        globalState.state = PageState.Lobby;
         this.errorMessage.setText("");
         this.codeInput.setText("");
       }
@@ -109,6 +109,6 @@ export class Join extends GUI {
   private handleLeave() {
     this.errorMessage.setText("");
     this.codeInput.setText("");
-    globalState.state = GameState.NewGame;
+    globalState.state = PageState.NewGame;
   }
 }

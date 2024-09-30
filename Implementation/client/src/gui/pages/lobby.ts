@@ -1,5 +1,6 @@
 import { globalState } from "../../data/data";
-import { GameState } from "../../enums/gameState";
+import { PageState } from "../../enums/pageState";
+import { canvasHeight } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import {
   BLACK_COLOR,
@@ -7,8 +8,10 @@ import {
   ERROR_COLOR,
   INFO_COLOR,
   MARGIN,
+  TEXT_COLOR,
 } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
+import { Frame } from "../components/frameComponets/frame";
 import { Text } from "../components/textComponents/text";
 import { buttonImages } from "../imports/buttons";
 import { GUI } from "./gui";
@@ -20,7 +23,9 @@ export class Lobby extends GUI {
   private start: Button;
   private gameCode: Text;
   private info: Text;
+  private playersContainer: Frame;
   private players: Record<string, Text>[] = [];
+  private playerLabel: Text;
 
   constructor(title: string) {
     super(title);
@@ -30,7 +35,7 @@ export class Lobby extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.start,
-      () => (globalState.state = GameState.Game)
+      () => (globalState.state = PageState.Game)
     );
 
     this.backButton = new Button(
@@ -53,8 +58,24 @@ export class Lobby extends GUI {
       BLACK_COLOR
     );
 
+    this.playerLabel = new Text(
+      { x: 0, y: titlePos.y + MARGIN * 2 },
+      0,
+      0,
+      globalState.playerName,
+      false,
+      BLACK_COLOR
+    );
+    this.playerLabel.setCenter();
+
     this.info = new Text({ x: 0, y: titlePos.y + MARGIN * 3 }, 0, 0, "", false);
     this.info.setCenter();
+
+    this.playersContainer = new Frame(
+      { x: titlePos.x - MARGIN * 2, y: titlePos.y + MARGIN * 3 },
+      580,
+      canvasHeight / 3
+    );
 
     this.handleCommunication();
   }
@@ -63,16 +84,25 @@ export class Lobby extends GUI {
     super.draw();
     this.gameCode.draw();
     this.info.draw();
+    this.playersContainer.draw();
+    this.playerLabel.draw();
 
     this.players.forEach((player) => {
       Object.values(player)[0].draw();
     });
   }
 
+  update(): void {
+    super.update();
+    if (this.playerLabel.getText() !== globalState.playerName) {
+      this.playerLabel.setText(globalState.playerName);
+    }
+  }
+
   private handleLeaveRoom(): void {
     ServerHandler.sendMessage("connect:disconnect", globalState.code);
     this.clearPage();
-    globalState.state = GameState.NewGame;
+    globalState.state = PageState.NewGame;
   }
 
   private clearPage(): void {
@@ -86,14 +116,17 @@ export class Lobby extends GUI {
     const newPlayers = players.map((player, index) => {
       const text = new Text(
         {
-          x: titlePos.x - MARGIN,
-          y: titlePos.y + MARGIN * (4 + 0.5 * index),
+          x: this.playersContainer.getPos().x + MARGIN / 2,
+          y:
+            this.playersContainer.getPos().y +
+            MARGIN / 1.5 +
+            (MARGIN / 1.5) * index,
         },
         0,
         0,
         player.name,
         false,
-        BLACK_COLOR
+        TEXT_COLOR
       );
 
       return { [player.playerId]: text };
@@ -106,6 +139,18 @@ export class Lobby extends GUI {
     this.players = this.players.filter(
       (player) => Object.keys(player)[0] !== id
     );
+    this.updatePlayersPos();
+  }
+
+  private updatePlayersPos(): void {
+    this.players.forEach((player, index) => {
+      const { x, y } = Object.values(player)[0].getPos();
+      const newY =
+        this.playersContainer.getPos().y +
+        MARGIN / 1.5 +
+        (MARGIN / 1.5) * index;
+      Object.values(player)[0].setPos({ x, y: newY });
+    });
   }
 
   private handleCommunication(): void {
@@ -142,13 +187,5 @@ export class Lobby extends GUI {
         this.removePlayer(id);
       }
     );
-
-    // ServerHandler.receiveMessage(
-    //   "connect:error:wrongCode",
-    //   (message: string) => {
-    //     console.error(message);
-    //     this.errorMessage.setText(message);
-    //   }
-    // );
   }
 }

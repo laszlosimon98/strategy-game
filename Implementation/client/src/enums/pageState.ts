@@ -1,4 +1,4 @@
-export enum GameState {
+export enum PageState {
   MainMenu = "MainMenu",
   Registration = "Registration",
   Login = "Login",
