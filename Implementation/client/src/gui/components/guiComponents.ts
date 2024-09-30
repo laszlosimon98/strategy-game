@@ -15,7 +15,7 @@ export class GUIComponents {
 
   update(mousePos: any): void {}
 
-  isMouseHover(mouseX: number, mouseY: number) {
+  isClicked(mouseX: number, mouseY: number) {
     const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;
     const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.height;
     return x && y;

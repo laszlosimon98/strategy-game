@@ -23,7 +23,8 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.newGame,
-      GameState.NewGame
+      GameState.NewGame,
+      () => (globalState.state = GameState.NewGame)
     );
 
     this.description = new Button(
@@ -31,7 +32,8 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.description,
-      GameState.Description
+      GameState.Description,
+      () => (globalState.state = GameState.Description)
     );
 
     this.statistic = new Button(
@@ -39,7 +41,8 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.statistic,
-      GameState.Statistic
+      GameState.Statistic,
+      () => (globalState.state = GameState.Statistic)
     );
 
     this.login = new Button(
@@ -47,7 +50,8 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.login,
-      GameState.Login
+      GameState.Login,
+      () => (globalState.state = GameState.Login)
     );
 
     this.registration = new Button(
@@ -55,7 +59,8 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.registration,
-      GameState.Registration
+      GameState.Registration,
+      () => (globalState.state = GameState.Registration)
     );
 
     this.namePlate = new TextImage(

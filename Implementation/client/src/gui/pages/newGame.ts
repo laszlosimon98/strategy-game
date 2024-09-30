@@ -29,7 +29,8 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.join,
-      GameState.JoinGame
+      GameState.JoinGame,
+      () => (globalState.state = GameState.JoinGame)
     );
 
     this.backButton = new Button(
@@ -37,7 +38,8 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.MainMenu
+      GameState.MainMenu,
+      () => (globalState.state = GameState.MainMenu)
     );
 
     this.buttons.push(this.create);
@@ -49,5 +51,6 @@ export class NewGame extends GUI {
     ServerHandler.sendMessage("connect:create", {
       name: globalState.playerName,
     });
+    globalState.state = GameState.Lobby;
   }
 }

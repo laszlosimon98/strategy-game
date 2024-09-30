@@ -37,16 +37,14 @@ export class Button extends MenuComponent {
 
   update(mousePos: any) {
     const { x, y } = mousePos;
-    if (this.isMouseHover(x, y)) {
-      this.isHovered = true;
-    } else {
-      this.isHovered = false;
-    }
+    this.isHovered = this.isClicked(x, y);
   }
 
   click(): void {
     this.func.forEach((fn) => fn());
   }
+
+  async handleError(): Promise<any> {}
 
   getNextState(): GameState {
     return this.nextState;

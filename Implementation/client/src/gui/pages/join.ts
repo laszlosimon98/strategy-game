@@ -8,7 +8,6 @@ import { GameState } from "../../enums/gameState";
 import { Text } from "../components/textComponents/text";
 import { ServerHandler } from "../../server/serverHandler";
 import { globalState } from "../../data/data";
-import { titlePos } from "./pos/titlePos";
 import {
   BLACK_COLOR,
   BUTTON_SIZE,
@@ -16,6 +15,7 @@ import {
   INPUT_BACKGROUND_COLOR,
   MARGIN,
 } from "../../settings";
+import { titlePos } from "./pos/titlePos";
 
 export class Join extends GUI {
   private backButton: Button;
@@ -32,7 +32,8 @@ export class Join extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.NewGame
+      GameState.NewGame,
+      () => (globalState.state = GameState.NewGame)
     );
 
     this.joinButton = new Button(
@@ -41,8 +42,7 @@ export class Join extends GUI {
       BUTTON_SIZE.height,
       buttonImages.join,
       GameState.Lobby,
-      () => this.handleJoin(),
-      () => this.handleError()
+      () => this.handleJoin()
     );
 
     this.codeInput = new TextInput(
@@ -63,6 +63,10 @@ export class Join extends GUI {
       BLACK_COLOR
     );
 
+    this.buttons.push(this.joinButton);
+    this.buttons.push(this.backButton);
+    this.inputs.push(this.codeInput);
+
     this.errorMessage = new Text(
       { x: 0, y: titlePos.y + MARGIN * 2 },
       0,
@@ -71,12 +75,12 @@ export class Join extends GUI {
       false,
       ERROR_COLOR
     );
-
     this.errorMessage.setCenter();
 
-    this.buttons.push(this.joinButton);
-    this.buttons.push(this.backButton);
-    this.inputs.push(this.codeInput);
+    this.joinButton.handleError = async () => {
+      await this.checkError("connect:error:wrongCode");
+      await this.checkError("connect:error:roomIsFull");
+    };
   }
 
   draw(): void {
@@ -86,30 +90,19 @@ export class Join extends GUI {
     this.errorMessage.draw();
   }
 
-  private handleJoin(): void {
+  private handleJoin() {
     ServerHandler.sendMessage("connect:join", {
       code: this.codeInput.getText(),
       name: globalState.playerName,
     });
+    globalState.state = GameState.Lobby;
   }
 
-  private handleError(): void {
-    ServerHandler.receiveMessage(
-      "connect:error:wrongCode",
-      (message: string) => {
-        console.error(message);
-        this.errorMessage.setText(message);
-        this.joinButton.setNextState(GameState.JoinGame);
-      }
-    );
-
-    ServerHandler.receiveMessage(
-      "connect:error:roomIsFull",
-      (message: string) => {
-        console.error(message);
-        this.errorMessage.setText(message);
-        this.joinButton.setNextState(GameState.JoinGame);
-      }
-    );
+  private async checkError(event: string): Promise<any> {
+    const error: string = await ServerHandler.receiveAsyncMessage(event);
+    if (error) {
+      globalState.state = GameState.JoinGame;
+      this.errorMessage.setText(error);
+    }
   }
 }

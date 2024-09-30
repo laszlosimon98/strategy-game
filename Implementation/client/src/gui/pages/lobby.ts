@@ -30,7 +30,8 @@ export class Lobby extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.start,
-      GameState.Game
+      GameState.Game,
+      () => (globalState.state = GameState.Game)
     );
 
     this.backButton = new Button(
@@ -57,6 +58,59 @@ export class Lobby extends GUI {
     this.info = new Text({ x: 0, y: titlePos.y + MARGIN * 3 }, 0, 0, "", false);
     this.info.setCenter();
 
+    this.handleCommunication();
+  }
+
+  draw(): void {
+    super.draw();
+    this.gameCode.draw();
+    this.info.draw();
+
+    this.players.forEach((player) => {
+      Object.values(player)[0].draw();
+    });
+  }
+
+  private handleLeaveRoom(): void {
+    ServerHandler.sendMessage("connect:disconnect", globalState.code);
+    this.clearPage();
+    globalState.state = GameState.NewGame;
+  }
+
+  private clearPage(): void {
+    globalState.code = "";
+    this.gameCode.setText("Játék Kód:");
+    this.info.setText("");
+    this.players = [];
+  }
+
+  private addNewPlayer(players: { playerId: string; name: string }[]): void {
+    const newPlayers = players.map((player, index) => {
+      const text = new Text(
+        {
+          x: titlePos.x - MARGIN,
+          y: titlePos.y + MARGIN * (4 + 0.5 * index),
+        },
+        0,
+        0,
+        player.name,
+        false,
+        BLACK_COLOR
+      );
+
+      return { [player.playerId]: text };
+    });
+
+    this.players = newPlayers;
+  }
+
+  private removePlayer(id: string): void {
+    this.players = this.players.filter(
+      (player) => Object.keys(player)[0] !== id
+    );
+  }
+
+  private handleCommunication(): void {
     ServerHandler.receiveMessage(
       "connect:code",
       ({ code }: { code: string }) => {
@@ -90,45 +144,13 @@ export class Lobby extends GUI {
         this.removePlayer(id);
       }
     );
-  }
 
-  draw(): void {
-    super.draw();
-    this.gameCode.draw();
-    this.info.draw();
-
-    this.players.forEach((player) => {
-      Object.values(player)[0].draw();
-    });
-  }
-
-  private handleLeaveRoom(): void {
-    ServerHandler.sendMessage("connect:disconnect", globalState.code);
-  }
-
-  private addNewPlayer(players: { playerId: string; name: string }[]): void {
-    const newPlayers = players.map((player, index) => {
-      const text = new Text(
-        {
-          x: titlePos.x - MARGIN,
-          y: titlePos.y + MARGIN * (4 + 0.5 * index),
-        },
-        0,
-        0,
-        player.name,
-        false,
-        BLACK_COLOR
-      );
-
-      return { [player.playerId]: text };
-    });
-
-    this.players = newPlayers;
-  }
-
-  private removePlayer(id: string): void {
-    this.players = this.players.filter(
-      (player) => Object.keys(player)[0] !== id
-    );
+    // ServerHandler.receiveMessage(
+    //   "connect:error:wrongCode",
+    //   (message: string) => {
+    //     console.error(message);
+    //     this.errorMessage.setText(message);
+    //   }
+    // );
   }
 }

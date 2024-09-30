@@ -53,7 +53,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
   const joinGame = ({ code, name }: { code: string; name: string }) => {
     if (!isRoomExists(code)) {
-      socket.emit("connect:error:wrongCode", "Helytelen csatlakozási kód!");
+      socket.emit("connect:error:wrongCode", "Rossz csatlakozási kód!");
       return;
     }
 
@@ -82,11 +82,10 @@ export const connectionHandler = (io: Server, socket: Socket) => {
         (player) => player.playerId === socket.id
       );
 
-      playerleftMessage(currentRoom, user!.name);
-
       if (code !== "transport close") {
         socket.leave(currentRoom);
       }
+      playerleftMessage(currentRoom, user!.name);
 
       initialState[currentRoom].players = initialState[
         currentRoom

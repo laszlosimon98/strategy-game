@@ -12,6 +12,7 @@ import { AuthType } from "../../../types/authType";
 import { GameState } from "../../../enums/gameState";
 import { Text } from "../../components/textComponents/text";
 import { inputPos } from "../pos/inputPos";
+import { globalState } from "../../../data/data";
 
 export class Auth extends GUI {
   protected backButton: Button;
@@ -31,7 +32,8 @@ export class Auth extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.MainMenu
+      GameState.MainMenu,
+      () => (globalState.state = GameState.MainMenu)
     );
 
     this.actionButton = new Button(
@@ -104,10 +106,12 @@ export class Auth extends GUI {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
-      this.actionButton.setNextState(GameState.Registration);
+      // this.actionButton.setNextState(GameState.Registration);
+      globalState.state = GameState.Registration;
       console.error(error);
     } else {
-      this.actionButton.setNextState(GameState.MainMenu);
+      globalState.state = GameState.MainMenu;
+      // this.actionButton.setNextState(GameState.MainMenu);
     }
   }
 
