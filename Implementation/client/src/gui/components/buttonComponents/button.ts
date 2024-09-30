@@ -4,7 +4,6 @@ import { PosType } from "../../../types/guiTypes";
 import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
-  private nextState: GameState;
   private func: Function[];
 
   private isHovered: boolean;
@@ -14,25 +13,21 @@ export class Button extends MenuComponent {
     width: number,
     height: number,
     imageSrc: string,
-    nextState: GameState,
     ...fn: Function[]
   ) {
     super(pos, width, height, imageSrc);
-    this.nextState = nextState;
     this.func = fn;
 
     this.isHovered = false;
   }
 
   draw() {
+    ctx.save();
     if (this.isHovered) {
-      ctx.save();
       ctx.globalAlpha = 0.8;
-      super.draw();
-      ctx.restore();
-    } else {
-      super.draw();
     }
+    super.draw();
+    ctx.restore();
   }
 
   update(mousePos: any) {
@@ -45,12 +40,4 @@ export class Button extends MenuComponent {
   }
 
   async handleError(): Promise<any> {}
-
-  getNextState(): GameState {
-    return this.nextState;
-  }
-
-  setNextState(state: GameState): void {
-    this.nextState = state;
-  }
 }

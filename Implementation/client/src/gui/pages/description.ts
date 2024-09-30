@@ -17,7 +17,6 @@ export class Description extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.MainMenu,
       () => (globalState.state = GameState.MainMenu)
     );
 

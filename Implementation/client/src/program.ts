@@ -90,12 +90,9 @@ export class Program {
 
     this.buttons?.map(async (btn) => {
       if (btn.isClicked(x, y)) {
-        // globalState.state = btn.getNextState();
-        console.log("clicked");
         btn.click();
         await btn.handleError();
 
-        console.log("update");
         this.updateButtons();
         this.updateInputs();
         this.inputs?.map((input) => input.clearText());

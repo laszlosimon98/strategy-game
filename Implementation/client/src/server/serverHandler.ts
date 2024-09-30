@@ -8,13 +8,15 @@ export class ServerHandler {
     this.socket.emit(event, data);
   }
 
-  static receiveAsyncMessage(event: string): Promise<string> {
+  static receiveAsyncMessage(event: string): Promise<any> {
     return new Promise((resolve) => {
       this.socket.on(event, (data: any) => {
         resolve(data);
       });
+      setTimeout(() => {
+        resolve("");
+      }, 100);
     });
-    // this.socket.on(event, (data: any) => callback(data));
   }
 
   static receiveMessage(event: string, callback: Function): void {

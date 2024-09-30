@@ -32,7 +32,6 @@ export class Auth extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.MainMenu,
       () => (globalState.state = GameState.MainMenu)
     );
 
@@ -41,7 +40,6 @@ export class Auth extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       actionButtonImage,
-      GameState.MainMenu,
       () => this.handleNext()
     );
 

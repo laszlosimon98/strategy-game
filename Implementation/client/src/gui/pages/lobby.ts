@@ -30,7 +30,6 @@ export class Lobby extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.start,
-      GameState.Game,
       () => (globalState.state = GameState.Game)
     );
 
@@ -39,7 +38,6 @@ export class Lobby extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.NewGame,
       () => this.handleLeaveRoom()
     );
 

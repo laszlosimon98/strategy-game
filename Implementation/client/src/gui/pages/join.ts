@@ -32,8 +32,7 @@ export class Join extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.NewGame,
-      () => (globalState.state = GameState.NewGame)
+      () => this.handleLeave()
     );
 
     this.joinButton = new Button(
@@ -41,7 +40,6 @@ export class Join extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.join,
-      GameState.Lobby,
       () => this.handleJoin()
     );
 
@@ -78,8 +76,19 @@ export class Join extends GUI {
     this.errorMessage.setCenter();
 
     this.joinButton.handleError = async () => {
-      await this.checkError("connect:error:wrongCode");
-      await this.checkError("connect:error:roomIsFull");
+      const error: string = await ServerHandler.receiveAsyncMessage(
+        "connect:error"
+      );
+
+      if (error) {
+        globalState.state = GameState.JoinGame;
+        this.errorMessage.setText(error);
+        this.codeInput.setText("");
+      } else {
+        globalState.state = GameState.Lobby;
+        this.errorMessage.setText("");
+        this.codeInput.setText("");
+      }
     };
   }
 
@@ -95,14 +104,11 @@ export class Join extends GUI {
       code: this.codeInput.getText(),
       name: globalState.playerName,
     });
-    globalState.state = GameState.Lobby;
   }
 
-  private async checkError(event: string): Promise<any> {
-    const error: string = await ServerHandler.receiveAsyncMessage(event);
-    if (error) {
-      globalState.state = GameState.JoinGame;
-      this.errorMessage.setText(error);
-    }
+  private handleLeave() {
+    this.errorMessage.setText("");
+    this.codeInput.setText("");
+    globalState.state = GameState.NewGame;
   }
 }

@@ -20,7 +20,6 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.create,
-      GameState.Lobby,
       () => this.handleCreate()
     );
 
@@ -29,7 +28,6 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.join,
-      GameState.JoinGame,
       () => (globalState.state = GameState.JoinGame)
     );
 
@@ -38,7 +36,6 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      GameState.MainMenu,
       () => (globalState.state = GameState.MainMenu)
     );
 

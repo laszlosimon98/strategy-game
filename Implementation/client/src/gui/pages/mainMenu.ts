@@ -23,7 +23,6 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.newGame,
-      GameState.NewGame,
       () => (globalState.state = GameState.NewGame)
     );
 
@@ -32,7 +31,6 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.description,
-      GameState.Description,
       () => (globalState.state = GameState.Description)
     );
 
@@ -41,7 +39,6 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.statistic,
-      GameState.Statistic,
       () => (globalState.state = GameState.Statistic)
     );
 
@@ -50,7 +47,6 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.login,
-      GameState.Login,
       () => (globalState.state = GameState.Login)
     );
 
@@ -59,7 +55,6 @@ export class MainMenu extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.registration,
-      GameState.Registration,
       () => (globalState.state = GameState.Registration)
     );
 

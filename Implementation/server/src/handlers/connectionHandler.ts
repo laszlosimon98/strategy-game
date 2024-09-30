@@ -53,12 +53,12 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
   const joinGame = ({ code, name }: { code: string; name: string }) => {
     if (!isRoomExists(code)) {
-      socket.emit("connect:error:wrongCode", "Rossz csatlakozási kód!");
+      socket.emit("connect:error", "Rossz csatlakozási kód!");
       return;
     }
 
     if (getRoomSize(code) >= MAX_PLAYER) {
-      socket.emit("connect:error:roomIsFull", "A váró megtelt!");
+      socket.emit("connect:error", "A váró megtelt!");
       return;
     }
 
