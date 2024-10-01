@@ -1,10 +1,9 @@
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
-import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
 import { TextInput } from "../components/textComponents/textInput";
 import { inputPos } from "./pos/inputPos";
-import { PageState } from "../../enums/pageState";
+import { PageState } from "../../states/pageState";
 import { Text } from "../components/textComponents/text";
 import { ServerHandler } from "../../server/serverHandler";
 import { globalState } from "../../data/data";
@@ -16,8 +15,9 @@ import {
   MARGIN,
 } from "../../settings";
 import { titlePos } from "./pos/titlePos";
+import { Page } from "./page";
 
-export class Join extends GUI {
+export class Join extends Page {
   private backButton: Button;
   private joinButton: Button;
   private codeInput: TextInput;
@@ -32,7 +32,7 @@ export class Join extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      () => this.handleLeave()
+      this.handleLeave
     );
 
     this.joinButton = new Button(
@@ -40,7 +40,7 @@ export class Join extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.join,
-      () => this.handleJoin()
+      this.handleJoin
     );
 
     this.codeInput = new TextInput(
@@ -75,21 +75,7 @@ export class Join extends GUI {
     );
     this.errorMessage.setCenter();
 
-    this.joinButton.handleError = async () => {
-      const error: string = await ServerHandler.receiveAsyncMessage(
-        "connect:error"
-      );
-
-      if (error) {
-        globalState.state = PageState.JoinGame;
-        this.errorMessage.setText(error);
-        this.codeInput.setText("");
-      } else {
-        globalState.state = PageState.Lobby;
-        this.errorMessage.setText("");
-        this.codeInput.setText("");
-      }
-    };
+    this.joinButton.handleError = this.handleError;
   }
 
   draw(): void {
@@ -99,16 +85,32 @@ export class Join extends GUI {
     this.errorMessage.draw();
   }
 
-  private handleJoin() {
+  private handleJoin = () => {
     ServerHandler.sendMessage("connect:join", {
       code: this.codeInput.getText(),
       name: globalState.playerName,
     });
-  }
+  };
 
-  private handleLeave() {
+  private handleLeave = () => {
     this.errorMessage.setText("");
     this.codeInput.setText("");
     globalState.state = PageState.NewGame;
-  }
+  };
+
+  private handleError = async () => {
+    const error: string = await ServerHandler.receiveAsyncMessage(
+      "connect:error"
+    );
+
+    if (error) {
+      globalState.state = PageState.JoinGame;
+      this.errorMessage.setText(error);
+      this.codeInput.setText("");
+    } else {
+      globalState.state = PageState.Lobby;
+      this.errorMessage.setText("");
+      this.codeInput.setText("");
+    }
+  };
 }

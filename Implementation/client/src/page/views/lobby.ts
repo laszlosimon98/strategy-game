@@ -1,5 +1,5 @@
 import { globalState } from "../../data/data";
-import { PageState } from "../../enums/pageState";
+import { PageState } from "../../states/pageState";
 import { canvasHeight } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import {
@@ -14,11 +14,11 @@ import { Button } from "../components/buttonComponents/button";
 import { Frame } from "../components/frameComponets/frame";
 import { Text } from "../components/textComponents/text";
 import { buttonImages } from "../imports/buttons";
-import { GUI } from "./gui";
+import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
 import { titlePos } from "./pos/titlePos";
 
-export class Lobby extends GUI {
+export class Lobby extends Page {
   private backButton: Button;
   private start: Button;
   private gameCode: Text;
@@ -43,7 +43,7 @@ export class Lobby extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,
-      () => this.handleLeaveRoom()
+      this.handleLeaveRoom
     );
 
     this.buttons.push(this.start);
@@ -99,11 +99,11 @@ export class Lobby extends GUI {
     }
   }
 
-  private handleLeaveRoom(): void {
+  private handleLeaveRoom = (): void => {
     ServerHandler.sendMessage("connect:disconnect", globalState.code);
     this.clearPage();
     globalState.state = PageState.NewGame;
-  }
+  };
 
   private clearPage(): void {
     globalState.code = "";

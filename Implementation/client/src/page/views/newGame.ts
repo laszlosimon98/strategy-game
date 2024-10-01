@@ -1,13 +1,13 @@
 import { globalState } from "../../data/data";
-import { PageState } from "../../enums/pageState";
+import { PageState } from "../../states/pageState";
 import { ServerHandler } from "../../server/serverHandler";
 import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
-import { GUI } from "./gui";
+import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
 
-export class NewGame extends GUI {
+export class NewGame extends Page {
   private backButton: Button;
   private create: Button;
   private join: Button;
@@ -20,7 +20,7 @@ export class NewGame extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.create,
-      () => this.handleCreate()
+      this.handleCreate
     );
 
     this.join = new Button(
@@ -44,10 +44,10 @@ export class NewGame extends GUI {
     this.buttons.push(this.backButton);
   }
 
-  private handleCreate() {
+  private handleCreate = () => {
     ServerHandler.sendMessage("connect:create", {
       name: globalState.playerName,
     });
     globalState.state = PageState.Lobby;
-  }
+  };
 }

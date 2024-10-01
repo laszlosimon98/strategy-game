@@ -4,7 +4,7 @@ import { Button } from "../components/buttonComponents/button";
 import { TextInput } from "../components/textComponents/textInput";
 import { titlePos } from "./pos/titlePos";
 
-export class GUI {
+export class Page {
   protected title: HTMLImageElement;
   protected buttons: Button[];
   protected inputs: TextInput[];

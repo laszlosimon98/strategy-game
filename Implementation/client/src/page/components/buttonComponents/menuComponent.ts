@@ -12,7 +12,7 @@ export class MenuComponent extends GUIComponents {
     this.image.src = imageSrc;
   }
 
-  draw() {
+  draw(): void {
     ctx.drawImage(this.image, this.pos.x, this.pos.y, this.width, this.height);
   }
 }

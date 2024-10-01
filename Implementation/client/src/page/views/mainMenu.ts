@@ -1,13 +1,13 @@
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
-import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
-import { PageState } from "../../enums/pageState";
+import { PageState } from "../../states/pageState";
 import { globalState } from "../../data/data";
 import { BUTTON_SIZE } from "../../settings";
+import { Page } from "./page";
 
-export class MainMenu extends GUI {
+export class MainMenu extends Page {
   private newGame: Button;
   private description: Button;
   private statistic: Button;

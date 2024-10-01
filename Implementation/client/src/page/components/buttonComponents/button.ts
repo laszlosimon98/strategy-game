@@ -20,27 +20,27 @@ export class Button extends MenuComponent {
     this.isHovered = false;
   }
 
-  draw() {
+  draw = () => {
     ctx.save();
     if (this.isHovered) {
       ctx.globalAlpha = 0.8;
     }
     super.draw();
     ctx.restore();
-  }
+  };
 
-  update(mousePos: any) {
+  update = (mousePos: any) => {
     const { x, y } = mousePos;
     this.isHovered = this.isClicked(x, y);
-  }
+  };
 
-  click(): void {
+  click = (): void => {
     this.func.forEach((fn) => fn());
-  }
+  };
 
-  setImage(imageSrc: string) {
+  setImage = (imageSrc: string) => {
     this.image.src = imageSrc;
-  }
+  };
 
   async handleError(): Promise<any> {}
 }

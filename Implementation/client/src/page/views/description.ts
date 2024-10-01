@@ -1,12 +1,12 @@
 import { globalState } from "../../data/data";
-import { PageState } from "../../enums/pageState";
+import { PageState } from "../../states/pageState";
 import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonImages } from "../imports/buttons";
-import { GUI } from "./gui";
 import { buttonPos } from "./pos/buttonPos";
+import { Page } from "./page";
 
-export class Description extends GUI {
+export class Description extends Page {
   private backButton: Button;
 
   constructor(title: string) {

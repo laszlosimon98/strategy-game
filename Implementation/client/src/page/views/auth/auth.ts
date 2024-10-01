@@ -5,16 +5,16 @@ import {
 } from "../../../settings";
 import { Button } from "../../components/buttonComponents/button";
 import { buttonImages } from "../../imports/buttons";
-import { GUI } from "../gui";
 import { buttonPos } from "../pos/buttonPos";
 import { TextInput } from "../../components/textComponents/textInput";
 import { AuthType } from "../../../types/authType";
-import { PageState } from "../../../enums/pageState";
+import { PageState } from "../../../states/pageState";
 import { Text } from "../../components/textComponents/text";
 import { inputPos } from "../pos/inputPos";
 import { globalState } from "../../../data/data";
+import { Page } from "../page";
 
-export class Auth extends GUI {
+export class Auth extends Page {
   protected backButton: Button;
   protected actionButton: Button;
 
@@ -40,7 +40,7 @@ export class Auth extends GUI {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       actionButtonImage,
-      () => this.handleNext()
+      this.handleNext
     );
 
     this.nameInput = new TextInput(
@@ -100,18 +100,16 @@ export class Auth extends GUI {
     };
   }
 
-  handleNext(): void {
+  handleNext = (): void => {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
-      // this.actionButton.setNextState(PageState.Registration);
       globalState.state = PageState.Registration;
       console.error(error);
     } else {
       globalState.state = PageState.MainMenu;
-      // this.actionButton.setNextState(PageState.MainMenu);
     }
-  }
+  };
 
   handleAuth(): [boolean, string] {
     return [false, ""];

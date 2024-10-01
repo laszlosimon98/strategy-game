@@ -1,4 +1,4 @@
-import { PageState } from "../enums/pageState";
+import { PageState } from "../states/pageState";
 import { faker } from "@faker-js/faker";
 
 export const globalState = {
