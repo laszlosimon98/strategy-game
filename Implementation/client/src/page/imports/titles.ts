@@ -1,11 +1,11 @@
-import login from "../../assets/GUI/titles/bejelentkezes.png";
-import description from "../../assets/GUI/titles/jatekmenet.png";
-import menu from "../../assets/GUI/titles/menu.png";
-import registration from "../../assets/GUI/titles/regisztralas.png";
-import statistic from "../../assets/GUI/titles/statisztika.png";
-import newGame from "../../assets/GUI/titles/ujJatek.png";
-import lobby from "../../assets/GUI/titles/varo.png";
-import join from "../../assets/GUI/titles/csatlakozas.png";
+import login from "../../assets/Pages/titles/bejelentkezes.png";
+import description from "../../assets/Pages/titles/jatekmenet.png";
+import menu from "../../assets/Pages/titles/menu.png";
+import registration from "../../assets/Pages/titles/regisztralas.png";
+import statistic from "../../assets/Pages/titles/statisztika.png";
+import newGame from "../../assets/Pages/titles/ujJatek.png";
+import lobby from "../../assets/Pages/titles/varo.png";
+import join from "../../assets/Pages/titles/csatlakozas.png";
 
 export const titles = {
   login,

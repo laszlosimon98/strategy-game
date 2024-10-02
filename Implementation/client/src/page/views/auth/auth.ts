@@ -44,7 +44,7 @@ export class Auth extends Page {
     );
 
     this.nameInput = new TextInput(
-      { ...inputPos.auth.name },
+      inputPos.auth.name,
       600,
       40,
       "",
@@ -53,7 +53,7 @@ export class Auth extends Page {
     );
 
     this.passwordInput = new TextInput(
-      { ...inputPos.auth.password },
+      inputPos.auth.password,
       600,
       40,
       "",
@@ -67,7 +67,7 @@ export class Auth extends Page {
     this.inputs.push(this.passwordInput);
 
     this.nameText = new Text(
-      { ...inputPos.auth.name },
+      inputPos.auth.name,
       0,
       0,
       "Felhasználó név: ",
@@ -76,7 +76,7 @@ export class Auth extends Page {
     );
 
     this.passwordText = new Text(
-      { ...inputPos.auth.password },
+      inputPos.auth.password,
       0,
       0,
       "Jelszó: ",

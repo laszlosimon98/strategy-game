@@ -17,6 +17,7 @@ import { buttonImages } from "../imports/buttons";
 import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
 import { titlePos } from "./pos/titlePos";
+import { Vector } from "../../utils/vector";
 
 export class Lobby extends Page {
   private backButton: Button;
@@ -50,7 +51,7 @@ export class Lobby extends Page {
     this.buttons.push(this.backButton);
 
     this.gameCode = new Text(
-      { x: titlePos.x - MARGIN * 2, y: titlePos.y + MARGIN * 2.5 },
+      new Vector(titlePos.x - MARGIN * 2, titlePos.y + MARGIN * 2.5),
       0,
       0,
       "Játék Kód:",
@@ -59,7 +60,7 @@ export class Lobby extends Page {
     );
 
     this.playerLabel = new Text(
-      { x: 0, y: titlePos.y + MARGIN * 2 },
+      new Vector(0, titlePos.y + MARGIN * 2),
       0,
       0,
       globalState.playerName,
@@ -68,11 +69,17 @@ export class Lobby extends Page {
     );
     this.playerLabel.setCenter();
 
-    this.info = new Text({ x: 0, y: titlePos.y + MARGIN * 3 }, 0, 0, "", false);
+    this.info = new Text(
+      new Vector(0, titlePos.y + MARGIN * 3),
+      0,
+      0,
+      "",
+      false
+    );
     this.info.setCenter();
 
     this.playersContainer = new Frame(
-      { x: titlePos.x - MARGIN * 2, y: titlePos.y + MARGIN * 3 },
+      new Vector(titlePos.x - MARGIN * 2, titlePos.y + MARGIN * 3),
       580,
       canvasHeight / 3
     );
@@ -115,13 +122,12 @@ export class Lobby extends Page {
   private addNewPlayer(players: { playerId: string; name: string }[]): void {
     const newPlayers = players.map((player, index) => {
       const text = new Text(
-        {
-          x: this.playersContainer.getPos().x + MARGIN / 2,
-          y:
-            this.playersContainer.getPos().y +
+        new Vector(
+          this.playersContainer.getPos().x + MARGIN / 2,
+          this.playersContainer.getPos().y +
             MARGIN / 1.5 +
-            (MARGIN / 1.5) * index,
-        },
+            (MARGIN / 1.5) * index
+        ),
         0,
         0,
         player.name,
@@ -144,12 +150,13 @@ export class Lobby extends Page {
 
   private updatePlayersPos(): void {
     this.players.forEach((player, index) => {
-      const { x, y } = Object.values(player)[0].getPos();
+      const pos: Vector = Object.values(player)[0].getPos();
       const newY =
         this.playersContainer.getPos().y +
         MARGIN / 1.5 +
         (MARGIN / 1.5) * index;
-      Object.values(player)[0].setPos({ x, y: newY });
+
+      Object.values(player)[0].setPos(new Vector(pos.x, newY));
     });
   }
 

@@ -1,19 +1,11 @@
 import { canvasHeight, canvasWidth } from "../../../init";
 import { MARGIN } from "../../../settings";
+import { Vector } from "../../../utils/vector";
 
 export const inputPos = {
   auth: {
-    name: {
-      x: canvasWidth / 2 - 300,
-      y: canvasHeight / 2 - MARGIN,
-    },
-    password: {
-      x: canvasWidth / 2 - 300,
-      y: canvasHeight / 2 + MARGIN,
-    },
+    name: new Vector(canvasWidth / 2 - 300, canvasHeight / 2 - MARGIN),
+    password: new Vector(canvasWidth / 2 - 300, canvasHeight / 2 + MARGIN),
   },
-  code: {
-    x: canvasWidth / 2 - 375,
-    y: canvasHeight / 2 - 20,
-  },
+  code: new Vector(canvasWidth / 2 - 375, canvasHeight / 2 - 20),
 };

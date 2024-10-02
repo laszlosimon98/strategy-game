@@ -1,5 +1,6 @@
+import { globalState } from "../../../data/data";
 import { ctx } from "../../../init";
-import { PosType } from "../../../types/guiTypes";
+import { Vector } from "../../../utils/vector";
 import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
@@ -8,7 +9,7 @@ export class Button extends MenuComponent {
   private isHovered: boolean;
 
   constructor(
-    pos: PosType,
+    pos: Vector,
     width: number,
     height: number,
     imageSrc: string,
@@ -29,8 +30,8 @@ export class Button extends MenuComponent {
     ctx.restore();
   }
 
-  update(mousePos: any) {
-    const { x, y } = mousePos;
+  update() {
+    const { x, y } = globalState.mousePos;
     this.isHovered = this.isClicked(x, y);
   }
 
@@ -40,6 +41,10 @@ export class Button extends MenuComponent {
 
   setImage(imageSrc: string) {
     this.image.src = imageSrc;
+  }
+
+  getImage(): string {
+    return this.image.src;
   }
 
   async handleError(): Promise<any> {}

@@ -13,7 +13,7 @@ export class Statistic extends Page {
     super(title);
 
     this.backButton = new Button(
-      buttonPos.statistic.back,
+      buttonPos.statistic,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,

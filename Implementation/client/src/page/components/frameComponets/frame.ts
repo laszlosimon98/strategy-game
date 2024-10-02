@@ -1,10 +1,10 @@
 import { ctx } from "../../../init";
 import { INPUT_BACKGROUND_COLOR } from "../../../settings";
-import { PosType } from "../../../types/guiTypes";
-import { GUIComponents } from "../guiComponents";
+import { Vector } from "../../../utils/vector";
+import { PageComponents } from "../pageComponents";
 
-export class Frame extends GUIComponents {
-  constructor(pos: PosType, width: number, height: number) {
+export class Frame extends PageComponents {
+  constructor(pos: Vector, width: number, height: number) {
     super(pos, width, height);
   }
 

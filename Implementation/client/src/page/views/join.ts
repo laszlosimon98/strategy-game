@@ -16,6 +16,7 @@ import {
 } from "../../settings";
 import { titlePos } from "./pos/titlePos";
 import { Page } from "./page";
+import { Vector } from "../../utils/vector";
 
 export class Join extends Page {
   private backButton: Button;
@@ -44,7 +45,7 @@ export class Join extends Page {
     );
 
     this.codeInput = new TextInput(
-      { ...inputPos.code },
+      inputPos.code,
       750,
       40,
       "",
@@ -53,7 +54,7 @@ export class Join extends Page {
     );
 
     this.codeText = new Text(
-      { ...inputPos.code },
+      inputPos.code,
       0,
       0,
       "Játék kód:",
@@ -66,7 +67,7 @@ export class Join extends Page {
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      { x: 0, y: titlePos.y + MARGIN * 2 },
+      new Vector(0, titlePos.y + MARGIN * 2),
       0,
       0,
       "",

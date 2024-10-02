@@ -1,11 +1,11 @@
 import { ctx } from "../../../init";
-import { PosType } from "../../../types/guiTypes";
-import { GUIComponents } from "../guiComponents";
+import { Vector } from "../../../utils/vector";
+import { PageComponents } from "../pageComponents";
 
-export class MenuComponent extends GUIComponents {
+export class MenuComponent extends PageComponents {
   protected image: HTMLImageElement;
 
-  constructor(pos: PosType, width: number, height: number, imageSrc: string) {
+  constructor(pos: Vector, width: number, height: number, imageSrc: string) {
     super(pos, width, height);
 
     this.image = new Image();

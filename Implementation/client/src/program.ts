@@ -11,16 +11,15 @@ import { canvasHeight, canvasWidth, ctx } from "./init";
 import { Registration } from "./page/views/auth/registration";
 import { buttonImages } from "./page/imports/buttons";
 import { Button } from "./page/components/buttonComponents/button";
-import { MousePos } from "./types/mouseTypes";
 import { TextInput } from "./page/components/textComponents/textInput";
 import { BACKGROUND_COLOR, BLACK_COLOR } from "./settings";
 import { globalState } from "./data/data";
 import { Page } from "./page/views/page";
 import { Game } from "./game/game";
+import { Vector } from "./utils/vector";
 
 export class Program {
-  private pageElements: Partial<Record<PageState, Page>>;
-  private mousePos: MousePos;
+  private pages: Partial<Record<PageState, Page>>;
   private buttons?: Button[];
   private inputs?: TextInput[];
 
@@ -29,9 +28,7 @@ export class Program {
   constructor() {
     this.game = new Game();
 
-    this.mousePos = { x: 0, y: 0 };
-
-    this.pageElements = {
+    this.pages = {
       [PageState.MainMenu]: new MainMenu(titles.menu),
       [PageState.Registration]: new Registration(
         titles.registration,
@@ -45,7 +42,7 @@ export class Program {
       [PageState.JoinGame]: new Join(titles.join),
     };
 
-    this.buttons = this.pageElements[globalState.state]?.getButtons();
+    this.buttons = this.pages[globalState.state]?.getButtons();
 
     document.addEventListener("mousedown", (e: MouseEvent) =>
       this.handleMouseClickEvent(e)
@@ -62,6 +59,10 @@ export class Program {
     document.addEventListener("contextmenu", (e: MouseEvent) =>
       e.preventDefault()
     );
+
+    window.addEventListener("resize", () => {
+      this.pages[globalState.state]?.resize();
+    });
   }
 
   draw(): void {
@@ -70,7 +71,7 @@ export class Program {
 
     if (globalState.state !== PageState.Game) {
       ctx.fillStyle = BACKGROUND_COLOR;
-      this.pageElements[globalState.state]?.draw();
+      this.pages[globalState.state]?.draw();
     } else {
       ctx.fillStyle = BLACK_COLOR;
       this.game.draw();
@@ -79,47 +80,48 @@ export class Program {
 
   update(dt: number): void {
     if (globalState.state !== PageState.Game) {
-      this.buttons?.map((btn) => btn.update(this.mousePos));
-      this.pageElements[globalState.state]?.update();
+      this.buttons?.map((btn) => btn.update());
+      this.pages[globalState.state]?.update();
     } else {
       this.game.update(dt);
     }
   }
 
   createNewpageElement(state: PageState, page: Page): void {
-    this.pageElements = {
-      ...this.pageElements,
+    this.pages = {
+      ...this.pages,
       [state]: page,
     };
   }
 
   private handleMouseClickEvent(e: MouseEvent) {
-    const { x, y } = this.mousePos;
+    const { x, y } = globalState.mousePos;
 
-    this.buttons?.map(async (btn) => {
-      if (btn.isClicked(x, y)) {
-        btn.click();
-        await btn.handleError();
+    if (globalState.state !== PageState.Game) {
+      this.buttons?.map(async (btn) => {
+        if (btn.isClicked(x, y)) {
+          btn.click();
+          await btn.handleError();
 
-        this.updateButtons();
-        this.updateInputs();
-        this.inputs?.map((input) => input.clearText());
-      }
-    });
+          this.updateButtons();
+          this.updateInputs();
+          this.inputs?.map((input) => input.clearText());
+        }
+      });
 
-    this.inputs?.map((input) => {
-      input.setIsSelected(false);
-      if (input.isClicked(x, y)) {
-        input.setIsSelected(true);
-      }
-    });
+      this.inputs?.map((input) => {
+        input.setIsSelected(false);
+        if (input.isClicked(x, y)) {
+          input.setIsSelected(true);
+        }
+      });
+    } else {
+      this.game.handleClick(e);
+    }
   }
 
   private handleMouseMoveEvent(e: MouseEvent): void {
-    this.mousePos = {
-      x: e.clientX,
-      y: e.clientY,
-    };
+    globalState.mousePos.setVector(new Vector(e.clientX, e.clientY));
   }
 
   private handleKeyBoardEvent(e: KeyboardEvent): void {
@@ -131,10 +133,10 @@ export class Program {
   }
 
   private updateButtons(): void {
-    this.buttons = this.pageElements[globalState.state]?.getButtons();
+    this.buttons = this.pages[globalState.state]?.getButtons();
   }
 
   private updateInputs(): void {
-    this.inputs = this.pageElements[globalState.state]?.getInputs();
+    this.inputs = this.pages[globalState.state]?.getInputs();
   }
 }

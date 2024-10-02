@@ -1,12 +1,12 @@
 import { ctx } from "../../../init";
-import { PosType } from "../../../types/guiTypes";
+import { Vector } from "../../../utils/vector";
 import { Text } from "./text";
 
 export class TextImage extends Text {
   private image: HTMLImageElement;
 
   constructor(
-    pos: PosType,
+    pos: Vector,
     width: number,
     height: number,
     text: string,

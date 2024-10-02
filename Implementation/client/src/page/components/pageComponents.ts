@@ -1,11 +1,11 @@
-import { PosType } from "../../types/guiTypes";
+import { Vector } from "../../utils/vector";
 
-export class GUIComponents {
-  protected pos: PosType;
+export class PageComponents {
+  protected pos: Vector;
   protected width: number;
   protected height: number;
 
-  protected constructor(pos: PosType, width: number, height: number) {
+  protected constructor(pos: Vector, width: number, height: number) {
     this.pos = pos;
     this.width = width;
     this.height = height;
@@ -21,12 +21,12 @@ export class GUIComponents {
     return x && y;
   }
 
-  getPos(): PosType {
+  getPos(): Vector {
     return this.pos;
   }
 
-  setPos(pos: PosType) {
-    this.pos = { ...pos };
+  setPos(pos: Vector) {
+    this.pos = pos;
   }
 
   getWidth(): number {
@@ -44,4 +44,8 @@ export class GUIComponents {
   setHeight(height: number): void {
     this.width = height;
   }
+
+  // resize(): void {
+  //   this.pos.resize();
+  // }
 }

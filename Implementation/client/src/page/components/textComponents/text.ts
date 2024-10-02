@@ -1,9 +1,9 @@
 import { canvasWidth, ctx } from "../../../init";
 import { TEXT_COLOR } from "../../../settings";
-import { PosType } from "../../../types/guiTypes";
-import { GUIComponents } from "../guiComponents";
+import { Vector } from "../../../utils/vector";
+import { PageComponents } from "../pageComponents";
 
-export class Text extends GUIComponents {
+export class Text extends PageComponents {
   protected text: string;
   protected metrics: TextMetrics;
 
@@ -12,7 +12,7 @@ export class Text extends GUIComponents {
   private color: string;
 
   constructor(
-    pos: PosType,
+    pos: Vector,
     width: number,
     height: number,
     text: string,
