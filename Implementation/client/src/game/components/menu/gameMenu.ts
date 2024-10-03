@@ -1,22 +1,22 @@
 import { globalState } from "../../../data/data";
 import { Button } from "../../../page/components/buttonComponents/button";
-import { Frame } from "../../../page/components/frameComponets/frame";
 import { GameMainMenuState } from "../../../states/gameMenuState";
 import { getImageNameFromUrl } from "../../../utils/utils";
 import { Vector } from "../../../utils/vector";
 import { gameMenuAssets } from "../../imports/gameMenuAssets";
-import { BuildingSection } from "./components/buildingSection";
-import { MainSection } from "./components/mainSection";
+import { BuildingSection } from "./components/building/buildingSection";
+import { MainSection } from "./components/main/mainSection";
+import { Section } from "./components/section";
 
 export class GameMenu {
   private mainSection: MainSection;
-  private frames: Partial<Record<GameMainMenuState, Frame>>;
+  private frames: Record<GameMainMenuState, Section>;
 
   constructor(pos: Vector, width: number, height: number) {
     this.mainSection = new MainSection(pos, width, 75);
 
     this.frames = {
-      [GameMainMenuState.Unselected]: new Frame(
+      [GameMainMenuState.Unselected]: new Section(
         new Vector(pos.x, pos.y + 74),
         width,
         height - 75
@@ -26,17 +26,32 @@ export class GameMenu {
         width,
         height - 75
       ),
+      [GameMainMenuState.Storage]: new Section(
+        new Vector(pos.x, pos.y + 74),
+        width,
+        height - 75
+      ),
+      [GameMainMenuState.Population]: new Section(
+        new Vector(pos.x, pos.y + 74),
+        width,
+        height - 75
+      ),
+      [GameMainMenuState.Info]: new Section(
+        new Vector(pos.x, pos.y + 74),
+        width,
+        height - 75
+      ),
     };
   }
 
   draw(): void {
     this.mainSection.draw();
-    this.frames[globalState.gameMenuState]?.draw();
+    this.frames[globalState.gameMenuState].draw();
   }
 
   update(): void {
     this.mainSection.update();
-    this.frames[globalState.gameMenuState]?.update();
+    this.frames[globalState.gameMenuState].update();
   }
 
   resize(): void {}
@@ -45,7 +60,7 @@ export class GameMenu {
     this.updateImages("Main", this.mainSection.getButtons());
     this.updateImages(
       "Sub",
-      this.frames[globalState.gameMenuState]?.getButtons()
+      this.frames[globalState.gameMenuState].getButtons()
     );
   }
 

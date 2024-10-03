@@ -23,7 +23,6 @@ export class Vector {
   }
 
   resize(other: Vector): void {
-    console.log(canvasWidth);
     this.setVector(other);
   }
 }

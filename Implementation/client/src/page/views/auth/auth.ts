@@ -45,7 +45,7 @@ export class Auth extends Page {
 
     this.nameInput = new TextInput(
       inputPos.auth.name,
-      600,
+      500,
       40,
       "",
       INPUT_BACKGROUND_COLOR,
@@ -54,7 +54,7 @@ export class Auth extends Page {
 
     this.passwordInput = new TextInput(
       inputPos.auth.password,
-      600,
+      500,
       40,
       "",
       INPUT_BACKGROUND_COLOR,

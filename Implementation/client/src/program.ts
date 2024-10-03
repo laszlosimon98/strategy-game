@@ -17,17 +17,16 @@ import { globalState } from "./data/data";
 import { Page } from "./page/views/page";
 import { Game } from "./game/game";
 import { Vector } from "./utils/vector";
+import { ServerHandler } from "./server/serverHandler";
 
 export class Program {
   private pages: Partial<Record<PageState, Page>>;
   private buttons?: Button[];
   private inputs?: TextInput[];
 
-  private game: Game;
+  private game: Promise<Game> | undefined;
 
   constructor() {
-    this.game = new Game();
-
     this.pages = {
       [PageState.MainMenu]: new MainMenu(titles.menu),
       [PageState.Registration]: new Registration(
@@ -63,6 +62,11 @@ export class Program {
     window.addEventListener("resize", () => {
       this.pages[globalState.state]?.resize();
     });
+
+    ServerHandler.receiveMessage("game:starts", () => {
+      globalState.state = PageState.Game;
+      this.game = Game.create();
+    });
   }
 
   draw(): void {
@@ -74,7 +78,7 @@ export class Program {
       this.pages[globalState.state]?.draw();
     } else {
       ctx.fillStyle = BLACK_COLOR;
-      this.game.draw();
+      this.game?.then((game) => game.draw());
     }
   }
 
@@ -83,7 +87,7 @@ export class Program {
       this.buttons?.map((btn) => btn.update());
       this.pages[globalState.state]?.update();
     } else {
-      this.game.update(dt);
+      this.game?.then((game) => game.update(dt));
     }
   }
 
@@ -116,7 +120,12 @@ export class Program {
         }
       });
     } else {
-      this.game.handleClick(e);
+      this.game?.then((game) => game.handleClick(e));
+    }
+
+    if (globalState.state === PageState.Game && !this.game) {
+      ServerHandler.sendMessage("game:starts", {});
+      this.game = Game.create();
     }
   }
 

@@ -1,10 +1,10 @@
-import { ctx } from "../../../../../init";
-import { Frame } from "../../../../../page/components/frameComponets/frame";
-import { Text } from "../../../../../page/components/textComponents/text";
-import { BLACK_COLOR } from "../../../../../settings";
-import { Vector } from "../../../../../utils/vector";
+import { ctx } from "../../../../../../init";
+import { Text } from "../../../../../../page/components/textComponents/text";
+import { BLACK_COLOR } from "../../../../../../settings";
+import { Vector } from "../../../../../../utils/vector";
+import { Section } from "../../section";
 
-export class MilitarySection extends Frame {
+export class MilitarySection extends Section {
   private text: Text;
   private readonly title: string = "Haderő";
 

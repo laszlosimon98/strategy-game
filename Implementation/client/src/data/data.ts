@@ -5,9 +5,10 @@ import { GameMainMenuState, GameSubMenuState } from "../states/gameMenuState";
 
 export const globalState = {
   playerName: faker.person.firstName(),
+  serverStatus: "",
   code: "",
   mousePos: new Vector(0, 0),
-  state: PageState.Game,
+  state: PageState.MainMenu,
   gameMenuState: GameMainMenuState.Unselected,
   subMenuState: GameSubMenuState.Unselected,
 };

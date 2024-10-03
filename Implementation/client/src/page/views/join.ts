@@ -17,6 +17,7 @@ import {
 import { titlePos } from "./pos/titlePos";
 import { Page } from "./page";
 import { Vector } from "../../utils/vector";
+import { canvasWidth } from "../../init";
 
 export class Join extends Page {
   private backButton: Button;
@@ -46,7 +47,7 @@ export class Join extends Page {
 
     this.codeInput = new TextInput(
       inputPos.code,
-      750,
+      500,
       40,
       "",
       INPUT_BACKGROUND_COLOR,

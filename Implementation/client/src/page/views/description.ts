@@ -13,7 +13,7 @@ export class Description extends Page {
     super(title);
 
     this.backButton = new Button(
-      buttonPos.description,
+      buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.back,

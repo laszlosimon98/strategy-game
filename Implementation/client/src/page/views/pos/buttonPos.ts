@@ -23,11 +23,6 @@ export const buttonPos = {
     ),
     namePlate: new Vector(MARGIN, MARGIN),
   },
-  statistic: new Vector(MARGIN * 2, canvasHeight - BUTTON_SIZE.height - MARGIN),
-  description: new Vector(
-    MARGIN * 2,
-    canvasHeight - BUTTON_SIZE.height - MARGIN
-  ),
   newGame: {
     back: new Vector(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
@@ -45,11 +40,11 @@ export const buttonPos = {
   default: {
     back: new Vector(
       canvasWidth / 2 - BUTTON_SIZE.width / 2 - MARGIN * 3,
-      canvasHeight - BUTTON_SIZE.height - MARGIN
+      Math.max(canvasHeight - BUTTON_SIZE.height - MARGIN, 450)
     ),
     next: new Vector(
       canvasWidth / 2 - BUTTON_SIZE.width / 2 + MARGIN * 3,
-      canvasHeight - BUTTON_SIZE.height - MARGIN
+      Math.max(canvasHeight - BUTTON_SIZE.height - MARGIN, 450)
     ),
   },
 };

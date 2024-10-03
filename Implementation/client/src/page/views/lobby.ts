@@ -50,17 +50,8 @@ export class Lobby extends Page {
     this.buttons.push(this.start);
     this.buttons.push(this.backButton);
 
-    this.gameCode = new Text(
-      new Vector(titlePos.x - MARGIN * 2, titlePos.y + MARGIN * 2.5),
-      0,
-      0,
-      "Játék Kód:",
-      false,
-      BLACK_COLOR
-    );
-
     this.playerLabel = new Text(
-      new Vector(0, titlePos.y + MARGIN * 2),
+      new Vector(0, titlePos.y + MARGIN + 55),
       0,
       0,
       globalState.playerName,
@@ -69,8 +60,17 @@ export class Lobby extends Page {
     );
     this.playerLabel.setCenter();
 
+    this.gameCode = new Text(
+      new Vector(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 80),
+      0,
+      0,
+      "Játék Kód:",
+      false,
+      BLACK_COLOR
+    );
+
     this.info = new Text(
-      new Vector(0, titlePos.y + MARGIN * 3),
+      new Vector(0, titlePos.y + MARGIN + 115),
       0,
       0,
       "",
@@ -79,9 +79,9 @@ export class Lobby extends Page {
     this.info.setCenter();
 
     this.playersContainer = new Frame(
-      new Vector(titlePos.x - MARGIN * 2, titlePos.y + MARGIN * 3),
+      new Vector(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 125),
       580,
-      canvasHeight / 3
+      Math.max(canvasHeight / 3, 200)
     );
 
     this.handleCommunication();
