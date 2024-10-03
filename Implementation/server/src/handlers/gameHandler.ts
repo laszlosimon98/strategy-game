@@ -18,12 +18,12 @@ export const gameHandler = (io: Server, socket: Socket) => {
   const gameStarts = () => {
     console.log(`Current room: ${getCurrentRoom()}`);
     sendMessageToEveryOneExceptSender("game:starts", {});
-    sendMessageToEveryOne("game:createWorld", { message: "hello" });
-    sendMessageToEveryOne("asdf", "asdf");
+    sendMessageToEveryOne("game:createWorld", "hello");
+    // sendMessageToEveryOne("asdf", "asdf");
 
-    setTimeout(() => {
-      sendMessageToEveryOne("asdf", "Hello");
-    }, 3000);
+    // setTimeout(() => {
+    //   sendMessageToEveryOne("asdf", "Hello");
+    // }, 3000);
   };
 
   socket.on("game:starts", gameStarts);
