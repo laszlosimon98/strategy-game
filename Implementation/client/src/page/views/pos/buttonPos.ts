@@ -1,48 +1,48 @@
 import { canvasHeight, canvasWidth } from "../../../init";
 import { BUTTON_SIZE, MARGIN } from "../../../settings";
-import { Vector } from "../../../utils/vector";
+import { Point } from "../../../utils/point";
 
 export const buttonPos = {
   mainMenu: {
-    newGame: new Vector(
+    newGame: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
       canvasHeight / 2 - MARGIN
     ),
-    description: new Vector(
+    description: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
       canvasHeight / 2
     ),
-    statistic: new Vector(
+    statistic: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
       canvasHeight / 2 + MARGIN
     ),
-    login: new Vector(canvasWidth - BUTTON_SIZE.width - MARGIN, MARGIN / 2),
-    registration: new Vector(
+    login: new Point(canvasWidth - BUTTON_SIZE.width - MARGIN, MARGIN / 2),
+    registration: new Point(
       canvasWidth - BUTTON_SIZE.width - MARGIN,
       BUTTON_SIZE.height / 2 + MARGIN
     ),
-    namePlate: new Vector(MARGIN, MARGIN),
+    namePlate: new Point(MARGIN, MARGIN),
   },
   newGame: {
-    back: new Vector(
+    back: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
       canvasHeight / 2 - BUTTON_SIZE.height / 2 + MARGIN * 2
     ),
-    create: new Vector(
+    create: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
       canvasHeight / 2 - BUTTON_SIZE.height / 2 - MARGIN
     ),
-    join: new Vector(
+    join: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2,
       canvasHeight / 2 - BUTTON_SIZE.height / 2
     ),
   },
   default: {
-    back: new Vector(
+    back: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2 - MARGIN * 3,
       Math.max(canvasHeight - BUTTON_SIZE.height - MARGIN, 450)
     ),
-    next: new Vector(
+    next: new Point(
       canvasWidth / 2 - BUTTON_SIZE.width / 2 + MARGIN * 3,
       Math.max(canvasHeight - BUTTON_SIZE.height - MARGIN, 450)
     ),

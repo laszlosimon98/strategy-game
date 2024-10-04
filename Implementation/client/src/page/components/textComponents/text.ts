@@ -1,6 +1,6 @@
 import { canvasWidth, ctx } from "../../../init";
 import { TEXT_COLOR } from "../../../settings";
-import { Vector } from "../../../utils/vector";
+import { Point } from "../../../utils/point";
 import { PageComponents } from "../pageComponents";
 
 export class Text extends PageComponents {
@@ -12,7 +12,7 @@ export class Text extends PageComponents {
   private color: string;
 
   constructor(
-    pos: Vector,
+    pos: Point,
     width: number,
     height: number,
     text: string,

@@ -1,13 +1,13 @@
 import { ctx } from "../../../init";
 import { INPUT_BACKGROUND_COLOR } from "../../../settings";
-import { Vector } from "../../../utils/vector";
+import { Point } from "../../../utils/point";
 import { Button } from "../buttonComponents/button";
 import { PageComponents } from "../pageComponents";
 
 export class Frame extends PageComponents {
   protected buttons: Button[] = [];
 
-  constructor(pos: Vector, width: number, height: number) {
+  constructor(pos: Point, width: number, height: number) {
     super(pos, width, height);
   }
 

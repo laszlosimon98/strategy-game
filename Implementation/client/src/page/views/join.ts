@@ -16,8 +16,7 @@ import {
 } from "../../settings";
 import { titlePos } from "./pos/titlePos";
 import { Page } from "./page";
-import { Vector } from "../../utils/vector";
-import { canvasWidth } from "../../init";
+import { Point } from "../../utils/point";
 
 export class Join extends Page {
   private backButton: Button;
@@ -68,7 +67,7 @@ export class Join extends Page {
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      new Vector(0, titlePos.y + MARGIN * 2),
+      new Point(0, titlePos.y + MARGIN * 2),
       0,
       0,
       "",

@@ -1,6 +1,6 @@
 import { ctx } from "../../../init";
 import { BACKGROUND_COLOR, TEXT_COLOR } from "../../../settings";
-import { Vector } from "../../../utils/vector";
+import { Point } from "../../../utils/point";
 import { Text } from "./text";
 
 export class TextInput extends Text {
@@ -8,7 +8,7 @@ export class TextInput extends Text {
   private isSelected: boolean;
 
   constructor(
-    pos: Vector,
+    pos: Point,
     width: number,
     height: number,
     text: string,

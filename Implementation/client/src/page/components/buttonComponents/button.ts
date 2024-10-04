@@ -1,6 +1,6 @@
 import { globalState } from "../../../data/data";
 import { ctx } from "../../../init";
-import { Vector } from "../../../utils/vector";
+import { Point } from "../../../utils/point";
 import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
@@ -9,7 +9,7 @@ export class Button extends MenuComponent {
   private isHovered: boolean;
 
   constructor(
-    pos: Vector,
+    pos: Point,
     width: number,
     height: number,
     imageSrc: string,

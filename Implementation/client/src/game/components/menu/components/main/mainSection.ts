@@ -1,7 +1,7 @@
 import { Button } from "../../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../../settings";
 import { Vector } from "../../../../../utils/vector";
-import { gameMenuAssets } from "../../../../imports/gameMenuAssets";
+import { gameMenuAssets } from "../../../../imports/menu";
 import { Section } from "../section";
 
 export class MainSection extends Section {

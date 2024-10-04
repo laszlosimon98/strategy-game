@@ -1,11 +1,11 @@
-import { Vector } from "../../utils/vector";
+import { Point } from "../../utils/point";
 
 export class PageComponents {
-  protected pos: Vector;
+  protected pos: Point;
   protected width: number;
   protected height: number;
 
-  protected constructor(pos: Vector, width: number, height: number) {
+  protected constructor(pos: Point, width: number, height: number) {
     this.pos = pos;
     this.width = width;
     this.height = height;
@@ -21,11 +21,11 @@ export class PageComponents {
     return x && y;
   }
 
-  getPos(): Vector {
+  getPos(): Point {
     return this.pos;
   }
 
-  setPos(pos: Vector) {
+  setPos(pos: Point) {
     this.pos = pos;
   }
 

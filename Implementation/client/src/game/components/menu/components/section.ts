@@ -8,9 +8,9 @@ export class Section {
   private section: Frame;
   protected subSections: Partial<Record<GameSubMenuState, Section>> = {};
 
-  protected buttons: Button[] = Array<Button>();
-  // protected items: Array<Item>();
-  // protected units: Array<Unit>();
+  protected buttons: Button[] = [];
+  // protected items: Item[];
+  // protected units: Unit[];
 
   constructor(pos: Vector, width: number, height: number) {
     this.section = new Frame(pos, width, height);

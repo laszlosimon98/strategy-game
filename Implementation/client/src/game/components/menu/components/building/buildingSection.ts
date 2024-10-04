@@ -2,7 +2,7 @@ import { Button } from "../../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../../settings";
 import { GameSubMenuState } from "../../../../../states/gameMenuState";
 import { Vector } from "../../../../../utils/vector";
-import { gameMenuAssets } from "../../../../imports/gameMenuAssets";
+import { gameMenuAssets } from "../../../../imports/menu";
 import { Section } from "../section";
 import { FoodSection } from "./components/foodSection";
 import { MilitarySection } from "./components/militarySection";

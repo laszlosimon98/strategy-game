@@ -1,12 +1,9 @@
-import { canvasWidth } from "../init";
+import { TILE_SIZE } from "../settings";
+import { Point } from "./point";
 
-export class Vector {
-  x: number;
-  y: number;
-
+export class Vector extends Point {
   constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    super(x, y);
   }
 
   static zero(): Vector {
@@ -18,11 +15,18 @@ export class Vector {
     this.y = other.y;
   }
 
-  updatePos(): void {
-    console.log(canvasWidth);
-  }
+  getNormalCoords = (): Point[] => {
+    return [
+      new Point(this.x * TILE_SIZE, this.y * TILE_SIZE),
+      new Point(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE),
+      new Point(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE + TILE_SIZE),
+      new Point(this.x * TILE_SIZE, this.y * TILE_SIZE + TILE_SIZE),
+    ];
+  };
 
-  resize(other: Vector): void {
-    this.setVector(other);
-  }
+  getIsometricCoords = (): Point[] => {
+    return this.getNormalCoords().map(
+      (vector) => new Point(vector.x - vector.y, (vector.x + vector.y) / 2)
+    );
+  };
 }
