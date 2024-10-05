@@ -49,5 +49,6 @@ export class NewGame extends Page {
       name: globalState.playerName,
     });
     globalState.state = PageState.Lobby;
+    globalState.host = true;
   };
 }

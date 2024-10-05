@@ -24,7 +24,7 @@ export class Program {
   private buttons?: Button[];
   private inputs?: TextInput[];
 
-  private game: Promise<Game> | undefined;
+  private game: Game | undefined;
 
   constructor() {
     this.pages = {
@@ -44,15 +44,15 @@ export class Program {
     this.buttons = this.pages[globalState.state]?.getButtons();
 
     document.addEventListener("mousedown", (e: MouseEvent) =>
-      this.handleMouseClickEvent(e)
+      this.handleMouseClick(e)
     );
 
     document.addEventListener("mousemove", (e: MouseEvent) =>
-      this.handleMouseMoveEvent(e)
+      this.handleMouseMove(e)
     );
 
     document.addEventListener("keydown", (e: KeyboardEvent) =>
-      this.handleKeyBoardEvent(e)
+      this.handleKeyBoard(e)
     );
 
     document.addEventListener("contextmenu", (e: MouseEvent) =>
@@ -65,7 +65,7 @@ export class Program {
 
     ServerHandler.receiveMessage("game:starts", () => {
       globalState.state = PageState.Game;
-      this.game = Game.create();
+      this.game = new Game();
     });
   }
 
@@ -78,7 +78,7 @@ export class Program {
       this.pages[globalState.state]?.draw();
     } else {
       ctx.fillStyle = BLACK_COLOR;
-      this.game?.then((game) => game.draw());
+      this.game?.draw();
     }
   }
 
@@ -87,7 +87,7 @@ export class Program {
       this.buttons?.map((btn) => btn.update());
       this.pages[globalState.state]?.update();
     } else {
-      this.game?.then((game) => game.update(dt));
+      this.game?.update(dt);
     }
   }
 
@@ -98,7 +98,7 @@ export class Program {
     };
   }
 
-  private handleMouseClickEvent(e: MouseEvent) {
+  private handleMouseClick(e: MouseEvent) {
     const { x, y } = globalState.mousePos;
 
     if (globalState.state !== PageState.Game) {
@@ -120,20 +120,20 @@ export class Program {
         }
       });
     } else {
-      this.game?.then((game) => game.handleClick(e));
+      this.game?.handleClick(e);
     }
 
     if (globalState.state === PageState.Game && !this.game) {
       ServerHandler.sendMessage("game:starts", {});
-      this.game = Game.create();
+      this.game = new Game();
     }
   }
 
-  private handleMouseMoveEvent(e: MouseEvent): void {
+  private handleMouseMove(e: MouseEvent): void {
     globalState.mousePos.setVector(new Vector(e.clientX, e.clientY));
   }
 
-  private handleKeyBoardEvent(e: KeyboardEvent): void {
+  private handleKeyBoard(e: KeyboardEvent): void {
     this.inputs?.map((input) => {
       if (input.getIsSelected()) {
         input.updateText(e.key);

@@ -1,13 +1,12 @@
 import { Server, Socket } from "socket.io";
 
-import type {
-  initialStateType,
-  PlayerType,
-  TeamType,
-} from "../types/stateType";
 import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "../settings";
-
-const initialState: initialStateType = {};
+import {
+  getCurrentRoom,
+  sendMessageToEveryOne,
+  sendMessageToSender,
+} from "../utils/utils";
+import { gameState, PlayerType, TeamType } from "../gameState";
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const generateCode = (): string => {
@@ -26,16 +25,22 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     return io.sockets.adapter.rooms.get(code)!.size;
   };
 
+  const isGameStarted = (code: string): boolean => {
+    return gameState[code].isGameStarted;
+  };
+
   const addPlayer = (code: string, player: PlayerType): void => {
     const newTeam: TeamType = {
       players: [],
+      isGameStarted: false,
+      world: [],
     };
 
     if (!isRoomExists(code)) {
-      initialState[code] = newTeam;
+      gameState[code] = newTeam;
     }
 
-    initialState[code].players.push(player);
+    gameState[code].players.push(player);
   };
 
   const createGame = ({ name }: { name: string }) => {
@@ -47,18 +52,27 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
     addPlayer(code, newPlayer);
     socket.join(code);
-    socket.emit("connect:code", { code });
+    sendMessageToSender(socket, "connect:code", { code });
     newPlayerMessage(code, name);
   };
 
   const joinGame = ({ code, name }: { code: string; name: string }) => {
     if (!isRoomExists(code)) {
-      socket.emit("connect:error", "Rossz csatlakozási kód!");
+      sendMessageToSender(socket, "connect:error", "Rossz csatlakozási kód!");
       return;
     }
 
     if (getRoomSize(code) >= MAX_PLAYER) {
-      socket.emit("connect:error", "A váró megtelt!");
+      sendMessageToSender(socket, "connect:error", "A váró megtelt!");
+      return;
+    }
+
+    if (isGameStarted(code)) {
+      sendMessageToSender(
+        socket,
+        "connect:error",
+        "Sikertelen csatlakozás. A játék elkezdődött!"
+      );
       return;
     }
 
@@ -70,38 +84,41 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     addPlayer(code, newPlayer);
     socket.join(code);
 
-    socket.emit("connect:code", { code });
+    sendMessageToSender(socket, "connect:code", { code });
     newPlayerMessage(code, name);
   };
 
-  const disconnect = (code: string) => {
-    const currentRoom = Array.from(socket.rooms)[1];
+  const start = () => {
+    const currentRoom = getCurrentRoom(socket);
+    gameState[currentRoom].isGameStarted = true;
+  };
+
+  const disconnect = () => {
+    const currentRoom = getCurrentRoom(socket);
 
     if (currentRoom) {
-      const user = initialState[currentRoom].players.find(
+      const user = gameState[currentRoom].players.find(
         (player) => player.playerId === socket.id
       );
 
-      if (code !== "transport close") {
-        socket.leave(currentRoom);
-      }
-      playerleftMessage(currentRoom, user!.name);
+      playerleftMessage(user!.name);
 
-      initialState[currentRoom].players = initialState[
-        currentRoom
-      ].players.filter((player) => player.playerId !== socket.id);
+      gameState[currentRoom].players = gameState[currentRoom].players.filter(
+        (player) => player.playerId !== socket.id
+      );
     }
+    socket.leave(currentRoom);
   };
 
   const newPlayerMessage = (code: string, name: string) => {
-    io.to(code).emit("connect:newPlayer", {
-      players: initialState[code].players,
+    sendMessageToEveryOne(io, socket, "connect:newPlayer", {
+      players: gameState[code].players,
       message: `${name} csatlakozott a váróhoz!`,
     });
   };
 
-  const playerleftMessage = (code: string, name: string) => {
-    io.to(code).emit("connect:playerLeft", {
+  const playerleftMessage = (name: string) => {
+    sendMessageToEveryOne(io, socket, "connect:playerLeft", {
       id: socket.id,
       message: `${name} elhagyta a várót!`,
     });
@@ -109,6 +126,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
   socket.on("connect:create", createGame);
   socket.on("connect:join", joinGame);
+  socket.on("connect:start", start);
   socket.on("connect:disconnect", disconnect);
   socket.on("disconnecting", disconnect);
 };

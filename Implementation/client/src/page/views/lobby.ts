@@ -36,7 +36,7 @@ export class Lobby extends Page {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       buttonImages.start,
-      () => (globalState.state = PageState.Game)
+      this.handleStart
     );
 
     this.backButton = new Button(
@@ -47,7 +47,6 @@ export class Lobby extends Page {
       this.handleLeaveRoom
     );
 
-    this.buttons.push(this.start);
     this.buttons.push(this.backButton);
 
     this.playerLabel = new Text(
@@ -104,16 +103,24 @@ export class Lobby extends Page {
     if (this.playerLabel.getText() !== globalState.playerName) {
       this.playerLabel.setText(globalState.playerName);
     }
+
+    if (globalState.host && this.buttons.length === 1) {
+      this.buttons.push(this.start);
+    }
   }
 
+  private handleStart = (): void => {
+    ServerHandler.sendMessage("connect:start", {});
+    globalState.state = PageState.Game;
+  };
+
   private handleLeaveRoom = (): void => {
-    ServerHandler.sendMessage("connect:disconnect", globalState.code);
+    ServerHandler.sendMessage("connect:disconnect", {});
     this.clearPage();
     globalState.state = PageState.NewGame;
   };
 
   private clearPage(): void {
-    globalState.code = "";
     this.gameCode.setText("Játék Kód:");
     this.info.setText("");
     this.players = [];
@@ -164,8 +171,7 @@ export class Lobby extends Page {
     ServerHandler.receiveMessage(
       "connect:code",
       ({ code }: { code: string }) => {
-        globalState.code = code;
-        this.gameCode.setText(`Játék Kód: ${globalState.code}`);
+        this.gameCode.setText(`Játék Kód: ${code}`);
       }
     );
 

@@ -13,7 +13,7 @@ import storage_selected from "../../assets/Game/menu/storage_selected.png";
 import population from "../../assets/Game/menu/population.png";
 import population_selected from "../../assets/Game/menu/population_selected.png";
 
-type gameMenuAssetsType = {
+type GameMenuAssetsType = {
   [key: string]: string;
   resource: string;
   food: string;
@@ -30,7 +30,7 @@ type gameMenuAssetsType = {
   population_selected: string;
 };
 
-export const gameMenuAssets: gameMenuAssetsType = {
+export const gameMenuAssets: GameMenuAssetsType = {
   resource,
   food,
   military,
