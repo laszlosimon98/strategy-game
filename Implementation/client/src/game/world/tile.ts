@@ -1,4 +1,4 @@
-import { ctx } from "../../init";
+import { canvasWidth, ctx } from "../../init";
 import { TILE_SIZE } from "../../settings";
 import { Point } from "../../utils/point";
 import { Vector } from "../../utils/vector";
@@ -13,14 +13,17 @@ export class Tile {
   private image: HTMLImageElement;
   private building: HTMLImageElement;
 
+  private offset: Point;
+
   constructor(i: number, j: number, type: string) {
     this.position = new Vector(i, j);
+    this.offset = Point.zero();
 
     this.isometricCoords = this.position.getIsometricCoords();
 
     this.renderPos = new Point(
-      this.isometricCoords[0].x - TILE_SIZE,
-      this.isometricCoords[0].y - 1
+      this.isometricCoords[0].x - TILE_SIZE + this.offset.x,
+      this.isometricCoords[0].y - 1 + this.offset.y
     );
 
     this.buildingPos = new Point(
@@ -48,15 +51,15 @@ export class Tile {
       const current: Point = grid[i];
       const next: Point = grid[i + 1];
 
-      ctx.moveTo(current.x, current.y);
-      ctx.lineTo(next.x, next.y);
+      ctx.moveTo(current.x + this.offset.x, current.y + this.offset.y);
+      ctx.lineTo(next.x + this.offset.x, next.y + this.offset.y);
     }
 
     const last: Point = grid[grid.length - 1];
     const first: Point = grid[0];
 
-    ctx.moveTo(last.x, last.y);
-    ctx.lineTo(first.x, first.y);
+    ctx.moveTo(last.x + this.offset.x, last.y + this.offset.y);
+    ctx.lineTo(first.x + this.offset.x, first.y + this.offset.y);
 
     ctx.strokeStyle = "#fff";
     ctx.stroke();
@@ -82,5 +85,12 @@ export class Tile {
       this.renderPos.y + TILE_SIZE / 2
     );
     ctx.restore();
+  }
+
+  updateRenderPos(pos: Point): void {
+    this.renderPos = new Point(
+      this.isometricCoords[0].x - TILE_SIZE + pos.x,
+      this.isometricCoords[0].y - 1 + pos.y
+    );
   }
 }

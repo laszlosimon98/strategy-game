@@ -13,7 +13,7 @@ export class PageComponents {
 
   draw(): void {}
 
-  update(): void {}
+  update(mousePos: Point): void {}
 
   isClicked(mouseX: number, mouseY: number) {
     const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;

@@ -2,7 +2,7 @@ import { globalState } from "../../../../data/data";
 import { Button } from "../../../../page/components/buttonComponents/button";
 import { Frame } from "../../../../page/components/frameComponets/frame";
 import { GameSubMenuState } from "../../../../states/gameMenuState";
-import { Vector } from "../../../../utils/vector";
+import { Point } from "../../../../utils/point";
 
 export class Section {
   private section: Frame;
@@ -12,7 +12,7 @@ export class Section {
   // protected items: Item[];
   // protected units: Unit[];
 
-  constructor(pos: Vector, width: number, height: number) {
+  constructor(pos: Point, width: number, height: number) {
     this.section = new Frame(pos, width, height);
   }
 
@@ -25,11 +25,11 @@ export class Section {
     // this.units.forEach(unit => unit.draw());
   }
 
-  update(): void {
-    this.section.update();
-    this.subSections[globalState.subMenuState]?.update();
+  update(mousePos: Point): void {
+    this.section.update(mousePos);
+    this.subSections[globalState.subMenuState]?.update(mousePos);
 
-    this.buttons.forEach((btn) => btn.update());
+    this.buttons.forEach((btn) => btn.update(mousePos));
     // this.items.forEach(item => item.update());
     // this.units.forEach(unit => unit.update());
   }

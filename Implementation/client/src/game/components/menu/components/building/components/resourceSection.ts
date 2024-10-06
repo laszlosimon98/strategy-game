@@ -1,18 +1,18 @@
 import { ctx } from "../../../../../../init";
 import { Text } from "../../../../../../page/components/textComponents/text";
 import { BLACK_COLOR } from "../../../../../../settings";
-import { Vector } from "../../../../../../utils/vector";
+import { Point } from "../../../../../../utils/point";
 import { Section } from "../../section";
 
 export class ResourceSection extends Section {
   private text: Text;
   private readonly title: string = "Erőforrás";
 
-  constructor(pos: Vector, width: number, height: number) {
+  constructor(pos: Point, width: number, height: number) {
     super(pos, width, height);
 
     this.text = new Text(
-      new Vector(
+      new Point(
         pos.x + width / 2 - ctx.measureText(this.title).width / 2,
         pos.y
       ),

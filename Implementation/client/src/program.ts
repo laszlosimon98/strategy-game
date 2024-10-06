@@ -16,8 +16,8 @@ import { BACKGROUND_COLOR, BLACK_COLOR } from "./settings";
 import { globalState } from "./data/data";
 import { Page } from "./page/views/page";
 import { Game } from "./game/game";
-import { Vector } from "./utils/vector";
 import { ServerHandler } from "./server/serverHandler";
+import { Point } from "./utils/point";
 
 export class Program {
   private pages: Partial<Record<PageState, Page>>;
@@ -25,8 +25,11 @@ export class Program {
   private inputs?: TextInput[];
 
   private game: Game | undefined;
+  private mousePos: Point;
 
   constructor() {
+    this.mousePos = Point.zero();
+
     this.pages = {
       [PageState.MainMenu]: new MainMenu(titles.menu),
       [PageState.Registration]: new Registration(
@@ -84,7 +87,7 @@ export class Program {
 
   update(dt: number): void {
     if (globalState.state !== PageState.Game) {
-      this.buttons?.map((btn) => btn.update());
+      this.buttons?.map((btn) => btn.update(this.mousePos));
       this.pages[globalState.state]?.update();
     } else {
       this.game?.update(dt);
@@ -99,7 +102,7 @@ export class Program {
   }
 
   private handleMouseClick(e: MouseEvent) {
-    const { x, y } = globalState.mousePos;
+    const [x, y] = [e.clientX, e.clientY];
 
     if (globalState.state !== PageState.Game) {
       this.buttons?.map(async (btn) => {
@@ -120,7 +123,7 @@ export class Program {
         }
       });
     } else {
-      this.game?.handleClick(e);
+      this.game?.handleClick();
     }
 
     if (globalState.state === PageState.Game && !this.game) {
@@ -130,7 +133,8 @@ export class Program {
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    globalState.mousePos.setVector(new Vector(e.clientX, e.clientY));
+    this.mousePos.setPoint(new Point(e.clientX, e.clientY));
+    this.game?.updateMousePos(this.mousePos);
   }
 
   private handleKeyBoard(e: KeyboardEvent): void {

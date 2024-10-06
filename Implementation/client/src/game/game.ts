@@ -1,4 +1,4 @@
-import { canvasHeight, ctx } from "../init";
+import { canvasHeight, canvasWidth, ctx } from "../init";
 import { ServerHandler } from "../server/serverHandler";
 import { Vector } from "../utils/vector";
 import { GameMenu } from "./components/menu/gameMenu";
@@ -8,10 +8,14 @@ import { ERROR_COLOR, TILE_SIZE } from "../settings";
 import { globalState } from "../data/data";
 import { Point } from "../utils/point";
 import { MapType } from "../types/gameType";
+import { Camera } from "./camera/camera";
 
 export class Game {
   private gameMenu: GameMenu;
   private world: Tile[][] = [];
+  private mousePos: Point;
+
+  private camera: Camera;
 
   constructor() {
     this.gameMenu = new GameMenu(
@@ -19,6 +23,10 @@ export class Game {
       250,
       500
     );
+
+    this.mousePos = Point.zero();
+
+    this.camera = new Camera();
 
     this.init();
 
@@ -42,10 +50,11 @@ export class Game {
     });
   }
 
-  handleClick(e: MouseEvent) {
-    this.gameMenu.handleClick();
-    const { x, y } = globalState.mousePos;
-    const point = this.isoToCart(new Point(x, y));
+  handleClick() {
+    this.gameMenu.handleClick(this.mousePos);
+    const point = this.convertIsometricCoordsToCartesianCoords(
+      new Point(this.mousePos.x, this.mousePos.y)
+    );
 
     const type = groundAssets.rock;
     ServerHandler.sendMessage("game:build", { x: point.x, y: point.y, type });
@@ -62,33 +71,47 @@ export class Game {
       });
     });
     this.printMouseCoords();
-    this.gameMenu.draw();
+    // this.gameMenu.draw();
   }
 
   update(dt: number) {
-    this.gameMenu.update();
+    this.gameMenu.update(this.mousePos);
+    this.camera.update(this.mousePos);
+
+    this.world.forEach((tiles) => {
+      tiles.forEach((tile) => {
+        tile.updateRenderPos(this.camera.getCameraScroll());
+      });
+    });
   }
 
-  resize(): void {
-    this.gameMenu.resize();
+  updateMousePos(pos: Point): void {
+    this.mousePos.setPoint(pos);
   }
+
+  resize(): void {}
 
   private printMouseCoords(): void {
     ctx.save();
 
     ctx.fillStyle = ERROR_COLOR;
-    const { x, y } = globalState.mousePos;
-    const point = this.isoToCart(new Point(x, y));
+    const point = this.convertIsometricCoordsToCartesianCoords(
+      new Point(this.mousePos.x, this.mousePos.y)
+    );
     const text = `x: ${point.x}, y: ${point.y}`;
 
-    ctx.fillText(text, x - ctx.measureText(text).width / 2, y - 5);
+    ctx.fillText(
+      text,
+      this.mousePos.x - ctx.measureText(text).width / 2,
+      this.mousePos.y - 5
+    );
 
     ctx.restore();
   }
 
-  private isoToCart = (point: Point): Point => {
-    const world_x = point.x;
-    const world_y = point.y;
+  private convertIsometricCoordsToCartesianCoords = (point: Point): Point => {
+    const world_x = point.x - this.camera.getCameraScroll().x;
+    const world_y = point.y - this.camera.getCameraScroll().y;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;

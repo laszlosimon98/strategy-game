@@ -15,4 +15,6 @@ export class MenuComponent extends PageComponents {
   draw(): void {
     ctx.drawImage(this.image, this.pos.x, this.pos.y, this.width, this.height);
   }
+
+  update(mousePos: Point): void {}
 }

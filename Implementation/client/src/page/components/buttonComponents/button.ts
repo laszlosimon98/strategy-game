@@ -30,9 +30,8 @@ export class Button extends MenuComponent {
     ctx.restore();
   }
 
-  update() {
-    const { x, y } = globalState.mousePos;
-    this.isHovered = this.isClicked(x, y);
+  update(mousePos: Point) {
+    this.isHovered = this.isClicked(mousePos.x, mousePos.y);
   }
 
   click(): void {
