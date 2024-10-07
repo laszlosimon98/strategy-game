@@ -44,20 +44,31 @@ export const gameHandler = (io: Server, socket: Socket) => {
   const build = ({
     x,
     y,
-    type,
+    image,
+    width,
+    height,
   }: {
     x: number;
     y: number;
-    type: string;
+    image: string;
+    width: number;
+    height: number;
   }): void => {
     if (!checkIfPossibleToBuild(x, y)) {
       return;
     }
     gameState[getCurrentRoom(socket)].world[x][y] = {
       ...gameState[getCurrentRoom(socket)].world[x][y],
-      building: type,
+      building: image,
+      isBlockEmpty: false,
     };
-    sendMessageToEveryOne(io, socket, "game:build", { x, y, type });
+    sendMessageToEveryOne(io, socket, "game:build", {
+      x,
+      y,
+      image,
+      width,
+      height,
+    });
   };
 
   socket.on("game:starts", gameStarts);

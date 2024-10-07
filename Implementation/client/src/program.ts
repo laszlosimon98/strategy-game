@@ -26,9 +26,11 @@ export class Program {
 
   private game: Game | undefined;
   private mousePos: Point;
+  private key: string;
 
   constructor() {
     this.mousePos = Point.zero();
+    this.key = "";
 
     this.pages = {
       [PageState.MainMenu]: new MainMenu(titles.menu),
@@ -55,8 +57,12 @@ export class Program {
     );
 
     document.addEventListener("keydown", (e: KeyboardEvent) =>
-      this.handleKeyBoard(e)
+      this.handleKeyDown(e)
     );
+
+    document.addEventListener("keyup", () => {
+      this.handleKeyUp();
+    });
 
     document.addEventListener("contextmenu", (e: MouseEvent) =>
       e.preventDefault()
@@ -134,15 +140,24 @@ export class Program {
 
   private handleMouseMove(e: MouseEvent): void {
     this.mousePos.setPoint(new Point(e.clientX, e.clientY));
-    this.game?.updateMousePos(this.mousePos);
+    this.game?.handleMouseMove(this.mousePos);
   }
 
-  private handleKeyBoard(e: KeyboardEvent): void {
+  private handleKeyDown(e: KeyboardEvent): void {
+    this.key = e.key;
+
     this.inputs?.map((input) => {
       if (input.getIsSelected()) {
         input.updateText(e.key);
       }
     });
+
+    this.game?.handleKeyPress(this.key);
+  }
+
+  private handleKeyUp(): void {
+    this.key = "";
+    this.game?.handleKeyPress(this.key);
   }
 
   private updateButtons(): void {

@@ -1,12 +1,12 @@
-import { ctx } from "../../../../../../init";
-import { Text } from "../../../../../../page/components/textComponents/text";
-import { BLACK_COLOR } from "../../../../../../settings";
-import { Point } from "../../../../../../utils/point";
+import { ctx } from "../../../../../init";
+import { Text } from "../../../../../page/components/textComponents/text";
+import { BLACK_COLOR } from "../../../../../settings";
+import { Point } from "../../../../../utils/point";
 import { Section } from "../../section";
 
-export class FoodSection extends Section {
+export class MilitarySection extends Section {
   private text: Text;
-  private readonly title: string = "Élelem";
+  private readonly title: string = "Haderő";
 
   constructor(pos: Point, width: number, height: number) {
     super(pos, width, height);

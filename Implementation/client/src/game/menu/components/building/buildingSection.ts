@@ -1,8 +1,8 @@
-import { Button } from "../../../../../page/components/buttonComponents/button";
-import { MENU_ITEM_SIZE } from "../../../../../settings";
-import { GameSubMenuState } from "../../../../../states/gameMenuState";
-import { Point } from "../../../../../utils/point";
-import { gameMenuAssets } from "../../../../imports/menu";
+import { Button } from "../../../../page/components/buttonComponents/button";
+import { MENU_ITEM_SIZE } from "../../../../settings";
+import { GameSubMenuState } from "../../../../states/gameMenuState";
+import { Point } from "../../../../utils/point";
+import { gameMenuAssets } from "../../../imports/menu";
 import { Section } from "../section";
 import { FoodSection } from "./components/foodSection";
 import { MilitarySection } from "./components/militarySection";

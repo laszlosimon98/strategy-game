@@ -1,7 +1,7 @@
-import { Button } from "../../../../../page/components/buttonComponents/button";
-import { MENU_ITEM_SIZE } from "../../../../../settings";
-import { Point } from "../../../../../utils/point";
-import { gameMenuAssets } from "../../../../imports/menu";
+import { Button } from "../../../../page/components/buttonComponents/button";
+import { MENU_ITEM_SIZE } from "../../../../settings";
+import { Point } from "../../../../utils/point";
+import { gameMenuAssets } from "../../../imports/menu";
 import { Section } from "../section";
 
 export class MainSection extends Section {

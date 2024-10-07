@@ -1,8 +1,7 @@
-import { canvasWidth, ctx } from "../../init";
+import { ctx } from "../../init";
 import { TILE_SIZE } from "../../settings";
 import { Point } from "../../utils/point";
 import { Vector } from "../../utils/vector";
-import { groundAssets } from "../imports/ground";
 
 export class Tile {
   private position: Vector;
@@ -11,7 +10,6 @@ export class Tile {
   private isometricCoords: Point[];
 
   private image: HTMLImageElement;
-  private building: HTMLImageElement;
 
   private offset: Point;
 
@@ -27,22 +25,16 @@ export class Tile {
     );
 
     this.buildingPos = new Point(
-      this.isometricCoords[2].x,
-      this.isometricCoords[2].y
+      this.isometricCoords[2].x - this.offset.x,
+      this.isometricCoords[2].y - this.offset.y
     );
 
     this.image = new Image();
     this.image.src = type;
-
-    this.building = new Image();
   }
 
-  setTile(src: string) {
-    this.image.src = src;
-  }
-
-  build(src: string): void {
-    this.building.src = src;
+  getBuildingPos(): Point {
+    return this.buildingPos;
   }
 
   private drawGrid(grid: Point[]): void {
@@ -76,6 +68,7 @@ export class Tile {
 
   draw(): void {
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
+
     ctx.save();
     ctx.font = "14px Arial";
     const text = `${this.position.x}, ${this.position.y}`;
@@ -87,10 +80,10 @@ export class Tile {
     ctx.restore();
   }
 
-  updateRenderPos(pos: Point): void {
+  updateRenderPos(cameraScroll: Point): void {
     this.renderPos = new Point(
-      this.isometricCoords[0].x - TILE_SIZE + pos.x,
-      this.isometricCoords[0].y - 1 + pos.y
+      this.isometricCoords[0].x - TILE_SIZE + cameraScroll.x,
+      this.isometricCoords[0].y - 1 + cameraScroll.y
     );
   }
 }

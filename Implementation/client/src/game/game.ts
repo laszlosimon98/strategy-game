@@ -1,21 +1,27 @@
-import { canvasHeight, canvasWidth, ctx } from "../init";
+import { canvasHeight, ctx } from "../init";
 import { ServerHandler } from "../server/serverHandler";
 import { Vector } from "../utils/vector";
-import { GameMenu } from "./components/menu/gameMenu";
+import { GameMenu } from "./menu/gameMenu";
 import { Tile } from "./world/tile";
 import { groundAssets } from "./imports/ground";
 import { ERROR_COLOR, TILE_SIZE } from "../settings";
-import { globalState } from "../data/data";
 import { Point } from "../utils/point";
 import { MapType } from "../types/gameType";
 import { Camera } from "./camera/camera";
+import { Building } from "./building/building";
+import { Dimension } from "../utils/dimension";
+import { building } from "./imports/building";
 
 export class Game {
   private gameMenu: GameMenu;
   private world: Tile[][] = [];
+
   private mousePos: Point;
+  private key: string;
 
   private camera: Camera;
+
+  private buildings: Building[] = [];
 
   constructor() {
     this.gameMenu = new GameMenu(
@@ -25,6 +31,7 @@ export class Game {
     );
 
     this.mousePos = Point.zero();
+    this.key = "";
 
     this.camera = new Camera();
 
@@ -32,15 +39,26 @@ export class Game {
 
     ServerHandler.receiveMessage(
       "game:build",
-      ({ x, y, type }: { x: number; y: number; type: string }) => {
-        this.world[x][y].setTile(type);
+      ({
+        x,
+        y,
+        image,
+        width,
+        height,
+      }: {
+        x: number;
+        y: number;
+        image: string;
+        width: number;
+        height: number;
+      }) => {
+        this.build(x, y, image, width, height);
       }
     );
   }
 
   init(): void {
     ServerHandler.receiveMessage("game:createWorld", (data: MapType[][]) => {
-      console.log(data);
       for (let i = 0; i < data.length; ++i) {
         this.world.push([]);
         for (let j = 0; j < data[i].length; ++j) {
@@ -48,18 +66,6 @@ export class Game {
         }
       }
     });
-  }
-
-  handleClick() {
-    this.gameMenu.handleClick(this.mousePos);
-    const point = this.convertIsometricCoordsToCartesianCoords(
-      new Point(this.mousePos.x, this.mousePos.y)
-    );
-
-    const type = groundAssets.rock;
-    ServerHandler.sendMessage("game:build", { x: point.x, y: point.y, type });
-
-    // this.world[point.x][point.y].setTile();
   }
 
   draw(): void {
@@ -70,26 +76,83 @@ export class Game {
         tile.draw();
       });
     });
+
+    this.buildings.forEach((building) => building.draw());
     this.printMouseCoords();
-    // this.gameMenu.draw();
+    this.gameMenu.draw();
   }
 
   update(dt: number) {
     this.gameMenu.update(this.mousePos);
-    this.camera.update(this.mousePos);
+    this.camera.update(dt, this.mousePos, this.key);
 
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         tile.updateRenderPos(this.camera.getCameraScroll());
       });
     });
+
+    this.buildings.forEach((building) =>
+      building.update(this.camera.getCameraScroll())
+    );
   }
 
-  updateMousePos(pos: Point): void {
+  handleClick() {
+    this.gameMenu.handleClick(this.mousePos);
+    const point = this.convertIsometricCoordsToCartesianCoords(
+      new Point(this.mousePos.x, this.mousePos.y)
+    );
+
+    const type = building.woodCutter;
+
+    if (
+      point.x >= 0 &&
+      point.x < this.world.length &&
+      point.y >= 0 &&
+      point.y < this.world.length
+    ) {
+      ServerHandler.sendMessage("game:build", {
+        x: point.x,
+        y: point.y,
+        image: type.image,
+        width: type.width,
+        height: type.height,
+      });
+    }
+  }
+
+  handleMouseMove(pos: Point): void {
     this.mousePos.setPoint(pos);
   }
 
+  handleKeyPress(key: string): void {
+    this.key = key;
+  }
+
   resize(): void {}
+
+  private build(
+    x: number,
+    y: number,
+    image: string,
+    width: number,
+    height: number
+  ): void {
+    const pos: Point = this.world[x][y].getBuildingPos();
+
+    const building: Building = new Building(image, width, height);
+    const boundary: Dimension = building.getBoundary();
+
+    const buildingPos: Point = new Point(
+      pos.x - boundary.width / 2,
+      pos.y - boundary.height
+    );
+
+    building.setPos(buildingPos);
+
+    this.buildings.push(building);
+    console.log("new Building");
+  }
 
   private printMouseCoords(): void {
     ctx.save();

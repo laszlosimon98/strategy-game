@@ -1,9 +1,9 @@
-import { globalState } from "../../../data/data";
-import { Button } from "../../../page/components/buttonComponents/button";
-import { GameMainMenuState } from "../../../states/gameMenuState";
-import { Point } from "../../../utils/point";
-import { getImageNameFromUrl } from "../../../utils/utils";
-import { gameMenuAssets } from "../../imports/menu";
+import { globalState } from "../../data/data";
+import { Button } from "../../page/components/buttonComponents/button";
+import { GameMainMenuState } from "../../states/gameMenuState";
+import { Point } from "../../utils/point";
+import { getImageNameFromUrl } from "../../utils/utils";
+import { gameMenuAssets } from "../imports/menu";
 import { BuildingSection } from "./components/building/buildingSection";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";

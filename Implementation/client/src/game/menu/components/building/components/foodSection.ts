@@ -1,12 +1,12 @@
-import { ctx } from "../../../../../../init";
-import { Text } from "../../../../../../page/components/textComponents/text";
-import { BLACK_COLOR } from "../../../../../../settings";
-import { Point } from "../../../../../../utils/point";
+import { ctx } from "../../../../../init";
+import { Text } from "../../../../../page/components/textComponents/text";
+import { BLACK_COLOR } from "../../../../../settings";
+import { Point } from "../../../../../utils/point";
 import { Section } from "../../section";
 
-export class StorageSection extends Section {
+export class FoodSection extends Section {
   private text: Text;
-  private readonly title: string = "Raktár";
+  private readonly title: string = "Élelem";
 
   constructor(pos: Point, width: number, height: number) {
     super(pos, width, height);

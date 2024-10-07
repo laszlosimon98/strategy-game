@@ -1,8 +1,8 @@
-import { globalState } from "../../../../data/data";
-import { Button } from "../../../../page/components/buttonComponents/button";
-import { Frame } from "../../../../page/components/frameComponets/frame";
-import { GameSubMenuState } from "../../../../states/gameMenuState";
-import { Point } from "../../../../utils/point";
+import { globalState } from "../../../data/data";
+import { Button } from "../../../page/components/buttonComponents/button";
+import { Frame } from "../../../page/components/frameComponets/frame";
+import { GameSubMenuState } from "../../../states/gameMenuState";
+import { Point } from "../../../utils/point";
 
 export class Section {
   private section: Frame;
