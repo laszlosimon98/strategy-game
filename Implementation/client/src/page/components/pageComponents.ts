@@ -1,11 +1,11 @@
-import { Point } from "../../utils/point";
+import { Position } from "../../utils/position";
 
 export class PageComponents {
-  protected pos: Point;
+  protected pos: Position;
   protected width: number;
   protected height: number;
 
-  protected constructor(pos: Point, width: number, height: number) {
+  protected constructor(pos: Position, width: number, height: number) {
     this.pos = pos;
     this.width = width;
     this.height = height;
@@ -13,7 +13,7 @@ export class PageComponents {
 
   draw(): void {}
 
-  update(mousePos: Point): void {}
+  update(mousePos: Position): void {}
 
   isClicked(mouseX: number, mouseY: number) {
     const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;
@@ -21,11 +21,11 @@ export class PageComponents {
     return x && y;
   }
 
-  getPos(): Point {
+  getPos(): Position {
     return this.pos;
   }
 
-  setPos(pos: Point) {
+  setPos(pos: Position) {
     this.pos = pos;
   }
 

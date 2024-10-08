@@ -1,16 +1,16 @@
 import { Button } from "../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../settings";
-import { Point } from "../../../../utils/point";
+import { Position } from "../../../../utils/position";
 import { gameMenuAssets } from "../../../imports/menu";
 import { Section } from "../section";
 
 export class MainSection extends Section {
-  constructor(pos: Point, width: number, height: number) {
+  constructor(pos: Position, width: number, height: number) {
     super(pos, width, height);
 
     this.buttons.push(
       new Button(
-        new Point(
+        new Position(
           width / 6 - MENU_ITEM_SIZE.width / 2,
           pos.y - MENU_ITEM_SIZE.height / 2 + height / 2
         ),
@@ -19,7 +19,7 @@ export class MainSection extends Section {
         gameMenuAssets.house
       ),
       new Button(
-        new Point(
+        new Position(
           width / 2 - MENU_ITEM_SIZE.width / 2,
           pos.y - MENU_ITEM_SIZE.height / 2 + height / 2
         ),
@@ -28,7 +28,7 @@ export class MainSection extends Section {
         gameMenuAssets.storage
       ),
       new Button(
-        new Point(
+        new Position(
           (width * 5) / 6 - MENU_ITEM_SIZE.width / 2,
           pos.y - MENU_ITEM_SIZE.height / 2 + height / 2
         ),

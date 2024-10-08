@@ -13,7 +13,8 @@ const httpServer = createServer(app);
 
 const io: Server = new Server(httpServer, {
   cors: {
-    origin: ["http://localhost:5173"],
+    // origin: "*",
+    origin: ["http://localhost:5173", "http://192.168.1.70:5173"],
   },
 });
 

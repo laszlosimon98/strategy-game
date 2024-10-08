@@ -1,20 +1,16 @@
+import { Cell } from "./utils/cell";
+
 export type PlayerType = {
   playerId: string;
   name: string;
 };
 
-type TileType = "grass" | "flower" | "rock";
-
-export type MapType = {
-  type: TileType;
-  isBlockEmpty: boolean;
-  building?: string;
-};
+export type TileType = "grass" | "flower" | "rock";
 
 export type TeamType = {
   isGameStarted: boolean;
   players: PlayerType[];
-  world: MapType[][];
+  world: Cell[][];
 };
 
 export type initialStateType = {

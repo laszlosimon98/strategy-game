@@ -17,7 +17,7 @@ import { globalState } from "./data/data";
 import { Page } from "./page/views/page";
 import { Game } from "./game/game";
 import { ServerHandler } from "./server/serverHandler";
-import { Point } from "./utils/point";
+import { Position } from "./utils/position";
 
 export class Program {
   private pages: Partial<Record<PageState, Page>>;
@@ -25,11 +25,11 @@ export class Program {
   private inputs?: TextInput[];
 
   private game: Game | undefined;
-  private mousePos: Point;
+  private mousePos: Position;
   private key: string;
 
   constructor() {
-    this.mousePos = Point.zero();
+    this.mousePos = Position.zero();
     this.key = "";
 
     this.pages = {
@@ -129,7 +129,7 @@ export class Program {
         }
       });
     } else {
-      this.game?.handleClick();
+      this.game?.handleClick(e);
     }
 
     if (globalState.state === PageState.Game && !this.game) {
@@ -139,7 +139,7 @@ export class Program {
   }
 
   private handleMouseMove(e: MouseEvent): void {
-    this.mousePos.setPoint(new Point(e.clientX, e.clientY));
+    this.mousePos.setPosition(new Position(e.clientX, e.clientY));
     this.game?.handleMouseMove(this.mousePos);
   }
 

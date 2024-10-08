@@ -1,4 +1,4 @@
-export class Point {
+export class Position {
   x: number;
   y: number;
 
@@ -7,11 +7,11 @@ export class Point {
     this.y = y;
   }
 
-  static zero(): Point {
-    return new Point(0, 0);
+  static zero(): Position {
+    return new Position(0, 0);
   }
 
-  setPoint(other: Point): void {
+  setPosition(other: Position): void {
     this.x = other.x;
     this.y = other.y;
   }

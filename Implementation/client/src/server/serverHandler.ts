@@ -2,17 +2,18 @@ import { io, Socket } from "socket.io-client";
 import { globalState } from "../data/data";
 
 export class ServerHandler {
-  // private static readonly socket: Socket = io("http://localhost:3000");
   private static socket: Socket;
   private constructor() {}
 
   private static getInstance(): Socket {
     if (!this.socket) {
-      this.socket = io("http://localhost:3000");
+      // this.socket = io("http://localhost:3000");
+      this.socket = io("http://192.168.1.70:3000");
     }
 
     this.socket.once("connect_error", () => {
       globalState.serverStatus = "offline";
+      return;
     });
 
     this.socket.on("connect", () => {

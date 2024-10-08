@@ -4,65 +4,55 @@ import { Vector } from "../utils/vector";
 import { GameMenu } from "./menu/gameMenu";
 import { Tile } from "./world/tile";
 import { groundAssets } from "./imports/ground";
-import { ERROR_COLOR, TILE_SIZE } from "../settings";
-import { Point } from "../utils/point";
-import { MapType } from "../types/gameType";
+import { ERROR_COLOR, INFO_COLOR, TILE_SIZE } from "../settings";
+import { Position } from "../utils/position";
 import { Camera } from "./camera/camera";
 import { Building } from "./building/building";
 import { Dimension } from "../utils/dimension";
 import { building } from "./imports/building";
+import { MouseButtons } from "./utils/mouseEnum";
+import { TileType } from "../types/gameType";
+import { Indices } from "../utils/indices";
 
 export class Game {
   private gameMenu: GameMenu;
   private world: Tile[][] = [];
 
-  private mousePos: Point;
+  private mousePos: Position;
   private key: string;
 
   private camera: Camera;
 
   private buildings: Building[] = [];
 
+  private pathStart: Indices;
+  private pathEnd: Indices;
+  private path: Indices[] = [];
+
   constructor() {
+    this.pathStart = Indices.zero();
+    this.pathEnd = Indices.zero();
+
     this.gameMenu = new GameMenu(
       new Vector(0, (canvasHeight - 500) / 5),
       250,
       500
     );
 
-    this.mousePos = Point.zero();
+    this.mousePos = Position.zero();
     this.key = "";
 
     this.camera = new Camera();
-
     this.init();
-
-    ServerHandler.receiveMessage(
-      "game:build",
-      ({
-        x,
-        y,
-        image,
-        width,
-        height,
-      }: {
-        x: number;
-        y: number;
-        image: string;
-        width: number;
-        height: number;
-      }) => {
-        this.build(x, y, image, width, height);
-      }
-    );
+    this.handleCommunication();
   }
 
   init(): void {
-    ServerHandler.receiveMessage("game:createWorld", (data: MapType[][]) => {
+    ServerHandler.receiveMessage("game:createWorld", (data: TileType[][]) => {
       for (let i = 0; i < data.length; ++i) {
         this.world.push([]);
         for (let j = 0; j < data[i].length; ++j) {
-          this.world[i].push(new Tile(i, j, groundAssets[data[i][j].type]));
+          this.world[i].push(new Tile(i, j, groundAssets[data[i][j]]));
         }
       }
     });
@@ -72,7 +62,7 @@ export class Game {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         // tile.drawNormalGrid();
-        tile.drawIsometricGrid();
+        // tile.drawIsometricGrid();
         tile.draw();
       });
     });
@@ -97,32 +87,45 @@ export class Game {
     );
   }
 
-  handleClick() {
+  handleClick(e: MouseEvent) {
+    const button = e.button;
     this.gameMenu.handleClick(this.mousePos);
-    const point = this.convertIsometricCoordsToCartesianCoords(
-      new Point(this.mousePos.x, this.mousePos.y)
+
+    const indices: Indices = this.convertIsometricCoordsToCartesianCoords(
+      new Position(this.mousePos.x, this.mousePos.y)
     );
 
-    const type = building.woodCutter;
+    switch (button) {
+      case MouseButtons.Left:
+        this.pathStart.setIndices(new Indices(indices.i, indices.j));
+        break;
+      case MouseButtons.Right:
+        this.pathEnd.setIndices(new Indices(indices.i, indices.j));
+        ServerHandler.sendMessage("game:pathFind", {
+          start: this.pathStart,
+          end: this.pathEnd,
+        });
+        break;
+      case MouseButtons.Middle:
+        const type = building.woodCutter;
 
-    if (
-      point.x >= 0 &&
-      point.x < this.world.length &&
-      point.y >= 0 &&
-      point.y < this.world.length
-    ) {
-      ServerHandler.sendMessage("game:build", {
-        x: point.x,
-        y: point.y,
-        image: type.image,
-        width: type.width,
-        height: type.height,
-      });
+        if (this.isClickOnTheMap(indices)) {
+          ServerHandler.sendMessage("game:build", {
+            indices,
+            image: type.image,
+            width: type.width,
+            height: type.height,
+          });
+        }
+        break;
+      case MouseButtons.Forward:
+        ServerHandler.sendMessage("game:destroy", indices);
+        break;
     }
   }
 
-  handleMouseMove(pos: Point): void {
-    this.mousePos.setPoint(pos);
+  handleMouseMove(pos: Position): void {
+    this.mousePos.setPosition(pos);
   }
 
   handleKeyPress(key: string): void {
@@ -131,37 +134,62 @@ export class Game {
 
   resize(): void {}
 
+  private isClickOnTheMap(indices: Indices): boolean {
+    return (
+      indices.i >= 0 &&
+      indices.i < this.world.length &&
+      indices.j >= 0 &&
+      indices.j < this.world.length
+    );
+  }
+
   private build(
-    x: number,
-    y: number,
+    indices: Indices,
     image: string,
     width: number,
     height: number
   ): void {
-    const pos: Point = this.world[x][y].getBuildingPos();
+    const i = indices.i;
+    const j = indices.j;
 
-    const building: Building = new Building(image, width, height);
-    const boundary: Dimension = building.getBoundary();
+    const pos: Position = this.world[i][j].getBuildingPos();
 
-    const buildingPos: Point = new Point(
-      pos.x - boundary.width / 2,
-      pos.y - boundary.height
+    const building: Building = new Building(
+      new Indices(i, j),
+      image,
+      width,
+      height
+    );
+    const dimension: Dimension = building.getDimension();
+
+    const buildingPos: Position = new Position(
+      pos.x - dimension.width / 2,
+      pos.y - dimension.height
     );
 
     building.setPos(buildingPos);
 
     this.buildings.push(building);
-    console.log("new Building");
+  }
+
+  private destroy(indices: Indices): void {
+    for (let i = this.buildings.length - 1; i >= 0; --i) {
+      const buildingIndices = this.buildings[i].getIndices();
+
+      if (buildingIndices.i === indices.i && buildingIndices.j === indices.j) {
+        this.buildings.splice(i, 1);
+      }
+    }
   }
 
   private printMouseCoords(): void {
     ctx.save();
 
     ctx.fillStyle = ERROR_COLOR;
-    const point = this.convertIsometricCoordsToCartesianCoords(
-      new Point(this.mousePos.x, this.mousePos.y)
+    const position = this.convertIsometricCoordsToCartesianCoords(
+      new Position(this.mousePos.x, this.mousePos.y)
     );
-    const text = `x: ${point.x}, y: ${point.y}`;
+    const text = `x: ${position.i}, y: ${position.j}`;
 
     ctx.fillText(
       text,
@@ -172,9 +200,11 @@ export class Game {
     ctx.restore();
   }
 
-  private convertIsometricCoordsToCartesianCoords = (point: Point): Point => {
-    const world_x = point.x - this.camera.getCameraScroll().x;
-    const world_y = point.y - this.camera.getCameraScroll().y;
+  private convertIsometricCoordsToCartesianCoords = (
+    position: Position
+  ): Indices => {
+    const world_x = position.x - this.camera.getCameraScroll().x;
+    const world_y = position.y - this.camera.getCameraScroll().y;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;
@@ -182,6 +212,36 @@ export class Game {
     const grid_x = Math.floor(cart_x / TILE_SIZE);
     const grid_y = Math.floor(cart_y / TILE_SIZE);
 
-    return new Point(grid_x, grid_y);
+    return new Indices(grid_x, grid_y);
   };
+
+  private handleCommunication(): void {
+    ServerHandler.receiveMessage(
+      "game:build",
+      ({
+        indices,
+        image,
+        width,
+        height,
+      }: {
+        indices: Indices;
+        image: string;
+        width: number;
+        height: number;
+      }) => {
+        this.build(indices, image, width, height);
+      }
+    );
+
+    ServerHandler.receiveMessage("game:destroy", (indices: Indices) => {
+      this.destroy(indices);
+    });
+
+    ServerHandler.receiveMessage("game:pathFind", (path: Indices[]) => {
+      this.path = path;
+      this.path.forEach((indices) =>
+        this.world[indices.i][indices.j].setTemp()
+      );
+    });
+  }
 }

@@ -1,18 +1,18 @@
 import { canvasHeight, canvasWidth } from "../../init";
-import { Point } from "../../utils/point";
+import { Position } from "../../utils/position";
 
 export class Camera {
-  private dir: Point;
-  private scroll: Point;
+  private dir: Position;
+  private scroll: Position;
   private speed: number;
 
   constructor() {
-    this.dir = Point.zero();
-    this.scroll = Point.zero();
+    this.dir = Position.zero();
+    this.scroll = Position.zero();
     this.speed = 500;
   }
 
-  update(dt: number, mousePos: Point, key: string): void {
+  update(dt: number, mousePos: Position, key: string): void {
     // if (mousePos.x > 0 && mousePos.x < canvasWidth * 0.03) {
     //   this.dir.x = -1;
     // } else if (
@@ -56,7 +56,7 @@ export class Camera {
     this.scroll.y += (this.speed / 2) * dt * this.dir.y;
   }
 
-  getCameraScroll(): Point {
+  getCameraScroll(): Position {
     return this.scroll;
   }
 }

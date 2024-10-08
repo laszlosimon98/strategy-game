@@ -1,12 +1,12 @@
 import { ctx } from "../../../init";
-import { Point } from "../../../utils/point";
+import { Position } from "../../../utils/position";
 import { Text } from "./text";
 
 export class TextImage extends Text {
   private image: HTMLImageElement;
 
   constructor(
-    pos: Point,
+    pos: Position,
     width: number,
     height: number,
     text: string,

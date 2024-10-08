@@ -1,7 +1,7 @@
 import { globalState } from "../../data/data";
 import { Button } from "../../page/components/buttonComponents/button";
 import { GameMainMenuState } from "../../states/gameMenuState";
-import { Point } from "../../utils/point";
+import { Position } from "../../utils/position";
 import { getImageNameFromUrl } from "../../utils/utils";
 import { gameMenuAssets } from "../imports/menu";
 import { BuildingSection } from "./components/building/buildingSection";
@@ -12,32 +12,32 @@ export class GameMenu {
   private mainSection: MainSection;
   private frames: Record<GameMainMenuState, Section>;
 
-  constructor(pos: Point, width: number, height: number) {
+  constructor(pos: Position, width: number, height: number) {
     this.mainSection = new MainSection(pos, width, 75);
 
     this.frames = {
       [GameMainMenuState.Unselected]: new Section(
-        new Point(pos.x, pos.y + 74),
+        new Position(pos.x, pos.y + 74),
         width,
         height - 75
       ),
       [GameMainMenuState.House]: new BuildingSection(
-        new Point(pos.x, pos.y + 74),
+        new Position(pos.x, pos.y + 74),
         width,
         height - 75
       ),
       [GameMainMenuState.Storage]: new Section(
-        new Point(pos.x, pos.y + 74),
+        new Position(pos.x, pos.y + 74),
         width,
         height - 75
       ),
       [GameMainMenuState.Population]: new Section(
-        new Point(pos.x, pos.y + 74),
+        new Position(pos.x, pos.y + 74),
         width,
         height - 75
       ),
       [GameMainMenuState.Info]: new Section(
-        new Point(pos.x, pos.y + 74),
+        new Position(pos.x, pos.y + 74),
         width,
         height - 75
       ),
@@ -49,12 +49,12 @@ export class GameMenu {
     this.frames[globalState.gameMenuState].draw();
   }
 
-  update(mousePos: Point): void {
+  update(mousePos: Position): void {
     this.mainSection.update(mousePos);
     this.frames[globalState.gameMenuState].update(mousePos);
   }
 
-  handleClick(mousePos: Point): void {
+  handleClick(mousePos: Position): void {
     this.updateImages("Main", mousePos, this.mainSection.getButtons());
     this.updateImages(
       "Sub",
@@ -63,7 +63,7 @@ export class GameMenu {
     );
   }
 
-  updateImages(state: string, mousePos: Point, buttons?: Button[]): void {
+  updateImages(state: string, mousePos: Position, buttons?: Button[]): void {
     if (!buttons) {
       return;
     }

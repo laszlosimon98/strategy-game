@@ -1,51 +1,64 @@
 import { ctx } from "../../init";
 import { Dimension } from "../../utils/dimension";
-import { Point } from "../../utils/point";
+import { Indices } from "../../utils/indices";
+import { Position } from "../../utils/position";
 
 export class Building {
-  private pos: Point;
+  private indices: Indices;
+  private pos: Position;
   private image: HTMLImageElement;
-  private boundary: Dimension;
+  private dimension: Dimension;
+  private renderPos: Position;
 
-  constructor(src: string, width: number, height: number) {
-    this.pos = Point.zero();
+  private IsRenderPosSet: boolean;
+
+  constructor(indices: Indices, src: string, width: number, height: number) {
+    this.indices = indices;
+    this.pos = Position.zero();
+    this.renderPos = Position.zero();
+    this.IsRenderPosSet = false;
 
     this.image = new Image();
     this.image.src = src;
 
-    this.boundary = new Dimension(width, height);
-
-    console.log(this.boundary);
+    this.dimension = new Dimension(width, height);
   }
 
   draw(): void {
-    ctx.drawImage(this.image, this.pos.x, this.pos.y);
-    ctx.save();
-    ctx.strokeStyle = "#f00";
-    ctx.strokeRect(
-      this.pos.x,
-      this.pos.y,
-      this.boundary.width,
-      this.boundary.height
+    if (this.IsRenderPosSet) {
+      ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
+      ctx.save();
+      ctx.strokeStyle = "#f00";
+      ctx.strokeRect(
+        this.renderPos.x,
+        this.renderPos.y,
+        this.dimension.width,
+        this.dimension.height
+      );
+      ctx.restore();
+    }
+  }
+
+  update(cameraScroll: Position): void {
+    if (!this.IsRenderPosSet) {
+      this.IsRenderPosSet = true;
+    }
+
+    this.renderPos = new Position(
+      this.pos.x + cameraScroll.x,
+      this.pos.y + cameraScroll.y
     );
-    ctx.restore();
   }
 
-  update(cameraScroll: Point): void {
-    // if (this.boundary.width === 0 && this.boundary.height === 0) {
-    //   this.boundary = new Dimension(this.image.width, this.image.height);
-    // }
-    // this.pos = new Point(
-    //   this.pos.x + cameraScroll.x,
-    //   this.pos.y + cameraScroll.y
-    // );
+  getDimension(): Dimension {
+    return this.dimension;
   }
 
-  getBoundary(): Dimension {
-    return this.boundary;
-  }
-
-  setPos(pos: Point): void {
+  setPos(pos: Position): void {
     this.pos = pos;
+  }
+
+  getIndices(): Indices {
+    return this.indices;
   }
 }

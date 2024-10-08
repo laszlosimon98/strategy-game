@@ -1,6 +1,6 @@
 import { ctx } from "../../init";
 import { TITLE_SIZE } from "../../settings";
-import { Point } from "../../utils/point";
+import { Position } from "../../utils/position";
 import { Button } from "../components/buttonComponents/button";
 import { TextInput } from "../components/textComponents/textInput";
 import { titlePos } from "./pos/titlePos";
@@ -9,10 +9,10 @@ export class Page {
   protected title: HTMLImageElement;
   protected buttons: Button[];
   protected inputs: TextInput[];
-  private titlePos: Point;
+  private titlePos: Position;
 
   protected constructor(title: string) {
-    this.titlePos = new Point(titlePos.x, titlePos.y);
+    this.titlePos = new Position(titlePos.x, titlePos.y);
 
     this.buttons = [];
     this.inputs = [];

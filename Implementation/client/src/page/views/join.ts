@@ -16,7 +16,7 @@ import {
 } from "../../settings";
 import { titlePos } from "./pos/titlePos";
 import { Page } from "./page";
-import { Point } from "../../utils/point";
+import { Position } from "../../utils/position";
 
 export class Join extends Page {
   private backButton: Button;
@@ -67,7 +67,7 @@ export class Join extends Page {
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      new Point(0, titlePos.y + MARGIN * 2),
+      new Position(0, titlePos.y + MARGIN * 2),
       0,
       0,
       "",

@@ -1,6 +1,5 @@
-import { globalState } from "../../../data/data";
 import { ctx } from "../../../init";
-import { Point } from "../../../utils/point";
+import { Position } from "../../../utils/position";
 import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
@@ -9,7 +8,7 @@ export class Button extends MenuComponent {
   private isHovered: boolean;
 
   constructor(
-    pos: Point,
+    pos: Position,
     width: number,
     height: number,
     imageSrc: string,
@@ -30,7 +29,7 @@ export class Button extends MenuComponent {
     ctx.restore();
   }
 
-  update(mousePos: Point) {
+  update(mousePos: Position) {
     this.isHovered = this.isClicked(mousePos.x, mousePos.y);
   }
 

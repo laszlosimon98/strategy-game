@@ -1,7 +1,7 @@
 import { TILE_SIZE } from "../settings";
-import { Point } from "./point";
+import { Position } from "./position";
 
-export class Vector extends Point {
+export class Vector extends Position {
   constructor(x: number, y: number) {
     super(x, y);
   }
@@ -15,18 +15,21 @@ export class Vector extends Point {
     this.y = other.y;
   }
 
-  getNormalCoords = (): Point[] => {
+  getNormalCoords = (): Position[] => {
     return [
-      new Point(this.x * TILE_SIZE, this.y * TILE_SIZE),
-      new Point(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE),
-      new Point(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE + TILE_SIZE),
-      new Point(this.x * TILE_SIZE, this.y * TILE_SIZE + TILE_SIZE),
+      new Position(this.x * TILE_SIZE, this.y * TILE_SIZE),
+      new Position(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE),
+      new Position(
+        this.x * TILE_SIZE + TILE_SIZE,
+        this.y * TILE_SIZE + TILE_SIZE
+      ),
+      new Position(this.x * TILE_SIZE, this.y * TILE_SIZE + TILE_SIZE),
     ];
   };
 
-  getIsometricCoords = (): Point[] => {
+  getIsometricCoords = (): Position[] => {
     return this.getNormalCoords().map(
-      (vector) => new Point(vector.x - vector.y, (vector.x + vector.y) / 2)
+      (vector) => new Position(vector.x - vector.y, (vector.x + vector.y) / 2)
     );
   };
 }

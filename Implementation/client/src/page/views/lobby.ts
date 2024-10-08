@@ -17,7 +17,7 @@ import { buttonImages } from "../imports/buttons";
 import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
 import { titlePos } from "./pos/titlePos";
-import { Point } from "../../utils/point";
+import { Position } from "../../utils/position";
 
 export class Lobby extends Page {
   private backButton: Button;
@@ -50,7 +50,7 @@ export class Lobby extends Page {
     this.buttons.push(this.backButton);
 
     this.playerLabel = new Text(
-      new Point(0, titlePos.y + MARGIN + 55),
+      new Position(0, titlePos.y + MARGIN + 55),
       0,
       0,
       globalState.playerName,
@@ -60,7 +60,7 @@ export class Lobby extends Page {
     this.playerLabel.setCenter();
 
     this.gameCode = new Text(
-      new Point(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 80),
+      new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 80),
       0,
       0,
       "Játék Kód:",
@@ -69,7 +69,7 @@ export class Lobby extends Page {
     );
 
     this.info = new Text(
-      new Point(0, titlePos.y + MARGIN + 115),
+      new Position(0, titlePos.y + MARGIN + 115),
       0,
       0,
       "",
@@ -78,7 +78,7 @@ export class Lobby extends Page {
     this.info.setCenter();
 
     this.playersContainer = new Frame(
-      new Point(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 125),
+      new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 125),
       580,
       Math.max(canvasHeight / 3, 200)
     );
@@ -129,7 +129,7 @@ export class Lobby extends Page {
   private addNewPlayer(players: { playerId: string; name: string }[]): void {
     const newPlayers = players.map((player, index) => {
       const text = new Text(
-        new Point(
+        new Position(
           this.playersContainer.getPos().x + MARGIN / 2,
           this.playersContainer.getPos().y +
             MARGIN / 1.5 +
@@ -157,13 +157,13 @@ export class Lobby extends Page {
 
   private updatePlayersPos(): void {
     this.players.forEach((player, index) => {
-      const pos: Point = Object.values(player)[0].getPos();
+      const pos: Position = Object.values(player)[0].getPos();
       const newY =
         this.playersContainer.getPos().y +
         MARGIN / 1.5 +
         (MARGIN / 1.5) * index;
 
-      Object.values(player)[0].setPos(new Point(pos.x, newY));
+      Object.values(player)[0].setPos(new Position(pos.x, newY));
     });
   }
 
