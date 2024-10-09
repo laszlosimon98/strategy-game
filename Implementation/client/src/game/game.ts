@@ -1,4 +1,4 @@
-import { canvasHeight, ctx } from "../init";
+import { canvasHeight, canvasWidth, ctx } from "../init";
 import { ServerHandler } from "../server/serverHandler";
 import { Vector } from "../utils/vector";
 import { GameMenu } from "./menu/gameMenu";
@@ -48,13 +48,19 @@ export class Game {
   }
 
   private init(): void {
-    ServerHandler.receiveMessage("game:createWorld", (data: TileType[][]) => {
-      for (let i = 0; i < data.length; ++i) {
+    ServerHandler.receiveMessage("game:createWorld", (tiles: TileType[][]) => {
+      for (let row = 0; row < tiles.length; ++row) {
         this.world.push([]);
-        for (let j = 0; j < data[i].length; ++j) {
-          this.world[i].push(new Tile(i, j, groundAssets[data[i][j]]));
+        for (let col = 0; col < tiles[row].length; ++col) {
+          this.world[row].push(
+            new Tile(row, col, groundAssets[tiles[row][col]])
+          );
         }
       }
+
+      ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
+        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+      });
     });
   }
 
@@ -78,12 +84,12 @@ export class Game {
 
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
-        tile.updateRenderPos(this.camera.getCameraScroll());
+        tile.updateRenderPos(this.camera.getScroll());
       });
     });
 
     this.buildings.forEach((building) =>
-      building.update(this.camera.getCameraScroll())
+      building.update(this.camera.getScroll())
     );
   }
 
@@ -192,7 +198,7 @@ export class Game {
     const position = this.convertIsometricCoordsToCartesianCoords(
       new Position(this.mousePos.x, this.mousePos.y)
     );
-    const text = `x: ${position.i}, y: ${position.j}`;
+    const text = `i: ${position.i}, j: ${position.j}`;
 
     ctx.fillText(
       text,
@@ -206,8 +212,8 @@ export class Game {
   private convertIsometricCoordsToCartesianCoords = (
     position: Position
   ): Indices => {
-    const world_x = position.x - this.camera.getCameraScroll().x;
-    const world_y = position.y - this.camera.getCameraScroll().y;
+    const world_x = position.x - this.camera.getScroll().x;
+    const world_y = position.y - this.camera.getScroll().y;
 
     const cart_y = (2 * world_y - world_x) / 2;
     const cart_x = cart_y + world_x;

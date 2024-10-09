@@ -24,6 +24,15 @@ export class Communicate {
     socket.emit(event, data);
   }
 
+  public static sendPrivateMessage(
+    io: Server,
+    id: string,
+    event: string,
+    data: any
+  ): void {
+    io.to(id).emit(event, data);
+  }
+
   public static sendMessageToEveryOneExceptSender(
     socket: Socket,
     event: string,

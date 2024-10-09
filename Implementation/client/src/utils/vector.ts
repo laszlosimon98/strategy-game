@@ -15,7 +15,7 @@ export class Vector extends Position {
     this.y = other.y;
   }
 
-  public getNormalCoords(): Position[] {
+  public getNormalPos(): Position[] {
     return [
       new Position(this.x * TILE_SIZE, this.y * TILE_SIZE),
       new Position(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE),
@@ -27,8 +27,8 @@ export class Vector extends Position {
     ];
   }
 
-  public getIsometricCoords(): Position[] {
-    return this.getNormalCoords().map(
+  public getIsometricPos(): Position[] {
+    return this.getNormalPos().map(
       (vector) => new Position(vector.x - vector.y, (vector.x + vector.y) / 2)
     );
   }

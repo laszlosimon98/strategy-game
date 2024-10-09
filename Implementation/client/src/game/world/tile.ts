@@ -1,4 +1,4 @@
-import { ctx } from "../../init";
+import { canvasHeight, canvasWidth, ctx } from "../../init";
 import { TILE_SIZE } from "../../settings";
 import { Position } from "../../utils/position";
 import { Vector } from "../../utils/vector";
@@ -7,7 +7,9 @@ export class Tile {
   private position: Vector;
   private renderPos: Position;
   private buildingPos: Position;
-  private isometricCoords: Position[];
+  private cameraPos: Position;
+
+  private isometricPos: Position[];
 
   private image: HTMLImageElement;
 
@@ -19,16 +21,26 @@ export class Tile {
     this.position = new Vector(i, j);
     this.offset = Position.zero();
 
-    this.isometricCoords = this.position.getIsometricCoords();
+    this.isometricPos = this.position.getIsometricPos();
 
     this.renderPos = new Position(
-      this.isometricCoords[0].x - TILE_SIZE + this.offset.x,
-      this.isometricCoords[0].y - 1 + this.offset.y
+      this.isometricPos[0].x - TILE_SIZE,
+      this.isometricPos[0].y - 1
     );
 
     this.buildingPos = new Position(
-      this.isometricCoords[2].x - this.offset.x,
-      this.isometricCoords[2].y - this.offset.y
+      this.isometricPos[2].x,
+      this.isometricPos[2].y
+    );
+
+    this.cameraPos = new Position(
+      canvasWidth / 2 - this.isometricPos[0].x,
+      canvasHeight / 4 +
+        canvasHeight / 4 -
+        this.isometricPos[0].y -
+        TILE_SIZE / 2
+      // canvasWidth / 2 - this.isometricPos[0].x,
+      // this.isometricPos[2].y - TILE_SIZE + canvasHeight / 4
     );
 
     this.image = new Image();
@@ -37,6 +49,10 @@ export class Tile {
 
   public setTemp(): void {
     this.temp = !this.temp;
+  }
+
+  public getCameraPos(): Position {
+    return this.cameraPos;
   }
 
   public getBuildingPos(): Position {
@@ -65,11 +81,11 @@ export class Tile {
   }
 
   public drawNormalGrid(): void {
-    this.drawGrid(this.position.getNormalCoords());
+    this.drawGrid(this.position.getNormalPos());
   }
 
   public drawIsometricGrid(): void {
-    this.drawGrid(this.position.getIsometricCoords());
+    this.drawGrid(this.position.getIsometricPos());
   }
 
   public draw(): void {
@@ -98,8 +114,8 @@ export class Tile {
 
   public updateRenderPos(cameraScroll: Position): void {
     this.renderPos = new Position(
-      this.isometricCoords[0].x - TILE_SIZE + cameraScroll.x,
-      this.isometricCoords[0].y - 1 + cameraScroll.y
+      this.isometricPos[0].x - TILE_SIZE + cameraScroll.x,
+      this.isometricPos[0].y - 1 + cameraScroll.y
     );
   }
 }

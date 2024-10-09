@@ -1,15 +1,25 @@
-import { canvasHeight, canvasWidth } from "../../init";
+import { canvasHeight, canvasWidth, ctx } from "../../init";
 import { Position } from "../../utils/position";
+import { Vector } from "../../utils/vector";
 
 export class Camera {
-  private dir: Position;
+  private dir: Vector;
   private scroll: Position;
   private speed: number;
 
   public constructor() {
-    this.dir = Position.zero();
+    this.dir = Vector.zero();
     this.scroll = Position.zero();
+    // this.scroll = scrollPosition;
     this.speed = 500;
+  }
+
+  public getScroll(): Position {
+    return this.scroll;
+  }
+
+  public setScroll(scroll: Position): void {
+    this.scroll = scroll;
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
@@ -35,28 +45,45 @@ export class Camera {
     //   this.dir.y = 0;
     // }
 
-    if (key === "ArrowLeft") {
-      this.dir.x = 1;
-      this.dir.y = 0;
-    } else if (key === "ArrowRight") {
-      this.dir.x = -1;
-      this.dir.y = 0;
-    } else if (key === "ArrowUp") {
-      this.dir.y = 1;
-      this.dir.x = 0;
-    } else if (key === "ArrowDown") {
-      this.dir.y = -1;
-      this.dir.x = 0;
-    } else {
-      this.dir.x = 0;
-      this.dir.y = 0;
+    switch (key) {
+      // case "ArrowLeft": {
+      //   this.dir = new Vector(1, 0);
+      //   break;
+      // }
+      // case "ArrowRight": {
+      //   this.dir = new Vector(-1, 0);
+      //   break;
+      // }
+      // case "ArrowUp": {
+      //   this.dir = new Vector(0, 1);
+      //   break;
+      // }
+      // case "ArrowDown": {
+      //   this.dir = new Vector(0, -1);
+      //   break;
+      // }
+      case "a": {
+        this.dir = new Vector(1, 0);
+        break;
+      }
+      case "d": {
+        this.dir = new Vector(-1, 0);
+        break;
+      }
+      case "w": {
+        this.dir = new Vector(0, 1);
+        break;
+      }
+      case "s": {
+        this.dir = new Vector(0, -1);
+        break;
+      }
+      default: {
+        this.dir = new Vector(0, 0);
+      }
     }
 
     this.scroll.x += this.speed * dt * this.dir.x;
     this.scroll.y += this.speed * dt * this.dir.y;
-  }
-
-  public getCameraScroll(): Position {
-    return this.scroll;
   }
 }
