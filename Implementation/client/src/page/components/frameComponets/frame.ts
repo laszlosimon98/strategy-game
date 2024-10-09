@@ -7,11 +7,11 @@ import { PageComponents } from "../pageComponents";
 export class Frame extends PageComponents {
   protected buttons: Button[] = [];
 
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     super(pos, width, height);
   }
 
-  draw(): void {
+  public draw(): void {
     super.draw();
 
     ctx.save();
@@ -24,7 +24,7 @@ export class Frame extends PageComponents {
     ctx.restore();
   }
 
-  getButtons(): Button[] {
+  public getButtons(): Button[] {
     return this.buttons;
   }
 }

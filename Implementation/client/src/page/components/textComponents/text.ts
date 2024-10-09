@@ -11,7 +11,7 @@ export class Text extends PageComponents {
   protected isSecret: boolean;
   private color: string;
 
-  constructor(
+  public constructor(
     pos: Position,
     width: number,
     height: number,
@@ -30,24 +30,24 @@ export class Text extends PageComponents {
     this.color = color ? color : TEXT_COLOR;
   }
 
-  setCenter(): void {
+  public setCenter(): void {
     this.isCentered = true;
   }
 
-  setText(text: string): void {
+  public setText(text: string): void {
     this.text = text;
     this.metrics = ctx.measureText(this.text);
   }
 
-  getText(): string {
+  public getText(): string {
     return this.text;
   }
 
-  setColor(color: string): void {
+  public setColor(color: string): void {
     this.color = color;
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.save();
     ctx.fillStyle = this.color;
     ctx.fillText(

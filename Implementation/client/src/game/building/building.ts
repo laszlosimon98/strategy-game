@@ -12,7 +12,12 @@ export class Building {
 
   private IsRenderPosSet: boolean;
 
-  constructor(indices: Indices, src: string, width: number, height: number) {
+  public constructor(
+    indices: Indices,
+    src: string,
+    width: number,
+    height: number
+  ) {
     this.indices = indices;
     this.pos = Position.zero();
     this.renderPos = Position.zero();
@@ -24,7 +29,7 @@ export class Building {
     this.dimension = new Dimension(width, height);
   }
 
-  draw(): void {
+  public draw(): void {
     if (this.IsRenderPosSet) {
       ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
       ctx.save();
@@ -39,7 +44,7 @@ export class Building {
     }
   }
 
-  update(cameraScroll: Position): void {
+  public update(cameraScroll: Position): void {
     if (!this.IsRenderPosSet) {
       this.IsRenderPosSet = true;
     }
@@ -50,15 +55,15 @@ export class Building {
     );
   }
 
-  getDimension(): Dimension {
+  public getDimension(): Dimension {
     return this.dimension;
   }
 
-  setPos(pos: Position): void {
+  public setPos(pos: Position): void {
     this.pos = pos;
   }
 
-  getIndices(): Indices {
+  public getIndices(): Indices {
     return this.indices;
   }
 }

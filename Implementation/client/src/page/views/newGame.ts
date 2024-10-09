@@ -12,7 +12,7 @@ export class NewGame extends Page {
   private create: Button;
   private join: Button;
 
-  constructor(title: string) {
+  public constructor(title: string) {
     super(title);
 
     this.create = new Button(

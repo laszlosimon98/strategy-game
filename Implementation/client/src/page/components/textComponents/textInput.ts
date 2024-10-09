@@ -7,7 +7,7 @@ export class TextInput extends Text {
   private backgroundColor: string;
   private isSelected: boolean;
 
-  constructor(
+  public constructor(
     pos: Position,
     width: number,
     height: number,
@@ -21,7 +21,7 @@ export class TextInput extends Text {
     this.isSelected = false;
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
 
@@ -38,7 +38,7 @@ export class TextInput extends Text {
     super.draw();
   }
 
-  updateText(key: string): void {
+  public updateText(key: string): void {
     if (key === "Backspace") {
       this.text = this.text.slice(0, this.text.length - 1);
     } else if (key.match(/^[a-zA-Z0-9]+$/) && key.length === 1) {
@@ -51,20 +51,20 @@ export class TextInput extends Text {
     );
   }
 
-  getText(): string {
+  public getText(): string {
     return this.text;
   }
 
-  clearText(): void {
+  public clearText(): void {
     this.text = "";
     this.metrics = ctx.measureText("");
   }
 
-  setIsSelected(isSelected: boolean): void {
+  public setIsSelected(isSelected: boolean): void {
     this.isSelected = isSelected;
   }
 
-  getIsSelected(): boolean {
+  public getIsSelected(): boolean {
     return this.isSelected;
   }
 }

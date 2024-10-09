@@ -6,13 +6,13 @@ export class Camera {
   private scroll: Position;
   private speed: number;
 
-  constructor() {
+  public constructor() {
     this.dir = Position.zero();
     this.scroll = Position.zero();
     this.speed = 500;
   }
 
-  update(dt: number, mousePos: Position, key: string): void {
+  public update(dt: number, mousePos: Position, key: string): void {
     // if (mousePos.x > 0 && mousePos.x < canvasWidth * 0.03) {
     //   this.dir.x = -1;
     // } else if (
@@ -56,7 +56,7 @@ export class Camera {
     this.scroll.y += this.speed * dt * this.dir.y;
   }
 
-  getCameraScroll(): Position {
+  public getCameraScroll(): Position {
     return this.scroll;
   }
 }

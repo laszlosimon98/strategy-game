@@ -8,7 +8,7 @@ export class StorageSection extends Section {
   private text: Text;
   private readonly title: string = "Raktár";
 
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     super(pos, width, height);
 
     this.text = new Text(

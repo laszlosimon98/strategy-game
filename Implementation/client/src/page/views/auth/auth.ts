@@ -24,7 +24,7 @@ export class Auth extends Page {
   private nameText: Text;
   private passwordText: Text;
 
-  constructor(title: string, actionButtonImage: string) {
+  public constructor(title: string, actionButtonImage: string) {
     super(title);
 
     this.backButton = new Button(
@@ -85,7 +85,7 @@ export class Auth extends Page {
     );
   }
 
-  draw(): void {
+  public draw(): void {
     super.draw();
     this.nameInput.draw();
     this.passwordInput.draw();
@@ -100,7 +100,7 @@ export class Auth extends Page {
     };
   }
 
-  handleNext = (): void => {
+  public handleNext = (): void => {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
@@ -111,7 +111,7 @@ export class Auth extends Page {
     }
   };
 
-  handleAuth(): [boolean, string] {
+  public handleAuth(): [boolean, string] {
     return [false, ""];
   }
 }

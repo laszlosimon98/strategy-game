@@ -12,11 +12,11 @@ export class Section {
   // protected items: Item[];
   // protected units: Unit[];
 
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     this.section = new Frame(pos, width, height);
   }
 
-  draw(): void {
+  public draw(): void {
     this.section.draw();
     this.subSections[globalState.subMenuState]?.draw();
 
@@ -25,7 +25,7 @@ export class Section {
     // this.units.forEach(unit => unit.draw());
   }
 
-  update(mousePos: Position): void {
+  public update(mousePos: Position): void {
     this.section.update(mousePos);
     this.subSections[globalState.subMenuState]?.update(mousePos);
 
@@ -34,7 +34,7 @@ export class Section {
     // this.units.forEach(unit => unit.update());
   }
 
-  getButtons(): Button[] {
+  public getButtons(): Button[] {
     return this.buttons;
   }
 }

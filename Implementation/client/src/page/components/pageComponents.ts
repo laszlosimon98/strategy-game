@@ -11,41 +11,41 @@ export class PageComponents {
     this.height = height;
   }
 
-  draw(): void {}
+  public draw(): void {}
 
-  update(mousePos: Position): void {}
+  public update(mousePos: Position): void {}
 
-  isClicked(mouseX: number, mouseY: number) {
+  public isClicked(mouseX: number, mouseY: number) {
     const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.width;
     const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.height;
     return x && y;
   }
 
-  getPos(): Position {
+  public getPos(): Position {
     return this.pos;
   }
 
-  setPos(pos: Position) {
+  public setPos(pos: Position) {
     this.pos = pos;
   }
 
-  getWidth(): number {
+  public getWidth(): number {
     return this.width;
   }
 
-  setWidth(width: number): void {
+  public setWidth(width: number): void {
     this.width = width;
   }
 
-  getHeight(): number {
+  public getHeight(): number {
     return this.height;
   }
 
-  setHeight(height: number): void {
+  public setHeight(height: number): void {
     this.width = height;
   }
 
-  // resize(): void {
+  // public resize(): void {
   //   this.pos.resize();
   // }
 }

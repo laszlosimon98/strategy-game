@@ -15,7 +15,7 @@ export class MainMenu extends Page {
   private registration: Button;
   private namePlate: TextImage;
 
-  constructor(title: string) {
+  public constructor(title: string) {
     super(title);
 
     this.newGame = new Button(
@@ -75,12 +75,12 @@ export class MainMenu extends Page {
     this.buttons.push(this.registration);
   }
 
-  draw(): void {
+  public draw(): void {
     super.draw();
     this.namePlate.draw();
   }
 
-  update(): void {
+  public update(): void {
     if (this.namePlate.getText() !== globalState.playerName) {
       this.namePlate.setText(globalState.playerName);
     }

@@ -28,7 +28,7 @@ export class Lobby extends Page {
   private players: Record<string, Text>[] = [];
   private playerLabel: Text;
 
-  constructor(title: string) {
+  public constructor(title: string) {
     super(title);
 
     this.start = new Button(
@@ -86,7 +86,7 @@ export class Lobby extends Page {
     this.handleCommunication();
   }
 
-  draw(): void {
+  public draw(): void {
     super.draw();
     this.gameCode.draw();
     this.info.draw();
@@ -98,7 +98,7 @@ export class Lobby extends Page {
     });
   }
 
-  update(): void {
+  public update(): void {
     super.update();
     if (this.playerLabel.getText() !== globalState.playerName) {
       this.playerLabel.setText(globalState.playerName);

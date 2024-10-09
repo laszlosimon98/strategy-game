@@ -23,11 +23,11 @@ export class ServerHandler {
     return this.socket;
   }
 
-  static sendMessage(event: string, data: any): void {
+  public static sendMessage(event: string, data: any): void {
     this.getInstance().emit(event, data);
   }
 
-  static receiveAsyncMessage(event: string): Promise<any> {
+  public static receiveAsyncMessage(event: string): Promise<any> {
     return new Promise((resolve) => {
       this.getInstance().on(event, (data: any) => {
         resolve(data);
@@ -39,7 +39,7 @@ export class ServerHandler {
     });
   }
 
-  static receiveMessage(event: string, callback: Function): void {
+  public static receiveMessage(event: string, callback: Function): void {
     this.getInstance().on(event, (data: any) => callback(data));
   }
 }

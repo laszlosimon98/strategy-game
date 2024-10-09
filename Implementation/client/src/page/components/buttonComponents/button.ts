@@ -7,7 +7,7 @@ export class Button extends MenuComponent {
 
   private isHovered: boolean;
 
-  constructor(
+  public constructor(
     pos: Position,
     width: number,
     height: number,
@@ -20,7 +20,7 @@ export class Button extends MenuComponent {
     this.isHovered = false;
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.save();
     if (this.isHovered) {
       ctx.globalAlpha = 0.8;
@@ -29,21 +29,21 @@ export class Button extends MenuComponent {
     ctx.restore();
   }
 
-  update(mousePos: Position) {
+  public update(mousePos: Position) {
     this.isHovered = this.isClicked(mousePos.x, mousePos.y);
   }
 
-  click(): void {
+  public click(): void {
     this.func.forEach((fn) => fn());
   }
 
-  setImage(imageSrc: string) {
+  public setImage(imageSrc: string) {
     this.image.src = imageSrc;
   }
 
-  getImage(): string {
+  public getImage(): string {
     return this.image.src;
   }
 
-  async handleError(): Promise<any> {}
+  public async handleError(): Promise<any> {}
 }

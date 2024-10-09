@@ -12,7 +12,7 @@ export class GameMenu {
   private mainSection: MainSection;
   private frames: Record<GameMainMenuState, Section>;
 
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     this.mainSection = new MainSection(pos, width, 75);
 
     this.frames = {
@@ -44,17 +44,17 @@ export class GameMenu {
     };
   }
 
-  draw(): void {
+  public draw(): void {
     this.mainSection.draw();
     this.frames[globalState.gameMenuState].draw();
   }
 
-  update(mousePos: Position): void {
+  public update(mousePos: Position): void {
     this.mainSection.update(mousePos);
     this.frames[globalState.gameMenuState].update(mousePos);
   }
 
-  handleClick(mousePos: Position): void {
+  public handleClick(mousePos: Position): void {
     this.updateImages("Main", mousePos, this.mainSection.getButtons());
     this.updateImages(
       "Sub",
@@ -63,7 +63,7 @@ export class GameMenu {
     );
   }
 
-  updateImages(state: string, mousePos: Position, buttons?: Button[]): void {
+  public updateImages(state: string, mousePos: Position, buttons?: Button[]): void {
     if (!buttons) {
       return;
     }

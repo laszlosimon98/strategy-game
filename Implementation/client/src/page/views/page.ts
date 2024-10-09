@@ -21,15 +21,15 @@ export class Page {
     this.title.src = title;
   }
 
-  getButtons(): Button[] {
+  public getButtons(): Button[] {
     return this.buttons;
   }
 
-  getInputs(): TextInput[] {
+  public getInputs(): TextInput[] {
     return this.inputs;
   }
 
-  draw() {
+  public draw() {
     ctx.drawImage(
       this.title,
       this.titlePos.x,
@@ -43,7 +43,7 @@ export class Page {
     });
   }
 
-  update(): void {}
+  public update(): void {}
 
-  resize(): void {}
+  public resize(): void {}
 }

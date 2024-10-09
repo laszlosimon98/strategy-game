@@ -5,7 +5,7 @@ import { gameMenuAssets } from "../../../imports/menu";
 import { Section } from "../section";
 
 export class MainSection extends Section {
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     super(pos, width, height);
 
     this.buttons.push(

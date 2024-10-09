@@ -12,7 +12,7 @@ import { StorageSection } from "./components/storageSection";
 export class BuildingSection extends Section {
   private readonly margin: number = 125;
 
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     super(pos, width, height);
 
     this.subSections = {

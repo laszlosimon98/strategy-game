@@ -8,7 +8,7 @@ export class ResourceSection extends Section {
   private text: Text;
   private readonly title: string = "Erőforrás";
 
-  constructor(pos: Position, width: number, height: number) {
+  public constructor(pos: Position, width: number, height: number) {
     super(pos, width, height);
 
     this.text = new Text(

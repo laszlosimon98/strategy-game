@@ -5,7 +5,7 @@ import { Text } from "./text";
 export class TextImage extends Text {
   private image: HTMLImageElement;
 
-  constructor(
+  public constructor(
     pos: Position,
     width: number,
     height: number,
@@ -19,7 +19,7 @@ export class TextImage extends Text {
     this.image.src = imageSrc;
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.drawImage(this.image, this.pos.x, this.pos.y, this.width, this.height);
     ctx.fillText(
       this.text,

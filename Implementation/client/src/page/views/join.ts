@@ -25,7 +25,7 @@ export class Join extends Page {
   private codeText: Text;
   private errorMessage: Text;
 
-  constructor(title: string) {
+  public constructor(title: string) {
     super(title);
 
     this.backButton = new Button(
@@ -79,7 +79,7 @@ export class Join extends Page {
     this.joinButton.handleError = this.handleError;
   }
 
-  draw(): void {
+  public draw(): void {
     super.draw();
     this.codeInput.draw();
     this.codeText.draw();

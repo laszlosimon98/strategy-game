@@ -9,7 +9,7 @@ import { Page } from "./page";
 export class Description extends Page {
   private backButton: Button;
 
-  constructor(title: string) {
+  public constructor(title: string) {
     super(title);
 
     this.backButton = new Button(
