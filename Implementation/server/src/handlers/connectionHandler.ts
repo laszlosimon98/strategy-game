@@ -1,12 +1,8 @@
 import { Server, Socket } from "socket.io";
 
 import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "../settings";
-import {
-  getCurrentRoom,
-  sendMessageToEveryOne,
-  sendMessageToSender,
-} from "../utils/utils";
-import { gameState, PlayerType, TeamType } from "../gameState";
+import { gameState, PlayerType, TeamType } from "../state/gameState";
+import { Communicate } from "../classes/communicate";
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const generateCode = (): string => {
@@ -52,23 +48,31 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
     addPlayer(code, newPlayer);
     socket.join(code);
-    sendMessageToSender(socket, "connect:code", { code });
+    Communicate.sendMessageToSender(socket, "connect:code", { code });
     newPlayerMessage(code, name);
   };
 
   const joinGame = ({ code, name }: { code: string; name: string }) => {
     if (!isRoomExists(code)) {
-      sendMessageToSender(socket, "connect:error", "Rossz csatlakozási kód!");
+      Communicate.sendMessageToSender(
+        socket,
+        "connect:error",
+        "Rossz csatlakozási kód!"
+      );
       return;
     }
 
     if (getRoomSize(code) >= MAX_PLAYER) {
-      sendMessageToSender(socket, "connect:error", "A váró megtelt!");
+      Communicate.sendMessageToSender(
+        socket,
+        "connect:error",
+        "A váró megtelt!"
+      );
       return;
     }
 
     if (isGameStarted(code)) {
-      sendMessageToSender(
+      Communicate.sendMessageToSender(
         socket,
         "connect:error",
         "Sikertelen csatlakozás. A játék elkezdődött!"
@@ -84,17 +88,17 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     addPlayer(code, newPlayer);
     socket.join(code);
 
-    sendMessageToSender(socket, "connect:code", { code });
+    Communicate.sendMessageToSender(socket, "connect:code", { code });
     newPlayerMessage(code, name);
   };
 
   const start = () => {
-    const currentRoom = getCurrentRoom(socket);
+    const currentRoom = Communicate.getCurrentRoom(socket);
     gameState[currentRoom].isGameStarted = true;
   };
 
   const disconnect = () => {
-    const currentRoom = getCurrentRoom(socket);
+    const currentRoom = Communicate.getCurrentRoom(socket);
 
     if (currentRoom) {
       const user = gameState[currentRoom].players.find(
@@ -111,14 +115,14 @@ export const connectionHandler = (io: Server, socket: Socket) => {
   };
 
   const newPlayerMessage = (code: string, name: string) => {
-    sendMessageToEveryOne(io, socket, "connect:newPlayer", {
+    Communicate.sendMessageToEveryOne(io, socket, "connect:newPlayer", {
       players: gameState[code].players,
       message: `${name} csatlakozott a váróhoz!`,
     });
   };
 
   const playerleftMessage = (name: string) => {
-    sendMessageToEveryOne(io, socket, "connect:playerLeft", {
+    Communicate.sendMessageToEveryOne(io, socket, "connect:playerLeft", {
       id: socket.id,
       message: `${name} elhagyta a várót!`,
     });

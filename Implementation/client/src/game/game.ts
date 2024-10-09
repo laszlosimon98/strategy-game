@@ -4,7 +4,7 @@ import { Vector } from "../utils/vector";
 import { GameMenu } from "./menu/gameMenu";
 import { Tile } from "./world/tile";
 import { groundAssets } from "./imports/ground";
-import { ERROR_COLOR, INFO_COLOR, TILE_SIZE } from "../settings";
+import { ERROR_COLOR, TILE_SIZE } from "../settings";
 import { Position } from "../utils/position";
 import { Camera } from "./camera/camera";
 import { Building } from "./building/building";
@@ -29,7 +29,7 @@ export class Game {
   private pathEnd: Indices;
   private path: Indices[] = [];
 
-  constructor() {
+  public constructor() {
     this.pathStart = Indices.zero();
     this.pathEnd = Indices.zero();
 
@@ -47,7 +47,7 @@ export class Game {
     this.handleCommunication();
   }
 
-  init(): void {
+  private init(): void {
     ServerHandler.receiveMessage("game:createWorld", (data: TileType[][]) => {
       for (let i = 0; i < data.length; ++i) {
         this.world.push([]);
@@ -58,7 +58,7 @@ export class Game {
     });
   }
 
-  draw(): void {
+  public draw(): void {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         // tile.drawNormalGrid();
@@ -72,7 +72,7 @@ export class Game {
     this.gameMenu.draw();
   }
 
-  update(dt: number) {
+  public update(dt: number) {
     this.gameMenu.update(this.mousePos);
     this.camera.update(dt, this.mousePos, this.key);
 
@@ -87,7 +87,7 @@ export class Game {
     );
   }
 
-  handleClick(e: MouseEvent) {
+  public handleClick(e: MouseEvent) {
     const button = e.button;
     this.gameMenu.handleClick(this.mousePos);
 
@@ -124,15 +124,15 @@ export class Game {
     }
   }
 
-  handleMouseMove(pos: Position): void {
+  public handleMouseMove(pos: Position): void {
     this.mousePos.setPosition(pos);
   }
 
-  handleKeyPress(key: string): void {
+  public handleKeyPress(key: string): void {
     this.key = key;
   }
 
-  resize(): void {}
+  public resize(): void {}
 
   private isClickOnTheMap(indices: Indices): boolean {
     return (
@@ -149,27 +149,30 @@ export class Game {
     width: number,
     height: number
   ): void {
-    const i = indices.i;
-    const j = indices.j;
+    console.log(image);
+    if (image) {
+      const i = indices.i;
+      const j = indices.j;
 
-    const pos: Position = this.world[i][j].getBuildingPos();
+      const pos: Position = this.world[i][j].getBuildingPos();
 
-    const building: Building = new Building(
-      new Indices(i, j),
-      image,
-      width,
-      height
-    );
-    const dimension: Dimension = building.getDimension();
+      const building: Building = new Building(
+        new Indices(i, j),
+        image,
+        width,
+        height
+      );
+      const dimension: Dimension = building.getDimension();
 
-    const buildingPos: Position = new Position(
-      pos.x - dimension.width / 2,
-      pos.y - dimension.height
-    );
+      const buildingPos: Position = new Position(
+        pos.x - dimension.width / 2,
+        pos.y - dimension.height
+      );
 
-    building.setPos(buildingPos);
+      building.setPos(buildingPos);
 
-    this.buildings.push(building);
+      this.buildings.push(building);
+    }
   }
 
   private destroy(indices: Indices): void {

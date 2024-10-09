@@ -53,7 +53,7 @@ export class Camera {
     }
 
     this.scroll.x += this.speed * dt * this.dir.x;
-    this.scroll.y += (this.speed / 2) * dt * this.dir.y;
+    this.scroll.y += this.speed * dt * this.dir.y;
   }
 
   getCameraScroll(): Position {

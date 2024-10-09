@@ -28,7 +28,7 @@ export class Program {
   private mousePos: Position;
   private key: string;
 
-  constructor() {
+  public constructor() {
     this.mousePos = Position.zero();
     this.key = "";
 
@@ -78,7 +78,7 @@ export class Program {
     });
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
@@ -91,7 +91,7 @@ export class Program {
     }
   }
 
-  update(dt: number): void {
+  public update(dt: number): void {
     if (globalState.state !== PageState.Game) {
       this.buttons?.map((btn) => btn.update(this.mousePos));
       this.pages[globalState.state]?.update();
@@ -100,7 +100,7 @@ export class Program {
     }
   }
 
-  createNewpageElement(state: PageState, page: Page): void {
+  public createNewpageElement(state: PageState, page: Page): void {
     this.pages = {
       ...this.pages,
       [state]: page,

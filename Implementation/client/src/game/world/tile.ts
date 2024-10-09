@@ -15,7 +15,7 @@ export class Tile {
 
   private temp: boolean = false;
 
-  constructor(i: number, j: number, type: string) {
+  public constructor(i: number, j: number, type: string) {
     this.position = new Vector(i, j);
     this.offset = Position.zero();
 
@@ -35,11 +35,11 @@ export class Tile {
     this.image.src = type;
   }
 
-  setTemp(): void {
+  public setTemp(): void {
     this.temp = !this.temp;
   }
 
-  getBuildingPos(): Position {
+  public getBuildingPos(): Position {
     return this.buildingPos;
   }
 
@@ -64,15 +64,15 @@ export class Tile {
     ctx.closePath();
   }
 
-  drawNormalGrid(): void {
+  public drawNormalGrid(): void {
     this.drawGrid(this.position.getNormalCoords());
   }
 
-  drawIsometricGrid(): void {
+  public drawIsometricGrid(): void {
     this.drawGrid(this.position.getIsometricCoords());
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.save();
     // if (this.temp) {
     //   ctx.globalCompositeOperation = "color";
@@ -96,7 +96,7 @@ export class Tile {
     ctx.restore();
   }
 
-  updateRenderPos(cameraScroll: Position): void {
+  public updateRenderPos(cameraScroll: Position): void {
     this.renderPos = new Position(
       this.isometricCoords[0].x - TILE_SIZE + cameraScroll.x,
       this.isometricCoords[0].y - 1 + cameraScroll.y

@@ -1,4 +1,4 @@
-import { TileType } from "../gameState";
+import { TileType } from "../../state/gameState";
 
 export class Cell {
   i: number;
@@ -12,8 +12,8 @@ export class Cell {
   private previous: Cell | undefined;
 
   private type: TileType;
-  private building: string | null;
-  private obstacle: string | null;
+  private building: string | undefined;
+  private obstacle: string | undefined;
 
   constructor(i: number, j: number) {
     this.i = i;
@@ -27,8 +27,8 @@ export class Cell {
     this.previous = undefined;
 
     this.type = "grass";
-    this.building = null;
-    this.obstacle = null;
+    this.building = undefined;
+    this.obstacle = undefined;
   }
 
   addNeighbors(cell: Cell): void {
@@ -40,7 +40,7 @@ export class Cell {
   }
 
   isPlaceable(): boolean {
-    return this.building === null && this.obstacle === null;
+    return this.building === undefined && this.obstacle === undefined;
   }
 
   setType(type: TileType): void {
@@ -51,11 +51,11 @@ export class Cell {
     return this.type;
   }
 
-  setBuilding(image: string | null): void {
+  setBuilding(image: string | undefined): void {
     this.building = image;
   }
 
-  getBuilding(): string | null {
+  getBuilding(): string | undefined {
     return this.building;
   }
 
@@ -63,7 +63,7 @@ export class Cell {
     return this.previous;
   }
 
-  setPrevious(prev: Cell): void {
+  setPrevious(prev: Cell | undefined): void {
     this.previous = prev;
   }
 

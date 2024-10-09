@@ -1,5 +1,5 @@
-import { Cell } from "./cell";
-import { Indices } from "./point";
+import { Cell } from "../utils/cell";
+import { Indices } from "../utils/indices";
 
 export class AStar {
   private static currentCell: Cell;
@@ -51,7 +51,6 @@ export class AStar {
       this.currentCell = openList[lowest];
 
       if (this.currentCell.equals(end)) {
-        console.log("Út megtalálva!");
         return true;
       }
 
@@ -63,7 +62,7 @@ export class AStar {
       for (let i = 0; i < neighbors.length; ++i) {
         const neighbor = neighbors[i];
 
-        if (!closedList.includes(neighbor) && neighbor.getBuilding() === null) {
+        if (!closedList.includes(neighbor) && !neighbor.getBuilding()) {
           if (openList.includes(neighbor)) {
             if (this.currentCell.getF() < neighbor.getF()) {
               this.updateNeighbor(neighbor, end);
@@ -76,12 +75,11 @@ export class AStar {
       }
     }
 
-    console.log("Nincs megoldas");
     return false;
   }
 
   public static getPath(start: Cell, end: Cell): Indices[] {
-    const isPath: boolean = this.calculatePath(start, end);
+    this.calculatePath(start, end);
 
     const path: Cell[] = [];
     let temp: Cell | undefined = this.currentCell;

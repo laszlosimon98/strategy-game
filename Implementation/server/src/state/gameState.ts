@@ -1,4 +1,4 @@
-import { Cell } from "./utils/cell";
+import { Cell } from "../classes/utils/cell";
 
 export type PlayerType = {
   playerId: string;
