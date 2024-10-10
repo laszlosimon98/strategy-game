@@ -1,7 +1,8 @@
 import { Socket } from "socket.io";
 import { Indices } from "../utils/indices";
 import { World } from "./world";
-import { Cell } from "../utils/cell";
+import { BuildingType } from "../../types/types";
+import { Validator } from "../validator";
 
 export type BuildType = {
   indices: Indices;
@@ -29,7 +30,7 @@ export class Builder {
     const i = indices.i;
     const j = indices.j;
 
-    return World.getWorld(socket)[i][j].getBuilding();
+    return World.getWorld(socket)[i][j].getBuilding().image;
   }
 
   public static build({ indices, image, socket }: BuildType): void {
@@ -41,16 +42,31 @@ export class Builder {
     }
 
     const world = World.getWorld(socket);
-    world[i][j].setBuilding(image);
+
+    const newBuilding: BuildingType = {
+      image,
+      owner: socket.id,
+    };
+
+    world[i][j].setBuilding(newBuilding);
+
     World.setWorld(world, socket);
   }
 
-  public static destroy(indices: Indices, socket: Socket): void {
+  public static destroy(indices: Indices, socket: Socket): boolean {
     const i = indices.i;
     const j = indices.j;
 
     const world = World.getWorld(socket);
-    world[i][j].setBuilding(undefined);
+    const building: BuildingType = world[i][j].getBuilding();
+
+    if (!Validator.isSenderAndOwnerSame(socket, building.owner)) {
+      return false;
+    }
+
+    world[i][j].setBuilding({ image: undefined, owner: undefined });
     World.setWorld(world, socket);
+
+    return true;
   }
 }

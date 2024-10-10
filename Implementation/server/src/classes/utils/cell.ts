@@ -1,4 +1,5 @@
 import { TileType } from "../../state/gameState";
+import { BuildingType } from "../../types/types";
 
 export class Cell {
   i: number;
@@ -9,11 +10,12 @@ export class Cell {
   private f: number;
 
   private neighbors: Cell[];
-  private previous: Cell | undefined;
+  private previous?: Cell | undefined;
 
   private type: TileType;
-  private building: string | undefined;
-  private obstacle: string | undefined;
+  private obstacle?: string;
+
+  private building: BuildingType;
 
   constructor(i: number, j: number) {
     this.i = i;
@@ -27,8 +29,9 @@ export class Cell {
     this.previous = undefined;
 
     this.type = "grass";
-    this.building = undefined;
     this.obstacle = undefined;
+
+    this.building = {};
   }
 
   addNeighbors(cell: Cell): void {
@@ -40,7 +43,7 @@ export class Cell {
   }
 
   isPlaceable(): boolean {
-    return this.building === undefined && this.obstacle === undefined;
+    return this.building.owner === undefined && this.obstacle === undefined;
   }
 
   setType(type: TileType): void {
@@ -51,11 +54,11 @@ export class Cell {
     return this.type;
   }
 
-  setBuilding(image: string | undefined): void {
-    this.building = image;
+  setBuilding(newBuilding: BuildingType): void {
+    this.building = { ...newBuilding };
   }
 
-  getBuilding(): string | undefined {
+  getBuilding(): BuildingType {
     return this.building;
   }
 

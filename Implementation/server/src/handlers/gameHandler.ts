@@ -7,6 +7,7 @@ import { PathFinder } from "../classes/pathFind/pathFinder";
 import { World } from "../classes/game/world";
 import { Builder, BuildType } from "../classes/game/builder";
 import { MAP_SIZE } from "../settings";
+import { Validator } from "../classes/validator";
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const gameStarts = () => {
@@ -37,6 +38,10 @@ export const gameHandler = (io: Server, socket: Socket) => {
   };
 
   const build = ({ indices, image, width, height }: BuildType): void => {
+    // if (!Validator.validateIndices(indices)) {
+    //   return;
+    // }
+
     Builder.build({ indices, image, socket });
     const buildingImage = Builder.getHouseImage(indices, socket);
 
@@ -49,11 +54,21 @@ export const gameHandler = (io: Server, socket: Socket) => {
   };
 
   const destroy = (indices: Indices): void => {
-    Builder.destroy(indices, socket);
-    Communicate.sendMessageToEveryOne(io, socket, "game:destroy", indices);
+    if (!Validator.validateIndices(indices)) {
+      return;
+    }
+
+    const isSuccessfull: boolean = Builder.destroy(indices, socket);
+    if (isSuccessfull) {
+      Communicate.sendMessageToEveryOne(io, socket, "game:destroy", indices);
+    }
   };
 
   const pathFind = ({ start, end }: { start: Indices; end: Indices }) => {
+    if (!Validator.validateIndices(start) || !Validator.validateIndices(end)) {
+      return;
+    }
+
     const world: Cell[][] = gameState[Communicate.getCurrentRoom(socket)].world;
     const path: Indices[] = PathFinder.getPath(world, start, end);
 
