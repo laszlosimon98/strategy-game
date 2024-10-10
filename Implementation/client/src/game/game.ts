@@ -29,9 +29,13 @@ export class Game {
   private pathEnd: Indices;
   private path: Indices[] = [];
 
+  private test: HTMLImageElement;
+
   public constructor() {
     this.pathStart = Indices.zero();
     this.pathEnd = Indices.zero();
+
+    this.test = new Image();
 
     this.gameMenu = new GameMenu(
       new Vector(0, (canvasHeight - 500) / 5),
@@ -76,6 +80,7 @@ export class Game {
     this.buildings.forEach((building) => building.draw());
     this.printMouseCoords();
     this.gameMenu.draw();
+    ctx.drawImage(this.test, canvasWidth / 2, canvasHeight / 2);
   }
 
   public update(dt: number) {
@@ -251,6 +256,11 @@ export class Game {
       this.path.forEach((indices) =>
         this.world[indices.i][indices.j].setTemp()
       );
+    });
+
+    ServerHandler.receiveMessage("game:images", (data: any) => {
+      console.log(data);
+      // this.test.src = data[0];
     });
   }
 }

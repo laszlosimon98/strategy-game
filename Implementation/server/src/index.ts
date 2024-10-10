@@ -5,11 +5,15 @@ import { Server, Socket } from "socket.io";
 import { authHandler } from "./handlers/authHandler";
 import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler";
+import path from "path";
+import { Loader } from "./classes/loader";
 
 const PORT = 3000;
 
 const app = express();
 const httpServer = createServer(app);
+
+app.use(express.static(path.join(__dirname, "..", "/public")));
 
 const io: Server = new Server(httpServer, {
   cors: {

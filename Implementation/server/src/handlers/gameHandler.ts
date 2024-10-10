@@ -8,9 +8,19 @@ import { World } from "../classes/game/world";
 import { Builder, BuildType } from "../classes/game/builder";
 import { MAP_SIZE } from "../settings";
 import { Validator } from "../classes/validator";
+import { Loader } from "../classes/loader";
+import path from "path";
 
 export const gameHandler = (io: Server, socket: Socket) => {
-  const gameStarts = () => {
+  const gameStarts = async () => {
+    Communicate.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:images",
+      await Loader.loadImages(
+        path.join(__dirname, "..", "..", "/public/assets")
+      )
+    );
     Communicate.sendMessageToEveryOneExceptSender(socket, "game:starts", {});
 
     const tiles = createWorld();
