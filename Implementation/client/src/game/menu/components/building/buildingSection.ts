@@ -1,8 +1,8 @@
+import { images } from "../../../../data/images";
 import { Button } from "../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../settings";
 import { GameSubMenuState } from "../../../../states/gameMenuState";
 import { Position } from "../../../../utils/position";
-import { gameMenuAssets } from "../../../imports/menu";
 import { Section } from "../section";
 import { FoodSection } from "./components/foodSection";
 import { MilitarySection } from "./components/militarySection";
@@ -43,25 +43,25 @@ export class BuildingSection extends Section {
         new Position(width / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.resource
+        images.game.menu.resource
       ),
       new Button(
         new Position((width * 3) / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.food
+        images.game.menu.food
       ),
       new Button(
         new Position((width * 5) / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.military
+        images.game.menu.military
       ),
       new Button(
         new Position((width * 7) / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.house
+        images.game.menu.house
       )
     );
   }

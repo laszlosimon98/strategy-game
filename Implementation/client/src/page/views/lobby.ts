@@ -13,11 +13,11 @@ import {
 import { Button } from "../components/buttonComponents/button";
 import { Frame } from "../components/frameComponets/frame";
 import { Text } from "../components/textComponents/text";
-import { buttonImages } from "../imports/buttons";
 import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
 import { titlePos } from "./pos/titlePos";
 import { Position } from "../../utils/position";
+import { images } from "../../data/images";
 
 export class Lobby extends Page {
   private backButton: Button;
@@ -35,7 +35,7 @@ export class Lobby extends Page {
       buttonPos.default.next,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.start,
+      images.page.buttons.start,
       this.handleStart
     );
 
@@ -43,7 +43,7 @@ export class Lobby extends Page {
       buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.back,
+      images.page.buttons.back,
       this.handleLeaveRoom
     );
 
@@ -109,9 +109,11 @@ export class Lobby extends Page {
     }
   }
 
-  private handleStart = (): void => {
-    ServerHandler.sendMessage("connect:start", {});
-    globalState.state = PageState.Game;
+  private handleStart = async () => {
+    ServerHandler.sendMessage("start:game", {});
+    images.game = await ServerHandler.receiveAsyncMessage("start:game");
+
+    ServerHandler.sendMessage("game:starts", {});
   };
 
   private handleLeaveRoom = (): void => {

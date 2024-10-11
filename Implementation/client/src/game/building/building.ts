@@ -12,12 +12,7 @@ export class Building {
 
   private IsRenderPosSet: boolean;
 
-  public constructor(
-    indices: Indices,
-    src: string,
-    width: number,
-    height: number
-  ) {
+  public constructor(indices: Indices, src: string) {
     this.indices = indices;
     this.pos = Position.zero();
     this.renderPos = Position.zero();
@@ -26,21 +21,21 @@ export class Building {
     this.image = new Image();
     this.image.src = src;
 
-    this.dimension = new Dimension(width, height);
+    this.dimension = new Dimension(this.image.width, this.image.height);
   }
 
   public draw(): void {
     if (this.IsRenderPosSet) {
       ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-      ctx.save();
-      ctx.strokeStyle = "#f00";
-      ctx.strokeRect(
-        this.renderPos.x,
-        this.renderPos.y,
-        this.dimension.width,
-        this.dimension.height
-      );
-      ctx.restore();
+      // ctx.save();
+      // ctx.strokeStyle = "#f00";
+      // ctx.strokeRect(
+      //   this.renderPos.x,
+      //   this.renderPos.y,
+      //   this.dimension.width,
+      //   this.dimension.height
+      // );
+      // ctx.restore();
     }
   }
 
@@ -57,6 +52,10 @@ export class Building {
 
   public getDimension(): Dimension {
     return this.dimension;
+  }
+
+  public setDimension(dimension: Dimension): void {
+    this.dimension = dimension;
   }
 
   public setPos(pos: Position): void {

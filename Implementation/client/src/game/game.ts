@@ -1,18 +1,17 @@
-import { canvasHeight, canvasWidth, ctx } from "../init";
+import { canvasHeight, ctx } from "../init";
 import { ServerHandler } from "../server/serverHandler";
 import { Vector } from "../utils/vector";
 import { GameMenu } from "./menu/gameMenu";
 import { Tile } from "./world/tile";
-import { groundAssets } from "./imports/ground";
 import { ERROR_COLOR, TILE_SIZE } from "../settings";
 import { Position } from "../utils/position";
 import { Camera } from "./camera/camera";
 import { Building } from "./building/building";
 import { Dimension } from "../utils/dimension";
-import { building } from "./imports/building";
 import { MouseButtons } from "./utils/mouseEnum";
 import { TileType } from "../types/gameType";
 import { Indices } from "../utils/indices";
+import { images } from "../data/images";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -29,13 +28,9 @@ export class Game {
   private pathEnd: Indices;
   private path: Indices[] = [];
 
-  private test: HTMLImageElement;
-
   public constructor() {
     this.pathStart = Indices.zero();
     this.pathEnd = Indices.zero();
-
-    this.test = new Image();
 
     this.gameMenu = new GameMenu(
       new Vector(0, (canvasHeight - 500) / 5),
@@ -49,6 +44,7 @@ export class Game {
     this.camera = new Camera();
     this.init();
     this.handleCommunication();
+    console.log(images.game);
   }
 
   private init(): void {
@@ -57,13 +53,13 @@ export class Game {
         this.world.push([]);
         for (let col = 0; col < tiles[row].length; ++col) {
           this.world[row].push(
-            new Tile(row, col, groundAssets[tiles[row][col]])
+            new Tile(row, col, images.game.ground[tiles[row][col]])
           );
         }
       }
 
       ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+        // this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
       });
     });
   }
@@ -72,15 +68,14 @@ export class Game {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         // tile.drawNormalGrid();
-        // tile.drawIsometricGrid();
+        tile.drawIsometricGrid();
         tile.draw();
       });
     });
 
     this.buildings.forEach((building) => building.draw());
     this.printMouseCoords();
-    this.gameMenu.draw();
-    ctx.drawImage(this.test, canvasWidth / 2, canvasHeight / 2);
+    // this.gameMenu.draw();
   }
 
   public update(dt: number) {
@@ -118,14 +113,12 @@ export class Game {
         });
         break;
       case MouseButtons.Middle:
-        const type = building.woodCutter;
+        const image = images.game.buildings.woodcutter6;
 
         if (this.isClickOnTheMap(indices)) {
           ServerHandler.sendMessage("game:build", {
             indices,
-            image: type.image,
-            width: type.width,
-            height: type.height,
+            image,
           });
         }
         break;
@@ -154,26 +147,19 @@ export class Game {
     );
   }
 
-  private build(
-    indices: Indices,
-    image: string,
-    width: number,
-    height: number
-  ): void {
-    console.log(image);
+  private build(indices: Indices, image: string): void {
     if (image) {
       const i = indices.i;
       const j = indices.j;
 
       const pos: Position = this.world[i][j].getBuildingPos();
 
-      const building: Building = new Building(
-        new Indices(i, j),
-        image,
-        width,
-        height
+      const building: Building = new Building(new Indices(i, j), image);
+      building.setDimension(
+        new Dimension(building.image.width, building.image.height)
       );
       const dimension: Dimension = building.getDimension();
+      console.log(building);
 
       const buildingPos: Position = new Position(
         pos.x - dimension.width / 2,
@@ -232,18 +218,8 @@ export class Game {
   private handleCommunication(): void {
     ServerHandler.receiveMessage(
       "game:build",
-      ({
-        indices,
-        image,
-        width,
-        height,
-      }: {
-        indices: Indices;
-        image: string;
-        width: number;
-        height: number;
-      }) => {
-        this.build(indices, image, width, height);
+      ({ indices, image }: { indices: Indices; image: string }) => {
+        this.build(indices, image);
       }
     );
 
@@ -256,11 +232,6 @@ export class Game {
       this.path.forEach((indices) =>
         this.world[indices.i][indices.j].setTemp()
       );
-    });
-
-    ServerHandler.receiveMessage("game:images", (data: any) => {
-      console.log(data);
-      // this.test.src = data[0];
     });
   }
 }

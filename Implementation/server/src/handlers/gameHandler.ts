@@ -8,20 +8,13 @@ import { World } from "../classes/game/world";
 import { Builder, BuildType } from "../classes/game/builder";
 import { MAP_SIZE } from "../settings";
 import { Validator } from "../classes/validator";
-import { Loader } from "../classes/loader";
-import path from "path";
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
-    Communicate.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:images",
-      await Loader.loadImages(
-        path.join(__dirname, "..", "..", "/public/assets")
-      )
-    );
-    Communicate.sendMessageToEveryOneExceptSender(socket, "game:starts", {});
+    const currentRoom = Communicate.getCurrentRoom(socket);
+    gameState[currentRoom].isGameStarted = true;
+
+    Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
 
     const tiles = createWorld();
     Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", tiles);
@@ -47,7 +40,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
     return tiles;
   };
 
-  const build = ({ indices, image, width, height }: BuildType): void => {
+  const build = ({ indices, image }: BuildType): void => {
     // if (!Validator.validateIndices(indices)) {
     //   return;
     // }
@@ -58,8 +51,6 @@ export const gameHandler = (io: Server, socket: Socket) => {
     Communicate.sendMessageToEveryOne(io, socket, "game:build", {
       indices,
       image: buildingImage,
-      width,
-      height,
     });
   };
 

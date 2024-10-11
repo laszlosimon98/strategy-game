@@ -3,9 +3,9 @@ import { PageState } from "../../states/pageState";
 import { ServerHandler } from "../../server/serverHandler";
 import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
-import { buttonImages } from "../imports/buttons";
 import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
+import { images } from "../../data/images";
 
 export class NewGame extends Page {
   private backButton: Button;
@@ -19,7 +19,7 @@ export class NewGame extends Page {
       buttonPos.newGame.create,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.create,
+      images.page.buttons.create,
       this.handleCreate
     );
 
@@ -27,7 +27,7 @@ export class NewGame extends Page {
       buttonPos.newGame.join,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.join,
+      images.page.buttons.join,
       () => (globalState.state = PageState.JoinGame)
     );
 
@@ -35,7 +35,7 @@ export class NewGame extends Page {
       buttonPos.newGame.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.back,
+      images.page.buttons.back,
       () => (globalState.state = PageState.MainMenu)
     );
 

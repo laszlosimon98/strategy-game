@@ -6,7 +6,7 @@ import { authHandler } from "./handlers/authHandler";
 import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler";
 import path from "path";
-import { Loader } from "./classes/loader";
+import { imageHandler } from "./handlers/imageHandler";
 
 const PORT = 3000;
 
@@ -22,7 +22,8 @@ const io: Server = new Server(httpServer, {
   },
 });
 
-const onConnecton = (socket: Socket) => {
+const onConnecton = async (socket: Socket) => {
+  await imageHandler(io, socket);
   connectionHandler(io, socket);
   gameHandler(io, socket);
   // authHandler();

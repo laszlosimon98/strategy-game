@@ -1,7 +1,7 @@
+import { images } from "../../../../data/images";
 import { Button } from "../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../settings";
 import { Position } from "../../../../utils/position";
-import { gameMenuAssets } from "../../../imports/menu";
 import { Section } from "../section";
 
 export class MainSection extends Section {
@@ -16,7 +16,7 @@ export class MainSection extends Section {
         ),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.house
+        images.game.menu.house
       ),
       new Button(
         new Position(
@@ -25,7 +25,7 @@ export class MainSection extends Section {
         ),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.storage
+        images.game.menu.storage
       ),
       new Button(
         new Position(
@@ -34,7 +34,7 @@ export class MainSection extends Section {
         ),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        gameMenuAssets.population
+        images.game.menu.population
       )
     );
   }

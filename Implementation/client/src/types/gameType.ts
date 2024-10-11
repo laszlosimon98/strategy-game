@@ -1,1 +1,1 @@
-export type TileType = "grass" | "flower" | "rock";
+export type TileType = "grass" | "grass_flower" | "grass_rock";

@@ -1,11 +1,11 @@
 import { Button } from "../components/buttonComponents/button";
-import { buttonImages } from "../imports/buttons";
 import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
 import { PageState } from "../../states/pageState";
 import { globalState } from "../../data/data";
 import { BUTTON_SIZE } from "../../settings";
 import { Page } from "./page";
+import { images } from "../../data/images";
 
 export class MainMenu extends Page {
   private newGame: Button;
@@ -22,7 +22,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.newGame,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.newGame,
+      images.page.buttons.newGame,
       () => (globalState.state = PageState.NewGame)
     );
 
@@ -30,7 +30,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.description,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.description,
+      images.page.buttons.description,
       () => (globalState.state = PageState.Description)
     );
 
@@ -38,7 +38,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.statistic,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.statistic,
+      images.page.buttons.statistic,
       () => (globalState.state = PageState.Statistic)
     );
 
@@ -46,7 +46,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.login,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.login,
+      images.page.buttons.login,
       () => (globalState.state = PageState.Login)
     );
 
@@ -54,7 +54,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.registration,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.registration,
+      images.page.buttons.registration,
       () => (globalState.state = PageState.Registration)
     );
 
@@ -63,7 +63,7 @@ export class MainMenu extends Page {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       globalState.playerName,
-      buttonImages.empty,
+      images.page.buttons.empty,
       false
     );
     this.namePlate.setCenter();

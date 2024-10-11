@@ -1,10 +1,13 @@
+import { images } from "./data/images";
 import init from "./init";
 import { Program } from "./program";
+import { ServerHandler } from "./server/serverHandler";
 import { FPS } from "./settings";
 
-const main = () => {
+const main = async () => {
   init();
 
+  images.page = await ServerHandler.receiveAsyncMessage("start:page");
   const program: Program = new Program();
 
   const perfectFrameTime: number = 1000;

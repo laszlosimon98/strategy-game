@@ -7,8 +7,6 @@ import { Validator } from "../validator";
 export type BuildType = {
   indices: Indices;
   image: string;
-  width?: number;
-  height?: number;
   socket: Socket;
 };
 

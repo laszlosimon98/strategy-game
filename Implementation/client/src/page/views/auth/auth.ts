@@ -4,7 +4,6 @@ import {
   INPUT_BACKGROUND_COLOR,
 } from "../../../settings";
 import { Button } from "../../components/buttonComponents/button";
-import { buttonImages } from "../../imports/buttons";
 import { buttonPos } from "../pos/buttonPos";
 import { TextInput } from "../../components/textComponents/textInput";
 import { AuthType } from "../../../types/authType";
@@ -13,6 +12,7 @@ import { Text } from "../../components/textComponents/text";
 import { inputPos } from "../pos/inputPos";
 import { globalState } from "../../../data/data";
 import { Page } from "../page";
+import { images } from "../../../data/images";
 
 export class Auth extends Page {
   protected backButton: Button;
@@ -31,7 +31,7 @@ export class Auth extends Page {
       buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.back,
+      images.page.buttons.back,
       () => (globalState.state = PageState.MainMenu)
     );
 

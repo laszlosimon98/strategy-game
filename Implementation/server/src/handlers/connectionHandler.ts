@@ -92,11 +92,6 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     newPlayerMessage(code, name);
   };
 
-  const start = () => {
-    const currentRoom = Communicate.getCurrentRoom(socket);
-    gameState[currentRoom].isGameStarted = true;
-  };
-
   const disconnect = () => {
     const currentRoom = Communicate.getCurrentRoom(socket);
 
@@ -130,7 +125,6 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
   socket.on("connect:create", createGame);
   socket.on("connect:join", joinGame);
-  socket.on("connect:start", start);
   socket.on("connect:disconnect", disconnect);
   socket.on("disconnecting", disconnect);
 };

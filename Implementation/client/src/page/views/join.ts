@@ -1,5 +1,4 @@
 import { Button } from "../components/buttonComponents/button";
-import { buttonImages } from "../imports/buttons";
 import { buttonPos } from "./pos/buttonPos";
 import { TextInput } from "../components/textComponents/textInput";
 import { inputPos } from "./pos/inputPos";
@@ -17,6 +16,7 @@ import {
 import { titlePos } from "./pos/titlePos";
 import { Page } from "./page";
 import { Position } from "../../utils/position";
+import { images } from "../../data/images";
 
 export class Join extends Page {
   private backButton: Button;
@@ -32,7 +32,7 @@ export class Join extends Page {
       buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.back,
+      images.page.buttons.back,
       this.handleLeave
     );
 
@@ -40,7 +40,7 @@ export class Join extends Page {
       buttonPos.default.next,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      buttonImages.join,
+      images.page.buttons.join,
       this.handleJoin
     );
 

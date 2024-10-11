@@ -1,4 +1,4 @@
-import { canvasHeight, canvasWidth, ctx } from "../../init";
+import { canvasHeight, canvasWidth } from "../../init";
 import { Position } from "../../utils/position";
 import { Vector } from "../../utils/vector";
 

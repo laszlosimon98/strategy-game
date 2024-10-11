@@ -65,7 +65,6 @@ export class Loader {
       }
     });
 
-    console.log(route);
     return route;
   }
 }

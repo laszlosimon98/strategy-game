@@ -1,9 +1,9 @@
 import { globalState } from "../../data/data";
+import { images } from "../../data/images";
 import { Button } from "../../page/components/buttonComponents/button";
 import { GameMainMenuState } from "../../states/gameMenuState";
 import { Position } from "../../utils/position";
 import { getImageNameFromUrl } from "../../utils/utils";
-import { gameMenuAssets } from "../imports/menu";
 import { BuildingSection } from "./components/building/buildingSection";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";
@@ -63,7 +63,11 @@ export class GameMenu {
     );
   }
 
-  public updateImages(state: string, mousePos: Position, buttons?: Button[]): void {
+  public updateImages(
+    state: string,
+    mousePos: Position,
+    buttons?: Button[]
+  ): void {
     if (!buttons) {
       return;
     }
@@ -73,7 +77,7 @@ export class GameMenu {
         this.resetButtonImage(buttons);
         const image: string = getImageNameFromUrl(button.getImage());
         const select = `${image}_selected`;
-        button.setImage(gameMenuAssets[select]);
+        button.setImage(images.game.menu[select]);
 
         if (state === "Main") {
           globalState.gameMenuState = index + 1;
@@ -92,7 +96,7 @@ export class GameMenu {
         image = image.split("_")[0];
       }
 
-      button.setImage(gameMenuAssets[image]);
+      button.setImage(images.game.menu[image]);
     });
   }
 }

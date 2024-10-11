@@ -1,5 +1,4 @@
 import { PageState } from "./states/pageState";
-import { titles } from "./page/imports/titles";
 import { Description } from "./page/views/description";
 import { Join } from "./page/views/join";
 import { Lobby } from "./page/views/lobby";
@@ -9,7 +8,6 @@ import { NewGame } from "./page/views/newGame";
 import { Statistic } from "./page/views/statistic";
 import { canvasHeight, canvasWidth, ctx } from "./init";
 import { Registration } from "./page/views/auth/registration";
-import { buttonImages } from "./page/imports/buttons";
 import { Button } from "./page/components/buttonComponents/button";
 import { TextInput } from "./page/components/textComponents/textInput";
 import { BACKGROUND_COLOR, BLACK_COLOR } from "./settings";
@@ -18,6 +16,7 @@ import { Page } from "./page/views/page";
 import { Game } from "./game/game";
 import { ServerHandler } from "./server/serverHandler";
 import { Position } from "./utils/position";
+import { images } from "./data/images";
 
 export class Program {
   private pages: Partial<Record<PageState, Page>>;
@@ -33,17 +32,20 @@ export class Program {
     this.key = "";
 
     this.pages = {
-      [PageState.MainMenu]: new MainMenu(titles.menu),
+      [PageState.MainMenu]: new MainMenu(images.page.titles.menu),
       [PageState.Registration]: new Registration(
-        titles.registration,
-        buttonImages.registration
+        images.page.titles.registration,
+        images.page.buttons.registration
       ),
-      [PageState.Login]: new Login(titles.login, buttonImages.login),
-      [PageState.Statistic]: new Statistic(titles.statistic),
-      [PageState.Description]: new Description(titles.description),
-      [PageState.NewGame]: new NewGame(titles.newGame),
-      [PageState.Lobby]: new Lobby(titles.lobby),
-      [PageState.JoinGame]: new Join(titles.join),
+      [PageState.Login]: new Login(
+        images.page.titles.login,
+        images.page.buttons.login
+      ),
+      [PageState.Statistic]: new Statistic(images.page.titles.statistic),
+      [PageState.Description]: new Description(images.page.titles.description),
+      [PageState.NewGame]: new NewGame(images.page.titles.newGame),
+      [PageState.Lobby]: new Lobby(images.page.titles.lobby),
+      [PageState.JoinGame]: new Join(images.page.titles.join),
     };
 
     this.buttons = this.pages[globalState.state]?.getButtons();
@@ -130,11 +132,6 @@ export class Program {
       });
     } else {
       this.game?.handleClick(e);
-    }
-
-    if (globalState.state === PageState.Game && !this.game) {
-      ServerHandler.sendMessage("game:starts", {});
-      this.game = new Game();
     }
   }
 

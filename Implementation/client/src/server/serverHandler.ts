@@ -31,7 +31,6 @@ export class ServerHandler {
     return new Promise((resolve) => {
       this.getInstance().on(event, (data: any) => {
         resolve(data);
-        console.log("resolved");
       });
       setTimeout(() => {
         resolve("");
