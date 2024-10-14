@@ -66,7 +66,7 @@ export class World {
     this.builder.update(this.camera.getScroll());
 
     // EZ NEM FOG KELLENI
-    this.printMouseCoords(this.mousePos);
+    // this.printMouseCoords(this.mousePos);
   }
 
   public handleClick(): void {
@@ -80,6 +80,20 @@ export class World {
         this.world[indices.i][indices.j].getBuildingPos()
       );
       this.builder.handleClick(indices);
+    }
+  }
+
+  public handleMouseMove(): void {
+    const indices: Indices = convertIsometricCoordsToCartesianCoords(
+      new Position(this.mousePos.x, this.mousePos.y),
+      this.getCameraScroll()
+    );
+
+    if (this.isActionInsideOfTheMap(indices)) {
+      this.builder.setBuildingPos(
+        this.world[indices.i][indices.j].getBuildingPos()
+      );
+      this.builder.handleMouseMove();
     }
   }
 

@@ -84,7 +84,6 @@ export class BuildingSection extends Section {
     buttons.forEach((btn) => {
       if (btn.isClicked(mousePos.x, mousePos.y)) {
         btn.selectBuilding();
-        console.log(selectedBuilding.data);
       }
     });
   }

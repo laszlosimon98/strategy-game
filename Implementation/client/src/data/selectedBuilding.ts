@@ -1,19 +1,21 @@
 export type SelectedBuildingType = {
   data: {
     url: string;
-    dimension: {
+    dimensions: {
       width: number;
       height: number;
     };
   };
 };
 
-export const selectedBuilding: SelectedBuildingType = {
+export const initState: SelectedBuildingType = {
   data: {
     url: "",
-    dimension: {
+    dimensions: {
       width: 0,
       height: 0,
     },
   },
 };
+
+export const selectedBuilding: SelectedBuildingType = { ...initState };

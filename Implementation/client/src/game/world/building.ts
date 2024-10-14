@@ -8,24 +8,23 @@ export class Building {
   private indices: Indices;
   private pos: Position;
   private image: HTMLImageElement;
-  private dimension: Dimension;
   private renderPos: Position;
 
   private isRenderPosSet: boolean;
+  private building: BuildingType;
 
   public constructor(indices: Indices, building: BuildingType) {
     this.indices = indices;
-    this.pos = Position.zero();
-    this.renderPos = Position.zero();
+    this.pos = new Position(0, -500);
+    this.renderPos = new Position(0, -500);
     this.isRenderPosSet = false;
+    this.building = building;
 
     this.image = new Image(
       building.dimensions.width,
       building.dimensions.height
     );
     this.image.src = building.url;
-
-    this.dimension = new Dimension(this.image.width, this.image.height);
   }
 
   public draw(): void {
@@ -54,12 +53,17 @@ export class Building {
     );
   }
 
-  public getDimension(): Dimension {
-    return this.dimension;
+  public setBuilding(build: BuildingType) {
+    this.building = { ...build };
+    this.image.src = this.building.url;
   }
 
-  public setDimension(dimension: Dimension): void {
-    this.dimension = dimension;
+  public getBuilding(): BuildingType {
+    return this.building;
+  }
+
+  public getDimension(): Dimension {
+    return this.building.dimensions;
   }
 
   public setPos(pos: Position): void {

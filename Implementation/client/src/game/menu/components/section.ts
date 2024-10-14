@@ -46,7 +46,5 @@ export class Section {
     return this.labelbuttons;
   }
 
-  public handleClick(mousePos: Position) {
-    console.log("asdf");
-  }
+  public handleClick(mousePos: Position) {}
 }

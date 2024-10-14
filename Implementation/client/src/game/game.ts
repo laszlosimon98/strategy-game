@@ -6,6 +6,7 @@ import { MouseButtons } from "./utils/mouseEnum";
 import { World } from "./world/world";
 import { PointerEnum } from "./utils/pointerEnum";
 import { Dimension } from "../utils/dimension";
+import { initState, selectedBuilding } from "../data/selectedBuilding";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -66,6 +67,7 @@ export class Game {
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
+        selectedBuilding.data = { ...initState.data };
         this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
@@ -84,6 +86,8 @@ export class Game {
     } else {
       this.pointer = PointerEnum.Tile;
     }
+
+    this.world.handleMouseMove();
   }
 
   public handleKeyPress(key: string): void {

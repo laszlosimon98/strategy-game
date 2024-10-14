@@ -4,8 +4,7 @@ import { MenuComponent } from "./menuComponent";
 
 export class Button extends MenuComponent {
   private func: Function[];
-
-  private isHovered: boolean;
+  protected isHovered: boolean;
 
   public constructor(
     pos: Position,

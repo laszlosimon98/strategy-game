@@ -5,6 +5,7 @@ import { Position } from "../../../utils/position";
 
 export class LabelButton extends Button {
   private name: string;
+
   constructor(
     pos: Position,
     width: number,
