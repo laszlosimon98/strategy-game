@@ -32,20 +32,22 @@ export class Program {
     this.key = "";
 
     this.pages = {
-      [PageState.MainMenu]: new MainMenu(images.page.titles.menu),
+      [PageState.MainMenu]: new MainMenu(images.page.titles.menu.url),
       [PageState.Registration]: new Registration(
-        images.page.titles.registration,
-        images.page.buttons.registration
+        images.page.titles.registration.url,
+        images.page.buttons.registration.url
       ),
       [PageState.Login]: new Login(
-        images.page.titles.login,
-        images.page.buttons.login
+        images.page.titles.login.url,
+        images.page.buttons.login.url
       ),
-      [PageState.Statistic]: new Statistic(images.page.titles.statistic),
-      [PageState.Description]: new Description(images.page.titles.description),
-      [PageState.NewGame]: new NewGame(images.page.titles.newGame),
-      [PageState.Lobby]: new Lobby(images.page.titles.lobby),
-      [PageState.JoinGame]: new Join(images.page.titles.join),
+      [PageState.Statistic]: new Statistic(images.page.titles.statistic.url),
+      [PageState.Description]: new Description(
+        images.page.titles.description.url
+      ),
+      [PageState.NewGame]: new NewGame(images.page.titles.newGame.url),
+      [PageState.Lobby]: new Lobby(images.page.titles.lobby.url),
+      [PageState.JoinGame]: new Join(images.page.titles.join.url),
     };
 
     this.buttons = this.pages[globalState.state]?.getButtons();

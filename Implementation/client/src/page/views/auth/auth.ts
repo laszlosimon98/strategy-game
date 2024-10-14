@@ -31,7 +31,7 @@ export class Auth extends Page {
       buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.back,
+      images.page.buttons.back.url,
       () => (globalState.state = PageState.MainMenu)
     );
 

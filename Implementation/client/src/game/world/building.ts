@@ -2,6 +2,7 @@ import { ctx } from "../../init";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
+import { BuildingType } from "../types/types";
 
 export class Building {
   private indices: Indices;
@@ -10,22 +11,25 @@ export class Building {
   private dimension: Dimension;
   private renderPos: Position;
 
-  private IsRenderPosSet: boolean;
+  private isRenderPosSet: boolean;
 
-  public constructor(indices: Indices, src: string) {
+  public constructor(indices: Indices, building: BuildingType) {
     this.indices = indices;
     this.pos = Position.zero();
     this.renderPos = Position.zero();
-    this.IsRenderPosSet = false;
+    this.isRenderPosSet = false;
 
-    this.image = new Image();
-    this.image.src = src;
+    this.image = new Image(
+      building.dimensions.width,
+      building.dimensions.height
+    );
+    this.image.src = building.url;
 
     this.dimension = new Dimension(this.image.width, this.image.height);
   }
 
   public draw(): void {
-    if (this.IsRenderPosSet) {
+    if (this.isRenderPosSet) {
       ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
       // ctx.save();
       // ctx.strokeStyle = "#f00";
@@ -40,8 +44,8 @@ export class Building {
   }
 
   public update(cameraScroll: Position): void {
-    if (!this.IsRenderPosSet) {
-      this.IsRenderPosSet = true;
+    if (!this.isRenderPosSet) {
+      this.isRenderPosSet = true;
     }
 
     this.renderPos = new Position(

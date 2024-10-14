@@ -32,7 +32,7 @@ export class Join extends Page {
       buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.back,
+      images.page.buttons.back.url,
       this.handleLeave
     );
 
@@ -40,7 +40,7 @@ export class Join extends Page {
       buttonPos.default.next,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.join,
+      images.page.buttons.join.url,
       this.handleJoin
     );
 

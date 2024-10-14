@@ -22,7 +22,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.newGame,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.newGame,
+      images.page.buttons.newGame.url,
       () => (globalState.state = PageState.NewGame)
     );
 
@@ -30,7 +30,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.description,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.description,
+      images.page.buttons.description.url,
       () => (globalState.state = PageState.Description)
     );
 
@@ -38,7 +38,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.statistic,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.statistic,
+      images.page.buttons.statistic.url,
       () => (globalState.state = PageState.Statistic)
     );
 
@@ -46,7 +46,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.login,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.login,
+      images.page.buttons.login.url,
       () => (globalState.state = PageState.Login)
     );
 
@@ -54,7 +54,7 @@ export class MainMenu extends Page {
       buttonPos.mainMenu.registration,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.registration,
+      images.page.buttons.registration.url,
       () => (globalState.state = PageState.Registration)
     );
 
@@ -63,7 +63,7 @@ export class MainMenu extends Page {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       globalState.playerName,
-      images.page.buttons.empty,
+      images.page.buttons.empty.url,
       false
     );
     this.namePlate.setCenter();

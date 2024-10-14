@@ -77,7 +77,7 @@ export class GameMenu {
         this.resetButtonImage(buttons);
         const image: string = getImageNameFromUrl(button.getImage());
         const select = `${image}_selected`;
-        button.setImage(images.game.menu[select]);
+        button.setImage(images.game.menu[select].url);
 
         if (state === "Main") {
           globalState.gameMenuState = index + 1;
@@ -96,7 +96,7 @@ export class GameMenu {
         image = image.split("_")[0];
       }
 
-      button.setImage(images.game.menu[image]);
+      button.setImage(images.game.menu[image].url);
     });
   }
 }

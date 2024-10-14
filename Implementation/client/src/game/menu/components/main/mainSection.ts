@@ -16,7 +16,7 @@ export class MainSection extends Section {
         ),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        images.game.menu.house
+        images.game.menu.house.url
       ),
       new Button(
         new Position(
@@ -25,7 +25,7 @@ export class MainSection extends Section {
         ),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        images.game.menu.storage
+        images.game.menu.storage.url
       ),
       new Button(
         new Position(
@@ -34,7 +34,7 @@ export class MainSection extends Section {
         ),
         MENU_ITEM_SIZE.width,
         MENU_ITEM_SIZE.height,
-        images.game.menu.population
+        images.game.menu.population.url
       )
     );
   }

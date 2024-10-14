@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { SERVER_URL } from "../settings";
+import sizeOf from "image-size";
 
 export class Loader {
   private constructor() {}
@@ -23,15 +24,18 @@ export class Loader {
 
   public static async loadImages(_dir: string) {
     const files: string[] = await this.getFiles(_dir);
-    const result = this.generateRoute(files);
+    const result = this.generateRoute(_dir, files);
     return result;
   }
 
-  private static generateRoute(files: string[]) {
+  private static generateRoute(_dir: string, files: string[]) {
     const route: any = {};
     const paths: string[] = [];
 
     files.forEach((file) => {
+      const imageDimensions = sizeOf(`${_dir}/${file}`);
+      const { width, height } = imageDimensions;
+
       const fileLength = file.split("/").length;
       const name = file.split("/")[fileLength - 1].split(".")[0];
 
@@ -44,7 +48,10 @@ export class Loader {
 
       route[_path[length - 1]] = {
         ...route[_path[length - 1]],
-        [name]: url,
+        [name]: {
+          url,
+          dimensions: { width, height },
+        },
       };
 
       if (!paths.includes(_path.join("_"))) {

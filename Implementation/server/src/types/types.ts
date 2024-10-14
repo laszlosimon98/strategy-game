@@ -1,4 +1,12 @@
+export type AssetType = {
+  url: string;
+  dimensions: {
+    width: number;
+    height: number;
+  };
+};
+
 export type BuildingType = {
-  image?: string;
+  building?: AssetType;
   owner?: string;
 };

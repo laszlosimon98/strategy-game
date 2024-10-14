@@ -8,17 +8,13 @@ export const imageHandler = async (io: Server, socket: Socket) => {
     path.join(__dirname, "..", "..", "/public/assets")
   );
 
-  console.log(images);
-
   const page = () => {
-    Communicate.sendMessageToSender(socket, "start:page", images.pages);
+    Communicate.sendMessageToSender(socket, "start:page", images);
   };
 
-  const game = () => {
-    Communicate.sendMessageToEveryOne(io, socket, "start:game", images.game);
-  };
+  // const game = () => {
+  //   Communicate.sendMessageToEveryOne(io, socket, "start:game", images.game);
+  // };
 
-  // socket.on("start:page", page);
   page();
-  socket.on("start:game", game);
 };

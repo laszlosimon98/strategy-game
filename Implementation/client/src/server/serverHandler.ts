@@ -32,9 +32,6 @@ export class ServerHandler {
       this.getInstance().on(event, (data: any) => {
         resolve(data);
       });
-      setTimeout(() => {
-        resolve("");
-      }, 100);
     });
   }
 

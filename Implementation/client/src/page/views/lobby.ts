@@ -35,7 +35,7 @@ export class Lobby extends Page {
       buttonPos.default.next,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.start,
+      images.page.buttons.start.url,
       this.handleStart
     );
 
@@ -43,7 +43,7 @@ export class Lobby extends Page {
       buttonPos.default.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.back,
+      images.page.buttons.back.url,
       this.handleLeaveRoom
     );
 
@@ -109,10 +109,7 @@ export class Lobby extends Page {
     }
   }
 
-  private handleStart = async () => {
-    ServerHandler.sendMessage("start:game", {});
-    images.game = await ServerHandler.receiveAsyncMessage("start:game");
-
+  private handleStart = () => {
     ServerHandler.sendMessage("game:starts", {});
   };
 

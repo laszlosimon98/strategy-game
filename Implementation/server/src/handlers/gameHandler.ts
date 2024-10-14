@@ -8,6 +8,7 @@ import { World } from "../classes/game/world";
 import { Builder, BuildType } from "../classes/game/builder";
 import { MAP_SIZE } from "../settings";
 import { Validator } from "../classes/validator";
+import { AssetType } from "../types/types";
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
@@ -40,17 +41,23 @@ export const gameHandler = (io: Server, socket: Socket) => {
     return tiles;
   };
 
-  const build = ({ indices, image }: BuildType): void => {
+  const build = ({ indices, building, buildingPos }: BuildType): void => {
     // if (!Validator.validateIndices(indices)) {
     //   return;
     // }
+    console.log(buildingPos);
 
-    Builder.build({ indices, image, socket });
-    const buildingImage = Builder.getHouseImage(indices, socket);
+    Builder.build({ indices, building, socket });
+    const buildingImage: AssetType | undefined = Builder.getHouseImage(
+      indices,
+      socket
+    );
+    console.log(buildingImage);
 
     Communicate.sendMessageToEveryOne(io, socket, "game:build", {
       indices,
-      image: buildingImage,
+      building: buildingImage,
+      buildingPos,
     });
   };
 

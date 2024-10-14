@@ -1,13 +1,14 @@
 import { Socket } from "socket.io";
 import { Indices } from "../utils/indices";
 import { World } from "./world";
-import { BuildingType } from "../../types/types";
+import { AssetType, BuildingType } from "../../types/types";
 import { Validator } from "../validator";
 
 export type BuildType = {
   indices: Indices;
-  image: string;
+  building: AssetType;
   socket: Socket;
+  buildingPos?: { x: number; y: number };
 };
 
 export class Builder {
@@ -24,14 +25,14 @@ export class Builder {
   public static getHouseImage(
     indices: Indices,
     socket: Socket
-  ): string | undefined {
+  ): AssetType | undefined {
     const i = indices.i;
     const j = indices.j;
 
-    return World.getWorld(socket)[i][j].getBuilding().image;
+    return World.getWorld(socket)[i][j].getBuilding().building;
   }
 
-  public static build({ indices, image, socket }: BuildType): void {
+  public static build({ indices, building, socket }: BuildType): void {
     const i = indices.i;
     const j = indices.j;
 
@@ -42,7 +43,7 @@ export class Builder {
     const world = World.getWorld(socket);
 
     const newBuilding: BuildingType = {
-      image,
+      building,
       owner: socket.id,
     };
 
@@ -62,7 +63,7 @@ export class Builder {
       return false;
     }
 
-    world[i][j].setBuilding({ image: undefined, owner: undefined });
+    world[i][j].setBuilding({ building: undefined, owner: undefined });
     World.setWorld(world, socket);
 
     return true;

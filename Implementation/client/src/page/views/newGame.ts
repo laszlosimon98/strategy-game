@@ -19,7 +19,7 @@ export class NewGame extends Page {
       buttonPos.newGame.create,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.create,
+      images.page.buttons.create.url,
       this.handleCreate
     );
 
@@ -27,7 +27,7 @@ export class NewGame extends Page {
       buttonPos.newGame.join,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.join,
+      images.page.buttons.join.url,
       () => (globalState.state = PageState.JoinGame)
     );
 
@@ -35,7 +35,7 @@ export class NewGame extends Page {
       buttonPos.newGame.back,
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
-      images.page.buttons.back,
+      images.page.buttons.back.url,
       () => (globalState.state = PageState.MainMenu)
     );
 

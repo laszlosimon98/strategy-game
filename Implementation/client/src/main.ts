@@ -7,7 +7,10 @@ import { FPS } from "./settings";
 const main = async () => {
   init();
 
-  images.page = await ServerHandler.receiveAsyncMessage("start:page");
+  const gameImages = await ServerHandler.receiveAsyncMessage("start:page");
+  images.page = await gameImages.pages;
+  images.game = await gameImages.game;
+
   const program: Program = new Program();
 
   const perfectFrameTime: number = 1000;
@@ -26,4 +29,4 @@ const main = async () => {
   next();
 };
 
-main();
+await main();

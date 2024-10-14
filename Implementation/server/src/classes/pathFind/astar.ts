@@ -62,7 +62,7 @@ export class AStar {
       for (let i = 0; i < neighbors.length; ++i) {
         const neighbor = neighbors[i];
 
-        if (!closedList.includes(neighbor) && !neighbor.getBuilding()) {
+        if (!closedList.includes(neighbor) && !neighbor.getBuilding().owner) {
           if (openList.includes(neighbor)) {
             if (this.currentCell.getF() < neighbor.getF()) {
               this.updateNeighbor(neighbor, end);
@@ -80,19 +80,40 @@ export class AStar {
 
   public static getPath(start: Cell, end: Cell): Indices[] {
     this.calculatePath(start, end);
+    const path: Cell[] = this.buildPath();
+    const pathIndices = this.convertPathToIndices(path);
+    // this.destroyPath();
 
+    return pathIndices;
+  }
+
+  private static buildPath(): Cell[] {
     const path: Cell[] = [];
-    let temp: Cell | undefined = this.currentCell;
+    let current: Cell | undefined = this.currentCell;
 
-    path.unshift(temp);
+    path.unshift(current);
 
-    while (temp!.getPrevious()) {
-      temp = temp!.getPrevious();
-      if (temp) {
-        path.unshift(temp);
+    while (current!.getPrevious()) {
+      current = current!.getPrevious();
+      if (current) {
+        path.unshift(current);
       }
     }
 
+    return path;
+  }
+
+  private static destroyPath(): void {
+    let current: Cell | undefined = this.currentCell;
+
+    while (current!.getPrevious()) {
+      let prev: Cell | undefined = current?.getPrevious();
+      current!.setPrevious(undefined);
+      current = prev;
+    }
+  }
+
+  private static convertPathToIndices(path: Cell[]): Indices[] {
     const result = path.map((cell) => {
       return new Indices(cell.i, cell.j);
     });

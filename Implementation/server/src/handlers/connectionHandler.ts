@@ -88,6 +88,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     addPlayer(code, newPlayer);
     socket.join(code);
 
+    Communicate.sendMessageToSender(socket, "connect:error", "");
     Communicate.sendMessageToSender(socket, "connect:code", { code });
     newPlayerMessage(code, name);
   };
