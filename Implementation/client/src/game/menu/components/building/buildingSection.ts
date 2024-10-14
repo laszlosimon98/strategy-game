@@ -1,8 +1,11 @@
+import { globalState } from "../../../../data/data";
 import { images } from "../../../../data/images";
+import { selectedBuilding } from "../../../../data/selectedBuilding";
 import { Button } from "../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../settings";
 import { GameSubMenuState } from "../../../../states/gameMenuState";
 import { Position } from "../../../../utils/position";
+import { LabelButton } from "../labelButton";
 import { Section } from "../section";
 import { FoodSection } from "./components/foodSection";
 import { MilitarySection } from "./components/militarySection";
@@ -64,5 +67,25 @@ export class BuildingSection extends Section {
         images.game.menu.house.url
       )
     );
+  }
+
+  public handleClick(mousePos: Position) {
+    this.selectBuilding(
+      mousePos,
+      this.subSections[globalState.subMenuState]?.getLabelButton()
+    );
+  }
+
+  selectBuilding(mousePos: Position, buttons?: LabelButton[]) {
+    if (!buttons) {
+      return;
+    }
+
+    buttons.forEach((btn) => {
+      if (btn.isClicked(mousePos.x, mousePos.y)) {
+        btn.selectBuilding();
+        console.log(selectedBuilding.data);
+      }
+    });
   }
 }

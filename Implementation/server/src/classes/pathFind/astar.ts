@@ -62,7 +62,7 @@ export class AStar {
       for (let i = 0; i < neighbors.length; ++i) {
         const neighbor = neighbors[i];
 
-        if (!closedList.includes(neighbor) && !neighbor.getBuilding().owner) {
+        if (!closedList.includes(neighbor) && neighbor.isEmpty()) {
           if (openList.includes(neighbor)) {
             if (this.currentCell.getF() < neighbor.getF()) {
               this.updateNeighbor(neighbor, end);

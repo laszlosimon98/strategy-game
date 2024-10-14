@@ -72,7 +72,6 @@ export class Loader {
       }
     });
 
-    console.log(routes);
     return routes;
   }
 }

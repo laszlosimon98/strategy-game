@@ -42,7 +42,7 @@ export class Cell {
     return this.neighbors;
   }
 
-  isPlaceable(): boolean {
+  isEmpty(): boolean {
     return this.building.owner === undefined && this.obstacle === undefined;
   }
 

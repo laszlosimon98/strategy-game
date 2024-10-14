@@ -68,6 +68,8 @@ export class GameMenu {
       mousePos,
       this.frames[globalState.gameMenuState].getButtons()
     );
+
+    this.frames[globalState.gameMenuState].handleClick(mousePos);
   }
 
   public isMouseIntersect(mousePos: Position): boolean {

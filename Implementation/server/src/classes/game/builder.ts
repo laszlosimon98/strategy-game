@@ -19,7 +19,7 @@ export class Builder {
     yPos: number,
     socket: Socket
   ): boolean => {
-    return World.getWorld(socket)[xPos][yPos].isPlaceable();
+    return World.getWorld(socket)[xPos][yPos].isEmpty();
   };
 
   public static getHouseImage(
