@@ -42,23 +42,24 @@ export const gameHandler = (io: Server, socket: Socket) => {
   };
 
   const build = ({ indices, building, buildingPos }: BuildType): void => {
-    // if (!Validator.validateIndices(indices)) {
-    //   return;
-    // }
-    console.log(buildingPos);
+    if (!Validator.validateIndices(indices)) {
+      return;
+    }
 
-    Builder.build({ indices, building, socket });
-    const buildingImage: AssetType | undefined = Builder.getHouseImage(
-      indices,
-      socket
-    );
-    console.log(buildingImage);
+    const isSuccessful = Builder.build({ indices, building, socket });
 
-    Communicate.sendMessageToEveryOne(io, socket, "game:build", {
-      indices,
-      building: buildingImage,
-      buildingPos,
-    });
+    if (isSuccessful) {
+      const buildingImage: AssetType | undefined = Builder.getHouseImage(
+        indices,
+        socket
+      );
+
+      Communicate.sendMessageToEveryOne(io, socket, "game:build", {
+        indices,
+        building: buildingImage,
+        buildingPos,
+      });
+    }
   };
 
   const destroy = (indices: Indices): void => {
@@ -66,8 +67,8 @@ export const gameHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    const isSuccessfull: boolean = Builder.destroy(indices, socket);
-    if (isSuccessfull) {
+    const isSuccessful: boolean = Builder.destroy(indices, socket);
+    if (isSuccessful) {
       Communicate.sendMessageToEveryOne(io, socket, "game:destroy", indices);
     }
   };

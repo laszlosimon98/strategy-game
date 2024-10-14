@@ -32,12 +32,12 @@ export class Builder {
     return World.getWorld(socket)[i][j].getBuilding().building;
   }
 
-  public static build({ indices, building, socket }: BuildType): void {
+  public static build({ indices, building, socket }: BuildType): boolean {
     const i = indices.i;
     const j = indices.j;
 
     if (!this.checkIfPossibleToBuild(i, j, socket)) {
-      return;
+      return false;
     }
 
     const world = World.getWorld(socket);
@@ -50,6 +50,7 @@ export class Builder {
     world[i][j].setBuilding(newBuilding);
 
     World.setWorld(world, socket);
+    return true;
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {

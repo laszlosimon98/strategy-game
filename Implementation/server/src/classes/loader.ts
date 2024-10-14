@@ -24,12 +24,12 @@ export class Loader {
 
   public static async loadImages(_dir: string) {
     const files: string[] = await this.getFiles(_dir);
-    const result = this.generateRoute(_dir, files);
+    const result = this.generateroutes(_dir, files);
     return result;
   }
 
-  private static generateRoute(_dir: string, files: string[]) {
-    const route: any = {};
+  private static generateroutes(_dir: string, files: string[]) {
+    const routes: any = {};
     const paths: string[] = [];
 
     files.forEach((file) => {
@@ -46,8 +46,8 @@ export class Loader {
         .replace(/\\/g, "/")}/${name}.png`;
       const length = _path.length;
 
-      route[_path[length - 1]] = {
-        ...route[_path[length - 1]],
+      routes[_path[length - 1]] = {
+        ...routes[_path[length - 1]],
         [name]: {
           url,
           dimensions: { width, height },
@@ -63,15 +63,16 @@ export class Loader {
       const a = _path.split("_");
 
       for (let i = a.length - 1; i > 0; --i) {
-        route[a[i - 1]] = {
-          ...route[a[i - 1]],
-          [a[i]]: route[a[i]],
+        routes[a[i - 1]] = {
+          ...routes[a[i - 1]],
+          [a[i]]: routes[a[i]],
         };
 
-        delete route[a[i]];
+        delete routes[a[i]];
       }
     });
 
-    return route;
+    console.log(routes);
+    return routes;
   }
 }

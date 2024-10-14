@@ -28,7 +28,7 @@ export class NewGame extends Page {
       BUTTON_SIZE.width,
       BUTTON_SIZE.height,
       images.page.buttons.join.url,
-      () => (globalState.state = PageState.JoinGame)
+      this.handleJoin
     );
 
     this.backButton = new Button(
@@ -50,5 +50,10 @@ export class NewGame extends Page {
     });
     globalState.state = PageState.Lobby;
     globalState.host = true;
+  };
+
+  private handleJoin = () => {
+    globalState.state = PageState.JoinGame;
+    globalState.host = false;
   };
 }

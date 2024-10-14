@@ -1,26 +1,26 @@
 Szerver
-	- bejelentkezés, regisztráció (opcionális)
-	- statisztika lekérdezése (csak bejelentkezve)
-	- csatlakozási kód generálás
-	- csatlakozott játékosok lekérdezése
+	- [] bejelentkezés, regisztráció (opcionális)
+	- [] statisztika lekérdezése (csak bejelentkezve)
+	- [x] csatlakozási kód generálás
+	- [x] csatlakozott játékosok lekérdezése
 
 	- kezdeti játék állapot létrehozása
-		- pálya generálás (akadályok, fa, kő, stb.)
+		- [_x_] pálya generálás (akadályok, fa, kő, stb.)
 		- játékosok kezdeti állapotának meghatározása
-			- kezdeti épületek koordinátái
-			- kezdeti nyersanyag készlet
+			- [] kezdeti épületek koordinátái
+			- [] kezdeti nyersanyag készlet
 	- állapot változás
-		- ház építés
-		- ház elbontása
-		- fa kivágása
-		- kőfejtés
-		- ellenséges erődítmény elfoglalása
-		- határváltozás
-		- unit útvonalak (valszeg egy tömb lesz az érített cellák koordinátáival)
+		- [x] ház építés
+		- [x] ház elbontása
+		- [] fa kivágása
+		- [] kőfejtés
+		- [] ellenséges erődítmény elfoglalása
+		- [] határváltozás
+		- [x] unit útvonalak (valszeg egy tömb lesz az érített cellák koordinátáival)
+	- [x] Assetek
 
 Kliens
-	- GUI
-	- Kamera mozgás
-	- Assetek
-	- Animációk
-	- A kijelölt elem jelzése, pl épület, unit, építendő épület
+	- [x] GUI
+	- [x] Kamera mozgás
+	- [] Animációk
+	- [] A kijelölt elem jelzése, pl épület, unit, építendő épület

@@ -107,6 +107,10 @@ export class Lobby extends Page {
     if (globalState.host && this.buttons.length === 1) {
       this.buttons.push(this.start);
     }
+
+    if (!globalState.host) {
+      this.buttons.splice(1, 1);
+    }
   }
 
   private handleStart = () => {

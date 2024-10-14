@@ -1,10 +1,11 @@
 import { canvasHeight } from "../init";
-import { Vector } from "../utils/vector";
 import { GameMenu } from "./menu/gameMenu";
 import { Position } from "../utils/position";
 import { MouseButtons } from "./utils/mouseEnum";
 // import { Indices } from "../utils/indices";
 import { World } from "./world/world";
+import { PointerEnum } from "./utils/pointerEnum";
+import { Dimension } from "../utils/dimension";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -13,14 +14,15 @@ export class Game {
   private mousePos: Position;
   private key: string;
 
+  private pointer: PointerEnum;
+
   // private pathStart: Indices;
   // private pathEnd: Indices;
 
   public constructor() {
     this.gameMenu = new GameMenu(
-      new Vector(0, (canvasHeight - 500) / 5),
-      250,
-      500
+      new Position(0, (canvasHeight - 500) / 5),
+      new Dimension(250, 500)
     );
 
     this.world = new World();
@@ -31,6 +33,8 @@ export class Game {
     this.mousePos = Position.zero();
     this.key = "";
 
+    this.pointer = PointerEnum.Tile;
+
     this.init();
   }
 
@@ -40,8 +44,7 @@ export class Game {
 
   public draw(): void {
     this.world.draw();
-
-    // this.gameMenu.draw();
+    this.gameMenu.draw();
   }
 
   public update(dt: number) {
@@ -54,8 +57,12 @@ export class Game {
 
     switch (button) {
       case MouseButtons.Left:
-        this.gameMenu.handleClick(this.mousePos);
-        this.world.handleClick();
+        if (this.pointer === PointerEnum.Menu) {
+          this.gameMenu.handleClick(this.mousePos);
+        } else {
+          this.world.handleClick();
+        }
+
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
@@ -71,6 +78,12 @@ export class Game {
 
   public handleMouseMove(pos: Position): void {
     this.mousePos.setPosition(pos);
+
+    if (this.gameMenu.isMouseIntersect(pos)) {
+      this.pointer = PointerEnum.Menu;
+    } else {
+      this.pointer = PointerEnum.Tile;
+    }
   }
 
   public handleKeyPress(key: string): void {

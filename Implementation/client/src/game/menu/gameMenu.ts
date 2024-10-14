@@ -2,6 +2,7 @@ import { globalState } from "../../data/data";
 import { images } from "../../data/images";
 import { Button } from "../../page/components/buttonComponents/button";
 import { GameMainMenuState } from "../../states/gameMenuState";
+import { Dimension } from "../../utils/dimension";
 import { Position } from "../../utils/position";
 import { getImageNameFromUrl } from "../../utils/utils";
 import { BuildingSection } from "./components/building/buildingSection";
@@ -12,34 +13,40 @@ export class GameMenu {
   private mainSection: MainSection;
   private frames: Record<GameMainMenuState, Section>;
 
-  public constructor(pos: Position, width: number, height: number) {
-    this.mainSection = new MainSection(pos, width, 75);
+  private pos: Position;
+  private dim: Dimension;
+
+  public constructor(pos: Position, dim: Dimension) {
+    this.pos = pos;
+    this.dim = dim;
+
+    this.mainSection = new MainSection(pos, dim.width, 75);
 
     this.frames = {
       [GameMainMenuState.Unselected]: new Section(
         new Position(pos.x, pos.y + 74),
-        width,
-        height - 75
+        dim.width,
+        dim.height - 75
       ),
       [GameMainMenuState.House]: new BuildingSection(
         new Position(pos.x, pos.y + 74),
-        width,
-        height - 75
+        dim.width,
+        dim.height - 75
       ),
       [GameMainMenuState.Storage]: new Section(
         new Position(pos.x, pos.y + 74),
-        width,
-        height - 75
+        dim.width,
+        dim.height - 75
       ),
       [GameMainMenuState.Population]: new Section(
         new Position(pos.x, pos.y + 74),
-        width,
-        height - 75
+        dim.width,
+        dim.height - 75
       ),
       [GameMainMenuState.Info]: new Section(
         new Position(pos.x, pos.y + 74),
-        width,
-        height - 75
+        dim.width,
+        dim.height - 75
       ),
     };
   }
@@ -61,6 +68,14 @@ export class GameMenu {
       mousePos,
       this.frames[globalState.gameMenuState].getButtons()
     );
+  }
+
+  public isMouseIntersect(mousePos: Position): boolean {
+    const horizontal =
+      mousePos.x >= this.pos.x && mousePos.x <= this.pos.x + this.dim.width;
+    const vertical =
+      mousePos.y >= this.pos.y && mousePos.y <= this.pos.y + this.dim.height;
+    return horizontal && vertical;
   }
 
   public updateImages(

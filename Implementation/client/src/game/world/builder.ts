@@ -34,7 +34,7 @@ export class Builder {
   }
 
   public handleClick(indices: Indices): void {
-    this.selectedBuilding = images.game.buildings.woodcutter;
+    this.selectedBuilding = images.game.buildings.stonecutter;
 
     ServerHandler.sendMessage("game:build", {
       indices,

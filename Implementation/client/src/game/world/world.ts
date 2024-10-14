@@ -38,7 +38,7 @@ export class World {
         }
       }
       ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+        // this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
       });
     });
   }
