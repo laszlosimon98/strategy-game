@@ -6,6 +6,7 @@ import { Dimension } from "../../utils/dimension";
 import { Position } from "../../utils/position";
 import { getImageNameFromUrl } from "../../utils/utils";
 import { BuildingSection } from "./components/building/buildingSection";
+import { InfoPanel } from "./components/infoPanel";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";
 
@@ -43,7 +44,7 @@ export class GameMenu {
         dim.width,
         dim.height - 75
       ),
-      [GameMainMenuState.Info]: new Section(
+      [GameMainMenuState.Info]: new InfoPanel(
         new Position(pos.x, pos.y + 74),
         dim.width,
         dim.height - 75

@@ -1,3 +1,4 @@
+import { gameState } from "../../data/data";
 import { images } from "../../data/images";
 import { ctx } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
@@ -6,6 +7,7 @@ import { TileType } from "../../types/gameType";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { Camera } from "../camera/camera";
+import { GameStateEnum } from "../utils/gameStateEnum";
 import { convertIsometricCoordsToCartesianCoords } from "../utils/utils";
 import { Builder } from "./builder";
 import { Tile } from "./tile";
@@ -79,11 +81,11 @@ export class World {
       this.builder.setBuildingPos(
         this.world[indices.i][indices.j].getBuildingPos()
       );
-      this.builder.handleClick(indices);
+      this.builder.handleClick(indices, this.mousePos, this.getCameraScroll());
     }
   }
 
-  public handleMouseMove(): void {
+  public handleMouseMove(mousePos: Position): void {
     const indices: Indices = convertIsometricCoordsToCartesianCoords(
       new Position(this.mousePos.x, this.mousePos.y),
       this.getCameraScroll()
@@ -93,7 +95,7 @@ export class World {
       this.builder.setBuildingPos(
         this.world[indices.i][indices.j].getBuildingPos()
       );
-      this.builder.handleMouseMove();
+      this.builder.handleMouseMove(mousePos, this.getCameraScroll());
     }
   }
 

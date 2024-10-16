@@ -62,6 +62,14 @@ export class Cell {
     return this.building;
   }
 
+  getObstacle(): string | undefined {
+    return this.obstacle;
+  }
+
+  setObstacle(obstacle: string): void {
+    this.obstacle = obstacle;
+  }
+
   getPrevious(): Cell | undefined {
     return this.previous;
   }

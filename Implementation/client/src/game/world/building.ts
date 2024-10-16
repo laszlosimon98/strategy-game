@@ -14,12 +14,16 @@ export class Building implements UI {
   private isRenderPosSet: boolean;
   private building: BuildingType;
 
+  private isHovered: boolean;
+
   public constructor(indices: Indices, building: BuildingType) {
     this.indices = indices;
     this.pos = new Position(0, -500);
     this.renderPos = new Position(0, -500);
     this.isRenderPosSet = false;
     this.building = building;
+
+    this.isHovered = false;
 
     this.image = new Image(
       building.dimensions.width,
@@ -31,15 +35,18 @@ export class Building implements UI {
   public draw(): void {
     if (this.isRenderPosSet) {
       ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-      // ctx.save();
-      // ctx.strokeStyle = "#f00";
-      // ctx.strokeRect(
-      //   this.renderPos.x,
-      //   this.renderPos.y,
-      //   this.dimension.width,
-      //   this.dimension.height
-      // );
-      // ctx.restore();
+
+      if (this.isHovered) {
+        ctx.save();
+        ctx.strokeStyle = "#fff";
+        ctx.strokeRect(
+          this.renderPos.x,
+          this.renderPos.y,
+          this.image.width,
+          this.image.height
+        );
+        ctx.restore();
+      }
     }
   }
 
@@ -54,6 +61,10 @@ export class Building implements UI {
     );
   }
 
+  public setHover(hover: boolean): void {
+    this.isHovered = hover;
+  }
+
   public setBuilding(build: BuildingType) {
     this.building = { ...build };
     this.image.src = this.building.url;
@@ -61,6 +72,10 @@ export class Building implements UI {
 
   public getBuilding(): BuildingType {
     return this.building;
+  }
+
+  public getBuildingName(): string {
+    return this.building.url.split("/")[6].split(".")[0];
   }
 
   public getDimension(): Dimension {
@@ -73,5 +88,13 @@ export class Building implements UI {
 
   public getIndices(): Indices {
     return this.indices;
+  }
+
+  public isMouseIntersect(mousePos: Position): boolean {
+    const horizontal =
+      mousePos.x >= this.pos.x && mousePos.x <= this.pos.x + this.image.width;
+    const vertical =
+      mousePos.y >= this.pos.y && mousePos.y <= this.pos.y + this.image.height;
+    return horizontal && vertical;
   }
 }

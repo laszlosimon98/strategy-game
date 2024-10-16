@@ -1,7 +1,7 @@
 export enum PointerEnum {
   Menu,
   Tile,
-  // House,
+  House,
   // Soldier,
   Opponent,
 }

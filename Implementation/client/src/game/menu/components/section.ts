@@ -9,12 +9,14 @@ export class Section {
   private section: Frame;
   protected subSections: Partial<Record<GameSubMenuState, Section>> = {};
 
+  protected pos: Position;
   protected buttons: Button[] = [];
   protected labelbuttons: LabelButton[] = [];
   // protected items: Item[];
   // protected units: Unit[];
 
   public constructor(pos: Position, width: number, height: number) {
+    this.pos = pos;
     this.section = new Frame(pos, width, height);
   }
 

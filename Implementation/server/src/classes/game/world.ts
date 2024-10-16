@@ -51,7 +51,9 @@ export class World {
         const cell = new Cell(i, j);
 
         if (r < 0.05) {
-          cell.setType(Math.random() < 0.5 ? "grass_flower" : "grass_rock");
+          const type = Math.random() < 0.5 ? "grass_flower" : "grass_rock";
+          cell.setType(type);
+          cell.setObstacle(type);
         }
 
         world[i].push(cell);

@@ -6,7 +6,9 @@ import { MouseButtons } from "./utils/mouseEnum";
 import { World } from "./world/world";
 import { PointerEnum } from "./utils/pointerEnum";
 import { Dimension } from "../utils/dimension";
-import { initState, selectedBuilding } from "../data/selectedBuilding";
+import { gameState, initBuildingState, selectedBuilding } from "../data/data";
+import { GameStateEnum } from "./utils/gameStateEnum";
+import { images } from "../data/images";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -15,12 +17,11 @@ export class Game {
   private mousePos: Position;
   private key: string;
 
-  private pointer: PointerEnum;
-
   // private pathStart: Indices;
   // private pathEnd: Indices;
 
   public constructor() {
+    // console.log(images.page.buttons.empty);
     this.gameMenu = new GameMenu(
       new Position(0, (canvasHeight - 500) / 5),
       new Dimension(250, 500)
@@ -34,12 +35,11 @@ export class Game {
     this.mousePos = Position.zero();
     this.key = "";
 
-    this.pointer = PointerEnum.Tile;
-
     this.init();
   }
 
   private init(): void {
+    gameState.state = GameStateEnum.default;
     this.world.init();
   }
 
@@ -58,7 +58,7 @@ export class Game {
 
     switch (button) {
       case MouseButtons.Left:
-        if (this.pointer === PointerEnum.Menu) {
+        if (gameState.pointer === PointerEnum.Menu) {
           this.gameMenu.handleClick(this.mousePos);
         } else {
           this.world.handleClick();
@@ -67,7 +67,7 @@ export class Game {
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
-        selectedBuilding.data = { ...initState.data };
+        selectedBuilding.data = { ...initBuildingState.data };
         this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
@@ -82,12 +82,12 @@ export class Game {
     this.mousePos.setPosition(pos);
 
     if (this.gameMenu.isMouseIntersect(pos)) {
-      this.pointer = PointerEnum.Menu;
+      gameState.pointer = PointerEnum.Menu;
     } else {
-      this.pointer = PointerEnum.Tile;
+      gameState.pointer = PointerEnum.Tile;
     }
 
-    this.world.handleMouseMove();
+    this.world.handleMouseMove(pos);
   }
 
   public handleKeyPress(key: string): void {

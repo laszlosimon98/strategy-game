@@ -5,3 +5,7 @@ export type BuildingType = {
     height: number;
   };
 };
+
+export type SelectedBuildingType = {
+  data: BuildingType;
+};
