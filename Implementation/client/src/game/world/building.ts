@@ -32,6 +32,10 @@ export class Building implements UI {
     this.image.src = building.url;
   }
 
+  public action(): void {
+    console.log("Szulo");
+  }
+
   public draw(): void {
     if (this.isRenderPosSet) {
       ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);

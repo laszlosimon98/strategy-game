@@ -4,7 +4,6 @@ import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { Building } from "./building";
 import { BuildingType } from "../types/types";
-import { FakeBuilding } from "./fakeBuilding";
 import {
   gameState,
   globalState,
@@ -15,6 +14,8 @@ import {
 import { GameStateEnum } from "../utils/gameStateEnum";
 import { PointerEnum } from "../utils/pointerEnum";
 import { GameMainMenuState } from "../../states/gameMenuState";
+import { FakeBuilding } from "./buildings/fakeBuilding";
+import { buildingList } from "./buildings/buildingList";
 
 export class Builder {
   private buildings: Building[];
@@ -41,7 +42,7 @@ export class Builder {
     this.handleCommunication();
   }
 
-  setBuildingPos(buildingPos: Position): void {
+  public setBuildingPos(buildingPos: Position): void {
     this.buildingPos = buildingPos;
   }
 
@@ -99,6 +100,8 @@ export class Builder {
 
           gameState.state = GameStateEnum.select;
           globalState.gameMenuState = GameMainMenuState.Info;
+
+          this.buildings.forEach((building) => building.action());
           break;
         }
       }
@@ -107,19 +110,23 @@ export class Builder {
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
     if (selectedBuilding.data.url.length) {
-      const dimension: Dimension = this.fakeHouse.getDimension();
-
-      const housePos: Position = new Position(
-        this.buildingPos.x - dimension.width / 2,
-        this.buildingPos.y - dimension.height
-      );
-
-      this.fakeHouse.setPos(housePos);
+      this.createHouseHolder();
     }
 
     this.buildings.forEach((building) => {
       building.setHover(building.isMouseIntersect(mousePos.sub(cameraScroll)));
     });
+  }
+
+  private createHouseHolder(): void {
+    const dimension: Dimension = this.fakeHouse.getDimension();
+
+    const housePos: Position = new Position(
+      this.buildingPos.x - dimension.width / 2,
+      this.buildingPos.y - dimension.height
+    );
+
+    this.fakeHouse.setPos(housePos);
   }
 
   private build(
@@ -131,7 +138,12 @@ export class Builder {
       const i = indices.i;
       const j = indices.j;
 
-      const newBuilding: Building = new Building(new Indices(i, j), building);
+      const name = building.url.split("/")[6].split(".")[0];
+      const newBuilding: Building = this.createBuilding(
+        buildingList[name],
+        new Indices(i, j),
+        building
+      );
       const dimension: Dimension = newBuilding.getDimension();
 
       const housePos: Position = new Position(
@@ -144,6 +156,13 @@ export class Builder {
 
       this.resetStates();
     }
+  }
+
+  private createBuilding<T extends Building>(
+    CreatedBuilding: new (...args: any[]) => T,
+    ...args: ConstructorParameters<typeof CreatedBuilding>
+  ): T {
+    return new CreatedBuilding(...args);
   }
 
   private resetStates(): void {

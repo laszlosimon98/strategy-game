@@ -21,7 +21,6 @@ export class Game {
   // private pathEnd: Indices;
 
   public constructor() {
-    // console.log(images.page.buttons.empty);
     this.gameMenu = new GameMenu(
       new Position(0, (canvasHeight - 500) / 5),
       new Dimension(250, 500)
@@ -41,6 +40,11 @@ export class Game {
   private init(): void {
     gameState.state = GameStateEnum.default;
     this.world.init();
+    this.initBuildings();
+  }
+
+  private initBuildings(): void {
+    // console.log(Object.keys(images.game.buildings));
   }
 
   public draw(): void {

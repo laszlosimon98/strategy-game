@@ -14,7 +14,7 @@ export type BuildType = {
 export class Builder {
   private constructor() {}
 
-  private static checkIfPossibleToBuild = (
+  public static isPossibleToBuild = (
     xPos: number,
     yPos: number,
     socket: Socket
@@ -36,7 +36,7 @@ export class Builder {
     const i = indices.i;
     const j = indices.j;
 
-    if (!this.checkIfPossibleToBuild(i, j, socket)) {
+    if (!this.isPossibleToBuild(i, j, socket)) {
       return false;
     }
 

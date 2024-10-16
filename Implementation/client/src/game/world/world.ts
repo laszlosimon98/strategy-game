@@ -1,4 +1,3 @@
-import { gameState } from "../../data/data";
 import { images } from "../../data/images";
 import { ctx } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
@@ -7,7 +6,6 @@ import { TileType } from "../../types/gameType";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { Camera } from "../camera/camera";
-import { GameStateEnum } from "../utils/gameStateEnum";
 import { convertIsometricCoordsToCartesianCoords } from "../utils/utils";
 import { Builder } from "./builder";
 import { Tile } from "./tile";
@@ -40,7 +38,7 @@ export class World {
         }
       }
       ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-        // this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
       });
     });
   }
@@ -49,7 +47,7 @@ export class World {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         // tile.drawNormalGrid();
-        tile.drawIsometricGrid();
+        // tile.drawIsometricGrid();
         tile.draw();
       });
     });
