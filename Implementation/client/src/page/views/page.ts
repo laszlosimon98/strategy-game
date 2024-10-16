@@ -3,9 +3,10 @@ import { TITLE_SIZE } from "../../settings";
 import { Position } from "../../utils/position";
 import { Button } from "../components/buttonComponents/button";
 import { TextInput } from "../components/textComponents/textInput";
+import { UI } from "../../interfaces/ui";
 import { titlePos } from "./pos/titlePos";
 
-export class Page {
+export class Page implements UI {
   protected title: HTMLImageElement;
   protected buttons: Button[];
   protected inputs: TextInput[];

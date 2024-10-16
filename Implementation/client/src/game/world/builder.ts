@@ -5,22 +5,23 @@ import { Position } from "../../utils/position";
 import { Building } from "./building";
 import { BuildingType } from "../types/types";
 import { initState, selectedBuilding } from "../../data/selectedBuilding";
-import { ctx } from "../../init";
+import { FakeBuilding } from "./fakeBuilding";
 
 export class Builder {
   private buildings: Building[];
 
   private buildingPos: Position;
-  private selectedBuilding: BuildingType | undefined;
 
-  private fakeHouse: Building;
+  private fakeHouse: FakeBuilding;
 
   constructor() {
     this.buildings = [];
-    this.fakeHouse = new Building(new Indices(-1, -1), selectedBuilding.data);
+    this.fakeHouse = new FakeBuilding(
+      new Indices(-1, -1),
+      selectedBuilding.data
+    );
 
     this.buildingPos = Position.zero();
-    this.selectedBuilding = undefined;
 
     this.handleCommunication();
   }
@@ -31,29 +32,28 @@ export class Builder {
 
   public draw(): void {
     this.buildings.forEach((building) => building.draw());
-
-    ctx.save();
-    ctx.globalAlpha = 0.75;
     this.fakeHouse.draw();
-    ctx.restore();
   }
 
-  public update(cameraScroll: Position): void {
+  public update(mousePos: Position, cameraScroll: Position): void {
     this.buildings.forEach((building) => building.update(cameraScroll));
     this.fakeHouse.update(cameraScroll);
 
     if (!selectedBuilding.data.url.length && this.fakeHouse.getBuilding().url) {
       this.resetStates();
     }
+
+    if (selectedBuilding.data.url !== this.fakeHouse.getBuilding().url) {
+      this.fakeHouse.setPos(mousePos.sub(cameraScroll));
+      this.fakeHouse.setBuilding(selectedBuilding.data);
+    }
   }
 
   public handleClick(indices: Indices): void {
-    this.selectedBuilding = selectedBuilding.data;
-
-    if (this.selectedBuilding.url.length) {
+    if (selectedBuilding.data.url.length) {
       ServerHandler.sendMessage("game:build", {
         indices,
-        building: this.selectedBuilding,
+        building: selectedBuilding.data,
         buildingPos: this.buildingPos,
       });
     }
@@ -61,7 +61,6 @@ export class Builder {
 
   public handleMouseMove(): void {
     if (selectedBuilding.data.url.length) {
-      this.fakeHouse.setBuilding(selectedBuilding.data);
       const dimension: Dimension = this.fakeHouse.getDimension();
 
       const housePos: Position = new Position(
@@ -99,7 +98,6 @@ export class Builder {
 
   private resetStates(): void {
     selectedBuilding.data = { ...initState.data };
-    this.selectedBuilding = undefined;
     this.fakeHouse.setBuilding(selectedBuilding.data);
     this.fakeHouse.setPos(new Position(0, -500));
   }

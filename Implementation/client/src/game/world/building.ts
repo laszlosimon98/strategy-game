@@ -1,10 +1,11 @@
 import { ctx } from "../../init";
+import { UI } from "../../interfaces/ui";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { BuildingType } from "../types/types";
 
-export class Building {
+export class Building implements UI {
   private indices: Indices;
   private pos: Position;
   private image: HTMLImageElement;

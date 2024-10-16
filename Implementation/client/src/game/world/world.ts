@@ -63,7 +63,7 @@ export class World {
       tiles.forEach((tile) => tile.updateRenderPos(this.camera.getScroll()));
     });
 
-    this.builder.update(this.camera.getScroll());
+    this.builder.update(this.mousePos, this.camera.getScroll());
 
     // EZ NEM FOG KELLENI
     // this.printMouseCoords(this.mousePos);

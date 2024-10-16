@@ -1,5 +1,5 @@
 import { images } from "../../../data/images";
-import { selectedBuilding } from "../../../data/selectedBuilding";
+import { initState, selectedBuilding } from "../../../data/selectedBuilding";
 import { Button } from "../../../page/components/buttonComponents/button";
 import { Position } from "../../../utils/position";
 

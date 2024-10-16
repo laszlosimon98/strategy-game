@@ -15,4 +15,12 @@ export class Position {
     this.x = other.x;
     this.y = other.y;
   }
+
+  public add(other: Position): Position {
+    return new Position(this.x + other.x, this.y + other.y);
+  }
+
+  public sub(other: Position): Position {
+    return new Position(this.x - other.x, this.y - other.y);
+  }
 }

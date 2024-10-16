@@ -1,6 +1,7 @@
 import { Position } from "../../utils/position";
+import { UI } from "../../interfaces/ui";
 
-export class PageComponents {
+export class PageComponents implements UI {
   protected pos: Position;
   protected width: number;
   protected height: number;
