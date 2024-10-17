@@ -59,7 +59,7 @@ export class Builder {
 
     if (state.building.selected.data.url !== this.fakeHouse.getBuilding().url) {
       state.game.state = GameState.build;
-      this.fakeHouse.setPos(mousePos.sub(cameraScroll));
+      this.fakeHouse.setPosition(mousePos.sub(cameraScroll));
       this.fakeHouse.setBuilding(state.building.selected.data);
     }
   }
@@ -111,9 +111,16 @@ export class Builder {
       this.createHouseHolder();
     }
 
-    this.buildings.forEach((building) => {
-      building.setHover(isMouseIntersect(mousePos.sub(cameraScroll), building));
-    });
+    if (
+      state.pointer.state !== Pointer.Menu &&
+      state.game.state !== GameState.build
+    ) {
+      this.buildings.forEach((building) => {
+        building.setHover(
+          isMouseIntersect(mousePos.sub(cameraScroll), building)
+        );
+      });
+    }
   }
 
   private createHouseHolder(): void {
@@ -124,7 +131,7 @@ export class Builder {
       this.buildingPos.y - dimension.height
     );
 
-    this.fakeHouse.setPos(housePos);
+    this.fakeHouse.setPosition(housePos);
   }
 
   private build(
@@ -149,7 +156,7 @@ export class Builder {
         buildingPos.y - dimension.height
       );
 
-      newBuilding.setPos(housePos);
+      newBuilding.setPosition(housePos);
       this.buildings.push(newBuilding);
 
       this.resetStates();
@@ -166,7 +173,7 @@ export class Builder {
   private resetStates(): void {
     state.building.selected.data = { ...initBuildingState.data };
     this.fakeHouse.setBuilding(state.building.selected.data);
-    this.fakeHouse.setPos(new Position(-1000, -1000));
+    this.fakeHouse.setPosition(new Position(-1000, -1000));
     state.game.state = GameState.default;
   }
 

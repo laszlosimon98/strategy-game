@@ -1,11 +1,12 @@
 import { ctx } from "../../init";
+import { MouseIntersect } from "../../interfaces/mouseIntersect";
 import { RenderInterface } from "../../interfaces/render";
 import { BuildingAssetType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 
-export class Building implements RenderInterface {
+export class Building implements RenderInterface, MouseIntersect {
   private indices: Indices;
   private pos: Position;
   private image: HTMLImageElement;
@@ -86,11 +87,11 @@ export class Building implements RenderInterface {
     return this.building.dimensions;
   }
 
-  public setPos(pos: Position): void {
+  public setPosition(pos: Position): void {
     this.pos = pos;
   }
 
-  public getPos(): Position {
+  public getPosition(): Position {
     return this.pos;
   }
 

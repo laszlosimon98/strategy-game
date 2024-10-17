@@ -1,5 +1,6 @@
 import { state } from "../../data/state";
 import { MainMenuState } from "../../enums/gameMenuState";
+import { MouseIntersect } from "../../interfaces/mouseIntersect";
 import { RenderInterface } from "../../interfaces/render";
 import { Button } from "../../page/components/buttonComponents/button";
 import { Dimension } from "../../utils/dimension";
@@ -10,7 +11,7 @@ import { InfoPanel } from "./components/infoPanel";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";
 
-export class GameMenu implements RenderInterface {
+export class GameMenu implements RenderInterface, MouseIntersect {
   private mainSection: MainSection;
   private frames: Record<MainMenuState, Section>;
 
@@ -46,8 +47,7 @@ export class GameMenu implements RenderInterface {
       ),
     };
   }
-
-  public getPos(): Position {
+  public getPosition(): Position {
     return this.pos;
   }
 

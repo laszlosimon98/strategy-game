@@ -24,10 +24,10 @@ export const convertIsometricCoordsToCartesianCoords = (
 
 export const isMouseIntersect = (mousePos: Position, element: any): boolean => {
   const horizontal =
-    mousePos.x >= element.getPos().x &&
-    mousePos.x <= element.getPos().x + element.getDimension().width;
+    mousePos.x >= element.getPosition().x &&
+    mousePos.x <= element.getPosition().x + element.getDimension().width;
   const vertical =
-    mousePos.y >= element.getPos().y &&
-    mousePos.y <= element.getPos().y + element.getDimension().height;
+    mousePos.y >= element.getPosition().y &&
+    mousePos.y <= element.getPosition().y + element.getDimension().height;
   return horizontal && vertical;
 };

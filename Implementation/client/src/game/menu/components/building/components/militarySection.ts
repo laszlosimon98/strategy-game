@@ -1,6 +1,7 @@
 import { ctx } from "../../../../../init";
 import { Text } from "../../../../../page/components/textComponents/text";
 import { BLACK_COLOR } from "../../../../../settings";
+import { Dimension } from "../../../../../utils/dimension";
 import { Position } from "../../../../../utils/position";
 import { Section } from "../../section";
 
@@ -8,16 +9,15 @@ export class MilitarySection extends Section {
   private text: Text;
   private readonly title: string = "Haderő";
 
-  public constructor(pos: Position, width: number, height: number) {
-    super(pos, width, height);
+  public constructor(pos: Position, dim: Dimension) {
+    super(pos, dim);
 
     this.text = new Text(
       new Position(
-        pos.x + width / 2 - ctx.measureText(this.title).width / 2,
+        pos.x + dim.width / 2 - ctx.measureText(this.title).width / 2,
         pos.y
       ),
-      0,
-      0,
+      Dimension.zero(),
       this.title,
       false,
       BLACK_COLOR
