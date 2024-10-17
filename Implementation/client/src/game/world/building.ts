@@ -1,22 +1,22 @@
 import { ctx } from "../../init";
-import { UI } from "../../interfaces/ui";
+import { RenderInterface } from "../../interfaces/render";
+import { BuildingAssetType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
-import { BuildingType } from "../types/types";
 
-export class Building implements UI {
+export class Building implements RenderInterface {
   private indices: Indices;
   private pos: Position;
   private image: HTMLImageElement;
   private renderPos: Position;
 
   private isRenderPosSet: boolean;
-  private building: BuildingType;
+  private building: BuildingAssetType;
 
   private isHovered: boolean;
 
-  public constructor(indices: Indices, building: BuildingType) {
+  public constructor(indices: Indices, building: BuildingAssetType) {
     this.indices = indices;
     this.pos = new Position(0, -500);
     this.renderPos = new Position(0, -500);
@@ -54,7 +54,7 @@ export class Building implements UI {
     }
   }
 
-  public update(cameraScroll: Position): void {
+  public update(dt: number, cameraScroll: Position): void {
     if (!this.isRenderPosSet) {
       this.isRenderPosSet = true;
     }
@@ -69,12 +69,12 @@ export class Building implements UI {
     this.isHovered = hover;
   }
 
-  public setBuilding(build: BuildingType) {
+  public setBuilding(build: BuildingAssetType) {
     this.building = { ...build };
     this.image.src = this.building.url;
   }
 
-  public getBuilding(): BuildingType {
+  public getBuilding(): BuildingAssetType {
     return this.building;
   }
 
@@ -90,15 +90,11 @@ export class Building implements UI {
     this.pos = pos;
   }
 
-  public getIndices(): Indices {
-    return this.indices;
+  public getPos(): Position {
+    return this.pos;
   }
 
-  public isMouseIntersect(mousePos: Position): boolean {
-    const horizontal =
-      mousePos.x >= this.pos.x && mousePos.x <= this.pos.x + this.image.width;
-    const vertical =
-      mousePos.y >= this.pos.y && mousePos.y <= this.pos.y + this.image.height;
-    return horizontal && vertical;
+  public getIndices(): Indices {
+    return this.indices;
   }
 }

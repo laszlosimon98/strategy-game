@@ -1,4 +1,4 @@
-import { images } from "./data/images";
+import { state } from "./data/state";
 import init from "./init";
 import { Program } from "./program";
 import { ServerHandler } from "./server/serverHandler";
@@ -8,8 +8,8 @@ const main = async () => {
   init();
 
   const gameImages = await ServerHandler.receiveAsyncMessage("start:page");
-  images.page = await gameImages.pages;
-  images.game = await gameImages.game;
+  state.images.page = await gameImages.pages;
+  state.images.game = await gameImages.game;
 
   const program: Program = new Program();
 

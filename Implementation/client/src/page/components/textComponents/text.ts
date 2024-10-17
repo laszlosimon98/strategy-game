@@ -1,5 +1,6 @@
 import { canvasWidth, ctx } from "../../../init";
 import { TEXT_COLOR } from "../../../settings";
+import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { PageComponents } from "../pageComponents";
 
@@ -13,13 +14,12 @@ export class Text extends PageComponents {
 
   public constructor(
     pos: Position,
-    width: number,
-    height: number,
+    dim: Dimension,
     text: string,
     isSecret: boolean,
     color?: string
   ) {
-    super(pos, width, height);
+    super(pos, dim);
 
     this.text = text;
     this.isSecret = isSecret;
@@ -60,7 +60,7 @@ export class Text extends PageComponents {
       this.isCentered
         ? this.pos.x + canvasWidth / 2 - this.metrics.width / 2
         : this.pos.x + 5,
-      this.pos.y + this.height - 13
+      this.pos.y + this.dim.height - 13
     );
     ctx.restore();
   }

@@ -1,10 +1,9 @@
-import { globalState } from "../../data/data";
-import { PageState } from "../../states/pageState";
+import { PageState } from "../../enums/pageState";
 import { BUTTON_SIZE } from "../../settings";
 import { Button } from "../components/buttonComponents/button";
 import { buttonPos } from "./pos/buttonPos";
 import { Page } from "./page";
-import { images } from "../../data/images";
+import { state } from "../../data/state";
 
 export class Description extends Page {
   private backButton: Button;
@@ -14,10 +13,9 @@ export class Description extends Page {
 
     this.backButton = new Button(
       buttonPos.default.back,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.back.url,
-      () => (globalState.state = PageState.MainMenu)
+      BUTTON_SIZE,
+      state.images.page.buttons.back.url,
+      () => (state.navigation.pageState = PageState.MainMenu)
     );
 
     this.buttons.push(this.backButton);

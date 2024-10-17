@@ -1,4 +1,4 @@
-export enum GameStateEnum {
+export enum GameState {
   default,
   build,
   select,

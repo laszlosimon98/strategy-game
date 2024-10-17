@@ -1,11 +1,10 @@
 import { Button } from "../components/buttonComponents/button";
 import { buttonPos } from "./pos/buttonPos";
 import { TextImage } from "../components/textComponents/textImage";
-import { PageState } from "../../states/pageState";
-import { globalState } from "../../data/data";
+import { PageState } from "../../enums/pageState";
 import { BUTTON_SIZE } from "../../settings";
 import { Page } from "./page";
-import { images } from "../../data/images";
+import { state } from "../../data/state";
 
 export class MainMenu extends Page {
   private newGame: Button;
@@ -20,50 +19,44 @@ export class MainMenu extends Page {
 
     this.newGame = new Button(
       buttonPos.mainMenu.newGame,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.newGame.url,
-      () => (globalState.state = PageState.NewGame)
+      BUTTON_SIZE,
+      state.images.page.buttons.newGame.url,
+      () => (state.navigation.pageState = PageState.NewGame)
     );
 
     this.description = new Button(
       buttonPos.mainMenu.description,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.description.url,
-      () => (globalState.state = PageState.Description)
+      BUTTON_SIZE,
+      state.images.page.buttons.description.url,
+      () => (state.navigation.pageState = PageState.Description)
     );
 
     this.statistic = new Button(
       buttonPos.mainMenu.statistic,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.statistic.url,
-      () => (globalState.state = PageState.Statistic)
+      BUTTON_SIZE,
+      state.images.page.buttons.statistic.url,
+      () => (state.navigation.pageState = PageState.Statistic)
     );
 
     this.login = new Button(
       buttonPos.mainMenu.login,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.login.url,
-      () => (globalState.state = PageState.Login)
+      BUTTON_SIZE,
+      state.images.page.buttons.login.url,
+      () => (state.navigation.pageState = PageState.Login)
     );
 
     this.registration = new Button(
       buttonPos.mainMenu.registration,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.registration.url,
-      () => (globalState.state = PageState.Registration)
+      BUTTON_SIZE,
+      state.images.page.buttons.registration.url,
+      () => (state.navigation.pageState = PageState.Registration)
     );
 
     this.namePlate = new TextImage(
       buttonPos.mainMenu.namePlate,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      globalState.playerName,
-      images.page.buttons.empty.url,
+      BUTTON_SIZE,
+      state.player.name,
+      state.images.page.buttons.empty.url,
       false
     );
     this.namePlate.setCenter();
@@ -81,8 +74,8 @@ export class MainMenu extends Page {
   }
 
   public update(): void {
-    if (this.namePlate.getText() !== globalState.playerName) {
-      this.namePlate.setText(globalState.playerName);
+    if (this.namePlate.getText() !== state.player.name) {
+      this.namePlate.setText(state.player.name);
     }
   }
 }

@@ -1,27 +1,23 @@
-import { infoPanel } from "../../../data/data";
-import { images } from "../../../data/images";
+import { state } from "../../../data/state";
 import { ctx } from "../../../init";
 import { Button } from "../../../page/components/buttonComponents/button";
 import { ServerHandler } from "../../../server/serverHandler";
+import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { Section } from "./section";
 
 export class InfoPanel extends Section {
-  private width: number;
-  private height: number;
-
+  private dim: Dimension;
   private deleteButton: Button;
 
-  public constructor(pos: Position, width: number, height: number) {
-    super(pos, width, height);
-    this.width = width;
-    this.height = height;
+  public constructor(pos: Position, dim: Dimension) {
+    super(pos, dim);
+    this.dim = dim;
 
     this.deleteButton = new Button(
-      new Position(pos.x + width - 25, pos.y + 5),
-      25,
-      25,
-      images.page.buttons.empty.url
+      new Position(pos.x + dim.width - 25, pos.y + 5),
+      new Dimension(25, 25),
+      state.images.page.buttons.empty.url
     );
   }
 
@@ -29,8 +25,10 @@ export class InfoPanel extends Section {
     super.draw();
     ctx.save();
     ctx.fillText(
-      infoPanel.name,
-      this.pos.x - ctx.measureText(infoPanel.name).width / 2 + this.width / 2,
+      state.info.name,
+      this.pos.x -
+        ctx.measureText(state.info.name).width / 2 +
+        this.dim.width / 2,
       this.pos.y + 30
     );
     ctx.restore();
@@ -38,13 +36,13 @@ export class InfoPanel extends Section {
     this.deleteButton.draw();
   }
 
-  update(mousePos: Position): void {
-    this.deleteButton.update(mousePos);
+  update(dt: number, mousePos: Position): void {
+    this.deleteButton.update(dt, mousePos);
   }
 
   public handleClick(mousePos: Position): void {
     if (this.deleteButton.isClicked(mousePos.x, mousePos.y)) {
-      ServerHandler.sendMessage("game:destroy", infoPanel.data);
+      ServerHandler.sendMessage("game:destroy", state.info.data);
     }
   }
 }

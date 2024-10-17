@@ -1,4 +1,5 @@
 import { ctx } from "../../../init";
+import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { MenuComponent } from "./menuComponent";
 
@@ -8,12 +9,11 @@ export class Button extends MenuComponent {
 
   public constructor(
     pos: Position,
-    width: number,
-    height: number,
+    dim: Dimension,
     imageSrc: string,
     ...fn: Function[]
   ) {
-    super(pos, width, height, imageSrc);
+    super(pos, dim, imageSrc);
     this.func = fn;
 
     this.isHovered = false;
@@ -28,7 +28,7 @@ export class Button extends MenuComponent {
     ctx.restore();
   }
 
-  public update(mousePos: Position) {
+  public update(dt: number, mousePos: Position) {
     this.isHovered = this.isClicked(mousePos.x, mousePos.y);
   }
 

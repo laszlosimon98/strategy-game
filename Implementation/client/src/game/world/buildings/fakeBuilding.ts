@@ -1,10 +1,10 @@
 import { ctx } from "../../../init";
+import { BuildingAssetType } from "../../../types/gameType";
 import { Indices } from "../../../utils/indices";
-import { BuildingType } from "../../types/types";
 import { Building } from "../building";
 
 export class FakeBuilding extends Building {
-  public constructor(indices: Indices, building: BuildingType) {
+  public constructor(indices: Indices, building: BuildingAssetType) {
     super(indices, building);
   }
 

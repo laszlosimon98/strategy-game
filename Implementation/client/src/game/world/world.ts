@@ -1,12 +1,12 @@
-import { images } from "../../data/images";
+import { state } from "../../data/state";
 import { ctx } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import { ERROR_COLOR } from "../../settings";
 import { TileType } from "../../types/gameType";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
+import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
 import { Camera } from "../camera/camera";
-import { convertIsometricCoordsToCartesianCoords } from "../utils/utils";
 import { Builder } from "./builder";
 import { Tile } from "./tile";
 
@@ -33,7 +33,7 @@ export class World {
         this.world.push([]);
         for (let col = 0; col < tiles[row].length; ++col) {
           this.world[row].push(
-            new Tile(row, col, images.game.ground[tiles[row][col]].url)
+            new Tile(row, col, state.images.game.ground[tiles[row][col]].url)
           );
         }
       }
@@ -63,7 +63,7 @@ export class World {
       tiles.forEach((tile) => tile.updateRenderPos(this.camera.getScroll()));
     });
 
-    this.builder.update(this.mousePos, this.camera.getScroll());
+    this.builder.update(dt, this.mousePos, this.camera.getScroll());
 
     // EZ NEM FOG KELLENI
     // this.printMouseCoords(this.mousePos);

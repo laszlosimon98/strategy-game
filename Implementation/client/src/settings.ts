@@ -1,8 +1,8 @@
-import type { ButtonSize } from "./types/guiTypes";
+import { Dimension } from "./utils/dimension";
 
 // GUI - POS
-export const BUTTON_SIZE: ButtonSize = { width: 192, height: 60 };
-export const TITLE_SIZE: ButtonSize = { width: 288, height: 90 };
+export const BUTTON_SIZE: Dimension = new Dimension(192, 60);
+export const TITLE_SIZE: Dimension = new Dimension(288, 90);
 export const INPUT_BACKGROUND_COLOR = "#90460C";
 
 export const MARGIN: number = 75;
@@ -17,7 +17,7 @@ export const INFO_COLOR = "#1f6e02";
 
 // GAME
 // MENU
-export const MENU_ITEM_SIZE: ButtonSize = { width: 64, height: 64 };
+export const MENU_ITEM_SIZE: Dimension = new Dimension(64, 64);
 
 export const TILE_SIZE = 48;
 // 65 x 65

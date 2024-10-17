@@ -1,4 +1,4 @@
-export enum PointerEnum {
+export enum Pointer {
   Menu,
   Tile,
   House,

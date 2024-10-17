@@ -1,5 +1,6 @@
 import { ctx } from "../../../init";
 import { BACKGROUND_COLOR, TEXT_COLOR } from "../../../settings";
+import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { Text } from "./text";
 
@@ -9,13 +10,12 @@ export class TextInput extends Text {
 
   public constructor(
     pos: Position,
-    width: number,
-    height: number,
+    dim: Dimension,
     text: string,
     backgroundColor: string,
     isSecret: boolean
   ) {
-    super(pos, width, height, text, isSecret);
+    super(pos, dim, text, isSecret);
 
     this.backgroundColor = backgroundColor;
     this.isSelected = false;
@@ -23,14 +23,14 @@ export class TextInput extends Text {
 
   public draw(): void {
     ctx.fillStyle = this.backgroundColor;
-    ctx.fillRect(this.pos.x, this.pos.y, this.width, this.height);
+    ctx.fillRect(this.pos.x, this.pos.y, this.dim.width, this.dim.height);
 
     ctx.fillStyle = TEXT_COLOR;
     if (this.isSelected) {
       ctx.fillText(
         "|",
         this.pos.x + this.metrics.width + 5,
-        this.pos.y + this.height - 13
+        this.pos.y + this.dim.height - 13
       );
     }
 

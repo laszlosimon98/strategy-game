@@ -1,5 +1,4 @@
-import { globalState } from "../../data/data";
-import { PageState } from "../../states/pageState";
+import { PageState } from "../../enums/pageState";
 import { canvasHeight } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import {
@@ -17,7 +16,8 @@ import { Page } from "./page";
 import { buttonPos } from "./pos/buttonPos";
 import { titlePos } from "./pos/titlePos";
 import { Position } from "../../utils/position";
-import { images } from "../../data/images";
+import { state } from "../../data/state";
+import { Dimension } from "../../utils/dimension";
 
 export class Lobby extends Page {
   private backButton: Button;
@@ -33,17 +33,15 @@ export class Lobby extends Page {
 
     this.start = new Button(
       buttonPos.default.next,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.start.url,
+      BUTTON_SIZE,
+      state.images.page.buttons.start.url,
       this.handleStart
     );
 
     this.backButton = new Button(
       buttonPos.default.back,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.back.url,
+      BUTTON_SIZE,
+      state.images.page.buttons.back.url,
       this.handleLeaveRoom
     );
 
@@ -51,9 +49,8 @@ export class Lobby extends Page {
 
     this.playerLabel = new Text(
       new Position(0, titlePos.y + MARGIN + 55),
-      0,
-      0,
-      globalState.playerName,
+      Dimension.zero(),
+      state.player.name,
       false,
       BLACK_COLOR
     );
@@ -61,8 +58,7 @@ export class Lobby extends Page {
 
     this.gameCode = new Text(
       new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 80),
-      0,
-      0,
+      Dimension.zero(),
       "Játék Kód:",
       false,
       BLACK_COLOR
@@ -70,8 +66,7 @@ export class Lobby extends Page {
 
     this.info = new Text(
       new Position(0, titlePos.y + MARGIN + 115),
-      0,
-      0,
+      Dimension.zero(),
       "",
       false
     );
@@ -79,8 +74,7 @@ export class Lobby extends Page {
 
     this.playersContainer = new Frame(
       new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 125),
-      580,
-      Math.max(canvasHeight / 3, 200)
+      new Dimension(580, Math.max(canvasHeight / 3, 200))
     );
 
     this.handleCommunication();
@@ -100,15 +94,15 @@ export class Lobby extends Page {
 
   public update(): void {
     super.update();
-    if (this.playerLabel.getText() !== globalState.playerName) {
-      this.playerLabel.setText(globalState.playerName);
+    if (this.playerLabel.getText() !== state.player.name) {
+      this.playerLabel.setText(state.player.name);
     }
 
-    if (globalState.host && this.buttons.length === 1) {
+    if (state.player.host && this.buttons.length === 1) {
       this.buttons.push(this.start);
     }
 
-    if (!globalState.host) {
+    if (!state.player.host) {
       this.buttons.splice(1, 1);
     }
   }
@@ -120,7 +114,7 @@ export class Lobby extends Page {
   private handleLeaveRoom = (): void => {
     ServerHandler.sendMessage("connect:disconnect", {});
     this.clearPage();
-    globalState.state = PageState.NewGame;
+    state.navigation.pageState = PageState.NewGame;
   };
 
   private clearPage(): void {
@@ -138,8 +132,7 @@ export class Lobby extends Page {
             MARGIN / 1.5 +
             (MARGIN / 1.5) * index
         ),
-        0,
-        0,
+        Dimension.zero(),
         player.name,
         false,
         TEXT_COLOR

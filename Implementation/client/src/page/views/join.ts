@@ -2,10 +2,9 @@ import { Button } from "../components/buttonComponents/button";
 import { buttonPos } from "./pos/buttonPos";
 import { TextInput } from "../components/textComponents/textInput";
 import { inputPos } from "./pos/inputPos";
-import { PageState } from "../../states/pageState";
+import { PageState } from "../../enums/pageState";
 import { Text } from "../components/textComponents/text";
 import { ServerHandler } from "../../server/serverHandler";
-import { globalState } from "../../data/data";
 import {
   BLACK_COLOR,
   BUTTON_SIZE,
@@ -16,7 +15,8 @@ import {
 import { titlePos } from "./pos/titlePos";
 import { Page } from "./page";
 import { Position } from "../../utils/position";
-import { images } from "../../data/images";
+import { state } from "../../data/state";
+import { Dimension } from "../../utils/dimension";
 
 export class Join extends Page {
   private backButton: Button;
@@ -30,24 +30,21 @@ export class Join extends Page {
 
     this.backButton = new Button(
       buttonPos.default.back,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.back.url,
+      BUTTON_SIZE,
+      state.images.page.buttons.back.url,
       this.handleLeave
     );
 
     this.joinButton = new Button(
       buttonPos.default.next,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.join.url,
+      BUTTON_SIZE,
+      state.images.page.buttons.join.url,
       this.handleJoin
     );
 
     this.codeInput = new TextInput(
       inputPos.code,
-      500,
-      40,
+      new Dimension(500, 40),
       "",
       INPUT_BACKGROUND_COLOR,
       false
@@ -55,8 +52,7 @@ export class Join extends Page {
 
     this.codeText = new Text(
       inputPos.code,
-      0,
-      0,
+      Dimension.zero(),
       "Játék kód:",
       false,
       BLACK_COLOR
@@ -68,8 +64,7 @@ export class Join extends Page {
 
     this.errorMessage = new Text(
       new Position(0, titlePos.y + MARGIN * 2),
-      0,
-      0,
+      Dimension.zero(),
       "",
       false,
       ERROR_COLOR
@@ -89,14 +84,14 @@ export class Join extends Page {
   private handleJoin = () => {
     ServerHandler.sendMessage("connect:join", {
       code: this.codeInput.getText(),
-      name: globalState.playerName,
+      name: state.player.name,
     });
   };
 
   private handleLeave = () => {
     this.errorMessage.setText("");
     this.codeInput.setText("");
-    globalState.state = PageState.NewGame;
+    state.navigation.pageState = PageState.NewGame;
   };
 
   private handleError = async () => {
@@ -105,11 +100,11 @@ export class Join extends Page {
     );
 
     if (error) {
-      globalState.state = PageState.JoinGame;
+      state.navigation.pageState = PageState.JoinGame;
       this.errorMessage.setText(error);
       this.codeInput.setText("");
     } else {
-      globalState.state = PageState.Lobby;
+      state.navigation.pageState = PageState.Lobby;
       this.errorMessage.setText("");
       this.codeInput.setText("");
     }

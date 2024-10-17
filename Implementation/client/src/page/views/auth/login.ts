@@ -1,4 +1,4 @@
-import { globalState } from "../../../data/data";
+import { state } from "../../../data/state";
 import { Auth } from "./auth";
 
 export class Login extends Auth {
@@ -8,7 +8,7 @@ export class Login extends Auth {
 
   public handleAuth(): [boolean, string] {
     const { username } = this.getInputData();
-    globalState.playerName = username;
+    state.player.name = username;
     console.log(this.getInputData());
     return [false, ""];
   }

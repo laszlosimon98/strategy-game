@@ -1,16 +1,16 @@
 import { canvasHeight } from "../init";
 import { GameMenu } from "./menu/gameMenu";
 import { Position } from "../utils/position";
-import { MouseButtons } from "./utils/mouseEnum";
-// import { Indices } from "../utils/indices";
+import { MouseButtons } from "../enums/mouse";
 import { World } from "./world/world";
-import { PointerEnum } from "./utils/pointerEnum";
 import { Dimension } from "../utils/dimension";
-import { gameState, initBuildingState, selectedBuilding } from "../data/data";
-import { GameStateEnum } from "./utils/gameStateEnum";
-import { images } from "../data/images";
+import { initBuildingState, state } from "../data/state";
+import { GameState } from "../enums/gameState";
+import { Pointer } from "../enums/pointer";
+import { isMouseIntersect } from "../utils/utils";
+import { RenderInterface } from "../interfaces/render";
 
-export class Game {
+export class Game implements RenderInterface {
   private gameMenu: GameMenu;
   private world: World;
 
@@ -38,7 +38,7 @@ export class Game {
   }
 
   private init(): void {
-    gameState.state = GameStateEnum.default;
+    state.game.state = GameState.default;
     this.world.init();
     this.initBuildings();
   }
@@ -53,7 +53,7 @@ export class Game {
   }
 
   public update(dt: number) {
-    this.gameMenu.update(this.mousePos);
+    this.gameMenu.update(dt, this.mousePos);
     this.world.update(dt, this.mousePos, this.key);
   }
 
@@ -62,7 +62,7 @@ export class Game {
 
     switch (button) {
       case MouseButtons.Left:
-        if (gameState.pointer === PointerEnum.Menu) {
+        if (state.pointer.state === Pointer.Menu) {
           this.gameMenu.handleClick(this.mousePos);
         } else {
           this.world.handleClick();
@@ -71,7 +71,7 @@ export class Game {
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
-        selectedBuilding.data = { ...initBuildingState.data };
+        state.building.selected.data = { ...initBuildingState.data };
         this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
@@ -85,10 +85,10 @@ export class Game {
   public handleMouseMove(pos: Position): void {
     this.mousePos.setPosition(pos);
 
-    if (this.gameMenu.isMouseIntersect(pos)) {
-      gameState.pointer = PointerEnum.Menu;
+    if (isMouseIntersect(pos, this.gameMenu)) {
+      state.pointer.state = Pointer.Menu;
     } else {
-      gameState.pointer = PointerEnum.Tile;
+      state.pointer.state = Pointer.Tile;
     }
 
     this.world.handleMouseMove(pos);

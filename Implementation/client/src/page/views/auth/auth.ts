@@ -7,12 +7,12 @@ import { Button } from "../../components/buttonComponents/button";
 import { buttonPos } from "../pos/buttonPos";
 import { TextInput } from "../../components/textComponents/textInput";
 import { AuthType } from "../../../types/authType";
-import { PageState } from "../../../states/pageState";
+import { PageState } from "../../../enums/pageState";
 import { Text } from "../../components/textComponents/text";
 import { inputPos } from "../pos/inputPos";
-import { globalState } from "../../../data/data";
 import { Page } from "../page";
-import { images } from "../../../data/images";
+import { state } from "../../../data/state";
+import { Dimension } from "../../../utils/dimension";
 
 export class Auth extends Page {
   protected backButton: Button;
@@ -29,24 +29,21 @@ export class Auth extends Page {
 
     this.backButton = new Button(
       buttonPos.default.back,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
-      images.page.buttons.back.url,
-      () => (globalState.state = PageState.MainMenu)
+      BUTTON_SIZE,
+      state.images.page.buttons.back.url,
+      () => (state.navigation.pageState = PageState.MainMenu)
     );
 
     this.actionButton = new Button(
       buttonPos.default.next,
-      BUTTON_SIZE.width,
-      BUTTON_SIZE.height,
+      BUTTON_SIZE,
       actionButtonImage,
       this.handleNext
     );
 
     this.nameInput = new TextInput(
       inputPos.auth.name,
-      500,
-      40,
+      new Dimension(500, 40),
       "",
       INPUT_BACKGROUND_COLOR,
       false
@@ -54,8 +51,7 @@ export class Auth extends Page {
 
     this.passwordInput = new TextInput(
       inputPos.auth.password,
-      500,
-      40,
+      new Dimension(500, 40),
       "",
       INPUT_BACKGROUND_COLOR,
       true
@@ -68,8 +64,7 @@ export class Auth extends Page {
 
     this.nameText = new Text(
       inputPos.auth.name,
-      0,
-      0,
+      Dimension.zero(),
       "Felhasználó név: ",
       false,
       BLACK_COLOR
@@ -77,8 +72,7 @@ export class Auth extends Page {
 
     this.passwordText = new Text(
       inputPos.auth.password,
-      0,
-      0,
+      Dimension.zero(),
       "Jelszó: ",
       false,
       BLACK_COLOR
@@ -104,10 +98,10 @@ export class Auth extends Page {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
-      globalState.state = PageState.Registration;
+      state.navigation.pageState = PageState.Registration;
       console.error(error);
     } else {
-      globalState.state = PageState.MainMenu;
+      state.navigation.pageState = PageState.MainMenu;
     }
   };
 

@@ -1,7 +1,7 @@
-import { globalState } from "../../data/data";
-import { images } from "../../data/images";
+import { state } from "../../data/state";
+import { MainMenuState } from "../../enums/gameMenuState";
+import { RenderInterface } from "../../interfaces/render";
 import { Button } from "../../page/components/buttonComponents/button";
-import { GameMainMenuState } from "../../states/gameMenuState";
 import { Dimension } from "../../utils/dimension";
 import { Position } from "../../utils/position";
 import { getImageNameFromUrl } from "../../utils/utils";
@@ -10,9 +10,9 @@ import { InfoPanel } from "./components/infoPanel";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";
 
-export class GameMenu {
+export class GameMenu implements RenderInterface {
   private mainSection: MainSection;
-  private frames: Record<GameMainMenuState, Section>;
+  private frames: Record<MainMenuState, Section>;
 
   private pos: Position;
   private dim: Dimension;
@@ -21,45 +21,48 @@ export class GameMenu {
     this.pos = pos;
     this.dim = dim;
 
-    this.mainSection = new MainSection(pos, dim.width, 75);
+    this.mainSection = new MainSection(pos, new Dimension(dim.width, 75));
 
     this.frames = {
-      [GameMainMenuState.Unselected]: new Section(
+      [MainMenuState.Unselected]: new Section(
         new Position(pos.x, pos.y + 74),
-        dim.width,
-        dim.height - 75
+        new Dimension(dim.width, dim.height - 75)
       ),
-      [GameMainMenuState.House]: new BuildingSection(
+      [MainMenuState.House]: new BuildingSection(
         new Position(pos.x, pos.y + 74),
-        dim.width,
-        dim.height - 75
+        new Dimension(dim.width, dim.height - 75)
       ),
-      [GameMainMenuState.Storage]: new Section(
+      [MainMenuState.Storage]: new Section(
         new Position(pos.x, pos.y + 74),
-        dim.width,
-        dim.height - 75
+        new Dimension(dim.width, dim.height - 75)
       ),
-      [GameMainMenuState.Population]: new Section(
+      [MainMenuState.Population]: new Section(
         new Position(pos.x, pos.y + 74),
-        dim.width,
-        dim.height - 75
+        new Dimension(dim.width, dim.height - 75)
       ),
-      [GameMainMenuState.Info]: new InfoPanel(
+      [MainMenuState.Info]: new InfoPanel(
         new Position(pos.x, pos.y + 74),
-        dim.width,
-        dim.height - 75
+        new Dimension(dim.width, dim.height - 75)
       ),
     };
   }
 
-  public draw(): void {
-    this.mainSection.draw();
-    this.frames[globalState.gameMenuState].draw();
+  public getPos(): Position {
+    return this.pos;
   }
 
-  public update(mousePos: Position): void {
-    this.mainSection.update(mousePos);
-    this.frames[globalState.gameMenuState].update(mousePos);
+  public getDimension(): Dimension {
+    return this.dim;
+  }
+
+  public draw(): void {
+    this.mainSection.draw();
+    this.frames[state.navigation.gameMenuState].draw();
+  }
+
+  public update(dt: number, mousePos: Position): void {
+    this.mainSection.update(dt, mousePos);
+    this.frames[state.navigation.gameMenuState].update(dt, mousePos);
   }
 
   public handleClick(mousePos: Position): void {
@@ -67,22 +70,14 @@ export class GameMenu {
     this.updateImages(
       "Sub",
       mousePos,
-      this.frames[globalState.gameMenuState].getButtons()
+      this.frames[state.navigation.gameMenuState].getButtons()
     );
 
-    this.frames[globalState.gameMenuState].handleClick(mousePos);
-  }
-
-  public isMouseIntersect(mousePos: Position): boolean {
-    const horizontal =
-      mousePos.x >= this.pos.x && mousePos.x <= this.pos.x + this.dim.width;
-    const vertical =
-      mousePos.y >= this.pos.y && mousePos.y <= this.pos.y + this.dim.height;
-    return horizontal && vertical;
+    this.frames[state.navigation.gameMenuState].handleClick(mousePos);
   }
 
   public updateImages(
-    state: string,
+    type: string,
     mousePos: Position,
     buttons?: Button[]
   ): void {
@@ -95,12 +90,12 @@ export class GameMenu {
         this.resetButtonImage(buttons);
         const image: string = getImageNameFromUrl(button.getImage());
         const select = `${image}_selected`;
-        button.setImage(images.game.menu[select].url);
+        button.setImage(state.images.game.menu[select].url);
 
-        if (state === "Main") {
-          globalState.gameMenuState = index + 1;
-        } else if (state === "Sub") {
-          globalState.subMenuState = index + 1;
+        if (type === "Main") {
+          state.navigation.gameMenuState = index + 1;
+        } else if (type === "Sub") {
+          state.navigation.subMenuState = index + 1;
         }
       }
     });
@@ -114,7 +109,7 @@ export class GameMenu {
         image = image.split("_")[0];
       }
 
-      button.setImage(images.game.menu[image].url);
+      button.setImage(state.images.game.menu[image].url);
     });
   }
 }

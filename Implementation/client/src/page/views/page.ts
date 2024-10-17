@@ -1,12 +1,12 @@
 import { ctx } from "../../init";
+import { RenderInterface } from "../../interfaces/render";
 import { TITLE_SIZE } from "../../settings";
 import { Position } from "../../utils/position";
 import { Button } from "../components/buttonComponents/button";
 import { TextInput } from "../components/textComponents/textInput";
-import { UI } from "../../interfaces/ui";
 import { titlePos } from "./pos/titlePos";
 
-export class Page implements UI {
+export abstract class Page implements RenderInterface {
   protected title: HTMLImageElement;
   protected buttons: Button[];
   protected inputs: TextInput[];

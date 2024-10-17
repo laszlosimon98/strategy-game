@@ -1,4 +1,4 @@
-export enum GameMainMenuState {
+export enum MainMenuState {
   Unselected,
   House,
   Storage,
@@ -6,7 +6,7 @@ export enum GameMainMenuState {
   Info,
 }
 
-export enum GameSubMenuState {
+export enum SubMenuState {
   Unselected,
   Resources,
   Food,

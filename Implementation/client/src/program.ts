@@ -1,4 +1,4 @@
-import { PageState } from "./states/pageState";
+import { PageState } from "./enums/pageState";
 import { Description } from "./page/views/description";
 import { Join } from "./page/views/join";
 import { Lobby } from "./page/views/lobby";
@@ -11,14 +11,14 @@ import { Registration } from "./page/views/auth/registration";
 import { Button } from "./page/components/buttonComponents/button";
 import { TextInput } from "./page/components/textComponents/textInput";
 import { BACKGROUND_COLOR, BLACK_COLOR } from "./settings";
-import { globalState } from "./data/data";
 import { Page } from "./page/views/page";
 import { Game } from "./game/game";
 import { ServerHandler } from "./server/serverHandler";
 import { Position } from "./utils/position";
-import { images } from "./data/images";
+import { state } from "./data/state";
+import { RenderInterface } from "./interfaces/render";
 
-export class Program {
+export class Program implements RenderInterface {
   private pages: Partial<Record<PageState, Page>>;
   private buttons?: Button[];
   private inputs?: TextInput[];
@@ -32,25 +32,27 @@ export class Program {
     this.key = "";
 
     this.pages = {
-      [PageState.MainMenu]: new MainMenu(images.page.titles.menu.url),
+      [PageState.MainMenu]: new MainMenu(state.images.page.titles.menu.url),
       [PageState.Registration]: new Registration(
-        images.page.titles.registration.url,
-        images.page.buttons.registration.url
+        state.images.page.titles.registration.url,
+        state.images.page.buttons.registration.url
       ),
       [PageState.Login]: new Login(
-        images.page.titles.login.url,
-        images.page.buttons.login.url
+        state.images.page.titles.login.url,
+        state.images.page.buttons.login.url
       ),
-      [PageState.Statistic]: new Statistic(images.page.titles.statistic.url),
+      [PageState.Statistic]: new Statistic(
+        state.images.page.titles.statistic.url
+      ),
       [PageState.Description]: new Description(
-        images.page.titles.description.url
+        state.images.page.titles.description.url
       ),
-      [PageState.NewGame]: new NewGame(images.page.titles.newGame.url),
-      [PageState.Lobby]: new Lobby(images.page.titles.lobby.url),
-      [PageState.JoinGame]: new Join(images.page.titles.join.url),
+      [PageState.NewGame]: new NewGame(state.images.page.titles.newGame.url),
+      [PageState.Lobby]: new Lobby(state.images.page.titles.lobby.url),
+      [PageState.JoinGame]: new Join(state.images.page.titles.join.url),
     };
 
-    this.buttons = this.pages[globalState.state]?.getButtons();
+    this.buttons = this.pages[state.navigation.pageState]?.getButtons();
 
     document.addEventListener("mousedown", (e: MouseEvent) =>
       this.handleMouseClick(e)
@@ -73,11 +75,11 @@ export class Program {
     );
 
     window.addEventListener("resize", () => {
-      this.pages[globalState.state]?.resize();
+      this.pages[state.navigation.pageState]?.resize();
     });
 
     ServerHandler.receiveMessage("game:starts", () => {
-      globalState.state = PageState.Game;
+      state.navigation.pageState = PageState.Game;
       this.game = new Game();
     });
   }
@@ -86,9 +88,9 @@ export class Program {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    if (globalState.state !== PageState.Game) {
+    if (state.navigation.pageState !== PageState.Game) {
       ctx.fillStyle = BACKGROUND_COLOR;
-      this.pages[globalState.state]?.draw();
+      this.pages[state.navigation.pageState]?.draw();
     } else {
       ctx.fillStyle = BLACK_COLOR;
       this.game?.draw();
@@ -96,9 +98,9 @@ export class Program {
   }
 
   public update(dt: number): void {
-    if (globalState.state !== PageState.Game) {
-      this.buttons?.map((btn) => btn.update(this.mousePos));
-      this.pages[globalState.state]?.update();
+    if (state.navigation.pageState !== PageState.Game) {
+      this.buttons?.map((btn) => btn.update(dt, this.mousePos));
+      this.pages[state.navigation.pageState]?.update();
     } else {
       this.game?.update(dt);
     }
@@ -114,7 +116,7 @@ export class Program {
   private handleMouseClick(e: MouseEvent) {
     const [x, y] = [e.clientX, e.clientY];
 
-    if (globalState.state !== PageState.Game) {
+    if (state.navigation.pageState !== PageState.Game) {
       this.buttons?.map(async (btn) => {
         if (btn.isClicked(x, y)) {
           btn.click();
@@ -160,10 +162,10 @@ export class Program {
   }
 
   private updateButtons(): void {
-    this.buttons = this.pages[globalState.state]?.getButtons();
+    this.buttons = this.pages[state.navigation.pageState]?.getButtons();
   }
 
   private updateInputs(): void {
-    this.inputs = this.pages[globalState.state]?.getInputs();
+    this.inputs = this.pages[state.navigation.pageState]?.getInputs();
   }
 }

@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { globalState } from "../data/data";
+import { state } from "../data/state";
 
 export class ServerHandler {
   private static socket: Socket;
@@ -12,12 +12,12 @@ export class ServerHandler {
     }
 
     this.socket.once("connect_error", () => {
-      globalState.serverStatus = "offline";
+      state.server.status = "offline";
       return;
     });
 
     this.socket.on("connect", () => {
-      globalState.serverStatus = "online";
+      state.server.status = "online";
     });
 
     return this.socket;

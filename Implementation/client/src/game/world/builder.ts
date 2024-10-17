@@ -3,19 +3,14 @@ import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { Building } from "./building";
-import { BuildingType } from "../types/types";
-import {
-  gameState,
-  globalState,
-  infoPanel,
-  initBuildingState,
-  selectedBuilding,
-} from "../../data/data";
-import { GameStateEnum } from "../utils/gameStateEnum";
-import { PointerEnum } from "../utils/pointerEnum";
-import { GameMainMenuState } from "../../states/gameMenuState";
 import { FakeBuilding } from "./buildings/fakeBuilding";
 import { buildingList } from "./buildings/buildingList";
+import { initBuildingState, state } from "../../data/state";
+import { GameState } from "../../enums/gameState";
+import { isMouseIntersect } from "../../utils/utils";
+import { Pointer } from "../../enums/pointer";
+import { MainMenuState } from "../../enums/gameMenuState";
+import { BuildingAssetType } from "../../types/gameType";
 
 export class Builder {
   private buildings: Building[];
@@ -29,12 +24,12 @@ export class Builder {
 
     this.fakeHouse = new FakeBuilding(
       new Indices(-1, -1),
-      selectedBuilding.data
+      state.building.selected.data
     );
 
     this.selectedHouse = new Building(
       new Indices(-1, -1),
-      selectedBuilding.data
+      state.building.selected.data
     );
 
     this.buildingPos = Position.zero();
@@ -51,18 +46,21 @@ export class Builder {
     this.fakeHouse.draw();
   }
 
-  public update(mousePos: Position, cameraScroll: Position): void {
-    this.buildings.forEach((building) => building.update(cameraScroll));
-    this.fakeHouse.update(cameraScroll);
+  public update(dt: number, mousePos: Position, cameraScroll: Position): void {
+    this.buildings.forEach((building) => building.update(dt, cameraScroll));
+    this.fakeHouse.update(dt, cameraScroll);
 
-    if (!selectedBuilding.data.url.length && this.fakeHouse.getBuilding().url) {
+    if (
+      !state.building.selected.data.url.length &&
+      this.fakeHouse.getBuilding().url
+    ) {
       this.resetStates();
     }
 
-    if (selectedBuilding.data.url !== this.fakeHouse.getBuilding().url) {
-      gameState.state = GameStateEnum.build;
+    if (state.building.selected.data.url !== this.fakeHouse.getBuilding().url) {
+      state.game.state = GameState.build;
       this.fakeHouse.setPos(mousePos.sub(cameraScroll));
-      this.fakeHouse.setBuilding(selectedBuilding.data);
+      this.fakeHouse.setBuilding(state.building.selected.data);
     }
   }
 
@@ -72,34 +70,34 @@ export class Builder {
     cameraScroll: Position
   ): void {
     this.buildings.forEach((building) => {
-      if (building.isMouseIntersect(mousePos.sub(cameraScroll))) {
+      if (isMouseIntersect(mousePos.sub(cameraScroll), building)) {
         this.selectedHouse.setBuilding(building.getBuilding());
-        infoPanel.data = building.getIndices();
-        gameState.pointer = PointerEnum.House;
+        state.info.data = building.getIndices();
+        state.pointer.state = Pointer.House;
       }
     });
 
-    if (gameState.state === GameStateEnum.build) {
-      if (selectedBuilding.data.url.length) {
+    if (state.game.state === GameState.build) {
+      if (state.building.selected.data.url.length) {
         ServerHandler.sendMessage("game:build", {
           indices,
-          building: selectedBuilding.data,
+          building: state.building.selected.data,
           buildingPos: this.buildingPos,
         });
       }
     }
 
-    if (gameState.state !== GameStateEnum.build) {
-      switch (gameState.pointer) {
-        case PointerEnum.Tile: {
-          gameState.state = GameStateEnum.default;
+    if (state.game.state !== GameState.build) {
+      switch (state.pointer.state) {
+        case Pointer.Tile: {
+          state.game.state = GameState.default;
           break;
         }
-        case PointerEnum.House: {
-          infoPanel.name = this.selectedHouse.getBuildingName();
+        case Pointer.House: {
+          state.info.name = this.selectedHouse.getBuildingName();
 
-          gameState.state = GameStateEnum.select;
-          globalState.gameMenuState = GameMainMenuState.Info;
+          state.game.state = GameState.select;
+          state.navigation.gameMenuState = MainMenuState.Info;
 
           this.buildings.forEach((building) => building.action());
           break;
@@ -109,12 +107,12 @@ export class Builder {
   }
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
-    if (selectedBuilding.data.url.length) {
+    if (state.building.selected.data.url.length) {
       this.createHouseHolder();
     }
 
     this.buildings.forEach((building) => {
-      building.setHover(building.isMouseIntersect(mousePos.sub(cameraScroll)));
+      building.setHover(isMouseIntersect(mousePos.sub(cameraScroll), building));
     });
   }
 
@@ -131,7 +129,7 @@ export class Builder {
 
   private build(
     indices: Indices,
-    building: BuildingType,
+    building: BuildingAssetType,
     buildingPos: Position
   ): void {
     if (building) {
@@ -166,10 +164,10 @@ export class Builder {
   }
 
   private resetStates(): void {
-    selectedBuilding.data = { ...initBuildingState.data };
-    this.fakeHouse.setBuilding(selectedBuilding.data);
+    state.building.selected.data = { ...initBuildingState.data };
+    this.fakeHouse.setBuilding(state.building.selected.data);
     this.fakeHouse.setPos(new Position(-1000, -1000));
-    gameState.state = GameStateEnum.default;
+    state.game.state = GameState.default;
   }
 
   private destroy(indices: Indices): void {
@@ -181,7 +179,7 @@ export class Builder {
       }
     }
 
-    globalState.gameMenuState = GameMainMenuState.Unselected;
+    state.navigation.gameMenuState = MainMenuState.Unselected;
   }
 
   private handleCommunication(): void {
@@ -193,7 +191,7 @@ export class Builder {
         buildingPos,
       }: {
         indices: Indices;
-        building: BuildingType;
+        building: BuildingAssetType;
         buildingPos: Position;
       }) => {
         this.build(indices, building, buildingPos);
