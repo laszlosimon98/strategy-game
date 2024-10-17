@@ -9,6 +9,7 @@ import { GameState } from "../enums/gameState";
 import { Pointer } from "../enums/pointer";
 import { isMouseIntersect } from "../utils/utils";
 import { RenderInterface } from "../interfaces/render";
+import { ServerHandler } from "../server/serverHandler";
 
 export class Game implements RenderInterface {
   private gameMenu: GameMenu;
@@ -35,16 +36,18 @@ export class Game implements RenderInterface {
     this.key = "";
 
     this.init();
+    this.handleCommunication();
   }
 
   private init(): void {
     state.game.state = GameState.default;
     this.world.init();
-    this.initBuildings();
   }
 
-  private initBuildings(): void {
-    // console.log(Object.keys(images.game.buildings));
+  private initPlayer(id: string): void {
+    state.game.players[id] = {
+      buildings: [],
+    };
   }
 
   public draw(): void {
@@ -99,4 +102,10 @@ export class Game implements RenderInterface {
   }
 
   public resize(): void {}
+
+  private handleCommunication(): void {
+    ServerHandler.receiveMessage("game:ids", (ids: string[]) => {
+      ids.forEach((id) => this.initPlayer(id));
+    });
+  }
 }

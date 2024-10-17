@@ -11,11 +11,23 @@ import { Validator } from "../classes/validator";
 import { AssetType } from "../types/types";
 
 export const gameHandler = (io: Server, socket: Socket) => {
+  const getIds = (): string[] => {
+    const currentRoom: string = Communicate.getCurrentRoom(socket);
+    const result: string[] = [];
+
+    const players = gameState[currentRoom].players;
+    players.forEach((player) => result.push(player.playerId));
+    return result;
+  };
+
   const gameStarts = async () => {
-    const currentRoom = Communicate.getCurrentRoom(socket);
+    const currentRoom: string = Communicate.getCurrentRoom(socket);
     gameState[currentRoom].isGameStarted = true;
 
+    const ids = getIds();
+
     Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
+    Communicate.sendMessageToEveryOne(io, socket, "game:ids", ids);
 
     const tiles = createWorld();
     Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", tiles);
@@ -55,6 +67,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
       );
 
       Communicate.sendMessageToEveryOne(io, socket, "game:build", {
+        id: socket.id,
         indices,
         building: buildingImage,
         buildingPos,
@@ -69,7 +82,10 @@ export const gameHandler = (io: Server, socket: Socket) => {
 
     const isSuccessful: boolean = Builder.destroy(indices, socket);
     if (isSuccessful) {
-      Communicate.sendMessageToEveryOne(io, socket, "game:destroy", indices);
+      Communicate.sendMessageToEveryOne(io, socket, "game:destroy", {
+        id: socket.id,
+        indices,
+      });
     }
   };
 

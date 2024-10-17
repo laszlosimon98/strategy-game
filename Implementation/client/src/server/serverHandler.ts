@@ -7,8 +7,8 @@ export class ServerHandler {
 
   private static getInstance(): Socket {
     if (!this.socket) {
-      // this.socket = io("http://localhost:3000");
-      this.socket = io("http://192.168.1.70:3000");
+      this.socket = io("http://localhost:3000");
+      // this.socket = io("http://192.168.1.70:3000");
     }
 
     this.socket.once("connect_error", () => {
@@ -21,6 +21,10 @@ export class ServerHandler {
     });
 
     return this.socket;
+  }
+
+  public static getId(): string {
+    return this.getInstance().id as string;
   }
 
   public static sendMessage(event: string, data: any): void {

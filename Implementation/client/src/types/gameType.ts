@@ -68,7 +68,7 @@ export type GameType = {
   game: {
     state: GameState;
     players: {
-      [key: string]: {
+      [code: string]: {
         buildings: Building[];
       };
     };

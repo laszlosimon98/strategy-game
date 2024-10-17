@@ -13,15 +13,11 @@ import { MainMenuState } from "../../enums/gameMenuState";
 import { BuildingAssetType } from "../../types/gameType";
 
 export class Builder {
-  private buildings: Building[];
   private buildingPos: Position;
-
   private fakeHouse: FakeBuilding;
   private selectedHouse: Building;
 
   constructor() {
-    this.buildings = [];
-
     this.fakeHouse = new FakeBuilding(
       new Indices(-1, -1),
       state.building.selected.data
@@ -42,12 +38,20 @@ export class Builder {
   }
 
   public draw(): void {
-    this.buildings.forEach((building) => building.draw());
+    Object.keys(state.game.players).forEach((key) => {
+      state.game.players[key].buildings.forEach((building) => building.draw());
+    });
+
     this.fakeHouse.draw();
   }
 
   public update(dt: number, mousePos: Position, cameraScroll: Position): void {
-    this.buildings.forEach((building) => building.update(dt, cameraScroll));
+    Object.keys(state.game.players).forEach((key) => {
+      state.game.players[key].buildings.forEach((building) =>
+        building.update(dt, cameraScroll)
+      );
+    });
+
     this.fakeHouse.update(dt, cameraScroll);
 
     if (
@@ -57,11 +61,7 @@ export class Builder {
       this.resetStates();
     }
 
-    if (state.building.selected.data.url !== this.fakeHouse.getBuilding().url) {
-      state.game.state = GameState.build;
-      this.fakeHouse.setPosition(mousePos.sub(cameraScroll));
-      this.fakeHouse.setBuilding(state.building.selected.data);
-    }
+    this.updateFakeHouse(mousePos, cameraScroll);
   }
 
   public handleClick(
@@ -69,13 +69,7 @@ export class Builder {
     mousePos: Position,
     cameraScroll: Position
   ): void {
-    this.buildings.forEach((building) => {
-      if (isMouseIntersect(mousePos.sub(cameraScroll), building)) {
-        this.selectedHouse.setBuilding(building.getBuilding());
-        state.info.data = building.getIndices();
-        state.pointer.state = Pointer.House;
-      }
-    });
+    this.selectHouse(mousePos, cameraScroll);
 
     if (state.game.state === GameState.build) {
       if (state.building.selected.data.url.length) {
@@ -98,8 +92,6 @@ export class Builder {
 
           state.game.state = GameState.select;
           state.navigation.gameMenuState = MainMenuState.Info;
-
-          this.buildings.forEach((building) => building.action());
           break;
         }
       }
@@ -108,22 +100,24 @@ export class Builder {
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
     if (state.building.selected.data.url.length) {
-      this.createHouseHolder();
+      this.setFakeHouse();
     }
 
     if (
       state.pointer.state !== Pointer.Menu &&
       state.game.state !== GameState.build
     ) {
-      this.buildings.forEach((building) => {
-        building.setHover(
-          isMouseIntersect(mousePos.sub(cameraScroll), building)
-        );
-      });
+      state.game.players[ServerHandler.getId()].buildings.forEach(
+        (building) => {
+          building.setHover(
+            isMouseIntersect(mousePos.sub(cameraScroll), building)
+          );
+        }
+      );
     }
   }
 
-  private createHouseHolder(): void {
+  private setFakeHouse(): void {
     const dimension: Dimension = this.fakeHouse.getDimension();
 
     const housePos: Position = new Position(
@@ -134,7 +128,26 @@ export class Builder {
     this.fakeHouse.setPosition(housePos);
   }
 
+  private selectHouse(mousePos: Position, cameraScroll: Position): void {
+    state.game.players[ServerHandler.getId()].buildings.forEach((building) => {
+      if (isMouseIntersect(mousePos.sub(cameraScroll), building)) {
+        this.selectedHouse.setBuilding(building.getBuilding());
+        state.info.data = building.getIndices();
+        state.pointer.state = Pointer.House;
+      }
+    });
+  }
+
+  private updateFakeHouse(mousePos: Position, cameraScroll: Position): void {
+    if (state.building.selected.data.url !== this.fakeHouse.getBuilding().url) {
+      state.game.state = GameState.build;
+      this.fakeHouse.setPosition(mousePos.sub(cameraScroll));
+      this.fakeHouse.setBuilding(state.building.selected.data);
+    }
+  }
+
   private build(
+    id: string,
     indices: Indices,
     building: BuildingAssetType,
     buildingPos: Position
@@ -157,7 +170,7 @@ export class Builder {
       );
 
       newBuilding.setPosition(housePos);
-      this.buildings.push(newBuilding);
+      state.game.players[id].buildings.push(newBuilding);
 
       this.resetStates();
     }
@@ -177,12 +190,14 @@ export class Builder {
     state.game.state = GameState.default;
   }
 
-  private destroy(indices: Indices): void {
-    for (let i = this.buildings.length - 1; i >= 0; --i) {
-      const buildingIndices = this.buildings[i].getIndices();
+  private destroy(id: string, indices: Indices): void {
+    const buildings = state.game.players[id].buildings;
+
+    for (let i = buildings.length - 1; i >= 0; --i) {
+      const buildingIndices = buildings[i].getIndices();
 
       if (buildingIndices.i === indices.i && buildingIndices.j === indices.j) {
-        this.buildings.splice(i, 1);
+        buildings.splice(i, 1);
       }
     }
 
@@ -193,20 +208,25 @@ export class Builder {
     ServerHandler.receiveMessage(
       "game:build",
       ({
+        id,
         indices,
         building,
         buildingPos,
       }: {
+        id: string;
         indices: Indices;
         building: BuildingAssetType;
         buildingPos: Position;
       }) => {
-        this.build(indices, building, buildingPos);
+        this.build(id, indices, building, buildingPos);
       }
     );
 
-    ServerHandler.receiveMessage("game:destroy", (indices: Indices) => {
-      this.destroy(indices);
-    });
+    ServerHandler.receiveMessage(
+      "game:destroy",
+      ({ id, indices }: { id: string; indices: Indices }) => {
+        this.destroy(id, indices);
+      }
+    );
   }
 }
