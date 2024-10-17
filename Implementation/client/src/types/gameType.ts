@@ -3,19 +3,18 @@ import { GameState } from "../enums/gameState";
 import { PageState } from "../enums/pageState";
 import { Pointer } from "../enums/pointer";
 import { Building } from "../game/world/building";
+import { Dimension } from "../utils/dimension";
+import { Indices } from "../utils/indices";
 
 export type TileType = "grass" | "grass_flower" | "grass_rock";
 
-export type BuildingAssetType = {
-  url: string;
-  dimensions: {
-    width: number;
-    height: number;
+export type BuildingType = {
+  data: {
+    indices: Indices;
+    owner: string;
+    url: string;
+    dimensions: Dimension;
   };
-};
-
-export type SelectedBuildingType = {
-  data: BuildingAssetType;
 };
 
 export type ImagesType = {
@@ -45,12 +44,6 @@ export type PlayerType = {
   };
 };
 
-type BuildingType = {
-  building: {
-    selected: SelectedBuildingType;
-  };
-};
-
 export type InfoType = {
   info: {
     name: string;
@@ -64,14 +57,18 @@ export type PointerType = {
   };
 };
 
+export type PlayerGameType = {
+  [code: string]: {
+    name: string;
+    buildings: Building[];
+  };
+};
+
 export type GameType = {
   game: {
     state: GameState;
-    players: {
-      [code: string]: {
-        buildings: Building[];
-      };
-    };
+    players: PlayerGameType;
+    selectedBuilding: BuildingType;
   };
 };
 
@@ -79,7 +76,6 @@ export type stateType = ImagesType &
   NavigationType &
   ServerType &
   PlayerType &
-  BuildingType &
   InfoType &
   PointerType &
   GameType;

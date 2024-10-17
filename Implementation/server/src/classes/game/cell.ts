@@ -1,5 +1,4 @@
-import { TileType } from "../../state/gameState";
-import { BuildingType } from "../../types/types";
+import { TileType } from "../../types/types";
 
 export class Cell {
   i: number;
@@ -13,9 +12,9 @@ export class Cell {
   private previous?: Cell | undefined;
 
   private type: TileType;
-  private obstacle?: string;
 
-  private building: BuildingType;
+  private hasBuilding: boolean;
+  private hasObstacle: boolean;
 
   constructor(i: number, j: number) {
     this.i = i;
@@ -29,9 +28,9 @@ export class Cell {
     this.previous = undefined;
 
     this.type = "grass";
-    this.obstacle = undefined;
 
-    this.building = {};
+    this.hasBuilding = false;
+    this.hasObstacle = false;
   }
 
   addNeighbors(cell: Cell): void {
@@ -42,8 +41,20 @@ export class Cell {
     return this.neighbors;
   }
 
-  isEmpty(): boolean {
-    return this.building.owner === undefined && this.obstacle === undefined;
+  isWalkAble(): boolean {
+    return !this.hasBuilding && !this.hasObstacle;
+  }
+
+  isBuildAble(): boolean {
+    return this.type === "grass" && this.isWalkAble();
+  }
+
+  setBuilding(state: boolean): void {
+    this.hasBuilding = state;
+  }
+
+  setObstacle(state: boolean): void {
+    this.hasObstacle = state;
   }
 
   setType(type: TileType): void {
@@ -52,22 +63,6 @@ export class Cell {
 
   getType(): TileType {
     return this.type;
-  }
-
-  setBuilding(newBuilding: BuildingType): void {
-    this.building = { ...newBuilding };
-  }
-
-  getBuilding(): BuildingType {
-    return this.building;
-  }
-
-  getObstacle(): string | undefined {
-    return this.obstacle;
-  }
-
-  setObstacle(obstacle: string): void {
-    this.obstacle = obstacle;
   }
 
   getPrevious(): Cell | undefined {

@@ -18,6 +18,7 @@ import { titlePos } from "./pos/titlePos";
 import { Position } from "../../utils/position";
 import { state } from "../../data/state";
 import { Dimension } from "../../utils/dimension";
+import { PlayerGameType } from "../../types/gameType";
 
 export class Lobby extends Page {
   private backButton: Button;
@@ -123,7 +124,7 @@ export class Lobby extends Page {
     this.players = [];
   }
 
-  private addNewPlayer(players: { playerId: string; name: string }[]): void {
+  private addNewPlayer(players: string[]): void {
     const newPlayers = players.map((player, index) => {
       const text = new Text(
         new Position(
@@ -133,20 +134,20 @@ export class Lobby extends Page {
             (MARGIN / 1.5) * index
         ),
         Dimension.zero(),
-        player.name,
+        player,
         false,
         TEXT_COLOR
       );
 
-      return { [player.playerId]: text };
+      return { [player]: text };
     });
 
     this.players = newPlayers;
   }
 
-  private removePlayer(id: string): void {
+  private removePlayer(name: string): void {
     this.players = this.players.filter(
-      (player) => Object.keys(player)[0] !== id
+      (player) => Object.keys(player)[0] !== name
     );
     this.updatePlayersPos();
   }
@@ -173,13 +174,7 @@ export class Lobby extends Page {
 
     ServerHandler.receiveMessage(
       "connect:newPlayer",
-      ({
-        players,
-        message,
-      }: {
-        players: { playerId: string; name: string }[];
-        message: string;
-      }) => {
+      ({ players, message }: { players: string[]; message: string }) => {
         this.info.setText(message);
         this.info.setColor(INFO_COLOR);
 
@@ -189,11 +184,11 @@ export class Lobby extends Page {
 
     ServerHandler.receiveMessage(
       "connect:playerLeft",
-      ({ id, message }: { id: string; message: string }) => {
+      ({ name, message }: { name: string; message: string }) => {
         this.info.setText(message);
         this.info.setColor(ERROR_COLOR);
 
-        this.removePlayer(id);
+        this.removePlayer(name);
       }
     );
   }

@@ -1,8 +1,8 @@
 import { Socket } from "socket.io";
 import { MAP_SIZE } from "../../settings";
-import { gameState } from "../../state/gameState";
 import { Communicate } from "../communicate";
-import { Cell } from "../utils/cell";
+import { Cell } from "./cell";
+import { state } from "../../data/state";
 
 export class World {
   private constructor() {}
@@ -53,7 +53,6 @@ export class World {
         if (r < 0.05) {
           const type = Math.random() < 0.5 ? "grass_flower" : "grass_rock";
           cell.setType(type);
-          cell.setObstacle(type);
         }
 
         world[i].push(cell);
@@ -69,10 +68,10 @@ export class World {
   }
 
   public static getWorld(socket: Socket): Cell[][] {
-    return gameState[Communicate.getCurrentRoom(socket)].world;
+    return state[Communicate.getCurrentRoom(socket)].world;
   }
 
   public static setWorld(world: Cell[][], socket: Socket): void {
-    gameState[Communicate.getCurrentRoom(socket)].world = world;
+    state[Communicate.getCurrentRoom(socket)].world = world;
   }
 }

@@ -2,16 +2,17 @@ import { PageState } from "../enums/pageState";
 import { faker } from "@faker-js/faker";
 import { Pointer } from "../enums/pointer";
 import { GameState } from "../enums/gameState";
-import { SelectedBuildingType, stateType } from "../types/gameType";
+import { BuildingType, stateType } from "../types/gameType";
 import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
+import { Indices } from "../utils/indices";
+import { Dimension } from "../utils/dimension";
 
-export const initBuildingState: SelectedBuildingType = {
+export const initBuilding: BuildingType = {
   data: {
+    indices: Indices.zero(),
+    owner: "",
     url: "",
-    dimensions: {
-      width: 0,
-      height: 0,
-    },
+    dimensions: Dimension.zero(),
   },
 };
 
@@ -32,9 +33,6 @@ export const state: stateType = {
     name: faker.person.firstName(),
     host: false,
   },
-  building: {
-    selected: { ...initBuildingState },
-  },
   info: {
     name: "",
     data: {},
@@ -45,5 +43,8 @@ export const state: stateType = {
   game: {
     state: GameState.default,
     players: {},
+    selectedBuilding: {
+      data: { ...initBuilding.data },
+    },
   },
 };

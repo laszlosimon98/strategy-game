@@ -12,9 +12,5 @@ export const imageHandler = async (io: Server, socket: Socket) => {
     Communicate.sendMessageToSender(socket, "start:page", images);
   };
 
-  // const game = () => {
-  //   Communicate.sendMessageToEveryOne(io, socket, "start:game", images.game);
-  // };
-
   page();
 };

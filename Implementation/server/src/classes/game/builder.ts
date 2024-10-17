@@ -1,15 +1,11 @@
 import { Socket } from "socket.io";
 import { Indices } from "../utils/indices";
 import { World } from "./world";
-import { AssetType, BuildingType } from "../../types/types";
+import { BuildType } from "../../types/types";
 import { Validator } from "../validator";
-
-export type BuildType = {
-  indices: Indices;
-  building: AssetType;
-  socket: Socket;
-  buildingPos?: { x: number; y: number };
-};
+import { Building } from "./building";
+import { state } from "../../data/state";
+import { Communicate } from "../communicate";
 
 export class Builder {
   private constructor() {}
@@ -19,54 +15,40 @@ export class Builder {
     yPos: number,
     socket: Socket
   ): boolean => {
-    return World.getWorld(socket)[xPos][yPos].isEmpty();
+    return World.getWorld(socket)[xPos][yPos].isBuildAble();
   };
 
-  public static getHouseImage(
-    indices: Indices,
-    socket: Socket
-  ): AssetType | undefined {
-    const i = indices.i;
-    const j = indices.j;
-
-    return World.getWorld(socket)[i][j].getBuilding().building;
-  }
-
-  public static build({ indices, building, socket }: BuildType): boolean {
-    const i = indices.i;
-    const j = indices.j;
+  public static build({ building, socket }: BuildType): Building | undefined {
+    const i = building.data.indices.i;
+    const j = building.data.indices.j;
 
     if (!this.isPossibleToBuild(i, j, socket)) {
-      return false;
+      return;
     }
 
     const world = World.getWorld(socket);
+    const newBuilding: Building = new Building(building);
+    newBuilding.setOwner(socket.id);
 
-    const newBuilding: BuildingType = {
-      building,
-      owner: socket.id,
-    };
+    state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings.push(
+      newBuilding
+    );
+    world[i][j].setBuilding(true);
 
-    world[i][j].setBuilding(newBuilding);
-
-    World.setWorld(world, socket);
-    return true;
+    return newBuilding;
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {
-    const i = indices.i;
-    const j = indices.j;
-
-    const world = World.getWorld(socket);
-    const building: BuildingType = world[i][j].getBuilding();
-
-    if (!Validator.isSenderAndOwnerSame(socket, building.owner)) {
-      return false;
-    }
-
-    world[i][j].setBuilding({ building: undefined, owner: undefined });
-    World.setWorld(world, socket);
-
-    return true;
+    return false;
+    // const i = indices.i;
+    // const j = indices.j;
+    // const world = World.getWorld(socket);
+    // // const building: BuildingType = world[i][j].getBuilding();
+    // if (!Validator.isSenderAndOwnerSame(socket, building.owner)) {
+    //   return false;
+    // }
+    // // world[i][j].setBuilding({ building: undefined, owner: undefined });
+    // World.setWorld(world, socket);
+    // return true;
   }
 }

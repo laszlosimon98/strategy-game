@@ -4,12 +4,13 @@ import { Position } from "../utils/position";
 import { MouseButtons } from "../enums/mouse";
 import { World } from "./world/world";
 import { Dimension } from "../utils/dimension";
-import { initBuildingState, state } from "../data/state";
+import { initBuilding, state } from "../data/state";
 import { GameState } from "../enums/gameState";
 import { Pointer } from "../enums/pointer";
 import { isMouseIntersect } from "../utils/utils";
 import { RenderInterface } from "../interfaces/render";
 import { ServerHandler } from "../server/serverHandler";
+import { PlayerGameType } from "../types/gameType";
 
 export class Game implements RenderInterface {
   private gameMenu: GameMenu;
@@ -44,10 +45,13 @@ export class Game implements RenderInterface {
     this.world.init();
   }
 
-  private initPlayer(id: string): void {
-    state.game.players[id] = {
-      buildings: [],
-    };
+  private initPlayer(player: PlayerGameType): void {
+    Object.keys(player).forEach((id) => {
+      state.game.players[id] = {
+        name: "",
+        buildings: [],
+      };
+    });
   }
 
   public draw(): void {
@@ -74,7 +78,7 @@ export class Game implements RenderInterface {
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
-        state.building.selected.data = { ...initBuildingState.data };
+        state.game.selectedBuilding.data = { ...initBuilding.data };
         this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
@@ -104,8 +108,11 @@ export class Game implements RenderInterface {
   public resize(): void {}
 
   private handleCommunication(): void {
-    ServerHandler.receiveMessage("game:ids", (ids: string[]) => {
-      ids.forEach((id) => this.initPlayer(id));
-    });
+    ServerHandler.receiveMessage(
+      "game:initPlayers",
+      (player: PlayerGameType) => {
+        this.initPlayer(player);
+      }
+    );
   }
 }

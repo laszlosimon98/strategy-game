@@ -1,44 +1,44 @@
 import { Server, Socket } from "socket.io";
-import { gameState, TileType } from "../state/gameState";
-import { Cell } from "../classes/utils/cell";
+import { Cell } from "../classes/game/cell";
 import { Indices } from "../classes/utils/indices";
 import { Communicate } from "../classes/communicate";
 import { PathFinder } from "../classes/pathFind/pathFinder";
 import { World } from "../classes/game/world";
-import { Builder, BuildType } from "../classes/game/builder";
+import { Builder } from "../classes/game/builder";
 import { MAP_SIZE } from "../settings";
 import { Validator } from "../classes/validator";
-import { AssetType } from "../types/types";
+import { BuildType, PlayerType, TileType } from "../types/types";
+import { state } from "../data/state";
+import { Building } from "../classes/game/building";
 
 export const gameHandler = (io: Server, socket: Socket) => {
-  const getIds = (): string[] => {
+  const getPlayers = (): PlayerType => {
     const currentRoom: string = Communicate.getCurrentRoom(socket);
-    const result: string[] = [];
-
-    const players = gameState[currentRoom].players;
-    players.forEach((player) => result.push(player.playerId));
-    return result;
+    return state[currentRoom].players;
   };
 
   const gameStarts = async () => {
     const currentRoom: string = Communicate.getCurrentRoom(socket);
-    gameState[currentRoom].isGameStarted = true;
-
-    const ids = getIds();
+    state[currentRoom].isGameStarted = true;
 
     Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
-    Communicate.sendMessageToEveryOne(io, socket, "game:ids", ids);
+    Communicate.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:initPlayers",
+      getPlayers()
+    );
 
     const tiles = createWorld();
     Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", tiles);
 
-    const players = gameState[Communicate.getCurrentRoom(socket)].players;
+    const players: PlayerType = getPlayers();
 
-    players.forEach((player) => {
+    Object.keys(players).forEach((id) => {
       const i = Math.floor(Math.random() * MAP_SIZE);
       const j = Math.floor(Math.random() * MAP_SIZE);
       const pos = new Indices(i, j);
-      Communicate.sendPrivateMessage(io, player.playerId, "game:startPos", pos);
+      Communicate.sendPrivateMessage(io, id, "game:startPos", pos);
     });
   };
 
@@ -53,23 +53,20 @@ export const gameHandler = (io: Server, socket: Socket) => {
     return tiles;
   };
 
-  const build = ({ indices, building, buildingPos }: BuildType): void => {
-    if (!Validator.validateIndices(indices)) {
+  const build = ({ building, buildingPos }: BuildType): void => {
+    console.log(building);
+    if (!Validator.validateIndices(building.data.indices)) {
       return;
     }
 
-    const isSuccessful = Builder.build({ indices, building, socket });
+    const newBuilding: Building | undefined = Builder.build({
+      building,
+      socket,
+    });
 
-    if (isSuccessful) {
-      const buildingImage: AssetType | undefined = Builder.getHouseImage(
-        indices,
-        socket
-      );
-
+    if (newBuilding) {
       Communicate.sendMessageToEveryOne(io, socket, "game:build", {
-        id: socket.id,
-        indices,
-        building: buildingImage,
+        building: newBuilding.getBuilding(),
         buildingPos,
       });
     }
@@ -94,7 +91,7 @@ export const gameHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    const world: Cell[][] = gameState[Communicate.getCurrentRoom(socket)].world;
+    const world: Cell[][] = state[Communicate.getCurrentRoom(socket)].world;
     const path: Indices[] = PathFinder.getPath(world, start, end);
 
     Communicate.sendMessageToEveryOne(io, socket, "game:pathFind", path);

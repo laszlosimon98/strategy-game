@@ -1,36 +1,34 @@
 import { ctx } from "../../init";
 import { MouseIntersect } from "../../interfaces/mouseIntersect";
 import { RenderInterface } from "../../interfaces/render";
-import { BuildingAssetType } from "../../types/gameType";
+import { BuildingType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 
 export class Building implements RenderInterface, MouseIntersect {
-  private indices: Indices;
   private pos: Position;
   private image: HTMLImageElement;
   private renderPos: Position;
 
   private isRenderPosSet: boolean;
-  private building: BuildingAssetType;
+  private building: BuildingType;
 
   private isHovered: boolean;
 
-  public constructor(indices: Indices, building: BuildingAssetType) {
-    this.indices = indices;
+  public constructor(building: BuildingType) {
+    this.building = building;
     this.pos = new Position(0, -500);
     this.renderPos = new Position(0, -500);
     this.isRenderPosSet = false;
-    this.building = building;
 
     this.isHovered = false;
 
     this.image = new Image(
-      building.dimensions.width,
-      building.dimensions.height
+      building.data.dimensions.width,
+      building.data.dimensions.height
     );
-    this.image.src = building.url;
+    this.image.src = building.data.url;
   }
 
   public action(): void {
@@ -70,21 +68,21 @@ export class Building implements RenderInterface, MouseIntersect {
     this.isHovered = hover;
   }
 
-  public setBuilding(build: BuildingAssetType) {
-    this.building = { ...build };
-    this.image.src = this.building.url;
+  public setBuilding(building: BuildingType) {
+    this.building.data = { ...building.data };
+    this.image.src = this.building.data.url;
   }
 
-  public getBuilding(): BuildingAssetType {
+  public getBuilding(): BuildingType {
     return this.building;
   }
 
   public getBuildingName(): string {
-    return this.building.url.split("/")[6].split(".")[0];
+    return this.building.data.url.split("/")[6].split(".")[0];
   }
 
   public getDimension(): Dimension {
-    return this.building.dimensions;
+    return this.building.data.dimensions;
   }
 
   public setPosition(pos: Position): void {
@@ -96,6 +94,6 @@ export class Building implements RenderInterface, MouseIntersect {
   }
 
   public getIndices(): Indices {
-    return this.indices;
+    return this.building.data.indices;
   }
 }

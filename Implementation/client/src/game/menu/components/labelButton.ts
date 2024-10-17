@@ -29,6 +29,6 @@ export class LabelButton extends Button {
   }
 
   selectBuilding(): void {
-    state.building.selected.data = state.images.game.buildings[this.name];
+    state.game.selectedBuilding.data = state.images.game.buildings[this.name];
   }
 }

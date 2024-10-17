@@ -1,4 +1,4 @@
-import { Cell } from "../utils/cell";
+import { Cell } from "../game/cell";
 import { Indices } from "../utils/indices";
 import { AStar } from "./astar";
 

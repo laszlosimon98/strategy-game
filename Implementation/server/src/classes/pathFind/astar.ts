@@ -1,4 +1,4 @@
-import { Cell } from "../utils/cell";
+import { Cell } from "../game/cell";
 import { Indices } from "../utils/indices";
 
 export class AStar {
@@ -62,7 +62,7 @@ export class AStar {
       for (let i = 0; i < neighbors.length; ++i) {
         const neighbor = neighbors[i];
 
-        if (!closedList.includes(neighbor) && neighbor.isEmpty()) {
+        if (!closedList.includes(neighbor) && neighbor.isWalkAble()) {
           if (openList.includes(neighbor)) {
             if (this.currentCell.getF() < neighbor.getF()) {
               this.updateNeighbor(neighbor, end);
