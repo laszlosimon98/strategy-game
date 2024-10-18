@@ -1,5 +1,5 @@
 export enum GameState {
-  default,
-  build,
-  select,
+  Default,
+  Build,
+  House,
 }

@@ -54,7 +54,6 @@ export const gameHandler = (io: Server, socket: Socket) => {
   };
 
   const build = ({ building, buildingPos }: BuildType): void => {
-    console.log(building);
     if (!Validator.validateIndices(building.data.indices)) {
       return;
     }

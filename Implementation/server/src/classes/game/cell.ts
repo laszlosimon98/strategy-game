@@ -16,7 +16,7 @@ export class Cell {
   private hasBuilding: boolean;
   private hasObstacle: boolean;
 
-  constructor(i: number, j: number) {
+  public constructor(i: number, j: number) {
     this.i = i;
     this.j = j;
 
@@ -33,71 +33,75 @@ export class Cell {
     this.hasObstacle = false;
   }
 
-  addNeighbors(cell: Cell): void {
+  public addNeighbors(cell: Cell): void {
     this.neighbors.push(cell);
   }
 
-  getNeighbors(): Cell[] {
+  public getNeighbors(): Cell[] {
     return this.neighbors;
   }
 
-  isWalkAble(): boolean {
+  public isWalkAble(): boolean {
     return !this.hasBuilding && !this.hasObstacle;
   }
 
-  isBuildAble(): boolean {
+  public isBuildAble(): boolean {
     return this.type === "grass" && this.isWalkAble();
   }
 
-  setBuilding(state: boolean): void {
+  public hasCellBuilding(): boolean {
+    return this.hasBuilding;
+  }
+
+  public setBuilding(state: boolean): void {
     this.hasBuilding = state;
   }
 
-  setObstacle(state: boolean): void {
+  public setObstacle(state: boolean): void {
     this.hasObstacle = state;
   }
 
-  setType(type: TileType): void {
+  public setType(type: TileType): void {
     this.type = type;
   }
 
-  getType(): TileType {
+  public getType(): TileType {
     return this.type;
   }
 
-  getPrevious(): Cell | undefined {
+  public getPrevious(): Cell | undefined {
     return this.previous;
   }
 
-  setPrevious(prev: Cell | undefined): void {
+  public setPrevious(prev: Cell | undefined): void {
     this.previous = prev;
   }
 
-  setG(value: number): void {
+  public setG(value: number): void {
     this.g = value;
   }
 
-  getG(): number {
+  public getG(): number {
     return this.g;
   }
 
-  setH(value: number): void {
+  public setH(value: number): void {
     this.h = value;
   }
 
-  getH(): number {
+  public getH(): number {
     return this.h;
   }
 
-  setF(value: number): void {
+  public setF(value: number): void {
     this.f = value;
   }
 
-  getF(): number {
+  public getF(): number {
     return this.f;
   }
 
-  equals(other: Cell) {
+  public equals(other: Cell) {
     return this.i === other.i && this.j === other.j;
   }
 }

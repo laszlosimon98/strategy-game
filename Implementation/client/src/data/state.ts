@@ -41,7 +41,7 @@ export const state: stateType = {
     state: Pointer.Tile,
   },
   game: {
-    state: GameState.default,
+    state: GameState.Default,
     players: {},
     selectedBuilding: {
       data: { ...initBuilding.data },

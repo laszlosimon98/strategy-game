@@ -1,4 +1,5 @@
 import { state } from "../../../data/state";
+import { GameState } from "../../../enums/gameState";
 import { Button } from "../../../page/components/buttonComponents/button";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
@@ -30,5 +31,6 @@ export class LabelButton extends Button {
 
   selectBuilding(): void {
     state.game.selectedBuilding.data = state.images.game.buildings[this.name];
+    state.game.state = GameState.Build;
   }
 }

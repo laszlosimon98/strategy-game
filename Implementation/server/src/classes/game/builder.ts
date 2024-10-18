@@ -6,6 +6,7 @@ import { Validator } from "../validator";
 import { Building } from "./building";
 import { state } from "../../data/state";
 import { Communicate } from "../communicate";
+import { Cell } from "./cell";
 
 export class Builder {
   private constructor() {}
@@ -26,7 +27,7 @@ export class Builder {
       return;
     }
 
-    const world = World.getWorld(socket);
+    const world: Cell[][] = World.getWorld(socket);
     const newBuilding: Building = new Building(building);
     newBuilding.setOwner(socket.id);
 
@@ -39,16 +40,33 @@ export class Builder {
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {
+    const world: Cell[][] = World.getWorld(socket);
+    const i = indices.i;
+    const j = indices.j;
+
+    if (world[i][j].hasCellBuilding()) {
+      const buildings: Building[] =
+        state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings;
+
+      buildings.forEach((building, index) => {
+        const buildingIndices: Indices = building.getBuilding().data.indices;
+
+        if (
+          !Validator.areSenderAndOwnerSame(
+            socket,
+            building.getBuilding().data.owner
+          )
+        ) {
+          return false;
+        }
+
+        if (buildingIndices.i === i && buildingIndices.j === j) {
+          buildings.splice(index, 1);
+        }
+      });
+      world[i][j].setBuilding(false);
+      return true;
+    }
     return false;
-    // const i = indices.i;
-    // const j = indices.j;
-    // const world = World.getWorld(socket);
-    // // const building: BuildingType = world[i][j].getBuilding();
-    // if (!Validator.isSenderAndOwnerSame(socket, building.owner)) {
-    //   return false;
-    // }
-    // // world[i][j].setBuilding({ building: undefined, owner: undefined });
-    // World.setWorld(world, socket);
-    // return true;
   }
 }

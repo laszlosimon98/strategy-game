@@ -41,7 +41,7 @@ export class Game implements RenderInterface {
   }
 
   private init(): void {
-    state.game.state = GameState.default;
+    state.game.state = GameState.Default;
     this.world.init();
   }
 
@@ -78,7 +78,6 @@ export class Game implements RenderInterface {
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
-        state.game.selectedBuilding.data = { ...initBuilding.data };
         this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
