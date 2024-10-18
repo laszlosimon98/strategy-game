@@ -72,9 +72,12 @@ export class Builder {
           break;
         }
         case Pointer.House: {
-          state.info.name = this.selectedHouse.getBuildingName();
-          state.game.state = GameState.House;
-          state.navigation.gameMenuState = MainMenuState.Info;
+          const selectedHouseName = this.selectedHouse.getBuildingName();
+          if (selectedHouseName) {
+            state.info.name = selectedHouseName;
+            state.game.state = GameState.House;
+            state.navigation.gameMenuState = MainMenuState.Info;
+          }
           break;
         }
       }

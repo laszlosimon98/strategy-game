@@ -77,8 +77,10 @@ export class Building implements RenderInterface, MouseIntersect {
     return this.building;
   }
 
-  public getBuildingName(): string {
-    return this.building.data.url.split("/")[6].split(".")[0];
+  public getBuildingName(): string | undefined {
+    if (this.building.data.url) {
+      return this.building.data.url.split("/")[6].split(".")[0];
+    }
   }
 
   public getDimension(): Dimension {

@@ -52,6 +52,7 @@ export class Game implements RenderInterface {
         buildings: [],
       };
     });
+    console.log(state.game.players);
   }
 
   public draw(): void {
