@@ -48,7 +48,8 @@ export class Builder {
       const buildings: Building[] =
         state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings;
 
-      buildings.forEach((building, index) => {
+      for (let index = buildings.length - 1; index >= 0; --index) {
+        const building: Building = buildings[index];
         const buildingIndices: Indices = building.getBuilding().data.indices;
 
         if (
@@ -63,7 +64,8 @@ export class Builder {
         if (buildingIndices.i === i && buildingIndices.j === j) {
           buildings.splice(index, 1);
         }
-      });
+      }
+
       world[i][j].setBuilding(false);
       return true;
     }

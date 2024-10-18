@@ -2,7 +2,7 @@ import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
 import { GameState } from "../enums/gameState";
 import { PageState } from "../enums/pageState";
 import { Pointer } from "../enums/pointer";
-import { Building } from "../game/world/building";
+import { Building } from "../game/world/builder/building";
 import { Dimension } from "../utils/dimension";
 import { Indices } from "../utils/indices";
 

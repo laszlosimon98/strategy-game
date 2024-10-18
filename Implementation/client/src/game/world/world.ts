@@ -7,7 +7,7 @@ import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
 import { Camera } from "../camera/camera";
-import { Builder } from "./builder";
+import { Builder } from "./builder/builder";
 import { Tile } from "./tile";
 
 export class World {

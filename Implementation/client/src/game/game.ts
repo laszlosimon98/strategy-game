@@ -4,7 +4,7 @@ import { Position } from "../utils/position";
 import { MouseButtons } from "../enums/mouse";
 import { World } from "./world/world";
 import { Dimension } from "../utils/dimension";
-import { initBuilding, state } from "../data/state";
+import { state } from "../data/state";
 import { GameState } from "../enums/gameState";
 import { Pointer } from "../enums/pointer";
 import { isMouseIntersect } from "../utils/utils";
@@ -52,7 +52,6 @@ export class Game implements RenderInterface {
         buildings: [],
       };
     });
-    console.log(state.game.players);
   }
 
   public draw(): void {
@@ -79,7 +78,7 @@ export class Game implements RenderInterface {
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
-        this.world.moveWorld();
+        // this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
         //   start: this.pathStart,
