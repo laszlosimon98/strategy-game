@@ -24,11 +24,11 @@ export class Loader {
 
   public static async loadImages(_dir: string) {
     const files: string[] = await this.getFiles(_dir);
-    const result = this.generateroutes(_dir, files);
+    const result = this.generateRoutes(_dir, files);
     return result;
   }
 
-  private static generateroutes(_dir: string, files: string[]) {
+  private static generateRoutes(_dir: string, files: string[]) {
     const routes: any = {};
     const paths: string[] = [];
 
@@ -60,15 +60,19 @@ export class Loader {
     });
 
     paths.forEach((_path) => {
-      const a = _path.split("_");
+      const dirs = _path.split("_");
 
-      for (let i = a.length - 1; i > 0; --i) {
-        routes[a[i - 1]] = {
-          ...routes[a[i - 1]],
-          [a[i]]: routes[a[i]],
+      for (let i = dirs.length - 1; i > 0; --i) {
+        routes[dirs[i - 1]] = {
+          ...routes[dirs[i - 1]],
+          [dirs[i]]: routes[dirs[i]],
         };
+      }
+    });
 
-        delete routes[a[i]];
+    Object.keys(routes).forEach((key) => {
+      if (key !== "game" && key !== "pages") {
+        delete routes[key];
       }
     });
 

@@ -7,6 +7,7 @@ import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler";
 import path from "path";
 import { imageHandler } from "./handlers/imageHandler";
+import { Loader } from "./classes/loader";
 
 const PORT = 3000;
 
@@ -22,8 +23,15 @@ const io: Server = new Server(httpServer, {
   },
 });
 
+let images: any;
+(async () => {
+  images = await Loader.loadImages(
+    path.join(__dirname, "..", "/public/assets")
+  );
+})();
+
 const onConnecton = async (socket: Socket) => {
-  await imageHandler(io, socket);
+  await imageHandler(io, socket, images);
   connectionHandler(io, socket);
   gameHandler(io, socket);
   // authHandler();

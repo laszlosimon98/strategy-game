@@ -8,7 +8,7 @@ import { Indices } from "../utils/indices";
 
 export type TileType = "grass" | "grass_flower" | "grass_rock";
 
-export type BuildingType = {
+export type EntityType = {
   data: {
     indices: Indices;
     owner: string;
@@ -16,6 +16,9 @@ export type BuildingType = {
     dimensions: Dimension;
   };
 };
+
+export type BuildingType = EntityType;
+export type UnitType = EntityType;
 
 export type ImagesType = {
   images: {

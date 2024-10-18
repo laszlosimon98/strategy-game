@@ -50,11 +50,10 @@ export class Builder {
         building.update(dt, cameraScroll)
       );
     });
-
     this.fakeHouse.update(dt, cameraScroll);
   }
 
-  public handleClick(
+  public handleLeftClick(
     indices: Indices,
     mousePos: Position,
     cameraScroll: Position
@@ -81,8 +80,15 @@ export class Builder {
     }
   }
 
+  public handleRightClick(): void {
+    this.resetStates();
+  }
+
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
-    if (state.game.selectedBuilding.data.url.length) {
+    if (
+      state.game.selectedBuilding.data.url.length &&
+      !this.selectedHouse.getBuilding().data.url.length
+    ) {
       this.setFakeHouse();
     }
     this.hoverHouse(mousePos, cameraScroll);
@@ -111,6 +117,10 @@ export class Builder {
           if (isMouseIntersect(mousePos.sub(cameraScroll), building)) {
             this.selectedHouse.setBuilding(building.getBuilding());
             state.info.data = building.getIndices();
+
+            state.game.selectedBuilding.data = {
+              ...building.getBuilding().data,
+            };
           }
         }
       );
@@ -156,6 +166,7 @@ export class Builder {
     }
 
     state.navigation.gameMenuState = MainMenuState.Unselected;
+    this.resetStates();
   }
 
   private resetStates(): void {

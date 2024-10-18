@@ -72,12 +72,13 @@ export class Game implements RenderInterface {
         if (state.pointer.state === Pointer.Menu) {
           this.gameMenu.handleClick(this.mousePos);
         } else {
-          this.world.handleClick();
+          this.world.handleLeftClick();
         }
 
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
+        this.world.handleRightClick();
         // this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {

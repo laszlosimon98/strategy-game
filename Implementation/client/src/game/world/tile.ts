@@ -7,14 +7,12 @@ export class Tile {
   private position: Vector;
   private renderPos: Position;
   private buildingPos: Position;
+  private unitPos: Position;
   private cameraPos: Position;
 
   private isometricPos: Position[];
-
   private image: HTMLImageElement;
-
   private offset: Position;
-
   private temp: boolean = false;
 
   public constructor(i: number, j: number, type: string) {
@@ -31,6 +29,11 @@ export class Tile {
     this.buildingPos = new Position(
       this.isometricPos[2].x,
       this.isometricPos[2].y
+    );
+
+    this.unitPos = new Position(
+      this.isometricPos[2].x,
+      this.isometricPos[2].y - TILE_SIZE / 4
     );
 
     this.cameraPos = new Position(
@@ -57,6 +60,10 @@ export class Tile {
 
   public getBuildingPos(): Position {
     return this.buildingPos;
+  }
+
+  public getUnitPos(): Position {
+    return this.unitPos;
   }
 
   private drawGrid(grid: Position[]): void {

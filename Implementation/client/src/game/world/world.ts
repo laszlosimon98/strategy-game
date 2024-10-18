@@ -2,13 +2,15 @@ import { state } from "../../data/state";
 import { ctx } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import { ERROR_COLOR } from "../../settings";
-import { TileType } from "../../types/gameType";
+import { TileType, UnitType } from "../../types/gameType";
+import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
 import { Camera } from "../camera/camera";
 import { Builder } from "./builder/builder";
 import { Tile } from "./tile";
+import { Unit } from "./unit/unit";
 
 export class World {
   private mousePos: Position;
@@ -17,12 +19,25 @@ export class World {
 
   private builder: Builder;
 
+  private testUnit: UnitType;
+  private unit: Unit;
+
   public constructor() {
     this.mousePos = Position.zero();
     this.world = [];
     this.camera = new Camera();
 
     this.builder = new Builder();
+
+    this.testUnit = {
+      data: {
+        ...state.images.game.colors.red.soldierwalking,
+        indices: new Indices(14, 0),
+        owner: "",
+      },
+    };
+
+    this.unit = new Unit(this.testUnit);
 
     this.handleCommunication();
   }
@@ -38,7 +53,7 @@ export class World {
         }
       }
       ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+        // this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
       });
     });
   }
@@ -47,12 +62,13 @@ export class World {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         // tile.drawNormalGrid();
-        // tile.drawIsometricGrid();
+        tile.drawIsometricGrid();
         tile.draw();
       });
     });
 
     this.builder.draw();
+    this.unit.draw();
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
@@ -64,12 +80,13 @@ export class World {
     });
 
     this.builder.update(dt, this.mousePos, this.camera.getScroll());
+    this.unit.update(dt, this.camera.getScroll());
 
     // EZ NEM FOG KELLENI
     // this.printMouseCoords(this.mousePos);
   }
 
-  public handleClick(): void {
+  public handleLeftClick(): void {
     const indices: Indices = convertIsometricCoordsToCartesianCoords(
       new Position(this.mousePos.x, this.mousePos.y),
       this.getCameraScroll()
@@ -79,8 +96,27 @@ export class World {
       this.builder.setBuildingPos(
         this.world[indices.i][indices.j].getBuildingPos()
       );
-      this.builder.handleClick(indices, this.mousePos, this.getCameraScroll());
+      this.builder.handleLeftClick(
+        indices,
+        this.mousePos,
+        this.getCameraScroll()
+      );
     }
+    const unitIndices: Indices = this.unit.getIndices();
+    const unitPos: Position =
+      this.world[unitIndices.i][unitIndices.j].getUnitPos();
+    const dimension: Dimension = this.unit.getDimension();
+    console.log(dimension);
+
+    const newUnitPos: Position = new Position(
+      unitPos.x - dimension.width / 2,
+      unitPos.y - dimension.height
+    );
+    this.unit.setPosition(newUnitPos);
+  }
+
+  public handleRightClick(): void {
+    this.builder.handleRightClick();
   }
 
   public handleMouseMove(mousePos: Position): void {

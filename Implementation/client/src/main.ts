@@ -8,6 +8,7 @@ const main = async () => {
   init();
 
   const gameImages = await ServerHandler.receiveAsyncMessage("start:page");
+  console.log(gameImages);
   state.images.page = await gameImages.pages;
   state.images.game = await gameImages.game;
 
