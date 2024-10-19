@@ -19,8 +19,7 @@ export class World {
 
   private builder: Builder;
 
-  private testUnit: UnitType;
-  private unit: Unit;
+  private units: Unit[] = [];
 
   public constructor() {
     this.mousePos = Position.zero();
@@ -29,17 +28,37 @@ export class World {
 
     this.builder = new Builder();
 
-    this.testUnit = {
+    const testUnit = {
       data: {
         ...state.images.game.colors[
           state.game.players[ServerHandler.getId()].color
         ].soldieridle,
-        indices: new Indices(14, 0),
+        indices: new Indices(5, 5),
+        owner: "",
+      },
+    };
+    const testUnit1 = {
+      data: {
+        ...state.images.game.colors[
+          state.game.players[ServerHandler.getId()].color
+        ].soldieridle,
+        indices: new Indices(2, 11),
+        owner: "",
+      },
+    };
+    const testUnit2 = {
+      data: {
+        ...state.images.game.colors[
+          state.game.players[ServerHandler.getId()].color
+        ].soldieridle,
+        indices: new Indices(13, 8),
         owner: "",
       },
     };
 
-    this.unit = new Unit(this.testUnit);
+    this.units.push(new Unit(testUnit));
+    this.units.push(new Unit(testUnit1));
+    this.units.push(new Unit(testUnit2));
 
     this.handleCommunication();
   }
@@ -70,7 +89,7 @@ export class World {
     });
 
     this.builder.draw();
-    this.unit.draw();
+    this.units.forEach((unit) => unit.draw());
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
@@ -82,7 +101,7 @@ export class World {
     });
 
     this.builder.update(dt, this.mousePos, this.camera.getScroll());
-    this.unit.update(dt, this.camera.getScroll());
+    this.units.forEach((unit) => unit.update(dt, this.camera.getScroll()));
 
     // EZ NEM FOG KELLENI
     // this.printMouseCoords(this.mousePos);
@@ -105,16 +124,18 @@ export class World {
       );
     }
 
-    const unitIndices: Indices = this.unit.getIndices();
-    const unitPos: Position =
-      this.world[unitIndices.i][unitIndices.j].getUnitPos();
-    const dimension: Dimension = this.unit.getDimension();
+    this.units.forEach((unit) => {
+      const unitIndices: Indices = unit.getIndices();
+      const unitPos: Position =
+        this.world[unitIndices.i][unitIndices.j].getUnitPos();
+      const dimension: Dimension = unit.getDimension();
 
-    const newUnitPos: Position = new Position(
-      unitPos.x - dimension.width / 2,
-      unitPos.y - dimension.height
-    );
-    this.unit.setPosition(newUnitPos);
+      const newUnitPos: Position = new Position(
+        unitPos.x - dimension.width / 2,
+        unitPos.y - dimension.height
+      );
+      unit.setPosition(newUnitPos);
+    });
   }
 
   public handleRightClick(): void {

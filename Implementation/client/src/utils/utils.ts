@@ -31,3 +31,10 @@ export const isMouseIntersect = (mousePos: Position, element: any): boolean => {
     mousePos.y <= element.getPosition().y + element.getDimension().height;
   return horizontal && vertical;
 };
+
+export const getRandomNumberFromInterval = (
+  min: number,
+  max: number
+): number => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};

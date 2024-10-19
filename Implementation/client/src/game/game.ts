@@ -49,7 +49,6 @@ export class Game implements RenderInterface {
     state.game.state = GameState.Default;
     this.world = new World();
     this.world.init();
-    console.log(state.game.players);
   }
 
   private initPlayer(players: PlayerGameType): void {

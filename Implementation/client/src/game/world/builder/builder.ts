@@ -85,8 +85,8 @@ export class Builder {
           break;
         }
       }
+      this.resetStates();
     }
-    this.resetStates();
   }
 
   public handleRightClick(): void {

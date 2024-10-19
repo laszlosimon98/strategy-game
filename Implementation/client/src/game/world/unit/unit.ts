@@ -4,6 +4,8 @@ import { RenderInterface } from "../../../interfaces/render";
 import { UnitType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
+import { Timer } from "../../../utils/timer";
+import { getRandomNumberFromInterval } from "../../../utils/utils";
 import { Entity } from "../entity";
 
 enum UnitStates {
@@ -12,22 +14,15 @@ enum UnitStates {
   Attack,
 }
 
-export enum Directions {
-  DOWN = 0,
-  DOWN_LEFT = 64,
-  LEFT = 128,
-  UP_LEFT = 192,
-  UP = 256,
-  UP_RIGHT = 320,
-  RIGHT = 384,
-  DOWN_RIGHT = 448,
-}
-
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
 
 export class Unit extends Entity implements RenderInterface, MouseIntersect {
-  private direction: Directions;
+  private directions: Record<string, number>;
+  private facing: string;
+
+  private facingTimer: Timer;
+
   private unitState: UnitStates;
 
   // private range: number;
@@ -35,22 +30,29 @@ export class Unit extends Entity implements RenderInterface, MouseIntersect {
   private speed: number;
   private dimension: Dimension;
 
-  constructor(unit: UnitType) {
+  public constructor(unit: UnitType) {
     super(unit);
-    this.direction = Directions.RIGHT;
+    this.directions = this.initDirections();
+    this.facing = this.randomFacing(Object.keys(this.directions));
+
+    this.facingTimer = new Timer(getRandomNumberFromInterval(3000, 7000), () =>
+      this.changeDirection()
+    );
+
+    this.facingTimer.activate();
+
     this.unitState = UnitStates.Idle;
 
     this.animationCounter = 0;
     this.speed = 8;
-
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
   }
 
-  draw(): void {
+  public draw(): void {
     ctx.drawImage(
       this.image,
       Math.floor(this.animationCounter) * UNIT_ASSET_SIZE,
-      this.direction,
+      this.directions[this.facing],
       UNIT_ASSET_SIZE,
       UNIT_ASSET_SIZE,
       this.renderPos.x,
@@ -60,15 +62,29 @@ export class Unit extends Entity implements RenderInterface, MouseIntersect {
     );
   }
 
-  update(dt: number, mousePos: Position): void {
+  public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
     if (this.unitState !== UnitStates.Idle) {
-      this.updateAnimation(dt);
+      this.animate(dt);
+    }
+
+    if (this.facingTimer.isTimerActive()) {
+      this.facingTimer.update();
+    } else {
+      this.facingTimer.activate();
     }
   }
 
-  updateAnimation(dt: number): void {
+  public getDimension(): Dimension {
+    return this.dimension;
+  }
+
+  public setFacing(facing: string): void {
+    this.facing = facing;
+  }
+
+  private animate(dt: number): void {
     this.animationCounter += this.speed * dt;
 
     if (this.animationCounter >= ANIMATION_COUNT - 1) {
@@ -76,7 +92,34 @@ export class Unit extends Entity implements RenderInterface, MouseIntersect {
     }
   }
 
-  public getDimension(): Dimension {
-    return this.dimension;
+  private randomFacing(arr: string[]): string {
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    return arr[randomIndex];
+  }
+
+  private changeDirection(): void {
+    if (this.unitState === UnitStates.Idle) {
+      const excludedKeys = Object.keys(this.directions).filter(
+        (key) => key !== this.facing
+      );
+      const newFacing: string = this.randomFacing(excludedKeys);
+
+      this.setFacing(newFacing);
+    }
+  }
+
+  private initDirections(): Record<string, number> {
+    const result: Record<string, number> = {
+      DOWN: 0,
+      DOWN_LEFT: 64,
+      LEFT: 128,
+      UP_LEFT: 192,
+      UP: 256,
+      UP_RIGHT: 320,
+      RIGHT: 384,
+      DOWN_RIGHT: 448,
+    };
+
+    return result;
   }
 }
