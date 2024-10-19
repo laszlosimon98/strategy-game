@@ -2,8 +2,19 @@ import { Server, Socket } from "socket.io";
 
 import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "../settings";
 import { Communicate } from "../classes/communicate";
-import { PlayerType, TeamType } from "../types/types";
 import { state } from "../data/state";
+import { ColorType } from "../types/types";
+
+const colors: ColorType[] = [
+  "black",
+  "blue",
+  "brown",
+  "green",
+  "orange",
+  "purple",
+  "red",
+  "white",
+];
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const generateCode = (): string => {
@@ -12,6 +23,14 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       result += Math.floor(Math.random() * 10).toString();
     }
     return result;
+  };
+
+  const chooseColor = (colors: ColorType[]): ColorType => {
+    const randomNumber = Math.floor(Math.random() * colors.length);
+
+    const playerColor = colors[randomNumber];
+    colors.splice(randomNumber, 1);
+    return playerColor;
   };
 
   const isRoomExists = (code: string): boolean => {
@@ -26,39 +45,22 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     return state[code].isGameStarted;
   };
 
-  // const addPlayer = (code: string, player: PlayerType): void => {
-  //   const newTeam: TeamType = {
-  //     players: [],
-  //     isGameStarted: false,
-  //     world: [],
-  //   };
-
-  //   if (!isRoomExists(code)) {
-  //     state[code] = newTeam;
-  //   }
-
-  //   state[code].players.push(player);
-  // };
-
   const createGame = ({ name }: { name: string }) => {
     const code = generateCode();
+
     state[code] = {
       isGameStarted: false,
       players: {},
       world: [],
+      remainingColors: [...colors],
     };
 
     state[code].players[socket.id] = {
       name,
+      color: chooseColor(state[code].remainingColors),
       buildings: [],
     };
 
-    // const newPlayer: PlayerType = {
-    //   name,
-    //   buildings: [],
-    // };
-
-    // addPlayer(code, newPlayer);
     socket.join(code);
     Communicate.sendMessageToSender(socket, "connect:code", { code });
     newPlayerMessage(code, name);
@@ -94,15 +96,10 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
     state[code].players[socket.id] = {
       name,
+      color: chooseColor(state[code].remainingColors),
       buildings: [],
     };
-    // const newPlayer: PlayerType = {
-    //   playerId: socket.id,
-    //   name,
-    //   buildings: [],
-    // };
 
-    // addPlayer(code, newPlayer);
     socket.join(code);
 
     Communicate.sendMessageToSender(socket, "connect:error", "");
@@ -115,6 +112,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
     if (currentRoom) {
       const user = state[currentRoom].players[socket.id];
+      state[currentRoom].remainingColors.push(user.color);
       playerleftMessage(user.name);
       delete state[currentRoom].players[socket.id];
     }

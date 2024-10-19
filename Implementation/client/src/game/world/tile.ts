@@ -109,13 +109,13 @@ export class Tile {
     }
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
 
-    ctx.font = "14px Arial";
-    const text = `${this.position.x}, ${this.position.y}`;
-    ctx.fillText(
-      text,
-      this.renderPos.x + TILE_SIZE / 2 + ctx.measureText(text).width / 2,
-      this.renderPos.y + TILE_SIZE / 2
-    );
+    // ctx.font = "14px Arial";
+    // const text = `${this.position.x}, ${this.position.y}`;
+    // ctx.fillText(
+    //   text,
+    //   this.renderPos.x + TILE_SIZE / 2 + ctx.measureText(text).width / 2,
+    //   this.renderPos.y + TILE_SIZE / 2
+    // );
     ctx.restore();
   }
 

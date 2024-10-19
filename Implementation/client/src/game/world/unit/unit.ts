@@ -27,17 +27,21 @@ const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
 
 export class Unit extends Entity implements RenderInterface, MouseIntersect {
+  private direction: Directions;
+  private unitState: UnitStates;
+
   // private range: number;
   private animationCounter: number;
-  private direction: Directions;
   private speed: number;
   private dimension: Dimension;
 
   constructor(unit: UnitType) {
     super(unit);
-    this.animationCounter = 0;
     this.direction = Directions.RIGHT;
-    this.speed = 12;
+    this.unitState = UnitStates.Idle;
+
+    this.animationCounter = 0;
+    this.speed = 8;
 
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
   }
@@ -59,7 +63,9 @@ export class Unit extends Entity implements RenderInterface, MouseIntersect {
   update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
-    this.updateAnimation(dt);
+    if (this.unitState !== UnitStates.Idle) {
+      this.updateAnimation(dt);
+    }
   }
 
   updateAnimation(dt: number): void {

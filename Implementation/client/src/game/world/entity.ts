@@ -30,18 +30,6 @@ export abstract class Entity implements RenderInterface, MouseIntersect {
 
   public draw(): void {
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-
-    if (this.isHovered) {
-      ctx.save();
-      ctx.strokeStyle = "#fff";
-      ctx.strokeRect(
-        this.renderPos.x,
-        this.renderPos.y,
-        this.image.width,
-        this.image.height
-      );
-      ctx.restore();
-    }
   }
 
   public update(dt: number, cameraScroll: Position): void {
@@ -49,6 +37,10 @@ export abstract class Entity implements RenderInterface, MouseIntersect {
       this.pos.x + cameraScroll.x,
       this.pos.y + cameraScroll.y
     );
+  }
+
+  public setEntity(entity: EntityType): void {
+    this.entity = entity;
   }
 
   public getDimension(): Dimension {

@@ -4,6 +4,18 @@ import { Cell } from "../classes/game/cell";
 import { Indices } from "../classes/utils/indices";
 import { Dimension } from "../classes/utils/dimension";
 
+export type ColorType =
+  | "black"
+  | "blue"
+  | "brown"
+  | "green"
+  | "orange"
+  | "purple"
+  | "red"
+  | "white";
+
+export type TileType = "grass" | "grass_flower" | "grass_rock";
+
 export type BuildingType = {
   data: {
     indices: Indices;
@@ -22,16 +34,16 @@ export type BuildType = {
 export type PlayerType = {
   [id: string]: {
     name: string;
+    color: ColorType;
     buildings: Building[];
   };
 };
-
-export type TileType = "grass" | "grass_flower" | "grass_rock";
 
 export type TeamType = {
   isGameStarted: boolean;
   players: PlayerType;
   world: Cell[][];
+  remainingColors: ColorType[];
 };
 
 export type InitialStateType = {

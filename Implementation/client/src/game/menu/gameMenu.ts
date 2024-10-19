@@ -1,5 +1,6 @@
 import { state } from "../../data/state";
 import { MainMenuState } from "../../enums/gameMenuState";
+import { ctx } from "../../init";
 import { MouseIntersect } from "../../interfaces/mouseIntersect";
 import { RenderInterface } from "../../interfaces/render";
 import { Button } from "../../page/components/buttonComponents/button";

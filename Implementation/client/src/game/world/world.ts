@@ -31,7 +31,9 @@ export class World {
 
     this.testUnit = {
       data: {
-        ...state.images.game.colors.red.soldierwalking,
+        ...state.images.game.colors[
+          state.game.players[ServerHandler.getId()].color
+        ].soldieridle,
         indices: new Indices(14, 0),
         owner: "",
       },
@@ -53,7 +55,7 @@ export class World {
         }
       }
       ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-        // this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
       });
     });
   }
@@ -62,7 +64,7 @@ export class World {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         // tile.drawNormalGrid();
-        tile.drawIsometricGrid();
+        // tile.drawIsometricGrid();
         tile.draw();
       });
     });
@@ -102,11 +104,11 @@ export class World {
         this.getCameraScroll()
       );
     }
+
     const unitIndices: Indices = this.unit.getIndices();
     const unitPos: Position =
       this.world[unitIndices.i][unitIndices.j].getUnitPos();
     const dimension: Dimension = this.unit.getDimension();
-    console.log(dimension);
 
     const newUnitPos: Position = new Position(
       unitPos.x - dimension.width / 2,
@@ -138,7 +140,7 @@ export class World {
   public isActionInsideOfTheMap(indices: Indices): boolean {
     return (
       indices.i >= 0 &&
-      indices.i < this.world.length &&
+      indices.i < this.world.length - 1 &&
       indices.j >= 0 &&
       indices.j < this.world.length
     );

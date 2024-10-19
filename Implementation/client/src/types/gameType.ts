@@ -7,6 +7,15 @@ import { Dimension } from "../utils/dimension";
 import { Indices } from "../utils/indices";
 
 export type TileType = "grass" | "grass_flower" | "grass_rock";
+type ColorType =
+  | "black"
+  | "blue"
+  | "brown"
+  | "green"
+  | "orange"
+  | "purple"
+  | "red"
+  | "white";
 
 export type EntityType = {
   data: {
@@ -63,6 +72,7 @@ export type PointerType = {
 export type PlayerGameType = {
   [code: string]: {
     name: string;
+    color: ColorType;
     buildings: Building[];
   };
 };

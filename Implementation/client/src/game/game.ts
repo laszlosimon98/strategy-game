@@ -14,7 +14,7 @@ import { PlayerGameType } from "../types/gameType";
 
 export class Game implements RenderInterface {
   private gameMenu: GameMenu;
-  private world: World;
+  private world: World | undefined;
 
   private mousePos: Position;
   private key: string;
@@ -28,7 +28,8 @@ export class Game implements RenderInterface {
       new Dimension(250, 500)
     );
 
-    this.world = new World();
+    this.world = undefined;
+    // this.world = new World();
 
     // this.pathStart = Indices.zero();
     // this.pathEnd = Indices.zero();
@@ -36,32 +37,39 @@ export class Game implements RenderInterface {
     this.mousePos = Position.zero();
     this.key = "";
 
-    this.init();
     this.handleCommunication();
+
+    this.init();
   }
 
-  private init(): void {
+  private async init(): Promise<void> {
+    const players = await this.handleCommunication();
+    this.initPlayer(players);
+
     state.game.state = GameState.Default;
+    this.world = new World();
     this.world.init();
+    console.log(state.game.players);
   }
 
-  private initPlayer(player: PlayerGameType): void {
-    Object.keys(player).forEach((id) => {
+  private initPlayer(players: PlayerGameType): void {
+    Object.keys(players).forEach((id) => {
       state.game.players[id] = {
-        name: "",
+        name: players[id].name,
+        color: players[id].color,
         buildings: [],
       };
     });
   }
 
   public draw(): void {
-    this.world.draw();
+    this.world?.draw();
     this.gameMenu.draw();
   }
 
   public update(dt: number) {
     this.gameMenu.update(dt, this.mousePos);
-    this.world.update(dt, this.mousePos, this.key);
+    this.world?.update(dt, this.mousePos, this.key);
   }
 
   public handleClick(e: MouseEvent) {
@@ -72,13 +80,13 @@ export class Game implements RenderInterface {
         if (state.pointer.state === Pointer.Menu) {
           this.gameMenu.handleClick(this.mousePos);
         } else {
-          this.world.handleLeftClick();
+          this.world?.handleLeftClick();
         }
 
         // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
-        this.world.handleRightClick();
+        this.world?.handleRightClick();
         // this.world.moveWorld();
         // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
         // ServerHandler.sendMessage("game:pathFind", {
@@ -98,7 +106,7 @@ export class Game implements RenderInterface {
       state.pointer.state = Pointer.Tile;
     }
 
-    this.world.handleMouseMove(pos);
+    this.world?.handleMouseMove(pos);
   }
 
   public handleKeyPress(key: string): void {
@@ -107,12 +115,8 @@ export class Game implements RenderInterface {
 
   public resize(): void {}
 
-  private handleCommunication(): void {
-    ServerHandler.receiveMessage(
-      "game:initPlayers",
-      (player: PlayerGameType) => {
-        this.initPlayer(player);
-      }
-    );
+  private async handleCommunication(): Promise<any> {
+    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
+    return players;
   }
 }

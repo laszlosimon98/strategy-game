@@ -15,11 +15,23 @@ import { BuildingType } from "../../../types/gameType";
 export class Builder {
   private buildingPos: Position;
   private fakeHouse: FakeBuilding;
-  private selectedHouse: Building;
+  private selectedHouse: FakeBuilding;
 
   constructor() {
-    this.fakeHouse = new FakeBuilding({ ...state.game.selectedBuilding });
-    this.selectedHouse = new Building({ ...state.game.selectedBuilding });
+    this.fakeHouse = new FakeBuilding({
+      data: {
+        ...state.game.selectedBuilding.data,
+        owner: ServerHandler.getId(),
+      },
+    });
+
+    this.selectedHouse = new FakeBuilding({
+      data: {
+        ...state.game.selectedBuilding.data,
+        owner: ServerHandler.getId(),
+      },
+    });
+
     this.buildingPos = Position.zero();
 
     this.handleCommunication();
@@ -63,10 +75,6 @@ export class Builder {
 
     if (state.game.state !== GameState.Build) {
       switch (state.pointer.state) {
-        case Pointer.Tile: {
-          state.game.state = GameState.Default;
-          break;
-        }
         case Pointer.House: {
           const selectedHouseName = this.selectedHouse.getBuildingName();
           if (selectedHouseName) {
@@ -78,6 +86,7 @@ export class Builder {
         }
       }
     }
+    this.resetStates();
   }
 
   public handleRightClick(): void {
