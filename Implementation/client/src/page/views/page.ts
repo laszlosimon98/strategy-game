@@ -1,25 +1,30 @@
-import { ctx } from "../../init";
 import { RenderInterface } from "../../interfaces/render";
-import { TITLE_SIZE } from "../../settings";
+import { Dimension } from "../../utils/dimension";
 import { Position } from "../../utils/position";
 import { Button } from "../components/buttonComponents/button";
+import { Plate } from "../components/buttonComponents/plate";
 import { TextInput } from "../components/textComponents/textInput";
 import { titlePos } from "./pos/titlePos";
 
 export abstract class Page implements RenderInterface {
-  protected title: HTMLImageElement;
   protected buttons: Button[];
   protected inputs: TextInput[];
   private titlePos: Position;
 
+  private plate: Plate;
+
   protected constructor(title: string) {
     this.titlePos = new Position(titlePos.x, titlePos.y);
 
+    this.plate = new Plate(
+      this.titlePos,
+      new Dimension(288, 90),
+      "title",
+      title
+    );
+
     this.buttons = [];
     this.inputs = [];
-
-    this.title = new Image();
-    this.title.src = title;
   }
 
   public getButtons(): Button[] {
@@ -31,13 +36,7 @@ export abstract class Page implements RenderInterface {
   }
 
   public draw() {
-    ctx.drawImage(
-      this.title,
-      this.titlePos.x,
-      this.titlePos.y,
-      TITLE_SIZE.width,
-      TITLE_SIZE.height
-    );
+    this.plate.draw();
 
     this.buttons.map((button) => {
       button.draw();

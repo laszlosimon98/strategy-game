@@ -1,5 +1,5 @@
 import { PageState } from "../../enums/pageState";
-import { canvasHeight } from "../../init";
+import { canvasHeight, canvasWidth } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import {
   BLACK_COLOR,
@@ -18,7 +18,6 @@ import { titlePos } from "./pos/titlePos";
 import { Position } from "../../utils/position";
 import { state } from "../../data/state";
 import { Dimension } from "../../utils/dimension";
-import { PlayerGameType } from "../../types/gameType";
 
 export class Lobby extends Page {
   private backButton: Button;
@@ -35,22 +34,24 @@ export class Lobby extends Page {
     this.start = new Button(
       buttonPos.default.next,
       BUTTON_SIZE,
-      state.images.page.buttons.start.url,
+      "name",
+      "start",
       this.handleStart
     );
 
     this.backButton = new Button(
       buttonPos.default.back,
       BUTTON_SIZE,
-      state.images.page.buttons.back.url,
+      "name",
+      "back",
       this.handleLeaveRoom
     );
 
     this.buttons.push(this.backButton);
 
     this.playerLabel = new Text(
-      new Position(0, titlePos.y + MARGIN + 55),
-      Dimension.zero(),
+      new Position(canvasWidth / 2, titlePos.y + MARGIN + 55),
+      new Dimension(0, -20),
       state.player.name,
       false,
       BLACK_COLOR
@@ -59,15 +60,15 @@ export class Lobby extends Page {
 
     this.gameCode = new Text(
       new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 80),
-      Dimension.zero(),
+      new Dimension(0, -20),
       "Játék Kód:",
       false,
       BLACK_COLOR
     );
 
     this.info = new Text(
-      new Position(0, titlePos.y + MARGIN + 115),
-      Dimension.zero(),
+      new Position(canvasWidth / 2, titlePos.y + MARGIN + 115),
+      new Dimension(0, -20),
       "",
       false
     );
@@ -133,7 +134,7 @@ export class Lobby extends Page {
             MARGIN / 1.5 +
             (MARGIN / 1.5) * index
         ),
-        Dimension.zero(),
+        new Dimension(0, -40),
         player,
         false,
         TEXT_COLOR

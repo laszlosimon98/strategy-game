@@ -29,41 +29,46 @@ export type EntityType = {
 export type BuildingType = EntityType;
 export type UnitType = EntityType;
 
-export type ImagesType = {
+type LanguageType = { language: "hu" | "en" };
+
+type ImagesType = {
   images: {
-    page: any;
-    game: any;
+    buildings: any;
+    colors: any;
+    ground: any;
+    ui: any;
   };
 };
 
-export type NavigationType = {
+type NavigationType = {
   navigation: {
     pageState: PageState;
     gameMenuState: MainMenuState;
     subMenuState: SubMenuState;
   };
 };
-export type ServerType = {
+
+type ServerType = {
   server: {
     status: "online" | "offline";
   };
 };
 
-export type PlayerType = {
+type PlayerType = {
   player: {
     name: string;
     host: boolean;
   };
 };
 
-export type InfoType = {
+type InfoType = {
   info: {
     name: string;
     data: any;
   };
 };
 
-export type PointerType = {
+type PointerType = {
   pointer: {
     state: Pointer;
   };
@@ -77,7 +82,7 @@ export type PlayerGameType = {
   };
 };
 
-export type GameType = {
+type GameType = {
   game: {
     state: GameState;
     players: PlayerGameType;
@@ -85,7 +90,8 @@ export type GameType = {
   };
 };
 
-export type stateType = ImagesType &
+export type stateType = LanguageType &
+  ImagesType &
   NavigationType &
   ServerType &
   PlayerType &

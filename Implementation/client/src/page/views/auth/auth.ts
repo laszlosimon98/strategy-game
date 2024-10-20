@@ -24,20 +24,22 @@ export class Auth extends Page {
   private nameText: Text;
   private passwordText: Text;
 
-  public constructor(title: string, actionButtonImage: string) {
+  public constructor(title: string) {
     super(title);
 
     this.backButton = new Button(
       buttonPos.default.back,
       BUTTON_SIZE,
-      state.images.page.buttons.back.url,
+      "name",
+      "back",
       () => (state.navigation.pageState = PageState.MainMenu)
     );
 
     this.actionButton = new Button(
       buttonPos.default.next,
       BUTTON_SIZE,
-      actionButtonImage,
+      "name",
+      title,
       this.handleNext
     );
 
@@ -64,7 +66,7 @@ export class Auth extends Page {
 
     this.nameText = new Text(
       inputPos.auth.name,
-      Dimension.zero(),
+      new Dimension(0, -40),
       "Felhasználó név: ",
       false,
       BLACK_COLOR
@@ -72,7 +74,7 @@ export class Auth extends Page {
 
     this.passwordText = new Text(
       inputPos.auth.password,
-      Dimension.zero(),
+      new Dimension(0, -40),
       "Jelszó: ",
       false,
       BLACK_COLOR

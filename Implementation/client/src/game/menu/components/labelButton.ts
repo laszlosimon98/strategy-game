@@ -7,18 +7,29 @@ import { Position } from "../../../utils/position";
 export class LabelButton extends Button {
   private name: string;
 
-  constructor(pos: Position, dim: Dimension, imageSrc: string, name: string) {
-    super(pos, dim, imageSrc);
+  constructor(
+    pos: Position,
+    dim: Dimension,
+    type: "name" | "title" | "buildings" | "menu",
+    text: string,
+    name: string
+  ) {
+    super(pos, dim, type, text);
     this.name = name;
 
-    this.dim.width = state.images.game.buildings[name].dimensions.width;
-    this.dim.height = state.images.game.buildings[name].dimensions.height;
-    this.setImage(state.images.game.buildings[name].url);
+    const imageFrom: string = type === "buildings" ? "buildings" : "gamemenu";
 
-    this.pos = new Position(
-      pos.x + this.dim.width / 8,
-      pos.y - this.dim.height / 2
-    );
+    if (imageFrom === "buildings") {
+      this.dim.width = state.images[imageFrom][name].dimensions.width;
+      this.dim.height = state.images[imageFrom][name].dimensions.height;
+      this.setImage(state.images[imageFrom][name].url);
+    } else {
+      this.dim.width = state.images.ui[imageFrom][name].dimensions.width;
+      this.dim.height = state.images.ui[imageFrom][name].dimensions.height;
+      this.setImage(state.images.ui[imageFrom][name].url);
+    }
+
+    this.pos = new Position(pos.x + this.dim.width / 8 - 8, pos.y);
   }
 
   draw(): void {
@@ -30,7 +41,7 @@ export class LabelButton extends Button {
   }
 
   selectBuilding(): void {
-    state.game.selectedBuilding.data = state.images.game.buildings[this.name];
+    state.game.selectedBuilding.data = state.images.buildings[this.name];
     state.game.state = GameState.Build;
   }
 }

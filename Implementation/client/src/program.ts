@@ -32,24 +32,14 @@ export class Program implements RenderInterface {
     this.key = "";
 
     this.pages = {
-      [PageState.MainMenu]: new MainMenu(state.images.page.titles.menu.url),
-      [PageState.Registration]: new Registration(
-        state.images.page.titles.registration.url,
-        state.images.page.buttons.registration.url
-      ),
-      [PageState.Login]: new Login(
-        state.images.page.titles.login.url,
-        state.images.page.buttons.login.url
-      ),
-      [PageState.Statistic]: new Statistic(
-        state.images.page.titles.statistic.url
-      ),
-      [PageState.Description]: new Description(
-        state.images.page.titles.description.url
-      ),
-      [PageState.NewGame]: new NewGame(state.images.page.titles.newGame.url),
-      [PageState.Lobby]: new Lobby(state.images.page.titles.lobby.url),
-      [PageState.JoinGame]: new Join(state.images.page.titles.join.url),
+      [PageState.MainMenu]: new MainMenu("menu"),
+      [PageState.Registration]: new Registration("registration"),
+      [PageState.Login]: new Login("login"),
+      [PageState.Statistic]: new Statistic("statistic"),
+      [PageState.Description]: new Description("description"),
+      [PageState.NewGame]: new NewGame("newGame"),
+      [PageState.Lobby]: new Lobby("lobby"),
+      [PageState.JoinGame]: new Join("join"),
     };
 
     this.buttons = this.pages[state.navigation.pageState]?.getButtons();

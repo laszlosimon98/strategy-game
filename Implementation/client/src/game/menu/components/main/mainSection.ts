@@ -1,8 +1,7 @@
-import { state } from "../../../../data/state";
-import { Button } from "../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../settings";
 import { Dimension } from "../../../../utils/dimension";
 import { Position } from "../../../../utils/position";
+import { LabelButton } from "../labelButton";
 import { Section } from "../section";
 
 export class MainSection extends Section {
@@ -10,29 +9,35 @@ export class MainSection extends Section {
     super(pos, dim);
 
     this.buttons.push(
-      new Button(
+      new LabelButton(
         new Position(
           dim.width / 6 - MENU_ITEM_SIZE.width / 2,
           pos.y - MENU_ITEM_SIZE.height / 2 + dim.height / 2
         ),
         MENU_ITEM_SIZE,
-        state.images.game.menu.house.url
+        "menu",
+        "empty",
+        "house"
       ),
-      new Button(
+      new LabelButton(
         new Position(
           dim.width / 2 - MENU_ITEM_SIZE.width / 2,
           pos.y - MENU_ITEM_SIZE.height / 2 + dim.height / 2
         ),
         MENU_ITEM_SIZE,
-        state.images.game.menu.storage.url
+        "menu",
+        "empty",
+        "storage"
       ),
-      new Button(
+      new LabelButton(
         new Position(
           (dim.width * 5) / 6 - MENU_ITEM_SIZE.width / 2,
           pos.y - MENU_ITEM_SIZE.height / 2 + dim.height / 2
         ),
         MENU_ITEM_SIZE,
-        state.images.game.menu.population.url
+        "menu",
+        "empty",
+        "population"
       )
     );
   }

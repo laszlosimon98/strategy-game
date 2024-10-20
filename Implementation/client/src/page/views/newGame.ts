@@ -17,21 +17,24 @@ export class NewGame extends Page {
     this.create = new Button(
       buttonPos.newGame.create,
       BUTTON_SIZE,
-      state.images.page.buttons.create.url,
+      "name",
+      "create",
       this.handleCreate
     );
 
     this.join = new Button(
       buttonPos.newGame.join,
       BUTTON_SIZE,
-      state.images.page.buttons.join.url,
+      "name",
+      "join",
       this.handleJoin
     );
 
     this.backButton = new Button(
       buttonPos.newGame.back,
       BUTTON_SIZE,
-      state.images.page.buttons.back.url,
+      "name",
+      "back",
       () => (state.navigation.pageState = PageState.MainMenu)
     );
 

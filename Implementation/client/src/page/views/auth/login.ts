@@ -2,8 +2,8 @@ import { state } from "../../../data/state";
 import { Auth } from "./auth";
 
 export class Login extends Auth {
-  public constructor(title: string, actionButtonImage: string) {
-    super(title, actionButtonImage);
+  public constructor(title: string) {
+    super(title);
   }
 
   public handleAuth(): [boolean, string] {

@@ -14,27 +14,30 @@ export class ResourceSection extends Section {
     this.woodCutter = new LabelButton(
       new Position(pos.x, pos.y),
       Dimension.zero(),
-      "",
+      "buildings",
+      "empty",
       "woodcutter"
     );
 
-    this.stoneCutter = new LabelButton(
+    this.sawMill = new LabelButton(
       new Position(pos.x + 96 + 19, pos.y),
       Dimension.zero(),
-      "",
-      "stonecutter"
-    );
-
-    this.sawMill = new LabelButton(
-      new Position(pos.x, pos.y + 96),
-      Dimension.zero(),
-      "",
+      "buildings",
+      "empty",
       "sawmill"
     );
 
+    this.stoneCutter = new LabelButton(
+      new Position(pos.x, pos.y + 96),
+      Dimension.zero(),
+      "buildings",
+      "empty",
+      "stonecutter"
+    );
+
     this.labelbuttons.push(this.woodCutter);
-    this.labelbuttons.push(this.stoneCutter);
     this.labelbuttons.push(this.sawMill);
+    this.labelbuttons.push(this.stoneCutter);
   }
 
   draw(): void {

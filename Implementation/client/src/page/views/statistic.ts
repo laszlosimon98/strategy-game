@@ -14,7 +14,8 @@ export class Statistic extends Page {
     this.backButton = new Button(
       buttonPos.default.back,
       BUTTON_SIZE,
-      state.images.page.buttons.back.url,
+      "name",
+      "newGame",
       () => (state.navigation.pageState = PageState.MainMenu)
     );
 

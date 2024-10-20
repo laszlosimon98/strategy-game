@@ -71,7 +71,8 @@ export class Loader {
     });
 
     Object.keys(routes).forEach((key) => {
-      if (key !== "game" && key !== "pages") {
+      const arr: string[] = ["buildings", "colors", "ground", "menu", "ui"];
+      if (!arr.some((dirName) => dirName === key)) {
         delete routes[key];
       }
     });

@@ -3,7 +3,10 @@ import { Indices } from "./indices";
 import { Position } from "./position";
 
 export const getImageNameFromUrl = (url: string): string => {
-  return url.split("/")[6].split(".")[0];
+  const split = url.split("/");
+  const length = split.length;
+
+  return split[length - 1].split(".")[0];
 };
 
 export const convertIsometricCoordsToCartesianCoords = (

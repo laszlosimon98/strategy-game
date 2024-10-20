@@ -7,10 +7,8 @@ import { FPS } from "./settings";
 const main = async () => {
   init();
 
-  const gameImages = await ServerHandler.receiveAsyncMessage("start:page");
-  console.log(gameImages);
-  state.images.page = await gameImages.pages;
-  state.images.game = await gameImages.game;
+  state.images = await ServerHandler.receiveAsyncMessage("start:page");
+  console.log(state.images);
 
   const program: Program = new Program();
 

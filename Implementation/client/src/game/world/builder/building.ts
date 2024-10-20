@@ -2,9 +2,9 @@ import { state } from "../../../data/state";
 import { ctx } from "../../../init";
 import { MouseIntersect } from "../../../interfaces/mouseIntersect";
 import { RenderInterface } from "../../../interfaces/render";
-import { ServerHandler } from "../../../server/serverHandler";
 import { BuildingType, EntityType } from "../../../types/gameType";
 import { Position } from "../../../utils/position";
+import { getImageNameFromUrl } from "../../../utils/utils";
 import { Entity } from "../entity";
 import { Flag } from "./flag";
 
@@ -20,9 +20,8 @@ export class Building
 
     this.flagEntity = {
       data: {
-        ...state.images.game.colors[
-          state.game.players[building.data.owner].color
-        ].flag,
+        ...state.images.colors[state.game.players[building.data.owner].color]
+          .flag,
         indices: {
           ...building.data.indices,
           i: building.data.indices.i + 1,
@@ -80,7 +79,7 @@ export class Building
 
   public getBuildingName(): string | undefined {
     if (this.entity.data.url) {
-      return this.entity.data.url.split("/")[6].split(".")[0];
+      return getImageNameFromUrl(this.entity.data.url);
     }
   }
 }

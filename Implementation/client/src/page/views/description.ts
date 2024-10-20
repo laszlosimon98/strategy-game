@@ -14,7 +14,8 @@ export class Description extends Page {
     this.backButton = new Button(
       buttonPos.default.back,
       BUTTON_SIZE,
-      state.images.page.buttons.back.url,
+      "name",
+      "back",
       () => (state.navigation.pageState = PageState.MainMenu)
     );
 

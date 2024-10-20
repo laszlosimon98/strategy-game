@@ -17,7 +17,8 @@ export class InfoPanel extends Section {
     this.deleteButton = new Button(
       new Position(pos.x + dim.width - 25, pos.y + 5),
       new Dimension(25, 25),
-      state.images.page.buttons.empty.url
+      "name",
+      "empty"
     );
   }
 

@@ -7,7 +7,7 @@ import { FakeBuilding } from "./fakeBuilding";
 import { buildingRegister } from "./register/buildingRegister";
 import { initBuilding, state } from "../../../data/state";
 import { GameState } from "../../../enums/gameState";
-import { isMouseIntersect } from "../../../utils/utils";
+import { getImageNameFromUrl, isMouseIntersect } from "../../../utils/utils";
 import { Pointer } from "../../../enums/pointer";
 import { MainMenuState } from "../../../enums/gameMenuState";
 import { BuildingType } from "../../../types/gameType";
@@ -146,7 +146,7 @@ export class Builder {
   }
 
   private build(building: BuildingType, buildingPos: Position): void {
-    const name = building.data.url.split("/")[6].split(".")[0];
+    const name = getImageNameFromUrl(building.data.url);
 
     const newBuilding: Building = this.createBuilding(buildingRegister[name], {
       ...building,

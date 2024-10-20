@@ -17,6 +17,7 @@ import { Page } from "./page";
 import { Position } from "../../utils/position";
 import { state } from "../../data/state";
 import { Dimension } from "../../utils/dimension";
+import { canvasWidth } from "../../init";
 
 export class Join extends Page {
   private backButton: Button;
@@ -31,14 +32,16 @@ export class Join extends Page {
     this.backButton = new Button(
       buttonPos.default.back,
       BUTTON_SIZE,
-      state.images.page.buttons.back.url,
+      "name",
+      "back",
       this.handleLeave
     );
 
     this.joinButton = new Button(
       buttonPos.default.next,
       BUTTON_SIZE,
-      state.images.page.buttons.join.url,
+      "name",
+      "join",
       this.handleJoin
     );
 
@@ -52,7 +55,7 @@ export class Join extends Page {
 
     this.codeText = new Text(
       inputPos.code,
-      Dimension.zero(),
+      new Dimension(0, -40),
       "Játék kód:",
       false,
       BLACK_COLOR
@@ -63,7 +66,7 @@ export class Join extends Page {
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      new Position(0, titlePos.y + MARGIN * 2),
+      new Position(canvasWidth / 2, titlePos.y + MARGIN * 2),
       Dimension.zero(),
       "",
       false,

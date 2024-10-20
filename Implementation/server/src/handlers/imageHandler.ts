@@ -1,5 +1,3 @@
-import path from "path";
-import { Loader } from "../classes/loader";
 import { Communicate } from "../classes/communicate";
 import { Server, Socket } from "socket.io";
 

@@ -17,9 +17,12 @@ export const initBuilding: BuildingType = {
 };
 
 export const state: stateType = {
+  language: "hu",
   images: {
-    page: {},
-    game: {},
+    buildings: {},
+    ui: {},
+    colors: {},
+    ground: {},
   },
   navigation: {
     pageState: PageState.MainMenu,

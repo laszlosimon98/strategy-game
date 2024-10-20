@@ -1,19 +1,20 @@
 import { ctx } from "../../../init";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
-import { MenuComponent } from "./menuComponent";
+import { Plate } from "./plate";
 
-export class Button extends MenuComponent {
+export class Button extends Plate {
   private func: Function[];
   protected isHovered: boolean;
 
   public constructor(
     pos: Position,
     dim: Dimension,
-    imageSrc: string,
+    type: "name" | "title" | "buildings" | "menu",
+    text: string,
     ...fn: Function[]
   ) {
-    super(pos, dim, imageSrc);
+    super(pos, dim, type, text);
     this.func = fn;
 
     this.isHovered = false;
@@ -37,7 +38,7 @@ export class Button extends MenuComponent {
   }
 
   public setImage(imageSrc: string) {
-    this.image.src = imageSrc;
+    super.setImage(imageSrc);
   }
 
   public getImage(): string {

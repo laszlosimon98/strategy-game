@@ -30,27 +30,24 @@ export class World {
 
     const testUnit = {
       data: {
-        ...state.images.game.colors[
-          state.game.players[ServerHandler.getId()].color
-        ].soldieridle,
+        ...state.images.colors[state.game.players[ServerHandler.getId()].color]
+          .soldieridle,
         indices: new Indices(5, 5),
         owner: "",
       },
     };
     const testUnit1 = {
       data: {
-        ...state.images.game.colors[
-          state.game.players[ServerHandler.getId()].color
-        ].soldieridle,
+        ...state.images.colors[state.game.players[ServerHandler.getId()].color]
+          .soldieridle,
         indices: new Indices(2, 11),
         owner: "",
       },
     };
     const testUnit2 = {
       data: {
-        ...state.images.game.colors[
-          state.game.players[ServerHandler.getId()].color
-        ].soldieridle,
+        ...state.images.colors[state.game.players[ServerHandler.getId()].color]
+          .soldieridle,
         indices: new Indices(13, 8),
         owner: "",
       },
@@ -69,7 +66,7 @@ export class World {
         this.world.push([]);
         for (let col = 0; col < tiles[row].length; ++col) {
           this.world[row].push(
-            new Tile(row, col, state.images.game.ground[tiles[row][col]].url)
+            new Tile(row, col, state.images.ground[tiles[row][col]].url)
           );
         }
       }

@@ -57,10 +57,16 @@ export class Text extends PageComponents {
             /\w+/g,
             new Array(this.text.length).fill("*").join("")
           ),
+
       this.isCentered
-        ? this.pos.x + canvasWidth / 2 - this.metrics.width / 2
+        ? this.pos.x + this.dim.width / 2 - this.metrics.width / 2
         : this.pos.x + 5,
-      this.pos.y + this.dim.height - 13
+
+      this.pos.y +
+        this.dim.height / 2 +
+        (this.metrics.actualBoundingBoxAscent -
+          this.metrics.actualBoundingBoxDescent) /
+          2
     );
     ctx.restore();
   }

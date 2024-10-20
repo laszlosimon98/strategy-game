@@ -91,7 +91,7 @@ export class GameMenu implements RenderInterface, MouseIntersect {
         this.resetButtonImage(buttons);
         const image: string = getImageNameFromUrl(button.getImage());
         const select = `${image}_selected`;
-        button.setImage(state.images.game.menu[select].url);
+        button.setImage(state.images.ui.gamemenu[select].url);
 
         if (type === "Main") {
           state.navigation.gameMenuState = index + 1;
@@ -110,7 +110,7 @@ export class GameMenu implements RenderInterface, MouseIntersect {
         image = image.split("_")[0];
       }
 
-      button.setImage(state.images.game.menu[image].url);
+      button.setImage(state.images.ui.gamemenu[image].url);
     });
   }
 }
