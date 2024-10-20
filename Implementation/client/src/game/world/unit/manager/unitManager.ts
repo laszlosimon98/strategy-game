@@ -1,4 +1,5 @@
 import { state } from "../../../../data/state";
+import { Pointer } from "../../../../enums/pointer";
 import { ServerHandler } from "../../../../server/serverHandler";
 import { EntityType } from "../../../../types/gameType";
 import { Dimension } from "../../../../utils/dimension";
@@ -8,19 +9,16 @@ import { Manager } from "../../manager/manager";
 import { Unit } from "../unit";
 
 export class UnitManager extends Manager<Unit> {
-  private units: Unit[];
-
   public constructor() {
     super();
-    this.units = [];
   }
 
   public draw(): void {
-    this.units.forEach((unit) => unit.draw());
+    super.draw("units");
   }
 
   public update(dt: number, cameraScroll: Position): void {
-    this.units.forEach((unit) => unit.update(dt, cameraScroll));
+    super.update(dt, cameraScroll, "units");
   }
 
   public handleLeftClick(...args: any[]): void {
@@ -42,15 +40,16 @@ export class UnitManager extends Manager<Unit> {
       },
     };
     const unit: Unit = this.creator(Unit, unitEntity);
-    this.setObject(unit, this.pos);
-    this.units.push(unit);
+    this.setObjectPosition(unit, this.pos);
+    state.game.players[ServerHandler.getId()].units.push(unit);
   }
 
   public handleRightClick(...args: any[]): void {
     throw new Error("Method not implemented.");
   }
-  public handleMouseMove(...args: any[]): void {
-    throw new Error("Method not implemented.");
+
+  public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
+    this.hoverObject(mousePos, cameraScroll, "units", Pointer.Unit);
   }
 
   protected handleCommunication(): void {}

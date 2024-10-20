@@ -2,12 +2,12 @@ import { PageState } from "../enums/pageState";
 import { faker } from "@faker-js/faker";
 import { Pointer } from "../enums/pointer";
 import { GameState } from "../enums/gameState";
-import { BuildingType, stateType } from "../types/gameType";
+import { EntityType, stateType } from "../types/gameType";
 import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
 import { Indices } from "../utils/indices";
 import { Dimension } from "../utils/dimension";
 
-export const initBuilding: BuildingType = {
+export const initBuilding: EntityType = {
   data: {
     indices: Indices.zero(),
     owner: "",

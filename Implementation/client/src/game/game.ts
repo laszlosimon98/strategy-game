@@ -8,11 +8,10 @@ import { state } from "../data/state";
 import { GameState } from "../enums/gameState";
 import { Pointer } from "../enums/pointer";
 import { isMouseIntersect } from "../utils/utils";
-import { RenderInterface } from "../interfaces/render";
 import { ServerHandler } from "../server/serverHandler";
 import { PlayerGameType } from "../types/gameType";
 
-export class Game implements RenderInterface {
+export class Game {
   private gameMenu: GameMenu;
   private world: World | undefined;
 
@@ -57,6 +56,7 @@ export class Game implements RenderInterface {
         name: players[id].name,
         color: players[id].color,
         buildings: [],
+        units: [],
       };
     });
   }

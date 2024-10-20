@@ -4,10 +4,9 @@ import { SubMenuState } from "../../../enums/gameMenuState";
 import { Position } from "../../../utils/position";
 import { LabelButton } from "./labelButton";
 import { state } from "../../../data/state";
-import { RenderInterface } from "../../../interfaces/render";
 import { Dimension } from "../../../utils/dimension";
 
-export class Section implements RenderInterface {
+export class Section {
   private section: Frame;
   protected subSections: Partial<Record<SubMenuState, Section>> = {};
 

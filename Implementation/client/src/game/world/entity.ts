@@ -1,12 +1,11 @@
 import { ctx } from "../../init";
-import { ChangeAble } from "../../interfaces/changeAble";
-import { RenderInterface } from "../../interfaces/render";
+import { CallAble } from "../../interfaces/callAble";
 import { EntityType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 
-export abstract class Entity implements RenderInterface, ChangeAble {
+export abstract class Entity implements CallAble {
   protected pos: Position;
   protected image: HTMLImageElement;
   protected renderPos: Position;
@@ -28,9 +27,7 @@ export abstract class Entity implements RenderInterface, ChangeAble {
     this.image.src = entity.data.url;
   }
 
-  public draw(): void {
-    ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-  }
+  public draw(): void {}
 
   public update(dt: number, cameraScroll: Position): void {
     this.renderPos = new Position(

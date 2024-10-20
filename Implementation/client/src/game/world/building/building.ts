@@ -1,14 +1,13 @@
 import { state } from "../../../data/state";
 import { ctx } from "../../../init";
-import { ChangeAble } from "../../../interfaces/changeAble";
-import { RenderInterface } from "../../../interfaces/render";
+import { CallAble } from "../../../interfaces/callAble";
 import { EntityType } from "../../../types/gameType";
 import { Position } from "../../../utils/position";
 import { getImageNameFromUrl } from "../../../utils/utils";
 import { Entity } from "../entity";
 import { Flag } from "./flag";
 
-export class Building extends Entity implements RenderInterface, ChangeAble {
+export class Building extends Entity implements CallAble {
   private flagEntity: EntityType;
   private flag: Flag;
 
@@ -31,11 +30,13 @@ export class Building extends Entity implements RenderInterface, ChangeAble {
   }
 
   public draw(): void {
-    super.draw();
+    ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
+    this.flag.draw();
 
     if (this.isHovered) {
       ctx.save();
       ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
       ctx.strokeRect(
         this.renderPos.x,
         this.renderPos.y,
@@ -44,8 +45,6 @@ export class Building extends Entity implements RenderInterface, ChangeAble {
       );
       ctx.restore();
     }
-
-    this.flag.draw();
   }
 
   public update(dt: number, cameraScroll: Position): void {

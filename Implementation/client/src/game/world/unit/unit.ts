@@ -1,6 +1,5 @@
 import { ctx } from "../../../init";
-import { ChangeAble } from "../../../interfaces/changeAble";
-import { RenderInterface } from "../../../interfaces/render";
+import { CallAble } from "../../../interfaces/callAble";
 import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
@@ -17,7 +16,7 @@ enum UnitStates {
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
 
-export class Unit extends Entity implements RenderInterface, ChangeAble {
+export class Unit extends Entity implements CallAble {
   private directions: Record<string, number>;
   private facing: string;
 
@@ -60,6 +59,19 @@ export class Unit extends Entity implements RenderInterface, ChangeAble {
       UNIT_ASSET_SIZE,
       UNIT_ASSET_SIZE
     );
+
+    if (this.isHovered) {
+      ctx.save();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(
+        this.renderPos.x + this.image.width / 4,
+        this.renderPos.y,
+        this.image.width / 2,
+        this.image.height
+      );
+      ctx.restore();
+    }
   }
 
   public update(dt: number, mousePos: Position): void {

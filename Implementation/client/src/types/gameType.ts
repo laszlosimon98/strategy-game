@@ -2,7 +2,8 @@ import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
 import { GameState } from "../enums/gameState";
 import { PageState } from "../enums/pageState";
 import { Pointer } from "../enums/pointer";
-import { Building } from "../game/world/builder/building";
+import { Building } from "../game/world/building/building";
+import { Unit } from "../game/world/unit/unit";
 import { Dimension } from "../utils/dimension";
 import { Indices } from "../utils/indices";
 
@@ -73,9 +74,11 @@ type PointerType = {
 
 export type PlayerGameType = {
   [code: string]: {
+    [key: string]: string | ColorType | Building[] | Unit[];
     name: string;
     color: ColorType;
     buildings: Building[];
+    units: Unit[];
   };
 };
 

@@ -1,11 +1,10 @@
-import { ChangeAble } from "../../../interfaces/changeAble";
-import { RenderInterface } from "../../../interfaces/render";
+import { CallAble } from "../../../interfaces/callAble";
 import { Position } from "../../../utils/position";
 import { Dimension } from "../../../utils/dimension";
 import { Entity } from "../entity";
 import { EntityType } from "../../../types/gameType";
 
-export class Flag extends Entity implements RenderInterface, ChangeAble {
+export class Flag extends Entity implements CallAble {
   constructor(entity: EntityType) {
     super(entity);
   }

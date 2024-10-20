@@ -1,7 +1,6 @@
 import { state } from "../../data/state";
 import { MainMenuState } from "../../enums/gameMenuState";
-import { ChangeAble } from "../../interfaces/changeAble";
-import { RenderInterface } from "../../interfaces/render";
+import { CallAble } from "../../interfaces/callAble";
 import { Button } from "../../page/components/buttonComponents/button";
 import { Dimension } from "../../utils/dimension";
 import { Position } from "../../utils/position";
@@ -11,7 +10,7 @@ import { InfoPanel } from "./components/infoPanel";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";
 
-export class GameMenu implements RenderInterface, ChangeAble {
+export class GameMenu implements CallAble {
   private mainSection: MainSection;
   private frames: Record<MainMenuState, Section>;
 
@@ -47,6 +46,8 @@ export class GameMenu implements RenderInterface, ChangeAble {
       ),
     };
   }
+
+  setHover(state: boolean): void {}
 
   setPosition(pos: Position): void {
     this.pos = pos;

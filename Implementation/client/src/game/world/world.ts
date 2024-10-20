@@ -1,6 +1,4 @@
 import { state } from "../../data/state";
-import { GameState } from "../../enums/gameState";
-import { Pointer } from "../../enums/pointer";
 import { MouseClicker } from "../../interfaces/mouseClicker";
 import { ServerHandler } from "../../server/serverHandler";
 import { TileType } from "../../types/gameType";
@@ -8,7 +6,7 @@ import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
 import { Camera } from "../camera/camera";
-import { BuildingManager } from "./builder/manager/buildingManager";
+import { BuildingManager } from "./building/manager/buildingManager";
 import { Tile } from "./tile";
 import { UnitManager } from "./unit/manager/unitManager";
 
@@ -121,6 +119,7 @@ export class World implements MouseClicker {
         this.world[indices.i][indices.j].getBuildingPos()
       );
       this.buildingManager.handleMouseMove(mousePos, this.getCameraScroll());
+      this.unitManager.handleMouseMove(mousePos, this.getCameraScroll());
     }
   }
 

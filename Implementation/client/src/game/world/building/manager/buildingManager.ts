@@ -34,18 +34,12 @@ export class BuildingManager extends Manager<Building> {
   }
 
   public draw(): void {
-    Object.keys(state.game.players).forEach((key) => {
-      state.game.players[key].buildings.forEach((building) => building.draw());
-    });
+    super.draw("buildings");
     this.fakeHouse.draw();
   }
 
   public update(dt: number, cameraScroll: Position): void {
-    Object.keys(state.game.players).forEach((key) => {
-      state.game.players[key].buildings.forEach((building) =>
-        building.update(dt, cameraScroll)
-      );
-    });
+    super.update(dt, cameraScroll, "buildings");
     this.fakeHouse.update(dt, cameraScroll);
   }
 
@@ -86,7 +80,7 @@ export class BuildingManager extends Manager<Building> {
     ) {
       this.setFakeHouse();
     }
-    this.hoverHouse(mousePos, cameraScroll);
+    this.hoverObject(mousePos, cameraScroll, "buildings", Pointer.House);
   }
 
   protected handleCommunication(): void {
@@ -109,22 +103,6 @@ export class BuildingManager extends Manager<Building> {
         this.destroy(id, indices);
       }
     );
-  }
-
-  private hoverHouse(mousePos: Position, cameraScroll: Position): void {
-    if (
-      state.pointer.state !== Pointer.Menu &&
-      state.game.state !== GameState.Build
-    ) {
-      state.game.players[ServerHandler.getId()].buildings.forEach(
-        (building) => {
-          building.setHover(
-            isMouseIntersect(mousePos.sub(cameraScroll), building)
-          );
-          state.pointer.state = Pointer.House;
-        }
-      );
-    }
   }
 
   private selectHouse(mousePos: Position, cameraScroll: Position): void {
@@ -151,14 +129,14 @@ export class BuildingManager extends Manager<Building> {
       ...building,
     });
 
-    this.setObject(newBuilding, buildingPos);
+    this.setObjectPosition(newBuilding, buildingPos);
     state.game.players[building.data.owner].buildings.push(newBuilding);
 
     this.resetStates();
   }
 
   private setFakeHouse(): void {
-    this.setObject(this.fakeHouse, this.pos);
+    this.setObjectPosition(this.fakeHouse, this.pos);
     this.fakeHouse.setBuilding(state.game.selectedBuilding);
   }
 
