@@ -2,7 +2,7 @@ import { state } from "../../data/state";
 import { ctx } from "../../init";
 import { ServerHandler } from "../../server/serverHandler";
 import { ERROR_COLOR } from "../../settings";
-import { TileType, UnitType } from "../../types/gameType";
+import { TileType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
@@ -66,7 +66,10 @@ export class World {
         this.world.push([]);
         for (let col = 0; col < tiles[row].length; ++col) {
           this.world[row].push(
-            new Tile(row, col, state.images.ground[tiles[row][col]].url)
+            new Tile(
+              new Indices(row, col),
+              state.images.ground[tiles[row][col]].url
+            )
           );
         }
       }
@@ -94,7 +97,7 @@ export class World {
     this.camera.update(dt, this.mousePos, key);
 
     this.world.forEach((tiles) => {
-      tiles.forEach((tile) => tile.updateRenderPos(this.camera.getScroll()));
+      tiles.forEach((tile) => tile.update(this.camera.getScroll()));
     });
 
     this.builder.update(dt, this.mousePos, this.camera.getScroll());
@@ -181,10 +184,6 @@ export class World {
     );
 
     ctx.restore();
-  }
-
-  public getMap(): Tile[][] {
-    return this.world;
   }
 
   public getCameraScroll(): Position {

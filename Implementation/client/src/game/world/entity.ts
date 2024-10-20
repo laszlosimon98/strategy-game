@@ -14,7 +14,7 @@ export abstract class Entity implements RenderInterface, MouseIntersect {
   protected isHovered: boolean;
   protected entity: EntityType;
 
-  constructor(entity: EntityType) {
+  protected constructor(entity: EntityType) {
     this.entity = entity;
     this.pos = new Position(0, -500);
     this.renderPos = new Position(0, -500);

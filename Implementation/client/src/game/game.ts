@@ -44,14 +44,14 @@ export class Game implements RenderInterface {
 
   private async init(): Promise<void> {
     const players = await this.handleCommunication();
-    this.initPlayer(players);
+    this.initPlayers(players);
 
     state.game.state = GameState.Default;
     this.world = new World();
     this.world.init();
   }
 
-  private initPlayer(players: PlayerGameType): void {
+  private initPlayers(players: PlayerGameType): void {
     Object.keys(players).forEach((id) => {
       state.game.players[id] = {
         name: players[id].name,

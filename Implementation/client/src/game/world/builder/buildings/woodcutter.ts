@@ -1,9 +1,9 @@
 import { BuildingActionInterface } from "../../../../interfaces/buildingAction";
-import { BuildingType } from "../../../../types/gameType";
+import { EntityType } from "../../../../types/gameType";
 import { Building } from "../building";
 
 export class Woodcutter extends Building implements BuildingActionInterface {
-  public constructor(building: BuildingType) {
+  public constructor(building: EntityType) {
     super(building);
   }
 

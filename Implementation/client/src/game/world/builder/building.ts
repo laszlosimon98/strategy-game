@@ -2,7 +2,7 @@ import { state } from "../../../data/state";
 import { ctx } from "../../../init";
 import { MouseIntersect } from "../../../interfaces/mouseIntersect";
 import { RenderInterface } from "../../../interfaces/render";
-import { BuildingType, EntityType } from "../../../types/gameType";
+import { EntityType } from "../../../types/gameType";
 import { Position } from "../../../utils/position";
 import { getImageNameFromUrl } from "../../../utils/utils";
 import { Entity } from "../entity";
@@ -15,7 +15,7 @@ export class Building
   private flagEntity: EntityType;
   private flag: Flag;
 
-  public constructor(building: BuildingType) {
+  public constructor(building: EntityType) {
     super(building);
 
     this.flagEntity = {
@@ -68,12 +68,12 @@ export class Building
     this.flag.setPosition(flagPosition);
   }
 
-  public setBuilding(building: BuildingType) {
+  public setBuilding(building: EntityType) {
     this.entity.data = { ...building.data };
     this.image.src = this.entity.data.url;
   }
 
-  public getBuilding(): BuildingType {
+  public getBuilding(): EntityType {
     return this.entity;
   }
 

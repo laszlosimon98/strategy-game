@@ -26,9 +26,6 @@ export type EntityType = {
   };
 };
 
-export type BuildingType = EntityType;
-export type UnitType = EntityType;
-
 type LanguageType = { language: "hu" | "en" };
 
 type ImagesType = {
@@ -86,7 +83,7 @@ type GameType = {
   game: {
     state: GameState;
     players: PlayerGameType;
-    selectedBuilding: BuildingType;
+    selectedBuilding: EntityType;
   };
 };
 

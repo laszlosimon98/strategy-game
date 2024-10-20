@@ -10,7 +10,7 @@ import { GameState } from "../../../enums/gameState";
 import { getImageNameFromUrl, isMouseIntersect } from "../../../utils/utils";
 import { Pointer } from "../../../enums/pointer";
 import { MainMenuState } from "../../../enums/gameMenuState";
-import { BuildingType } from "../../../types/gameType";
+import { EntityType } from "../../../types/gameType";
 
 export class Builder {
   private buildingPos: Position;
@@ -145,7 +145,7 @@ export class Builder {
     house.setPosition(housePos);
   }
 
-  private build(building: BuildingType, buildingPos: Position): void {
+  private build(building: EntityType, buildingPos: Position): void {
     const name = getImageNameFromUrl(building.data.url);
 
     const newBuilding: Building = this.createBuilding(buildingRegister[name], {
@@ -192,7 +192,7 @@ export class Builder {
       state.pointer.state === Pointer.Tile
     ) {
       if (state.game.selectedBuilding.data.url.length) {
-        const selectedBuilding: BuildingType = {
+        const selectedBuilding: EntityType = {
           data: {
             ...state.game.selectedBuilding.data,
             indices,
@@ -214,7 +214,7 @@ export class Builder {
         building,
         buildingPos,
       }: {
-        building: BuildingType;
+        building: EntityType;
         buildingPos: Position;
       }) => {
         this.build(building, buildingPos);

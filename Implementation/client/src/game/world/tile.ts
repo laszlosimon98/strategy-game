@@ -1,5 +1,6 @@
 import { canvasHeight, canvasWidth, ctx } from "../../init";
 import { TILE_SIZE } from "../../settings";
+import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 import { Vector } from "../../utils/vector";
 
@@ -12,12 +13,10 @@ export class Tile {
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
-  private offset: Position;
   private temp: boolean = false;
 
-  public constructor(i: number, j: number, type: string) {
-    this.position = new Vector(i, j);
-    this.offset = Position.zero();
+  public constructor(indices: Indices, type: string) {
+    this.position = new Vector(indices.i, indices.j);
 
     this.isometricPos = this.position.getIsometricPos();
 
@@ -72,15 +71,15 @@ export class Tile {
       const current: Position = grid[i];
       const next: Position = grid[i + 1];
 
-      ctx.moveTo(current.x + this.offset.x, current.y + this.offset.y);
-      ctx.lineTo(next.x + this.offset.x, next.y + this.offset.y);
+      ctx.moveTo(current.x, current.y);
+      ctx.lineTo(next.x, next.y);
     }
 
     const last: Position = grid[grid.length - 1];
     const first: Position = grid[0];
 
-    ctx.moveTo(last.x + this.offset.x, last.y + this.offset.y);
-    ctx.lineTo(first.x + this.offset.x, first.y + this.offset.y);
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(first.x, first.y);
 
     ctx.strokeStyle = "#fff";
     ctx.stroke();
@@ -97,29 +96,14 @@ export class Tile {
 
   public draw(): void {
     ctx.save();
-    // if (this.temp) {
-    //   ctx.globalCompositeOperation = "color";
-    //   ctx.fillStyle = "rgb(255, 0, 0)";
-    //   ctx.fillRect(this.renderPos.x, this.renderPos.y, TILE_SIZE, TILE_SIZE);
-    //   ctx.globalCompositeOperation = "source-over";
-    // }
-
     if (this.temp) {
       ctx.globalAlpha = 0.5;
     }
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-
-    // ctx.font = "14px Arial";
-    // const text = `${this.position.x}, ${this.position.y}`;
-    // ctx.fillText(
-    //   text,
-    //   this.renderPos.x + TILE_SIZE / 2 + ctx.measureText(text).width / 2,
-    //   this.renderPos.y + TILE_SIZE / 2
-    // );
     ctx.restore();
   }
 
-  public updateRenderPos(cameraScroll: Position): void {
+  public update(cameraScroll: Position): void {
     this.renderPos = new Position(
       this.isometricPos[0].x - TILE_SIZE + cameraScroll.x,
       this.isometricPos[0].y - 1 + cameraScroll.y
