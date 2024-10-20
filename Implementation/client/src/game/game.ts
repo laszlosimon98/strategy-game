@@ -93,6 +93,8 @@ export class Game implements RenderInterface {
         //   end: this.pathEnd,
         // });
         break;
+      case MouseButtons.Middle:
+        this.world?.handleMiddleClick();
     }
   }
 

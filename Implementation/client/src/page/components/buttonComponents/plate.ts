@@ -19,7 +19,7 @@ export class Plate extends PageComponents {
   ) {
     super(pos, dim);
 
-    this.image = new Image();
+    this.image = new Image(dim.width, dim.height);
 
     if (type !== "buildings" && type !== "menu") {
       this.image.src = state.images.ui[type + "plate"].url;

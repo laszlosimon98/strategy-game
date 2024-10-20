@@ -19,10 +19,11 @@ export const INFO_COLOR = "#1f6e02";
 // MENU
 export const MENU_ITEM_SIZE: Dimension = new Dimension(64, 64);
 
+export const ITEM_SIZE: number = 96;
+export const ITEM_OFFSET: number = 19;
+export const HOUSE_ITEM_SIZE: Dimension = new Dimension(ITEM_SIZE, ITEM_SIZE);
+
 export const TILE_SIZE = 48;
-// 65 x 65
-export const ROWS = 46;
-export const COLS = 46;
 export const FPS = 30;
 
-export const CAMERA_SPEED = 32;
+export const CAMERA_SPEED = 700;

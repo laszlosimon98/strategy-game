@@ -1,7 +1,7 @@
 import { ctx } from "../../../init";
-import { MouseIntersect } from "../../../interfaces/mouseIntersect";
+import { ChangeAble } from "../../../interfaces/changeAble";
 import { RenderInterface } from "../../../interfaces/render";
-import { UnitType } from "../../../types/gameType";
+import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
@@ -17,7 +17,7 @@ enum UnitStates {
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
 
-export class Unit extends Entity implements RenderInterface, MouseIntersect {
+export class Unit extends Entity implements RenderInterface, ChangeAble {
   private directions: Record<string, number>;
   private facing: string;
 
@@ -30,7 +30,7 @@ export class Unit extends Entity implements RenderInterface, MouseIntersect {
   private speed: number;
   private dimension: Dimension;
 
-  public constructor(unit: UnitType) {
+  public constructor(unit: EntityType) {
     super(unit);
     this.directions = this.initDirections();
     this.facing = this.randomFacing(Object.keys(this.directions));

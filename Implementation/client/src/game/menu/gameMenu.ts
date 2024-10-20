@@ -1,7 +1,6 @@
 import { state } from "../../data/state";
 import { MainMenuState } from "../../enums/gameMenuState";
-import { ctx } from "../../init";
-import { MouseIntersect } from "../../interfaces/mouseIntersect";
+import { ChangeAble } from "../../interfaces/changeAble";
 import { RenderInterface } from "../../interfaces/render";
 import { Button } from "../../page/components/buttonComponents/button";
 import { Dimension } from "../../utils/dimension";
@@ -12,7 +11,7 @@ import { InfoPanel } from "./components/infoPanel";
 import { MainSection } from "./components/main/mainSection";
 import { Section } from "./components/section";
 
-export class GameMenu implements RenderInterface, MouseIntersect {
+export class GameMenu implements RenderInterface, ChangeAble {
   private mainSection: MainSection;
   private frames: Record<MainMenuState, Section>;
 
@@ -48,6 +47,15 @@ export class GameMenu implements RenderInterface, MouseIntersect {
       ),
     };
   }
+
+  setPosition(pos: Position): void {
+    this.pos = pos;
+  }
+
+  setDimension(dim: Dimension): void {
+    this.dim = dim;
+  }
+
   public getPosition(): Position {
     return this.pos;
   }

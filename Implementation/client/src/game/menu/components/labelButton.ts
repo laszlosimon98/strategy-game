@@ -20,8 +20,8 @@ export class LabelButton extends Button {
     const imageFrom: string = type === "buildings" ? "buildings" : "gamemenu";
 
     if (imageFrom === "buildings") {
-      this.dim.width = state.images[imageFrom][name].dimensions.width;
-      this.dim.height = state.images[imageFrom][name].dimensions.height;
+      // this.dim.width = state.images[imageFrom][name].dimensions.width;
+      // this.dim.height = state.images[imageFrom][name].dimensions.height;
       this.setImage(state.images[imageFrom][name].url);
     } else {
       this.dim.width = state.images.ui[imageFrom][name].dimensions.width;

@@ -1,6 +1,6 @@
 import { state } from "../../../data/state";
 import { ctx } from "../../../init";
-import { MouseIntersect } from "../../../interfaces/mouseIntersect";
+import { ChangeAble } from "../../../interfaces/changeAble";
 import { RenderInterface } from "../../../interfaces/render";
 import { EntityType } from "../../../types/gameType";
 import { Position } from "../../../utils/position";
@@ -8,10 +8,7 @@ import { getImageNameFromUrl } from "../../../utils/utils";
 import { Entity } from "../entity";
 import { Flag } from "./flag";
 
-export class Building
-  extends Entity
-  implements RenderInterface, MouseIntersect
-{
+export class Building extends Entity implements RenderInterface, ChangeAble {
   private flagEntity: EntityType;
   private flag: Flag;
 

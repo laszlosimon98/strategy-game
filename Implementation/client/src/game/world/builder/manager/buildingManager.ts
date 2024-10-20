@@ -1,23 +1,23 @@
-import { ServerHandler } from "../../../server/serverHandler";
-import { Dimension } from "../../../utils/dimension";
-import { Indices } from "../../../utils/indices";
-import { Position } from "../../../utils/position";
-import { Building } from "./building";
-import { FakeBuilding } from "./fakeBuilding";
-import { buildingRegister } from "./register/buildingRegister";
-import { initBuilding, state } from "../../../data/state";
-import { GameState } from "../../../enums/gameState";
-import { getImageNameFromUrl, isMouseIntersect } from "../../../utils/utils";
-import { Pointer } from "../../../enums/pointer";
-import { MainMenuState } from "../../../enums/gameMenuState";
-import { EntityType } from "../../../types/gameType";
+import { ServerHandler } from "../../../../server/serverHandler";
+import { Indices } from "../../../../utils/indices";
+import { Position } from "../../../../utils/position";
+import { FakeBuilding } from "../fakeBuilding";
+import { buildingRegister } from "../register/buildingRegister";
+import { initBuilding, state } from "../../../../data/state";
+import { GameState } from "../../../../enums/gameState";
+import { getImageNameFromUrl, isMouseIntersect } from "../../../../utils/utils";
+import { Pointer } from "../../../../enums/pointer";
+import { MainMenuState } from "../../../../enums/gameMenuState";
+import { EntityType } from "../../../../types/gameType";
+import { Manager } from "../../manager/manager";
+import { Building } from "../building";
 
-export class Builder {
-  private buildingPos: Position;
+export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;
   private selectedHouse: FakeBuilding;
 
   constructor() {
+    super();
     this.fakeHouse = new FakeBuilding({
       data: {
         ...state.game.selectedBuilding.data,
@@ -31,32 +31,16 @@ export class Builder {
         owner: ServerHandler.getId(),
       },
     });
-
-    this.buildingPos = Position.zero();
-
-    this.handleCommunication();
-  }
-
-  private createBuilding<T extends Building>(
-    CreatedBuilding: new (...args: any[]) => T,
-    ...args: ConstructorParameters<typeof CreatedBuilding>
-  ): T {
-    return new CreatedBuilding(...args);
-  }
-
-  public setBuildingPos(buildingPos: Position): void {
-    this.buildingPos = buildingPos;
   }
 
   public draw(): void {
     Object.keys(state.game.players).forEach((key) => {
       state.game.players[key].buildings.forEach((building) => building.draw());
     });
-
     this.fakeHouse.draw();
   }
 
-  public update(dt: number, mousePos: Position, cameraScroll: Position): void {
+  public update(dt: number, cameraScroll: Position): void {
     Object.keys(state.game.players).forEach((key) => {
       state.game.players[key].buildings.forEach((building) =>
         building.update(dt, cameraScroll)
@@ -89,6 +73,8 @@ export class Builder {
     }
   }
 
+  handleMiddleClick(): void {}
+
   public handleRightClick(): void {
     this.resetStates();
   }
@@ -101,6 +87,28 @@ export class Builder {
       this.setFakeHouse();
     }
     this.hoverHouse(mousePos, cameraScroll);
+  }
+
+  protected handleCommunication(): void {
+    ServerHandler.receiveMessage(
+      "game:build",
+      ({
+        building,
+        buildingPos,
+      }: {
+        building: EntityType;
+        buildingPos: Position;
+      }) => {
+        this.build(building, buildingPos);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:destroy",
+      ({ id, indices }: { id: string; indices: Indices }) => {
+        this.destroy(id, indices);
+      }
+    );
   }
 
   private hoverHouse(mousePos: Position, cameraScroll: Position): void {
@@ -136,30 +144,21 @@ export class Builder {
     }
   }
 
-  private setHouse(house: Building, buildingPos: Position): void {
-    const dimension: Dimension = house.getDimension();
-    const housePos: Position = new Position(
-      buildingPos.x - dimension.width / 2,
-      buildingPos.y - dimension.height
-    );
-    house.setPosition(housePos);
-  }
-
   private build(building: EntityType, buildingPos: Position): void {
     const name = getImageNameFromUrl(building.data.url);
 
-    const newBuilding: Building = this.createBuilding(buildingRegister[name], {
+    const newBuilding: Building = this.creator(buildingRegister[name], {
       ...building,
     });
 
-    this.setHouse(newBuilding, buildingPos);
+    this.setObject(newBuilding, buildingPos);
     state.game.players[building.data.owner].buildings.push(newBuilding);
 
     this.resetStates();
   }
 
   private setFakeHouse(): void {
-    this.setHouse(this.fakeHouse, this.buildingPos);
+    this.setObject(this.fakeHouse, this.pos);
     this.fakeHouse.setBuilding(state.game.selectedBuilding);
   }
 
@@ -201,31 +200,9 @@ export class Builder {
         };
         ServerHandler.sendMessage("game:build", {
           building: selectedBuilding,
-          buildingPos: this.buildingPos,
+          buildingPos: this.pos,
         });
       }
     }
-  }
-
-  private handleCommunication(): void {
-    ServerHandler.receiveMessage(
-      "game:build",
-      ({
-        building,
-        buildingPos,
-      }: {
-        building: EntityType;
-        buildingPos: Position;
-      }) => {
-        this.build(building, buildingPos);
-      }
-    );
-
-    ServerHandler.receiveMessage(
-      "game:destroy",
-      ({ id, indices }: { id: string; indices: Indices }) => {
-        this.destroy(id, indices);
-      }
-    );
   }
 }

@@ -1,4 +1,5 @@
 import { canvasHeight, canvasWidth } from "../../init";
+import { CAMERA_SPEED } from "../../settings";
 import { Position } from "../../utils/position";
 import { Vector } from "../../utils/vector";
 
@@ -10,8 +11,7 @@ export class Camera {
   public constructor() {
     this.dir = Vector.zero();
     this.scroll = Position.zero();
-    // this.scroll = scrollPosition;
-    this.speed = 500;
+    this.speed = CAMERA_SPEED;
   }
 
   public getScroll(): Position {

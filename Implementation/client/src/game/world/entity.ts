@@ -1,12 +1,12 @@
 import { ctx } from "../../init";
-import { MouseIntersect } from "../../interfaces/mouseIntersect";
+import { ChangeAble } from "../../interfaces/changeAble";
 import { RenderInterface } from "../../interfaces/render";
 import { EntityType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
 
-export abstract class Entity implements RenderInterface, MouseIntersect {
+export abstract class Entity implements RenderInterface, ChangeAble {
   protected pos: Position;
   protected image: HTMLImageElement;
   protected renderPos: Position;
@@ -41,6 +41,10 @@ export abstract class Entity implements RenderInterface, MouseIntersect {
 
   public setEntity(entity: EntityType): void {
     this.entity = entity;
+  }
+
+  public setDimension(dim: Dimension): void {
+    this.entity.data.dimensions = dim;
   }
 
   public getDimension(): Dimension {

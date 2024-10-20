@@ -1,6 +1,5 @@
 import { state } from "../../../../data/state";
 import { SubMenuState } from "../../../../enums/gameMenuState";
-import { Button } from "../../../../page/components/buttonComponents/button";
 import { MENU_ITEM_SIZE } from "../../../../settings";
 import { Dimension } from "../../../../utils/dimension";
 import { Position } from "../../../../utils/position";
