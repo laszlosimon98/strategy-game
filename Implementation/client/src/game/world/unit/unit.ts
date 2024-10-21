@@ -2,7 +2,6 @@ import { ctx } from "../../../init";
 import { CallAble } from "../../../interfaces/callAble";
 import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
-import { Indices } from "../../../utils/indices";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
 import { getRandomNumberFromInterval } from "../../../utils/utils";
@@ -32,8 +31,11 @@ export class Unit extends Entity implements CallAble {
   private speed: number;
   private dimension: Dimension;
 
+  private path: Tile[];
+
   public constructor(unit: EntityType) {
     super(unit);
+
     this.directions = this.initDirections();
     this.facing = this.randomFacing(Object.keys(this.directions));
 
@@ -50,6 +52,8 @@ export class Unit extends Entity implements CallAble {
     this.animationCounter = 0;
     this.speed = 8;
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
+
+    this.path = [];
   }
 
   private initDirections(): Record<string, number> {
@@ -124,6 +128,10 @@ export class Unit extends Entity implements CallAble {
     this.facing = facing;
   }
 
+  public setPath(path: Tile[]): void {
+    this.path = [...path];
+  }
+
   private animate(dt: number): void {
     this.animationCounter += this.speed * dt;
 
@@ -175,29 +183,32 @@ export class Unit extends Entity implements CallAble {
     return facing;
   }
 
-  public move(path: Tile[]): void {
-    if (!this.moveTimer.isTimerActive()) {
-      const currentTile: Tile = path.shift() as Tile;
-      const nextTile: Tile = path[0];
+  public move(): void {
+    if (this.path.length > 1) {
+      if (!this.moveTimer.isTimerActive()) {
+        const currentTile: Tile = this.path.shift() as Tile;
+        const nextTile: Tile = this.path[0];
 
-      this.facing = this.calculateFacing(currentTile, nextTile);
+        this.facing = this.calculateFacing(currentTile, nextTile);
 
-      const nextPos: Position = nextTile.getUnitPos();
-      // let i = 5;
+        const nextPos: Position = nextTile.getUnitPos();
+        // let i = 5;
 
-      // while (i > 0) {
-      //   console.log(i);
-      //   --i;
-      // }
+        // while (i > 0) {
+        //   console.log(i);
+        //   --i;
+        // }
 
-      const pos = new Position(
-        nextPos.x - UNIT_ASSET_SIZE / 2,
-        nextPos.y - UNIT_ASSET_SIZE
-      );
+        const pos = new Position(
+          nextPos.x - UNIT_ASSET_SIZE / 2,
+          nextPos.y - UNIT_ASSET_SIZE
+        );
 
-      this.pos.setPosition(pos);
+        this.setPosition(pos);
+        this.setIndices(nextTile.getIndices());
 
-      this.moveTimer.activate();
+        this.moveTimer.activate();
+      }
     }
   }
 }

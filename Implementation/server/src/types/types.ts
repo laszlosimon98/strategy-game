@@ -3,6 +3,7 @@ import { Building } from "../classes/game/building";
 import { Cell } from "../classes/game/cell";
 import { Indices } from "../classes/utils/indices";
 import { Dimension } from "../classes/utils/dimension";
+import { Unit } from "../classes/game/unit";
 
 export type ColorType =
   | "black"
@@ -16,19 +17,19 @@ export type ColorType =
 
 export type TileType = "grass" | "grass_flower" | "grass_rock";
 
-export type BuildingType = {
-  data: {
-    indices: Indices;
-    owner: string;
-    url: string;
-    dimensions: Dimension;
-  };
+export type Position = {
+  x: number;
+  y: number;
 };
 
-export type BuildType = {
-  building: BuildingType;
-  socket: Socket;
-  buildingPos?: { x: number; y: number };
+export type EntityType = {
+  data: {
+    id: string;
+    owner: string;
+    url: string;
+    indices: Indices;
+    dimensions: Dimension;
+  };
 };
 
 export type PlayerType = {
@@ -36,6 +37,7 @@ export type PlayerType = {
     name: string;
     color: ColorType;
     buildings: Building[];
+    units: Unit[];
   };
 };
 

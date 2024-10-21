@@ -18,6 +18,7 @@ export const INFO_COLOR = "#1f6e02";
 // GAME
 // MENU
 export const MENU_ITEM_SIZE: Dimension = new Dimension(64, 64);
+export const UNIT_SIZE: Dimension = new Dimension(64, 64);
 
 export const ITEM_SIZE: number = 96;
 export const ITEM_OFFSET: number = 19;

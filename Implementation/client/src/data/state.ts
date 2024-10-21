@@ -5,13 +5,16 @@ import { EntityType, stateType } from "../types/gameType";
 import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
 import { Indices } from "../utils/indices";
 import { Dimension } from "../utils/dimension";
+import { Position } from "../utils/position";
+import { ServerHandler } from "../server/serverHandler";
 
-export const initBuilding: EntityType = {
+export const initState: EntityType = {
   data: {
     indices: Indices.zero(),
-    owner: "",
+    owner: ServerHandler.getId(),
     url: "",
     dimensions: Dimension.zero(),
+    position: Position.zero(),
   },
 };
 
@@ -27,6 +30,7 @@ export const state: stateType = {
     pageState: PageState.MainMenu,
     gameMenuState: MainMenuState.Unselected,
     subMenuState: SubMenuState.Unselected,
+    prevMenuState: MainMenuState.Unselected,
   },
   server: {
     status: "offline",
@@ -43,7 +47,7 @@ export const state: stateType = {
     state: GameState.Default,
     players: {},
     builder: {
-      data: { ...initBuilding.data },
+      data: { ...initState.data },
     },
   },
 };

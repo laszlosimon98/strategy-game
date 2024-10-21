@@ -1,6 +1,6 @@
 import { EntityType } from "../../types/types";
 
-export class Building {
+export class Unit {
   private entity: EntityType;
 
   public constructor(entity: EntityType) {

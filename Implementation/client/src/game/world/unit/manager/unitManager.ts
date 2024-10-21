@@ -1,7 +1,9 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { state } from "../../../../data/state";
 import { ServerHandler } from "../../../../server/serverHandler";
+import { UNIT_SIZE } from "../../../../settings";
 import { EntityType } from "../../../../types/gameType";
-import { Dimension } from "../../../../utils/dimension";
 import { Indices } from "../../../../utils/indices";
 import { Position } from "../../../../utils/position";
 import { Manager } from "../../manager/manager";
@@ -13,15 +15,11 @@ export class UnitManager extends Manager<Unit> {
   private start: Indices;
   private end: Indices;
 
-  private path: Tile[];
-
   public constructor() {
     super();
     this.selectedUnit = undefined;
     this.start = Indices.zero();
     this.end = Indices.zero();
-
-    this.path = [];
   }
 
   public draw(): void {
@@ -31,9 +29,15 @@ export class UnitManager extends Manager<Unit> {
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
 
-    if (this.path.length > 1 && this.selectedUnit) {
-      this.selectedUnit.move(this.path);
-    }
+    Object.keys(state.game.players).forEach((key) => {
+      state.game.players[key].units.forEach((unit) => {
+        unit.move();
+      });
+    });
+  }
+
+  public setWorld(world: Tile[][]): void {
+    this.world = world;
   }
 
   public handleLeftClick(
@@ -46,10 +50,6 @@ export class UnitManager extends Manager<Unit> {
       cameraScroll,
       "units"
     ) as unknown as Unit | undefined;
-
-    if (this.selectedUnit) {
-      this.start = this.selectedUnit.getIndices();
-    }
   }
 
   public handleMiddleClick(
@@ -58,32 +58,28 @@ export class UnitManager extends Manager<Unit> {
     cameraScroll: Position
   ): void {
     const color: string = state.game.players[ServerHandler.getId()].color;
+
     const unitEntity: EntityType = {
       data: {
-        dimensions: new Dimension(64, 64),
+        id: uuidv4(),
+        owner: ServerHandler.getId(),
+        url: state.images.colors[color].soldieridle.url,
         indices,
-        owner: "",
-        url: `http://localhost:3000/assets/colors/${color}/soldieridle.png`,
+        dimensions: UNIT_SIZE,
+        position: this.pos,
       },
     };
-    const unit: Unit = this.creator(Unit, unitEntity);
-    this.setObjectPosition(unit, this.pos);
-    state.game.players[ServerHandler.getId()].units.push(unit);
+
+    this.sendUnitCreateRequest(unitEntity);
   }
 
   public handleRightClick(indices: Indices, world: Tile[][]): void {
     if (this.selectedUnit) {
+      this.start = this.selectedUnit.getIndices();
       this.end = indices;
 
-      this.sendMoveRequest();
-
-      ServerHandler.receiveMessage("game:pathFind", (indices: Indices[]) => {
-        indices.forEach((index) => {
-          const i = index.i;
-          const j = index.j;
-          this.path.push(world[i][j]);
-        });
-      });
+      const entity: EntityType = this.selectedUnit.getEntity();
+      this.sendPathFindRequest(entity);
     }
   }
 
@@ -91,12 +87,43 @@ export class UnitManager extends Manager<Unit> {
     this.hoverObject(mousePos, cameraScroll, "units");
   }
 
-  private sendMoveRequest(): void {
+  private sendUnitCreateRequest(entity: EntityType): void {
+    ServerHandler.sendMessage("game:unitCreate", entity);
+  }
+
+  private sendPathFindRequest(entity: EntityType): void {
     ServerHandler.sendMessage("game:pathFind", {
+      entity,
       start: this.start,
       end: this.end,
     });
   }
 
-  protected handleCommunication(): void {}
+  protected handleCommunication(): void {
+    ServerHandler.receiveMessage("game:unitCreate", (entity: EntityType) => {
+      const unit: Unit = this.creator(Unit, entity);
+
+      this.setObjectPosition(unit, entity.data.position);
+      state.game.players[entity.data.owner].units.push(unit);
+    });
+
+    ServerHandler.receiveMessage(
+      "game:pathFind",
+      ({ indices, entity }: { indices: Indices[]; entity: EntityType }) => {
+        const path: Tile[] = [];
+
+        indices.forEach((index) => {
+          const i = index.i;
+          const j = index.j;
+          path.push(this.world[i][j]);
+        });
+
+        state.game.players[entity.data.owner].units.forEach((unit) => {
+          if (unit.equal(entity)) {
+            unit.setPath(path);
+          }
+        });
+      }
+    );
+  }
 }

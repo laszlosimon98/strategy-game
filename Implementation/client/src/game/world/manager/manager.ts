@@ -2,7 +2,7 @@ import { MouseClicker } from "../../../interfaces/mouseClicker";
 import { CallAble } from "../../../interfaces/callAble";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
-import { state } from "../../../data/state";
+import { initState, state } from "../../../data/state";
 import { GameState } from "../../../enums/gameState";
 import { ServerHandler } from "../../../server/serverHandler";
 import { isMouseIntersect } from "../../../utils/utils";
@@ -10,13 +10,15 @@ import { MainMenuState } from "../../../enums/gameMenuState";
 import { Building } from "../building/building";
 import { Unit } from "@faker-js/faker";
 import { EntityType } from "../../../types/gameType";
-import { Indices } from "../../../utils/indices";
+import { Tile } from "../tile";
 
 export abstract class Manager<T> implements MouseClicker {
   protected pos: Position;
+  protected world: Tile[][];
 
   protected constructor() {
     this.pos = Position.zero();
+    this.world = [];
     this.handleCommunication();
   }
 
@@ -45,6 +47,10 @@ export abstract class Manager<T> implements MouseClicker {
     });
   }
 
+  public setWorld(world: Tile[][]): void {
+    this.world = world;
+  }
+
   protected creator<K extends T>(
     Creator: new (...args: any[]) => K,
     ...args: ConstructorParameters<typeof Creator>
@@ -59,10 +65,8 @@ export abstract class Manager<T> implements MouseClicker {
   protected initObject(): EntityType {
     return {
       data: {
-        dimensions: Dimension.zero(),
+        ...initState.data,
         owner: ServerHandler.getId(),
-        indices: Indices.zero(),
-        url: "",
       },
     };
   }
@@ -113,6 +117,7 @@ export abstract class Manager<T> implements MouseClicker {
     if (selectedObject) {
       state.infoPanel.data = selectedObject;
       state.game.state = GameState.Selected;
+      state.navigation.prevMenuState = state.navigation.gameMenuState;
       state.navigation.gameMenuState = MainMenuState.Info;
     } else {
       state.game.state = GameState.Default;

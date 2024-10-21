@@ -59,6 +59,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       name,
       color: chooseColor(state[code].remainingColors),
       buildings: [],
+      units: [],
     };
 
     socket.join(code);
@@ -98,6 +99,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       name,
       color: chooseColor(state[code].remainingColors),
       buildings: [],
+      units: [],
     };
 
     socket.join(code);

@@ -3,7 +3,6 @@ import { ctx } from "../../../init";
 import { CallAble } from "../../../interfaces/callAble";
 import { EntityType } from "../../../types/gameType";
 import { Position } from "../../../utils/position";
-import { getImageNameFromUrl } from "../../../utils/utils";
 import { Entity } from "../entity";
 import { Flag } from "./flag";
 
@@ -11,18 +10,19 @@ export class Building extends Entity implements CallAble {
   private flagEntity: EntityType;
   private flag: Flag;
 
-  public constructor(building: EntityType) {
-    super(building);
+  public constructor(entity: EntityType) {
+    super(entity);
 
     this.flagEntity = {
       data: {
-        ...state.images.colors[state.game.players[building.data.owner].color]
+        ...state.images.colors[state.game.players[entity.data.owner].color]
           .flag,
         indices: {
-          ...building.data.indices,
-          i: building.data.indices.i + 1,
+          ...entity.data.indices,
+          i: entity.data.indices.i + 1,
         },
-        owner: building.data.owner,
+        owner: entity.data.owner,
+        position: entity.data.position,
       },
     };
 
@@ -56,10 +56,12 @@ export class Building extends Entity implements CallAble {
     super.setPosition(pos);
 
     const flagPosition: Position = new Position(
-      this.pos.x -
+      this.entity.data.position.x -
         this.flag.getDimension().width / 2 +
         this.getDimension().width,
-      this.pos.y - this.flag.getDimension().height + this.getDimension().height
+      this.entity.data.position.y -
+        this.flag.getDimension().height +
+        this.getDimension().height
     );
     this.flag.setPosition(flagPosition);
   }

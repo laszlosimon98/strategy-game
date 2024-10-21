@@ -15,9 +15,6 @@ export class Tile {
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
-  private temp: boolean = false;
-
-  private neighbors: Indices[];
 
   public constructor(indices: Indices, type: string) {
     this.indices = indices;
@@ -50,17 +47,10 @@ export class Tile {
 
     this.image = new Image();
     this.image.src = type;
-
-    this.neighbors = this.initNeighbor();
   }
 
   public draw(): void {
-    ctx.save();
-    if (this.temp) {
-      ctx.globalAlpha = 0.5;
-    }
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-    ctx.restore();
   }
 
   public update(cameraScroll: Position): void {
@@ -68,10 +58,6 @@ export class Tile {
       this.isometricPos[0].x - TILE_SIZE + cameraScroll.x,
       this.isometricPos[0].y - 1 + cameraScroll.y
     );
-  }
-
-  public setTemp(): void {
-    this.temp = !this.temp;
   }
 
   public getCameraPos(): Position {
@@ -84,10 +70,6 @@ export class Tile {
 
   public getUnitPos(): Position {
     return this.unitPos;
-  }
-
-  public getNeighbors(): Indices[] {
-    return this.neighbors;
   }
 
   public getIndices(): Indices {
@@ -122,45 +104,4 @@ export class Tile {
   public drawIsometricGrid(): void {
     this.drawGrid(this.position.getIsometricPos());
   }
-
-  private initNeighbor = (): Indices[] => {
-    const result: Indices[] = [];
-
-    if (this.indices.i > 0) {
-      result.push(new Indices(this.indices.i - 1, this.indices.j));
-    }
-
-    if (this.indices.i < state.game.worldSize - 1) {
-      result.push(new Indices(this.indices.i + 1, this.indices.j));
-    }
-
-    if (this.indices.j > 0) {
-      result.push(new Indices(this.indices.i, this.indices.j - 1));
-    }
-
-    if (this.indices.j < state.game.worldSize - 1) {
-      result.push(new Indices(this.indices.i, this.indices.j + 1));
-    }
-
-    if (this.indices.i > 0 && this.indices.j > 0) {
-      result.push(new Indices(this.indices.i - 1, this.indices.j - 1));
-    }
-
-    if (
-      this.indices.i < state.game.worldSize - 1 &&
-      this.indices.j < state.game.worldSize - 1
-    ) {
-      result.push(new Indices(this.indices.i + 1, this.indices.j + 1));
-    }
-
-    if (this.indices.i > 0 && this.indices.j < state.game.worldSize - 1) {
-      result.push(new Indices(this.indices.i - 1, this.indices.j + 1));
-    }
-
-    if (this.indices.i < state.game.worldSize - 1 && this.indices.j > 0) {
-      result.push(new Indices(this.indices.i + 1, this.indices.j - 1));
-    }
-
-    return result;
-  };
 }

@@ -5,6 +5,7 @@ import { Building } from "../game/world/building/building";
 import { Unit } from "../game/world/unit/unit";
 import { Dimension } from "../utils/dimension";
 import { Indices } from "../utils/indices";
+import { Position } from "../utils/position";
 
 export type TileType = "grass" | "grass_flower" | "grass_rock";
 type ColorType =
@@ -19,10 +20,12 @@ type ColorType =
 
 export type EntityType = {
   data: {
-    indices: Indices;
+    id: string;
     owner: string;
     url: string;
+    indices: Indices;
     dimensions: Dimension;
+    position: Position;
   };
 };
 
@@ -42,6 +45,7 @@ type NavigationType = {
     pageState: PageState;
     gameMenuState: MainMenuState;
     subMenuState: SubMenuState;
+    prevMenuState: MainMenuState;
   };
 };
 

@@ -10,10 +10,12 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.3",
+    "@types/uuid": "^10.0.0",
     "typescript": "^5.2.2",
     "vite": "^5.3.1"
   },
   "dependencies": {
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "uuid": "^10.0.0"
   }
 }

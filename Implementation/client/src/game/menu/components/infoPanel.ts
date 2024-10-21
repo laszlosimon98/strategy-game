@@ -1,4 +1,5 @@
 import { state } from "../../../data/state";
+import { MainMenuState } from "../../../enums/gameMenuState";
 import { ctx } from "../../../init";
 import { Button } from "../../../page/components/buttonComponents/button";
 import { ServerHandler } from "../../../server/serverHandler";
@@ -64,6 +65,7 @@ export class InfoPanel extends Section {
 
   public handleClick(mousePos: Position): void {
     if (this.deleteButton.isClicked(mousePos.x, mousePos.y)) {
+      state.navigation.gameMenuState = state.navigation.prevMenuState;
       ServerHandler.sendMessage(
         "game:destroy",
         state.infoPanel.data?.getIndices()

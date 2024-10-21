@@ -42,9 +42,12 @@ export class World implements MouseClicker {
           );
         }
       }
+
       ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
         this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
       });
+
+      this.unitManager.setWorld(this.world);
     });
   }
 
@@ -150,9 +153,5 @@ export class World implements MouseClicker {
     return this.camera.getScroll();
   }
 
-  private handleCommunication(): void {
-    ServerHandler.receiveMessage("game:pathFind", (path: Indices[]) => {
-      path.forEach((indices) => this.world[indices.i][indices.j].setTemp());
-    });
-  }
+  private handleCommunication(): void {}
 }

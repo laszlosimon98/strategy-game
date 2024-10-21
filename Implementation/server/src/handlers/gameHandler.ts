@@ -7,9 +7,10 @@ import { World } from "../classes/game/world";
 import { Builder } from "../classes/game/builder";
 import { MAP_SIZE } from "../settings";
 import { Validator } from "../classes/validator";
-import { BuildType, PlayerType, TileType } from "../types/types";
+import { EntityType, PlayerType, Position, TileType } from "../types/types";
 import { state } from "../data/state";
 import { Building } from "../classes/game/building";
+import { Unit } from "../classes/game/unit";
 
 export const gameHandler = (io: Server, socket: Socket) => {
   const getPlayers = (): PlayerType => {
@@ -53,21 +54,20 @@ export const gameHandler = (io: Server, socket: Socket) => {
     return tiles;
   };
 
-  const build = ({ building, buildingPos }: BuildType): void => {
-    if (!Validator.validateIndices(building.data.indices)) {
+  const build = (entity: EntityType): void => {
+    if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
 
-    const newBuilding: Building | undefined = Builder.build({
-      building,
-      socket,
-    });
+    const newBuilding: Building | undefined = Builder.build(entity, socket);
 
     if (newBuilding) {
-      Communicate.sendMessageToEveryOne(io, socket, "game:build", {
-        building: newBuilding.getBuilding(),
-        buildingPos,
-      });
+      Communicate.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:build",
+        newBuilding.getEntity()
+      );
     }
   };
 
@@ -85,19 +85,51 @@ export const gameHandler = (io: Server, socket: Socket) => {
     }
   };
 
-  const pathFind = ({ start, end }: { start: Indices; end: Indices }) => {
+  const pathFind = ({
+    entity,
+    start,
+    end,
+  }: {
+    entity: EntityType;
+    start: Indices;
+    end: Indices;
+  }) => {
     if (!Validator.validateIndices(start) || !Validator.validateIndices(end)) {
       return;
     }
 
     const world: Cell[][] = state[Communicate.getCurrentRoom(socket)].world;
-    const path: Indices[] = PathFinder.getPath(world, start, end);
+    const indices: Indices[] = PathFinder.getPath(world, start, end);
 
-    Communicate.sendMessageToEveryOne(io, socket, "game:pathFind", path);
+    Communicate.sendMessageToEveryOne(io, socket, "game:pathFind", {
+      indices,
+      entity,
+    });
+  };
+
+  const unitCreate = (entity: EntityType): void => {
+    if (!Validator.validateIndices(entity.data.indices)) {
+      return;
+    }
+
+    entity.data.owner = socket.id;
+    const unit = new Unit(entity);
+
+    state[Communicate.getCurrentRoom(socket)].players[socket.id].units.push(
+      unit
+    );
+
+    Communicate.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:unitCreate",
+      unit.getEntity()
+    );
   };
 
   socket.on("game:starts", gameStarts);
   socket.on("game:build", build);
   socket.on("game:destroy", destroy);
   socket.on("game:pathFind", pathFind);
+  socket.on("game:unitCreate", unitCreate);
 };

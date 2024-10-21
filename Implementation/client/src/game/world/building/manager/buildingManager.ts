@@ -1,9 +1,11 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { ServerHandler } from "../../../../server/serverHandler";
 import { Indices } from "../../../../utils/indices";
 import { Position } from "../../../../utils/position";
 import { FakeBuilding } from "../fakeBuilding";
-import { buildingRegister } from "../register/buildingRegister";
-import { initBuilding, state } from "../../../../data/state";
+import { buildingRegister } from "../buildingRegister/buildingRegister";
+import { initState, state } from "../../../../data/state";
 import { GameState } from "../../../../enums/gameState";
 import { getImageNameFromUrl } from "../../../../utils/utils";
 import { MainMenuState } from "../../../../enums/gameMenuState";
@@ -34,6 +36,10 @@ export class BuildingManager extends Manager<Building> {
     mousePos: Position,
     cameraScroll: Position
   ): void {
+    if (state.navigation.gameMenuState === MainMenuState.Info) {
+      state.navigation.gameMenuState = state.navigation.prevMenuState;
+    }
+
     switch (state.game.state) {
       case GameState.Default: {
         this.selectObject(mousePos, cameraScroll, "buildings");
@@ -48,6 +54,7 @@ export class BuildingManager extends Manager<Building> {
         break;
       }
     }
+    this.resetStates();
   }
 
   handleMiddleClick(): void {}
@@ -63,44 +70,28 @@ export class BuildingManager extends Manager<Building> {
     this.hoverObject(mousePos, cameraScroll, "buildings");
   }
 
-  protected handleCommunication(): void {
-    ServerHandler.receiveMessage(
-      "game:build",
-      ({
-        building,
-        buildingPos,
-      }: {
-        building: EntityType;
-        buildingPos: Position;
-      }) => {
-        this.build(building, buildingPos);
-      }
-    );
+  private build(entity: EntityType): void {
+    const name = getImageNameFromUrl(entity.data.url);
+    const newBuilding: Building = this.creator(buildingRegister[name], entity);
+    this.setObjectPosition(newBuilding, entity.data.position);
+    state.game.players[entity.data.owner].buildings.push(newBuilding);
 
-    ServerHandler.receiveMessage(
-      "game:destroy",
-      ({ id, indices }: { id: string; indices: Indices }) => {
-        this.destroy(id, indices);
-      }
-    );
-  }
-
-  private build(building: EntityType, buildingPos: Position): void {
-    const name = getImageNameFromUrl(building.data.url);
-
-    const newBuilding: Building = this.creator(buildingRegister[name], {
-      ...building,
-    });
-
-    this.setObjectPosition(newBuilding, buildingPos);
-    state.game.players[building.data.owner].buildings.push(newBuilding);
-
-    this.resetStates();
+    // this.resetStates();
   }
 
   private setFakeHouse(): void {
+    const entity: EntityType = {
+      data: {
+        ...initState.data,
+        ...state.game.builder.data,
+        position: this.pos,
+        owner: ServerHandler.getId(),
+        id: uuidv4(),
+      },
+    };
+
+    this.fakeHouse.setBuilding(entity);
     this.setObjectPosition(this.fakeHouse, this.pos);
-    this.fakeHouse.setBuilding(state.game.builder);
   }
 
   private destroy(id: string, indices: Indices): void {
@@ -113,31 +104,39 @@ export class BuildingManager extends Manager<Building> {
         buildings.splice(i, 1);
       }
     }
-
-    state.navigation.gameMenuState = MainMenuState.Unselected;
-    this.resetStates();
   }
 
   private resetStates(): void {
-    state.game.builder.data = { ...initBuilding.data };
-    this.fakeHouse.setBuilding(initBuilding);
-    this.fakeHouse.setPosition(new Position(-1000, -1000));
-    state.game.state = GameState.Default;
+    state.game.builder.data = { ...initState.data };
+    this.fakeHouse.setBuilding(initState);
   }
 
   private sendBuildRequest(indices: Indices): void {
     if (state.game.builder.data.url.length) {
-      const builder: EntityType = {
+      const entity: EntityType = {
         data: {
           ...state.game.builder.data,
           indices,
-          owner: "",
+          owner: ServerHandler.getId(),
+          position: this.pos,
+          id: uuidv4(),
         },
       };
-      ServerHandler.sendMessage("game:build", {
-        building: builder,
-        buildingPos: this.pos,
-      });
+
+      ServerHandler.sendMessage("game:build", entity);
     }
+  }
+
+  protected handleCommunication(): void {
+    ServerHandler.receiveMessage("game:build", (entity: EntityType) => {
+      this.build(entity);
+    });
+
+    ServerHandler.receiveMessage(
+      "game:destroy",
+      ({ id, indices }: { id: string; indices: Indices }) => {
+        this.destroy(id, indices);
+      }
+    );
   }
 }

@@ -1,12 +1,12 @@
 import { Socket } from "socket.io";
 import { Indices } from "../utils/indices";
 import { World } from "./world";
-import { BuildType } from "../../types/types";
 import { Validator } from "../validator";
 import { Building } from "./building";
 import { state } from "../../data/state";
 import { Communicate } from "../communicate";
 import { Cell } from "./cell";
+import { EntityType } from "../../types/types";
 
 export class Builder {
   private constructor() {}
@@ -19,16 +19,18 @@ export class Builder {
     return World.getWorld(socket)[xPos][yPos].isBuildAble();
   };
 
-  public static build({ building, socket }: BuildType): Building | undefined {
-    const i = building.data.indices.i;
-    const j = building.data.indices.j;
+  public static build(
+    entity: EntityType,
+    socket: Socket
+  ): Building | undefined {
+    const { i, j } = entity.data.indices;
 
     if (!this.isPossibleToBuild(i, j, socket)) {
       return;
     }
 
     const world: Cell[][] = World.getWorld(socket);
-    const newBuilding: Building = new Building(building);
+    const newBuilding: Building = new Building(entity);
     newBuilding.setOwner(socket.id);
 
     state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings.push(
@@ -50,12 +52,12 @@ export class Builder {
 
       for (let index = buildings.length - 1; index >= 0; --index) {
         const building: Building = buildings[index];
-        const buildingIndices: Indices = building.getBuilding().data.indices;
+        const buildingIndices: Indices = building.getEntity().data.indices;
 
         if (
           !Validator.areSenderAndOwnerSame(
             socket,
-            building.getBuilding().data.owner
+            building.getEntity().data.owner
           )
         ) {
           return false;

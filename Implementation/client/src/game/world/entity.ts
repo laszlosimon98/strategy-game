@@ -7,7 +7,6 @@ import { Position } from "../../utils/position";
 import { getImageNameFromUrl } from "../../utils/utils";
 
 export abstract class Entity implements CallAble {
-  protected pos: Position;
   protected image: HTMLImageElement;
   protected renderPos: Position;
 
@@ -16,7 +15,6 @@ export abstract class Entity implements CallAble {
 
   protected constructor(entity: EntityType) {
     this.entity = entity;
-    this.pos = new Position(0, -500);
     this.renderPos = new Position(0, -500);
 
     this.isHovered = false;
@@ -28,14 +26,18 @@ export abstract class Entity implements CallAble {
     this.image.src = entity.data.url;
   }
 
+  public equal(other: EntityType): boolean {
+    return this.entity.data.id === other.data.id;
+  }
+
   public draw(): void {
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
   }
 
   public update(dt: number, cameraScroll: Position): void {
     this.renderPos = new Position(
-      this.pos.x + cameraScroll.x,
-      this.pos.y + cameraScroll.y
+      this.entity.data.position.x + cameraScroll.x,
+      this.entity.data.position.y + cameraScroll.y
     );
   }
 
@@ -56,11 +58,11 @@ export abstract class Entity implements CallAble {
   }
 
   public setPosition(pos: Position): void {
-    this.pos = pos;
+    this.entity.data.position = pos;
   }
 
   public getPosition(): Position {
-    return this.pos;
+    return this.entity.data.position;
   }
 
   public getIndices(): Indices {
