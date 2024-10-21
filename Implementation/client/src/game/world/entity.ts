@@ -43,6 +43,10 @@ export abstract class Entity implements CallAble {
     this.entity = entity;
   }
 
+  public getEntity(): EntityType {
+    return this.entity;
+  }
+
   public setDimension(dim: Dimension): void {
     this.entity.data.dimensions = dim;
   }
@@ -63,6 +67,10 @@ export abstract class Entity implements CallAble {
     return this.entity.data.indices;
   }
 
+  public setIndices(indices: Indices): void {
+    this.entity.data.indices = indices;
+  }
+
   public setHover(hover: boolean): void {
     this.isHovered = hover;
   }
@@ -74,7 +82,7 @@ export abstract class Entity implements CallAble {
     return getImageNameFromUrl(this.entity.data.url);
   }
 
-  public getEntity(): EntityType {
-    return this.entity;
+  protected setImage(image: string): void {
+    this.image.src = image;
   }
 }

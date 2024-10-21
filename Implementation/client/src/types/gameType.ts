@@ -76,6 +76,7 @@ export type PlayerGameType = {
 
 type GameType = {
   game: {
+    worldSize: number;
     state: GameState;
     players: PlayerGameType;
     builder: EntityType;

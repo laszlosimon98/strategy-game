@@ -1,3 +1,4 @@
+import { state } from "../../data/state";
 import { canvasHeight, canvasWidth, ctx } from "../../init";
 import { TILE_SIZE } from "../../settings";
 import { Indices } from "../../utils/indices";
@@ -5,6 +6,7 @@ import { Position } from "../../utils/position";
 import { Vector } from "../../utils/vector";
 
 export class Tile {
+  private indices: Indices;
   private position: Vector;
   private renderPos: Position;
   private buildingPos: Position;
@@ -15,7 +17,10 @@ export class Tile {
   private image: HTMLImageElement;
   private temp: boolean = false;
 
+  private neighbors: Indices[];
+
   public constructor(indices: Indices, type: string) {
+    this.indices = indices;
     this.position = new Vector(indices.i, indices.j);
 
     this.isometricPos = this.position.getIsometricPos();
@@ -41,12 +46,28 @@ export class Tile {
         canvasHeight / 4 -
         this.isometricPos[0].y -
         TILE_SIZE / 2
-      // canvasWidth / 2 - this.isometricPos[0].x,
-      // this.isometricPos[2].y - TILE_SIZE + canvasHeight / 4
     );
 
     this.image = new Image();
     this.image.src = type;
+
+    this.neighbors = this.initNeighbor();
+  }
+
+  public draw(): void {
+    ctx.save();
+    if (this.temp) {
+      ctx.globalAlpha = 0.5;
+    }
+    ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
+    ctx.restore();
+  }
+
+  public update(cameraScroll: Position): void {
+    this.renderPos = new Position(
+      this.isometricPos[0].x - TILE_SIZE + cameraScroll.x,
+      this.isometricPos[0].y - 1 + cameraScroll.y
+    );
   }
 
   public setTemp(): void {
@@ -63,6 +84,14 @@ export class Tile {
 
   public getUnitPos(): Position {
     return this.unitPos;
+  }
+
+  public getNeighbors(): Indices[] {
+    return this.neighbors;
+  }
+
+  public getIndices(): Indices {
+    return this.indices;
   }
 
   private drawGrid(grid: Position[]): void {
@@ -94,19 +123,44 @@ export class Tile {
     this.drawGrid(this.position.getIsometricPos());
   }
 
-  public draw(): void {
-    ctx.save();
-    if (this.temp) {
-      ctx.globalAlpha = 0.5;
-    }
-    ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-    ctx.restore();
-  }
+  private initNeighbor = (): Indices[] => {
+    const result: Indices[] = [];
 
-  public update(cameraScroll: Position): void {
-    this.renderPos = new Position(
-      this.isometricPos[0].x - TILE_SIZE + cameraScroll.x,
-      this.isometricPos[0].y - 1 + cameraScroll.y
-    );
-  }
+    if (this.indices.i > 0) {
+      result.push(new Indices(this.indices.i - 1, this.indices.j));
+    }
+
+    if (this.indices.i < state.game.worldSize - 1) {
+      result.push(new Indices(this.indices.i + 1, this.indices.j));
+    }
+
+    if (this.indices.j > 0) {
+      result.push(new Indices(this.indices.i, this.indices.j - 1));
+    }
+
+    if (this.indices.j < state.game.worldSize - 1) {
+      result.push(new Indices(this.indices.i, this.indices.j + 1));
+    }
+
+    if (this.indices.i > 0 && this.indices.j > 0) {
+      result.push(new Indices(this.indices.i - 1, this.indices.j - 1));
+    }
+
+    if (
+      this.indices.i < state.game.worldSize - 1 &&
+      this.indices.j < state.game.worldSize - 1
+    ) {
+      result.push(new Indices(this.indices.i + 1, this.indices.j + 1));
+    }
+
+    if (this.indices.i > 0 && this.indices.j < state.game.worldSize - 1) {
+      result.push(new Indices(this.indices.i - 1, this.indices.j + 1));
+    }
+
+    if (this.indices.i < state.game.worldSize - 1 && this.indices.j > 0) {
+      result.push(new Indices(this.indices.i + 1, this.indices.j - 1));
+    }
+
+    return result;
+  };
 }

@@ -111,7 +111,13 @@ export class World implements MouseClicker {
   }
 
   public handleRightClick(): void {
+    const indices: Indices = convertIsometricCoordsToCartesianCoords(
+      new Position(this.mousePos.x, this.mousePos.y),
+      this.getCameraScroll()
+    );
+
     this.buildingManager.handleRightClick();
+    this.unitManager.handleRightClick(indices, this.world);
   }
 
   public handleMouseMove(mousePos: Position): void {

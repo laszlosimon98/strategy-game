@@ -39,6 +39,7 @@ export const state: stateType = {
     data: undefined,
   },
   game: {
+    worldSize: 15, // Ennek majd a szerverről kell jönnie
     state: GameState.Default,
     players: {},
     builder: {

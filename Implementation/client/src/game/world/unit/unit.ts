@@ -2,10 +2,12 @@ import { ctx } from "../../../init";
 import { CallAble } from "../../../interfaces/callAble";
 import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
+import { Indices } from "../../../utils/indices";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
 import { getRandomNumberFromInterval } from "../../../utils/utils";
 import { Entity } from "../entity";
+import { Tile } from "../tile";
 
 enum UnitStates {
   Idle,
@@ -21,6 +23,7 @@ export class Unit extends Entity implements CallAble {
   private facing: string;
 
   private facingTimer: Timer;
+  private moveTimer: Timer;
 
   private unitState: UnitStates;
 
@@ -38,6 +41,8 @@ export class Unit extends Entity implements CallAble {
       this.changeDirection()
     );
 
+    this.moveTimer = new Timer(500);
+
     this.facingTimer.activate();
 
     this.unitState = UnitStates.Idle;
@@ -45,6 +50,21 @@ export class Unit extends Entity implements CallAble {
     this.animationCounter = 0;
     this.speed = 8;
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
+  }
+
+  private initDirections(): Record<string, number> {
+    const result: Record<string, number> = {
+      DOWN: 0,
+      DOWN_LEFT: 64,
+      LEFT: 128,
+      UP_LEFT: 192,
+      UP: 256,
+      UP_RIGHT: 320,
+      RIGHT: 384,
+      DOWN_RIGHT: 448,
+    };
+
+    return result;
   }
 
   public draw(): void {
@@ -81,11 +101,19 @@ export class Unit extends Entity implements CallAble {
       this.animate(dt);
     }
 
-    if (this.facingTimer.isTimerActive()) {
-      this.facingTimer.update();
-    } else {
-      this.facingTimer.activate();
+    if (this.unitState === UnitStates.Idle) {
+      if (this.facingTimer.isTimerActive()) {
+        this.facingTimer.update();
+      } else {
+        this.facingTimer.activate();
+      }
     }
+
+    this.moveTimer.update();
+  }
+
+  public getName(): string {
+    return "soldier";
   }
 
   public getDimension(): Dimension {
@@ -120,22 +148,56 @@ export class Unit extends Entity implements CallAble {
     }
   }
 
-  private initDirections(): Record<string, number> {
-    const result: Record<string, number> = {
-      DOWN: 0,
-      DOWN_LEFT: 64,
-      LEFT: 128,
-      UP_LEFT: 192,
-      UP: 256,
-      UP_RIGHT: 320,
-      RIGHT: 384,
-      DOWN_RIGHT: 448,
-    };
+  private calculateFacing(current: Tile, next: Tile): string {
+    const { i: currentI, j: currentJ } = current.getIndices();
+    const { i: nextI, j: nextJ } = next.getIndices();
 
-    return result;
+    let facing: string = "";
+
+    if (nextI < currentI && nextJ < currentJ) {
+      facing = "UP";
+    } else if (nextI === currentI && nextJ < currentJ) {
+      facing = "UP_RIGHT";
+    } else if (nextI > currentI && nextJ < currentJ) {
+      facing = "RIGHT";
+    } else if (nextI > currentI && nextJ === currentJ) {
+      facing = "DOWN_RIGHT";
+    } else if (nextI > currentI && nextJ > currentJ) {
+      facing = "DOWN";
+    } else if (nextI === currentI && nextJ > currentJ) {
+      facing = "DOWN_LEFT";
+    } else if (nextI < currentI && nextJ > currentJ) {
+      facing = "LEFT";
+    } else if (nextI < currentI && nextJ === currentJ) {
+      facing = "UP_LEFT";
+    }
+
+    return facing;
   }
 
-  public getName(): string {
-    return "soldier";
+  public move(path: Tile[]): void {
+    if (!this.moveTimer.isTimerActive()) {
+      const currentTile: Tile = path.shift() as Tile;
+      const nextTile: Tile = path[0];
+
+      this.facing = this.calculateFacing(currentTile, nextTile);
+
+      const nextPos: Position = nextTile.getUnitPos();
+      // let i = 5;
+
+      // while (i > 0) {
+      //   console.log(i);
+      //   --i;
+      // }
+
+      const pos = new Position(
+        nextPos.x - UNIT_ASSET_SIZE / 2,
+        nextPos.y - UNIT_ASSET_SIZE
+      );
+
+      this.pos.setPosition(pos);
+
+      this.moveTimer.activate();
+    }
   }
 }

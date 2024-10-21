@@ -1,18 +1,27 @@
 import { state } from "../../../../data/state";
-import { GameState } from "../../../../enums/gameState";
 import { ServerHandler } from "../../../../server/serverHandler";
 import { EntityType } from "../../../../types/gameType";
 import { Dimension } from "../../../../utils/dimension";
 import { Indices } from "../../../../utils/indices";
 import { Position } from "../../../../utils/position";
 import { Manager } from "../../manager/manager";
+import { Tile } from "../../tile";
 import { Unit } from "../unit";
 
 export class UnitManager extends Manager<Unit> {
-  private selectedUnit: Unit;
+  private selectedUnit: Unit | undefined;
+  private start: Indices;
+  private end: Indices;
+
+  private path: Tile[];
+
   public constructor() {
     super();
-    this.selectedUnit = new Unit(this.initObject());
+    this.selectedUnit = undefined;
+    this.start = Indices.zero();
+    this.end = Indices.zero();
+
+    this.path = [];
   }
 
   public draw(): void {
@@ -21,6 +30,10 @@ export class UnitManager extends Manager<Unit> {
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
+
+    if (this.path.length > 1 && this.selectedUnit) {
+      this.selectedUnit.move(this.path);
+    }
   }
 
   public handleLeftClick(
@@ -28,29 +41,15 @@ export class UnitManager extends Manager<Unit> {
     mousePos: Position,
     cameraScroll: Position
   ): void {
-    switch (state.game.state) {
-      case GameState.Default: {
-        this.selectedUnit = this.selectObject(
-          mousePos,
-          cameraScroll,
-          "units"
-        ) as unknown as Unit;
-        break;
-      }
-      case GameState.Build: {
-        break;
-      }
-      case GameState.Selected: {
-        this.selectedUnit = this.selectObject(
-          mousePos,
-          cameraScroll,
-          "units"
-        ) as unknown as Unit;
-        break;
-      }
-    }
+    this.selectedUnit = this.selectObject(
+      mousePos,
+      cameraScroll,
+      "units"
+    ) as unknown as Unit | undefined;
 
-    console.log(state.infoPanel.data);
+    if (this.selectedUnit) {
+      this.start = this.selectedUnit.getIndices();
+    }
   }
 
   public handleMiddleClick(
@@ -72,12 +71,31 @@ export class UnitManager extends Manager<Unit> {
     state.game.players[ServerHandler.getId()].units.push(unit);
   }
 
-  public handleRightClick(...args: any[]): void {
-    throw new Error("Method not implemented.");
+  public handleRightClick(indices: Indices, world: Tile[][]): void {
+    if (this.selectedUnit) {
+      this.end = indices;
+
+      this.sendMoveRequest();
+
+      ServerHandler.receiveMessage("game:pathFind", (indices: Indices[]) => {
+        indices.forEach((index) => {
+          const i = index.i;
+          const j = index.j;
+          this.path.push(world[i][j]);
+        });
+      });
+    }
   }
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
     this.hoverObject(mousePos, cameraScroll, "units");
+  }
+
+  private sendMoveRequest(): void {
+    ServerHandler.sendMessage("game:pathFind", {
+      start: this.start,
+      end: this.end,
+    });
   }
 
   protected handleCommunication(): void {}
