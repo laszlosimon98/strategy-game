@@ -6,7 +6,6 @@ import { World } from "./world/world";
 import { Dimension } from "../utils/dimension";
 import { state } from "../data/state";
 import { GameState } from "../enums/gameState";
-import { Pointer } from "../enums/pointer";
 import { isMouseIntersect } from "../utils/utils";
 import { ServerHandler } from "../server/serverHandler";
 import { PlayerGameType } from "../types/gameType";
@@ -76,7 +75,7 @@ export class Game {
 
     switch (button) {
       case MouseButtons.Left:
-        if (state.pointer.state === Pointer.Menu) {
+        if (isMouseIntersect(this.mousePos, this.gameMenu)) {
           this.gameMenu.handleClick(this.mousePos);
         } else {
           this.world?.handleLeftClick();
@@ -100,13 +99,6 @@ export class Game {
 
   public handleMouseMove(pos: Position): void {
     this.mousePos.setPosition(pos);
-
-    if (isMouseIntersect(pos, this.gameMenu)) {
-      state.pointer.state = Pointer.Menu;
-    } else {
-      state.pointer.state = Pointer.Tile;
-    }
-
     this.world?.handleMouseMove(pos);
   }
 

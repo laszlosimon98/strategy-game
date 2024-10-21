@@ -134,4 +134,8 @@ export class Unit extends Entity implements CallAble {
 
     return result;
   }
+
+  public getName(): string {
+    return "soldier";
+  }
 }

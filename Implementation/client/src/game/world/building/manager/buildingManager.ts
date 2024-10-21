@@ -5,8 +5,7 @@ import { FakeBuilding } from "../fakeBuilding";
 import { buildingRegister } from "../register/buildingRegister";
 import { initBuilding, state } from "../../../../data/state";
 import { GameState } from "../../../../enums/gameState";
-import { getImageNameFromUrl, isMouseIntersect } from "../../../../utils/utils";
-import { Pointer } from "../../../../enums/pointer";
+import { getImageNameFromUrl } from "../../../../utils/utils";
 import { MainMenuState } from "../../../../enums/gameMenuState";
 import { EntityType } from "../../../../types/gameType";
 import { Manager } from "../../manager/manager";
@@ -14,23 +13,10 @@ import { Building } from "../building";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;
-  private selectedHouse: FakeBuilding;
 
   constructor() {
     super();
-    this.fakeHouse = new FakeBuilding({
-      data: {
-        ...state.game.selectedBuilding.data,
-        owner: ServerHandler.getId(),
-      },
-    });
-
-    this.selectedHouse = new FakeBuilding({
-      data: {
-        ...state.game.selectedBuilding.data,
-        owner: ServerHandler.getId(),
-      },
-    });
+    this.fakeHouse = new FakeBuilding(this.initObject());
   }
 
   public draw(): void {
@@ -48,22 +34,19 @@ export class BuildingManager extends Manager<Building> {
     mousePos: Position,
     cameraScroll: Position
   ): void {
-    this.sendBuildRequest(indices);
-    this.selectHouse(mousePos, cameraScroll);
-
-    if (state.game.state !== GameState.Build) {
-      switch (state.pointer.state) {
-        case Pointer.House: {
-          const selectedHouseName = this.selectedHouse.getBuildingName();
-          if (selectedHouseName) {
-            state.info.name = selectedHouseName;
-            state.game.state = GameState.House;
-            state.navigation.gameMenuState = MainMenuState.Info;
-          }
-          break;
-        }
+    switch (state.game.state) {
+      case GameState.Default: {
+        this.selectObject(mousePos, cameraScroll, "buildings");
+        break;
       }
-      this.resetStates();
+      case GameState.Build: {
+        this.sendBuildRequest(indices);
+        break;
+      }
+      case GameState.Selected: {
+        this.selectObject(mousePos, cameraScroll, "buildings");
+        break;
+      }
     }
   }
 
@@ -74,13 +57,10 @@ export class BuildingManager extends Manager<Building> {
   }
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
-    if (
-      state.game.selectedBuilding.data.url.length &&
-      !this.selectedHouse.getBuilding().data.url.length
-    ) {
+    if (state.game.builder.data.url.length) {
       this.setFakeHouse();
     }
-    this.hoverObject(mousePos, cameraScroll, "buildings", Pointer.House);
+    this.hoverObject(mousePos, cameraScroll, "buildings");
   }
 
   protected handleCommunication(): void {
@@ -105,23 +85,6 @@ export class BuildingManager extends Manager<Building> {
     );
   }
 
-  private selectHouse(mousePos: Position, cameraScroll: Position): void {
-    if (state.pointer.state === Pointer.House) {
-      state.game.players[ServerHandler.getId()].buildings.forEach(
-        (building) => {
-          if (isMouseIntersect(mousePos.sub(cameraScroll), building)) {
-            this.selectedHouse.setBuilding(building.getBuilding());
-            state.info.data = building.getIndices();
-
-            state.game.selectedBuilding.data = {
-              ...building.getBuilding().data,
-            };
-          }
-        }
-      );
-    }
-  }
-
   private build(building: EntityType, buildingPos: Position): void {
     const name = getImageNameFromUrl(building.data.url);
 
@@ -137,7 +100,7 @@ export class BuildingManager extends Manager<Building> {
 
   private setFakeHouse(): void {
     this.setObjectPosition(this.fakeHouse, this.pos);
-    this.fakeHouse.setBuilding(state.game.selectedBuilding);
+    this.fakeHouse.setBuilding(state.game.builder);
   }
 
   private destroy(id: string, indices: Indices): void {
@@ -156,31 +119,25 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private resetStates(): void {
-    state.game.selectedBuilding.data = { ...initBuilding.data };
-    this.selectedHouse.setBuilding(initBuilding);
+    state.game.builder.data = { ...initBuilding.data };
     this.fakeHouse.setBuilding(initBuilding);
     this.fakeHouse.setPosition(new Position(-1000, -1000));
     state.game.state = GameState.Default;
   }
 
   private sendBuildRequest(indices: Indices): void {
-    if (
-      state.game.state === GameState.Build &&
-      state.pointer.state === Pointer.Tile
-    ) {
-      if (state.game.selectedBuilding.data.url.length) {
-        const selectedBuilding: EntityType = {
-          data: {
-            ...state.game.selectedBuilding.data,
-            indices,
-            owner: "",
-          },
-        };
-        ServerHandler.sendMessage("game:build", {
-          building: selectedBuilding,
-          buildingPos: this.pos,
-        });
-      }
+    if (state.game.builder.data.url.length) {
+      const builder: EntityType = {
+        data: {
+          ...state.game.builder.data,
+          indices,
+          owner: "",
+        },
+      };
+      ServerHandler.sendMessage("game:build", {
+        building: builder,
+        buildingPos: this.pos,
+      });
     }
   }
 }

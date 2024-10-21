@@ -1,5 +1,5 @@
 import { state } from "../../../../data/state";
-import { Pointer } from "../../../../enums/pointer";
+import { GameState } from "../../../../enums/gameState";
 import { ServerHandler } from "../../../../server/serverHandler";
 import { EntityType } from "../../../../types/gameType";
 import { Dimension } from "../../../../utils/dimension";
@@ -9,8 +9,10 @@ import { Manager } from "../../manager/manager";
 import { Unit } from "../unit";
 
 export class UnitManager extends Manager<Unit> {
+  private selectedUnit: Unit;
   public constructor() {
     super();
+    this.selectedUnit = new Unit(this.initObject());
   }
 
   public draw(): void {
@@ -21,8 +23,34 @@ export class UnitManager extends Manager<Unit> {
     super.update(dt, cameraScroll, "units");
   }
 
-  public handleLeftClick(...args: any[]): void {
-    throw new Error("Method not implemented.");
+  public handleLeftClick(
+    indices: Indices,
+    mousePos: Position,
+    cameraScroll: Position
+  ): void {
+    switch (state.game.state) {
+      case GameState.Default: {
+        this.selectedUnit = this.selectObject(
+          mousePos,
+          cameraScroll,
+          "units"
+        ) as unknown as Unit;
+        break;
+      }
+      case GameState.Build: {
+        break;
+      }
+      case GameState.Selected: {
+        this.selectedUnit = this.selectObject(
+          mousePos,
+          cameraScroll,
+          "units"
+        ) as unknown as Unit;
+        break;
+      }
+    }
+
+    console.log(state.infoPanel.data);
   }
 
   public handleMiddleClick(
@@ -49,7 +77,7 @@ export class UnitManager extends Manager<Unit> {
   }
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
-    this.hoverObject(mousePos, cameraScroll, "units", Pointer.Unit);
+    this.hoverObject(mousePos, cameraScroll, "units");
   }
 
   protected handleCommunication(): void {}

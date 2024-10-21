@@ -30,8 +30,7 @@ export class Building extends Entity implements CallAble {
   }
 
   public draw(): void {
-    ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-    this.flag.draw();
+    super.draw();
 
     if (this.isHovered) {
       ctx.save();
@@ -45,6 +44,7 @@ export class Building extends Entity implements CallAble {
       );
       ctx.restore();
     }
+    this.flag.draw();
   }
 
   public update(dt: number, cameraScroll: Position): void {
@@ -67,15 +67,5 @@ export class Building extends Entity implements CallAble {
   public setBuilding(building: EntityType) {
     this.entity.data = { ...building.data };
     this.image.src = this.entity.data.url;
-  }
-
-  public getBuilding(): EntityType {
-    return this.entity;
-  }
-
-  public getBuildingName(): string | undefined {
-    if (this.entity.data.url) {
-      return getImageNameFromUrl(this.entity.data.url);
-    }
   }
 }

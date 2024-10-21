@@ -1,7 +1,6 @@
 import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
 import { GameState } from "../enums/gameState";
 import { PageState } from "../enums/pageState";
-import { Pointer } from "../enums/pointer";
 import { Building } from "../game/world/building/building";
 import { Unit } from "../game/world/unit/unit";
 import { Dimension } from "../utils/dimension";
@@ -60,15 +59,8 @@ type PlayerType = {
 };
 
 type InfoType = {
-  info: {
-    name: string;
-    data: any;
-  };
-};
-
-type PointerType = {
-  pointer: {
-    state: Pointer;
+  infoPanel: {
+    data: Building | Unit | undefined;
   };
 };
 
@@ -86,7 +78,7 @@ type GameType = {
   game: {
     state: GameState;
     players: PlayerGameType;
-    selectedBuilding: EntityType;
+    builder: EntityType;
   };
 };
 
@@ -96,5 +88,4 @@ export type stateType = LanguageType &
   ServerType &
   PlayerType &
   InfoType &
-  PointerType &
   GameType;

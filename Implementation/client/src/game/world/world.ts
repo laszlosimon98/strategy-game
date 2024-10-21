@@ -85,6 +85,12 @@ export class World implements MouseClicker {
         this.mousePos,
         this.getCameraScroll()
       );
+
+      this.unitManager.handleLeftClick(
+        indices,
+        this.mousePos,
+        this.getCameraScroll()
+      );
     }
   }
 

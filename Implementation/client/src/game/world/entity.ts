@@ -4,6 +4,7 @@ import { EntityType } from "../../types/gameType";
 import { Dimension } from "../../utils/dimension";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
+import { getImageNameFromUrl } from "../../utils/utils";
 
 export abstract class Entity implements CallAble {
   protected pos: Position;
@@ -27,7 +28,9 @@ export abstract class Entity implements CallAble {
     this.image.src = entity.data.url;
   }
 
-  public draw(): void {}
+  public draw(): void {
+    ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
+  }
 
   public update(dt: number, cameraScroll: Position): void {
     this.renderPos = new Position(
@@ -62,5 +65,16 @@ export abstract class Entity implements CallAble {
 
   public setHover(hover: boolean): void {
     this.isHovered = hover;
+  }
+
+  public getName(): string {
+    // if (this.entity.data.url) {
+    //   return getImageNameFromUrl(this.entity.data.url);
+    // }
+    return getImageNameFromUrl(this.entity.data.url);
+  }
+
+  public getEntity(): EntityType {
+    return this.entity;
   }
 }

@@ -1,6 +1,5 @@
 import { PageState } from "../enums/pageState";
 import { faker } from "@faker-js/faker";
-import { Pointer } from "../enums/pointer";
 import { GameState } from "../enums/gameState";
 import { EntityType, stateType } from "../types/gameType";
 import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
@@ -36,17 +35,13 @@ export const state: stateType = {
     name: faker.person.firstName(),
     host: false,
   },
-  info: {
-    name: "",
-    data: {},
-  },
-  pointer: {
-    state: Pointer.Tile,
+  infoPanel: {
+    data: undefined,
   },
   game: {
     state: GameState.Default,
     players: {},
-    selectedBuilding: {
+    builder: {
       data: { ...initBuilding.data },
     },
   },

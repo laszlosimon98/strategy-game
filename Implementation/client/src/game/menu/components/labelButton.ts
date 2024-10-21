@@ -20,8 +20,6 @@ export class LabelButton extends Button {
     const imageFrom: string = type === "buildings" ? "buildings" : "gamemenu";
 
     if (imageFrom === "buildings") {
-      // this.dim.width = state.images[imageFrom][name].dimensions.width;
-      // this.dim.height = state.images[imageFrom][name].dimensions.height;
       this.setImage(state.images[imageFrom][name].url);
     } else {
       this.dim.width = state.images.ui[imageFrom][name].dimensions.width;
@@ -41,7 +39,7 @@ export class LabelButton extends Button {
   }
 
   selectBuilding(): void {
-    state.game.selectedBuilding.data = state.images.buildings[this.name];
+    state.game.builder.data = state.images.buildings[this.name];
     state.game.state = GameState.Build;
   }
 }

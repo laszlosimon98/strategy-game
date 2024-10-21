@@ -4,13 +4,16 @@ import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { state } from "../../../data/state";
 import { GameState } from "../../../enums/gameState";
-import { Pointer } from "../../../enums/pointer";
 import { ServerHandler } from "../../../server/serverHandler";
 import { isMouseIntersect } from "../../../utils/utils";
+import { MainMenuState } from "../../../enums/gameMenuState";
+import { Building } from "../building/building";
+import { Unit } from "@faker-js/faker";
+import { EntityType } from "../../../types/gameType";
+import { Indices } from "../../../utils/indices";
 
 export abstract class Manager<T> implements MouseClicker {
   protected pos: Position;
-  // protected selectedObject: T;
 
   protected constructor() {
     this.pos = Position.zero();
@@ -53,6 +56,17 @@ export abstract class Manager<T> implements MouseClicker {
     this.pos = pos;
   }
 
+  protected initObject(): EntityType {
+    return {
+      data: {
+        dimensions: Dimension.zero(),
+        owner: ServerHandler.getId(),
+        indices: Indices.zero(),
+        url: "",
+      },
+    };
+  }
+
   protected setObjectPosition<T extends CallAble>(
     object: T,
     objectPos: Position
@@ -68,21 +82,42 @@ export abstract class Manager<T> implements MouseClicker {
   protected hoverObject<T extends CallAble>(
     mousePos: Position,
     cameraScroll: Position,
-    key: string,
-    stateTo: Pointer
+    key: string
   ): void {
-    if (
-      state.pointer.state !== Pointer.Menu &&
-      state.game.state !== GameState.Build
-    ) {
+    if (state.game.state !== GameState.Build) {
       const objectArray: T[] = state.game.players[ServerHandler.getId()][
         key
       ] as unknown as T[];
 
       objectArray.forEach((object) => {
         object.setHover(isMouseIntersect(mousePos.sub(cameraScroll), object));
-        state.pointer.state = stateTo;
       });
     }
+  }
+
+  protected selectObject<T extends Building & Unit>(
+    mousePos: Position,
+    cameraScroll: Position,
+    key: string
+  ): T | undefined {
+    const objectArray: T[] = state.game.players[ServerHandler.getId()][
+      key
+    ] as unknown as T[];
+
+    const selectedObject = objectArray.find((object) => {
+      if (isMouseIntersect(mousePos.sub(cameraScroll), object)) {
+        return object;
+      }
+    });
+
+    if (selectedObject) {
+      state.infoPanel.data = selectedObject;
+      state.game.state = GameState.Selected;
+      state.navigation.gameMenuState = MainMenuState.Info;
+    } else {
+      state.game.state = GameState.Default;
+    }
+
+    return selectedObject;
   }
 }
