@@ -1,4 +1,3 @@
-import { state } from "../../data/state";
 import { canvasHeight, canvasWidth, ctx } from "../../init";
 import { TILE_SIZE } from "../../settings";
 import { Indices } from "../../utils/indices";
@@ -15,6 +14,7 @@ export class Tile {
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
+  private temp: boolean = false;
 
   public constructor(indices: Indices, type: string) {
     this.indices = indices;
@@ -49,8 +49,17 @@ export class Tile {
     this.image.src = type;
   }
 
+  public setTemp(): void {
+    this.temp = !this.temp;
+  }
+
   public draw(): void {
+    ctx.save();
+    if (this.temp) {
+      ctx.globalAlpha = 0.5;
+    }
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
+    ctx.restore();
   }
 
   public update(cameraScroll: Position): void {

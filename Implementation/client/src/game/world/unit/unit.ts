@@ -2,35 +2,42 @@ import { state } from "../../../data/state";
 import { UnitStates } from "../../../enums/unitsState";
 import { ctx } from "../../../init";
 import { CallAble } from "../../../interfaces/callAble";
-import { ServerHandler } from "../../../server/serverHandler";
 import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
 import { getRandomNumberFromInterval } from "../../../utils/utils";
+import { Vector } from "../../../utils/vector";
 import { Entity } from "../entity";
 import { Tile } from "../tile";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
+const UNIT_SPEED = 100;
+const ANIMATION_SPEED = 8;
 
 export class Unit extends Entity implements CallAble {
+  private name: string;
+  private path: Tile[];
+  private dimension: Dimension;
+
+  private state: UnitStates;
+
   private directions: Record<string, number>;
   private facing: string;
+
+  private unitSpeed: number;
+  private speedVector: Vector;
 
   private facingTimer: Timer;
   private moveTimer: Timer;
 
-  private state: UnitStates;
-
   // private range: number;
   private animationCounter: number;
-  private speed: number;
-  private dimension: Dimension;
 
-  private name: string;
-
-  private path: Tile[];
+  private isTileReach: boolean;
+  private pathTaken: number;
+  private percentPerSpeed: number;
 
   public constructor(entity: EntityType) {
     super(entity);
@@ -48,18 +55,25 @@ export class Unit extends Entity implements CallAble {
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
 
     this.state = UnitStates.Idle;
+
     this.directions = this.initDirections();
     this.facing = this.randomFacing(Object.keys(this.directions));
 
-    this.speed = 8;
+    this.unitSpeed = UNIT_SPEED;
+    this.speedVector = Vector.zero();
+
     this.animationCounter = 0;
 
-    this.facingTimer = new Timer(getRandomNumberFromInterval(3000, 7000), () =>
+    this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000), () =>
       this.changeDirection()
     );
     this.facingTimer.activate();
 
     this.moveTimer = new Timer(500);
+
+    this.isTileReach = true;
+    this.pathTaken = 0;
+    this.percentPerSpeed = 0;
   }
 
   private initDirections(): Record<string, number> {
@@ -119,6 +133,10 @@ export class Unit extends Entity implements CallAble {
       }
     }
 
+    if (this.state === UnitStates.Walking) {
+      this.move(dt);
+    }
+
     this.moveTimer.update();
   }
 
@@ -151,13 +169,12 @@ export class Unit extends Entity implements CallAble {
       },
     };
 
-    console.log(entity);
     this.setEntity(entity);
     this.setImage(entity.data.url);
   }
 
   private animate(dt: number): void {
-    this.animationCounter += this.speed * dt;
+    this.animationCounter += ANIMATION_SPEED * dt;
 
     if (this.animationCounter >= ANIMATION_COUNT - 1) {
       this.animationCounter = 0;
@@ -185,52 +202,149 @@ export class Unit extends Entity implements CallAble {
     const { i: nextI, j: nextJ } = next.getIndices();
 
     let facing: string = "";
+    let dirVector = Vector.zero();
 
     if (nextI < currentI && nextJ < currentJ) {
       facing = "UP";
+      dirVector = new Vector(0, -1);
     } else if (nextI === currentI && nextJ < currentJ) {
       facing = "UP_RIGHT";
+      dirVector = new Vector(1, -0.5);
     } else if (nextI > currentI && nextJ < currentJ) {
       facing = "RIGHT";
+      dirVector = new Vector(1, 0);
     } else if (nextI > currentI && nextJ === currentJ) {
       facing = "DOWN_RIGHT";
+      dirVector = new Vector(1, 0.5);
     } else if (nextI > currentI && nextJ > currentJ) {
       facing = "DOWN";
+      dirVector = new Vector(0, 1);
     } else if (nextI === currentI && nextJ > currentJ) {
       facing = "DOWN_LEFT";
+      dirVector = new Vector(-1, 0.5);
     } else if (nextI < currentI && nextJ > currentJ) {
       facing = "LEFT";
+      dirVector = new Vector(-1, 0);
     } else if (nextI < currentI && nextJ === currentJ) {
       facing = "UP_LEFT";
+      dirVector = new Vector(-1, -0.5);
     }
+
+    this.speedVector = dirVector.mult(this.unitSpeed);
 
     return facing;
   }
 
-  public move(): void {
+  private calculateDistance(from: Position, to: Position): number {
+    const x = to.x - from.x;
+    const y = to.y - from.y;
+    const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+    return distance;
+  }
+
+  private reset(): void {
+    this.animationCounter = 0;
+    this.setState(UnitStates.Idle);
+    this.path.shift();
+  }
+
+  private setNextTile(dt: number): void {
     if (this.path.length > 1) {
-      if (!this.moveTimer.isTimerActive()) {
-        const currentTile: Tile = this.path.shift() as Tile;
-        const nextTile: Tile = this.path[0];
+      const currentTile: Tile = this.path[0];
+      const nextTile: Tile = this.path[1];
 
-        this.facing = this.calculateFacing(currentTile, nextTile);
+      this.facing = this.calculateFacing(currentTile, nextTile);
 
-        const nextPos: Position = nextTile.getUnitPos();
+      const nextPos: Position = nextTile.getUnitPos();
+      const actualNextPos: Position = new Position(
+        nextPos.x - UNIT_ASSET_SIZE / 2,
+        nextPos.y - UNIT_ASSET_SIZE
+      );
 
-        const pos = new Position(
-          nextPos.x - UNIT_ASSET_SIZE / 2,
-          nextPos.y - UNIT_ASSET_SIZE
-        );
+      const distance = this.calculateDistance(
+        this.getPosition(),
+        actualNextPos
+      );
 
-        this.setPosition(pos);
-        this.setIndices(nextTile.getIndices());
+      this.percentPerSpeed = distance / (UNIT_SPEED * dt);
 
-        this.moveTimer.activate();
-      }
-    } else if (this.path.length === 1) {
-      this.setState(UnitStates.Idle);
       this.path.shift();
-      this.animationCounter = 0;
+    } else if (this.path.length === 1) {
+      this.reset();
     }
+  }
+
+  private move(dt: number): void {
+    if (this.isTileReach) {
+      this.setNextTile(dt);
+      this.isTileReach = false;
+      this.pathTaken = 0;
+    }
+
+    if (Math.min(100, this.pathTaken) < 100) {
+      this.setPosition(this.getPosition().add(this.speedVector.mult(dt)));
+
+      console.log(this.percentPerSpeed);
+      this.pathTaken += this.percentPerSpeed;
+    }
+    if (Math.min(100, this.pathTaken) === 100) {
+      // this.reset();
+      this.isTileReach = true;
+    }
+
+    // if (this.path.length > 1) {
+    //   const currentTile: Tile = this.path[0];
+    //   const nextTile: Tile = this.path[1];
+
+    //   this.facing = this.calculateFacing(currentTile, nextTile);
+
+    //   const nextPos: Position = nextTile.getUnitPos();
+
+    //   const actualNextPos: Position = new Position(
+    //     nextPos.x - UNIT_ASSET_SIZE / 2,
+    //     nextPos.y - UNIT_ASSET_SIZE
+    //   );
+
+    //   const distance = Math.max(
+    //     0,
+    //     this.calculateDistance(this.getPosition(), actualNextPos)
+    //   );
+
+    //   console.log(distance);
+
+    //   if (distance > 0) {
+    //     this.setPosition(this.getPosition().add(this.speedVector.mult(dt)));
+    //   }
+
+    //   if (distance === 0) {
+    //     this.setPosition(actualNextPos);
+    //     this.setIndices(nextTile.getIndices());
+
+    //     this.reset();
+    //   }
+    // } else if (this.path.length === 1) {
+    //   this.reset();
+    // }
+
+    // if (this.path.length > 1) {
+    //   if (!this.moveTimer.isTimerActive()) {
+    //     const currentTile: Tile = this.path.shift() as Tile;
+    //     const nextTile: Tile = this.path[0];
+    //     this.facing = this.calculateFacing(currentTile, nextTile);
+    //     const nextPos: Position = nextTile.getUnitPos();
+    //     const pos = new Position(
+    //       nextPos.x - UNIT_ASSET_SIZE / 2,
+    //       nextPos.y - UNIT_ASSET_SIZE
+    //     );
+    //     console.log(this.calculateDistance(this.getPosition(), pos));
+    //     this.setPosition(pos);
+    //     this.setIndices(nextTile.getIndices());
+    //     this.moveTimer.activate();
+    //   }
+    // } else if (this.path.length === 1) {
+    //   this.animationCounter = 0;
+    //   this.setState(UnitStates.Idle);
+    //   this.path.shift();
+    // }
   }
 }

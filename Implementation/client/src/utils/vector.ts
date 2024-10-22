@@ -32,4 +32,26 @@ export class Vector extends Position {
       (vector) => new Position(vector.x - vector.y, (vector.x + vector.y) / 2)
     );
   }
+
+  public mult(num: number): Vector {
+    return new Vector(this.x * num, this.y * num);
+  }
+
+  public div(num: number): Vector {
+    return new Vector(this.x / num, this.y / num);
+  }
+
+  public magnitude(): number {
+    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+  }
+
+  public normalize(): Vector {
+    const m = this.magnitude();
+
+    if (m > 0) {
+      return this.div(m);
+    }
+
+    return Vector.zero();
+  }
 }

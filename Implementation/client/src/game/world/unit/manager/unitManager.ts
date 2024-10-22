@@ -29,12 +29,6 @@ export class UnitManager extends Manager<Unit> {
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
-
-    Object.keys(state.game.players).forEach((key) => {
-      state.game.players[key].units.forEach((unit) => {
-        unit.move();
-      });
-    });
   }
 
   public setWorld(world: Tile[][]): void {

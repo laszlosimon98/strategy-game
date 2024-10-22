@@ -4,7 +4,10 @@ import { ServerHandler } from "../../server/serverHandler";
 import { TileType } from "../../types/gameType";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
-import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
+import {
+  convertIsometricCoordsToCartesianCoords,
+  isMouseIntersect,
+} from "../../utils/utils";
 import { Camera } from "../camera/camera";
 import { BuildingManager } from "./building/manager/buildingManager";
 import { Tile } from "./tile";
@@ -153,5 +156,12 @@ export class World implements MouseClicker {
     return this.camera.getScroll();
   }
 
-  private handleCommunication(): void {}
+  private handleCommunication(): void {
+    ServerHandler.receiveMessage(
+      "game:pathFind",
+      ({ indices }: { indices: Indices[] }) => {
+        indices.forEach((index) => this.world[index.i][index.j].setTemp());
+      }
+    );
+  }
 }
