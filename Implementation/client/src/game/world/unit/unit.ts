@@ -1,5 +1,8 @@
+import { state } from "../../../data/state";
+import { UnitStates } from "../../../enums/unitsState";
 import { ctx } from "../../../init";
 import { CallAble } from "../../../interfaces/callAble";
+import { ServerHandler } from "../../../server/serverHandler";
 import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
@@ -7,12 +10,6 @@ import { Timer } from "../../../utils/timer";
 import { getRandomNumberFromInterval } from "../../../utils/utils";
 import { Entity } from "../entity";
 import { Tile } from "../tile";
-
-enum UnitStates {
-  Idle,
-  Move,
-  Attack,
-}
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
@@ -24,36 +21,45 @@ export class Unit extends Entity implements CallAble {
   private facingTimer: Timer;
   private moveTimer: Timer;
 
-  private unitState: UnitStates;
+  private state: UnitStates;
 
   // private range: number;
   private animationCounter: number;
   private speed: number;
   private dimension: Dimension;
 
+  private name: string;
+
   private path: Tile[];
 
-  public constructor(unit: EntityType) {
-    super(unit);
+  public constructor(entity: EntityType) {
+    super(entity);
+    this.name = "soldier";
+    this.path = [];
 
+    this.entity = {
+      data: {
+        ...entity.data,
+        static:
+          state.images.colors[state.game.players[entity.data.owner].color]
+            .static.url,
+      },
+    };
+    this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
+
+    this.state = UnitStates.Idle;
     this.directions = this.initDirections();
     this.facing = this.randomFacing(Object.keys(this.directions));
+
+    this.speed = 8;
+    this.animationCounter = 0;
 
     this.facingTimer = new Timer(getRandomNumberFromInterval(3000, 7000), () =>
       this.changeDirection()
     );
-
-    this.moveTimer = new Timer(500);
-
     this.facingTimer.activate();
 
-    this.unitState = UnitStates.Idle;
-
-    this.animationCounter = 0;
-    this.speed = 8;
-    this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
-
-    this.path = [];
+    this.moveTimer = new Timer(500);
   }
 
   private initDirections(): Record<string, number> {
@@ -101,11 +107,11 @@ export class Unit extends Entity implements CallAble {
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
-    if (this.unitState !== UnitStates.Idle) {
+    if (this.state !== UnitStates.Idle) {
       this.animate(dt);
     }
 
-    if (this.unitState === UnitStates.Idle) {
+    if (this.state === UnitStates.Idle) {
       if (this.facingTimer.isTimerActive()) {
         this.facingTimer.update();
       } else {
@@ -117,7 +123,7 @@ export class Unit extends Entity implements CallAble {
   }
 
   public getName(): string {
-    return "soldier";
+    return this.name;
   }
 
   public getDimension(): Dimension {
@@ -130,6 +136,24 @@ export class Unit extends Entity implements CallAble {
 
   public setPath(path: Tile[]): void {
     this.path = [...path];
+  }
+
+  public setState(newState: UnitStates): void {
+    this.state = newState;
+
+    const owner: string = this.entity.data.owner;
+    const color: string = state.game.players[owner].color;
+
+    const entity: EntityType = {
+      data: {
+        ...this.entity.data,
+        url: state.images.colors[color][this.name + this.state].url,
+      },
+    };
+
+    console.log(entity);
+    this.setEntity(entity);
+    this.setImage(entity.data.url);
   }
 
   private animate(dt: number): void {
@@ -146,7 +170,7 @@ export class Unit extends Entity implements CallAble {
   }
 
   private changeDirection(): void {
-    if (this.unitState === UnitStates.Idle) {
+    if (this.state === UnitStates.Idle) {
       const excludedKeys = Object.keys(this.directions).filter(
         (key) => key !== this.facing
       );
@@ -192,12 +216,6 @@ export class Unit extends Entity implements CallAble {
         this.facing = this.calculateFacing(currentTile, nextTile);
 
         const nextPos: Position = nextTile.getUnitPos();
-        // let i = 5;
-
-        // while (i > 0) {
-        //   console.log(i);
-        //   --i;
-        // }
 
         const pos = new Position(
           nextPos.x - UNIT_ASSET_SIZE / 2,
@@ -209,6 +227,10 @@ export class Unit extends Entity implements CallAble {
 
         this.moveTimer.activate();
       }
+    } else if (this.path.length === 1) {
+      this.setState(UnitStates.Idle);
+      this.path.shift();
+      this.animationCounter = 0;
     }
   }
 }

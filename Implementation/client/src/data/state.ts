@@ -10,9 +10,11 @@ import { ServerHandler } from "../server/serverHandler";
 
 export const initState: EntityType = {
   data: {
-    indices: Indices.zero(),
+    id: "",
     owner: ServerHandler.getId(),
     url: "",
+    static: "",
+    indices: Indices.zero(),
     dimensions: Dimension.zero(),
     position: Position.zero(),
   },

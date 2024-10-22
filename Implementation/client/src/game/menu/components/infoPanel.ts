@@ -1,9 +1,7 @@
 import { state } from "../../../data/state";
-import { MainMenuState } from "../../../enums/gameMenuState";
 import { ctx } from "../../../init";
 import { Button } from "../../../page/components/buttonComponents/button";
 import { ServerHandler } from "../../../server/serverHandler";
-import { ITEM_SIZE } from "../../../settings";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { Section } from "./section";
@@ -24,7 +22,7 @@ export class InfoPanel extends Section {
       "empty"
     );
 
-    this.image = new Image(ITEM_SIZE * 1.5, ITEM_SIZE * 1.5);
+    this.image = new Image();
   }
 
   draw(): void {
@@ -42,7 +40,7 @@ export class InfoPanel extends Section {
     ctx.drawImage(
       this.image,
       this.pos.x + this.dim.width / 2 - this.image.width / 2,
-      this.pos.y + this.dim.height / 2 - this.image.height / 2 - 10,
+      this.pos.y + this.dim.height / 2 - this.image.height / 2 - 25,
       this.image.width,
       this.image.height
     );
@@ -59,7 +57,7 @@ export class InfoPanel extends Section {
         !this.image.src.length) ||
         state.infoPanel.data?.getEntity().data.url !== this.image.src)
     ) {
-      this.image.src = state.infoPanel.data.getEntity().data.url;
+      this.image.src = state.infoPanel.data.getEntity().data.static;
     }
   }
 

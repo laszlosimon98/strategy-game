@@ -8,9 +8,10 @@ import { Flag } from "./flag";
 
 export class Building extends Entity implements CallAble {
   private flagEntity: EntityType;
-  private flag: Flag;
 
-  public constructor(entity: EntityType) {
+  private flag: Flag | undefined;
+
+  public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
 
     this.flagEntity = {
@@ -26,7 +27,9 @@ export class Building extends Entity implements CallAble {
       },
     };
 
-    this.flag = new Flag(this.flagEntity);
+    if (hasFlag) {
+      this.flag = new Flag(this.flagEntity);
+    }
   }
 
   public draw(): void {
@@ -44,26 +47,28 @@ export class Building extends Entity implements CallAble {
       );
       ctx.restore();
     }
-    this.flag.draw();
+    this.flag?.draw();
   }
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll);
-    this.flag.update(dt, cameraScroll);
+    this.flag?.update(dt, cameraScroll);
   }
 
   public setPosition(pos: Position): void {
     super.setPosition(pos);
 
-    const flagPosition: Position = new Position(
-      this.entity.data.position.x -
-        this.flag.getDimension().width / 2 +
-        this.getDimension().width,
-      this.entity.data.position.y -
-        this.flag.getDimension().height +
-        this.getDimension().height
-    );
-    this.flag.setPosition(flagPosition);
+    if (this.flag) {
+      const flagPosition: Position = new Position(
+        this.entity.data.position.x -
+          this.flag.getDimension().width / 2 +
+          this.getDimension().width,
+        this.entity.data.position.y -
+          this.flag.getDimension().height +
+          this.getDimension().height
+      );
+      this.flag.setPosition(flagPosition);
+    }
   }
 
   public setBuilding(building: EntityType) {

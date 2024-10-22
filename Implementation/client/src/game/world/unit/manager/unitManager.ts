@@ -9,6 +9,7 @@ import { Position } from "../../../../utils/position";
 import { Manager } from "../../manager/manager";
 import { Tile } from "../../tile";
 import { Unit } from "../unit";
+import { UnitStates } from "../../../../enums/unitsState";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -67,6 +68,7 @@ export class UnitManager extends Manager<Unit> {
         indices,
         dimensions: UNIT_SIZE,
         position: this.pos,
+        static: "",
       },
     };
 
@@ -120,6 +122,7 @@ export class UnitManager extends Manager<Unit> {
 
         state.game.players[entity.data.owner].units.forEach((unit) => {
           if (unit.equal(entity)) {
+            unit.setState(UnitStates.Walking);
             unit.setPath(path);
           }
         });

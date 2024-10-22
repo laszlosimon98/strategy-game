@@ -14,7 +14,12 @@ export abstract class Entity implements CallAble {
   protected entity: EntityType;
 
   protected constructor(entity: EntityType) {
-    this.entity = entity;
+    this.entity = {
+      data: {
+        ...entity.data,
+        static: entity.data.url,
+      },
+    };
     this.renderPos = new Position(0, -500);
 
     this.isHovered = false;

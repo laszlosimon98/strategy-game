@@ -18,7 +18,7 @@ export class BuildingManager extends Manager<Building> {
 
   constructor() {
     super();
-    this.fakeHouse = new FakeBuilding(this.initObject());
+    this.fakeHouse = new FakeBuilding(this.initObject(), false);
   }
 
   public draw(): void {
@@ -72,11 +72,14 @@ export class BuildingManager extends Manager<Building> {
 
   private build(entity: EntityType): void {
     const name = getImageNameFromUrl(entity.data.url);
-    const newBuilding: Building = this.creator(buildingRegister[name], entity);
+
+    const newBuilding: Building = this.creator<Building>(
+      buildingRegister[name],
+      entity
+    );
+
     this.setObjectPosition(newBuilding, entity.data.position);
     state.game.players[entity.data.owner].buildings.push(newBuilding);
-
-    // this.resetStates();
   }
 
   private setFakeHouse(): void {

@@ -3,8 +3,8 @@ import { EntityType } from "../../../types/gameType";
 import { Building } from "./building";
 
 export class FakeBuilding extends Building {
-  public constructor(building: EntityType) {
-    super(building);
+  public constructor(entity: EntityType, hasFlag: boolean) {
+    super(entity, hasFlag);
   }
 
   draw(): void {
