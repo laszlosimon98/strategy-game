@@ -70,7 +70,7 @@ export class UnitManager extends Manager<Unit> {
     this.sendUnitCreateRequest(unitEntity);
   }
 
-  public handleRightClick(indices: Indices, world: Tile[][]): void {
+  public handleRightClick(indices: Indices): void {
     if (this.selectedUnit) {
       this.start = this.selectedUnit.getIndices();
       this.end = indices;

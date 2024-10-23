@@ -4,10 +4,7 @@ import { ServerHandler } from "../../server/serverHandler";
 import { TileType } from "../../types/gameType";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
-import {
-  convertIsometricCoordsToCartesianCoords,
-  isMouseIntersect,
-} from "../../utils/utils";
+import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
 import { Camera } from "../camera/camera";
 import { BuildingManager } from "./building/manager/buildingManager";
 import { Tile } from "./tile";
@@ -30,6 +27,8 @@ export class World implements MouseClicker {
     this.unitManager = new UnitManager();
 
     this.handleCommunication();
+
+    console.log(state.game);
   }
 
   public init(): void {
@@ -123,7 +122,7 @@ export class World implements MouseClicker {
     );
 
     this.buildingManager.handleRightClick();
-    this.unitManager.handleRightClick(indices, this.world);
+    this.unitManager.handleRightClick(indices);
   }
 
   public handleMouseMove(mousePos: Position): void {
