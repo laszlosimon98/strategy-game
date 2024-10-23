@@ -13,11 +13,12 @@ import { Tile } from "../tile";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
-const UNIT_SPEED = 100;
+const UNIT_SPEED = 80;
 const ANIMATION_SPEED = 8;
 
-export class Unit extends Entity implements CallAble {
-  private name: string;
+export abstract class Unit extends Entity implements CallAble {
+  protected name: string;
+
   private path: Tile[];
   private dimension: Dimension;
 
@@ -30,18 +31,15 @@ export class Unit extends Entity implements CallAble {
   private speedVector: Vector;
 
   private facingTimer: Timer;
-  private moveTimer: Timer;
-
-  // private range: number;
   private animationCounter: number;
 
   private isTileReach: boolean;
-  private pathTaken: number;
-  private percentPerSpeed: number;
+  private distanceVector: Vector;
+  private distanceBetweenTwoTile: number;
 
-  public constructor(entity: EntityType) {
+  public constructor(entity: EntityType, name: string) {
     super(entity);
-    this.name = "soldier";
+    this.name = name;
     this.path = [];
 
     this.entity = {
@@ -69,11 +67,9 @@ export class Unit extends Entity implements CallAble {
     );
     this.facingTimer.activate();
 
-    this.moveTimer = new Timer(500);
-
     this.isTileReach = true;
-    this.pathTaken = 0;
-    this.percentPerSpeed = 0;
+    this.distanceVector = Vector.zero();
+    this.distanceBetweenTwoTile = 0;
   }
 
   private initDirections(): Record<string, number> {
@@ -136,8 +132,6 @@ export class Unit extends Entity implements CallAble {
     if (this.state === UnitStates.Walking) {
       this.move(dt);
     }
-
-    this.moveTimer.update();
   }
 
   public getName(): string {
@@ -154,6 +148,10 @@ export class Unit extends Entity implements CallAble {
 
   public setPath(path: Tile[]): void {
     this.path = [...path];
+  }
+
+  public setTileReached(state: boolean): void {
+    this.isTileReach = state;
   }
 
   public setState(newState: UnitStates): void {
@@ -197,7 +195,7 @@ export class Unit extends Entity implements CallAble {
     }
   }
 
-  private calculateFacing(current: Tile, next: Tile): string {
+  private calculateFacing(current: Tile, next: Tile): void {
     const { i: currentI, j: currentJ } = current.getIndices();
     const { i: nextI, j: nextJ } = next.getIndices();
 
@@ -230,9 +228,8 @@ export class Unit extends Entity implements CallAble {
       dirVector = new Vector(-1, -0.5);
     }
 
-    this.speedVector = dirVector.mult(this.unitSpeed);
-
-    return facing;
+    this.facing = facing;
+    this.speedVector = dirVector.normalize().mult(this.unitSpeed);
   }
 
   private calculateDistance(from: Position, to: Position): number {
@@ -245,106 +242,54 @@ export class Unit extends Entity implements CallAble {
   private reset(): void {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
-    this.path.shift();
+    this.path = [];
+    this.isTileReach = true;
   }
 
-  private setNextTile(dt: number): void {
+  private setNextTile(): void {
     if (this.path.length > 1) {
       const currentTile: Tile = this.path[0];
       const nextTile: Tile = this.path[1];
+      this.setIndices(nextTile.getIndices());
 
-      this.facing = this.calculateFacing(currentTile, nextTile);
+      this.calculateFacing(currentTile, nextTile);
 
       const nextPos: Position = nextTile.getUnitPos();
+
       const actualNextPos: Position = new Position(
         nextPos.x - UNIT_ASSET_SIZE / 2,
         nextPos.y - UNIT_ASSET_SIZE
       );
 
-      const distance = this.calculateDistance(
+      this.distanceBetweenTwoTile = this.calculateDistance(
         this.getPosition(),
         actualNextPos
       );
 
-      this.percentPerSpeed = distance / (UNIT_SPEED * dt);
-
       this.path.shift();
     } else if (this.path.length === 1) {
+      const tile: Tile = this.path.shift() as Tile;
+      this.setIndices(tile.getIndices());
       this.reset();
     }
   }
 
   private move(dt: number): void {
     if (this.isTileReach) {
-      this.setNextTile(dt);
       this.isTileReach = false;
-      this.pathTaken = 0;
+      this.distanceVector = Vector.zero();
+      this.setNextTile();
     }
+    const speed: Vector = this.speedVector.mult(dt);
+    this.distanceVector = this.distanceVector.add(speed) as Vector;
 
-    if (Math.min(100, this.pathTaken) < 100) {
-      this.setPosition(this.getPosition().add(this.speedVector.mult(dt)));
-
-      console.log(this.percentPerSpeed);
-      this.pathTaken += this.percentPerSpeed;
-    }
-    if (Math.min(100, this.pathTaken) === 100) {
-      // this.reset();
+    if (
+      Math.abs(this.distanceVector.x) < this.distanceBetweenTwoTile &&
+      Math.abs(this.distanceVector.y) < this.distanceBetweenTwoTile
+    ) {
+      this.setPosition(this.getPosition().add(speed));
+    } else {
       this.isTileReach = true;
     }
-
-    // if (this.path.length > 1) {
-    //   const currentTile: Tile = this.path[0];
-    //   const nextTile: Tile = this.path[1];
-
-    //   this.facing = this.calculateFacing(currentTile, nextTile);
-
-    //   const nextPos: Position = nextTile.getUnitPos();
-
-    //   const actualNextPos: Position = new Position(
-    //     nextPos.x - UNIT_ASSET_SIZE / 2,
-    //     nextPos.y - UNIT_ASSET_SIZE
-    //   );
-
-    //   const distance = Math.max(
-    //     0,
-    //     this.calculateDistance(this.getPosition(), actualNextPos)
-    //   );
-
-    //   console.log(distance);
-
-    //   if (distance > 0) {
-    //     this.setPosition(this.getPosition().add(this.speedVector.mult(dt)));
-    //   }
-
-    //   if (distance === 0) {
-    //     this.setPosition(actualNextPos);
-    //     this.setIndices(nextTile.getIndices());
-
-    //     this.reset();
-    //   }
-    // } else if (this.path.length === 1) {
-    //   this.reset();
-    // }
-
-    // if (this.path.length > 1) {
-    //   if (!this.moveTimer.isTimerActive()) {
-    //     const currentTile: Tile = this.path.shift() as Tile;
-    //     const nextTile: Tile = this.path[0];
-    //     this.facing = this.calculateFacing(currentTile, nextTile);
-    //     const nextPos: Position = nextTile.getUnitPos();
-    //     const pos = new Position(
-    //       nextPos.x - UNIT_ASSET_SIZE / 2,
-    //       nextPos.y - UNIT_ASSET_SIZE
-    //     );
-    //     console.log(this.calculateDistance(this.getPosition(), pos));
-    //     this.setPosition(pos);
-    //     this.setIndices(nextTile.getIndices());
-    //     this.moveTimer.activate();
-    //   }
-    // } else if (this.path.length === 1) {
-    //   this.animationCounter = 0;
-    //   this.setState(UnitStates.Idle);
-    //   this.path.shift();
-    // }
   }
 }
