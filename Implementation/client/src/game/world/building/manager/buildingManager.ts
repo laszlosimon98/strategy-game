@@ -7,7 +7,7 @@ import { FakeBuilding } from "../fakeBuilding";
 import { buildingRegister } from "../buildingRegister/buildingRegister";
 import { initState, state } from "../../../../data/state";
 import { GameState } from "../../../../enums/gameState";
-import { getImageNameFromUrl } from "../../../../utils/utils";
+import { getImageNameFromUrl, ySort } from "../../../../utils/utils";
 import { MainMenuState } from "../../../../enums/gameMenuState";
 import { EntityType } from "../../../../types/gameType";
 import { Manager } from "../../manager/manager";
@@ -80,6 +80,7 @@ export class BuildingManager extends Manager<Building> {
 
     this.setObjectPosition(newBuilding, entity.data.position);
     state.game.players[entity.data.owner].buildings.push(newBuilding);
+    ySort(state.game.players[entity.data.owner].buildings);
   }
 
   private setFakeHouse(): void {

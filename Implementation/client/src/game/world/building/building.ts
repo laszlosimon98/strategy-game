@@ -61,10 +61,12 @@ export class Building extends Entity implements CallAble {
     if (this.flag) {
       const flagPosition: Position = new Position(
         this.entity.data.position.x -
-          this.flag.getDimension().width / 2 +
+          this.flag.getDimension().width / 2 -
+          15 +
           this.getDimension().width,
         this.entity.data.position.y -
-          this.flag.getDimension().height +
+          this.flag.getDimension().height -
+          5 +
           this.getDimension().height
       );
       this.flag.setPosition(flagPosition);

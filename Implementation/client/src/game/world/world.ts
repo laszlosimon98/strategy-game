@@ -62,8 +62,8 @@ export class World implements MouseClicker {
       });
     });
 
-    this.buildingManager.draw();
     this.unitManager.draw();
+    this.buildingManager.draw();
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
@@ -74,8 +74,8 @@ export class World implements MouseClicker {
       tiles.forEach((tile) => tile.update(this.camera.getScroll()));
     });
 
-    this.buildingManager.update(dt, this.camera.getScroll());
     this.unitManager.update(dt, this.camera.getScroll());
+    this.buildingManager.update(dt, this.camera.getScroll());
   }
 
   public handleLeftClick(): void {

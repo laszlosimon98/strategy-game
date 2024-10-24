@@ -15,6 +15,10 @@ export class Knight extends Soldier {
     this.health = 100;
 
     this.rangeIndicator = new RangeIndicator(
+      new Position(
+        this.renderPos.x + UNIT_SIZE.width / 2,
+        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+      ),
       this.range,
       state.game.players[this.entity.data.owner].color
     );

@@ -6,7 +6,7 @@ import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
-import { getRandomNumberFromInterval } from "../../../utils/utils";
+import { getRandomNumberFromInterval, ySort } from "../../../utils/utils";
 import { Vector } from "../../../utils/vector";
 import { Entity } from "../entity";
 import { Tile } from "../tile";
@@ -288,6 +288,7 @@ export abstract class Unit extends Entity implements CallAble {
       Math.abs(this.distanceVector.y) < this.distanceBetweenTwoTile
     ) {
       this.setPosition(this.getPosition().add(speed));
+      ySort(state.game.players[this.entity.data.owner].units);
     } else {
       this.isTileReach = true;
     }

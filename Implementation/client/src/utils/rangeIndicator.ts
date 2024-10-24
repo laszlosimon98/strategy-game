@@ -3,14 +3,16 @@ import { TILE_SIZE } from "../settings";
 import { Position } from "./position";
 
 export class RangeIndicator {
+  private position: Position;
   private radius: number;
-  private numPoints: number = 100;
+  private numPoints: number = 360;
 
   private cartesianCenter: Position;
   private circlePoints: Position[];
   private color: string;
 
-  constructor(radius: number, color: string) {
+  constructor(pos: Position, radius: number, color: string) {
+    this.position = pos;
     this.radius = radius * TILE_SIZE;
     this.color = color;
 
@@ -20,16 +22,19 @@ export class RangeIndicator {
 
   public draw() {
     if (this.circlePoints.length) {
-      const firstPoint = this.cartesianToIsometric(this.circlePoints[0]);
       ctx.save();
       ctx.beginPath();
-      ctx.moveTo(firstPoint.x, firstPoint.y);
-
-      ctx.strokeStyle = this.color;
+      // ctx.strokeStyle = this.color;
+      ctx.strokeStyle = "yellow";
       ctx.lineWidth = 2;
+      ctx.globalAlpha = 0.1;
+      const center: Position = this.cartesianToIsometric(this.cartesianCenter);
 
-      for (let i = 1; i < this.numPoints; i++) {
-        const isoPoint = this.cartesianToIsometric(this.circlePoints[i]);
+      for (let i = 0; i < this.numPoints; ++i) {
+        const isoPoint: Position = this.cartesianToIsometric(
+          this.circlePoints[i]
+        );
+        ctx.moveTo(center.x, center.y);
         ctx.lineTo(isoPoint.x, isoPoint.y);
       }
 

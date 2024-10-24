@@ -1,3 +1,4 @@
+import { Entity } from "../game/world/entity";
 import { TILE_SIZE } from "../settings";
 import { Indices } from "./indices";
 import { Position } from "./position";
@@ -40,4 +41,23 @@ export const getRandomNumberFromInterval = (
   max: number
 ): number => {
   return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const ySort = (entityArray: Entity[]): void => {
+  entityArray.sort((a: Entity, b: Entity) => {
+    const { x: ax, y: ay } = a.getPosition();
+    const { x: bx, y: by } = b.getPosition();
+
+    if (ax === bx) {
+      return ay - by;
+    } else if (ay === by) {
+      return bx - ax;
+    } else if (ax < bx && ay < by) {
+      return -1;
+    } else if (ax > bx && ay < by) {
+      return -1;
+    }
+
+    return 0;
+  });
 };
