@@ -69,6 +69,10 @@ export class Tile {
     );
   }
 
+  public setImage(image: string): void {
+    this.image.src = image;
+  }
+
   public getCameraPos(): Position {
     return this.cameraPos;
   }

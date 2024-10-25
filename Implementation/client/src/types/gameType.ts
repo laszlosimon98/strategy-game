@@ -7,7 +7,7 @@ import { Dimension } from "../utils/dimension";
 import { Indices } from "../utils/indices";
 import { Position } from "../utils/position";
 
-export type TileType = "grass" | "grass_flower" | "grass_rock";
+export type TileType = "grass" | "grass_flower" | "grass_rock" | "dirt";
 type ColorType =
   | "black"
   | "blue"

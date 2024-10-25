@@ -32,10 +32,6 @@ export class UnitManager extends Manager<Unit> {
     super.update(dt, cameraScroll, "units");
   }
 
-  public setWorld(world: Tile[][]): void {
-    this.world = world;
-  }
-
   public handleLeftClick(
     indices: Indices,
     mousePos: Position,

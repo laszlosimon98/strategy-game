@@ -9,7 +9,7 @@ import { initState, state } from "../../../../data/state";
 import { GameState } from "../../../../enums/gameState";
 import { getImageNameFromUrl, ySort } from "../../../../utils/utils";
 import { MainMenuState } from "../../../../enums/gameMenuState";
-import { EntityType } from "../../../../types/gameType";
+import { EntityType, TileType } from "../../../../types/gameType";
 import { Manager } from "../../manager/manager";
 import { Building } from "../building";
 
@@ -70,7 +70,10 @@ export class BuildingManager extends Manager<Building> {
     this.hoverObject(mousePos, cameraScroll, "buildings");
   }
 
-  private build(entity: EntityType): void {
+  private build(
+    entity: EntityType,
+    changedCells: { indices: Indices; type: TileType }[]
+  ): void {
     const name = getImageNameFromUrl(entity.data.url);
 
     const newBuilding: Building = this.creator<Building>(
@@ -81,6 +84,11 @@ export class BuildingManager extends Manager<Building> {
     this.setObjectPosition(newBuilding, entity.data.position);
     state.game.players[entity.data.owner].buildings.push(newBuilding);
     ySort(state.game.players[entity.data.owner].buildings);
+
+    changedCells.forEach((cell) => {
+      const { i, j } = cell.indices;
+      this.world[i][j].setImage(state.images.ground[cell.type].url);
+    });
   }
 
   private setFakeHouse(): void {
@@ -132,9 +140,18 @@ export class BuildingManager extends Manager<Building> {
   }
 
   protected handleCommunication(): void {
-    ServerHandler.receiveMessage("game:build", (entity: EntityType) => {
-      this.build(entity);
-    });
+    ServerHandler.receiveMessage(
+      "game:build",
+      ({
+        newBuilding,
+        changedCells,
+      }: {
+        newBuilding: EntityType;
+        changedCells: { indices: Indices; type: TileType }[];
+      }) => {
+        this.build(newBuilding, changedCells);
+      }
+    );
 
     ServerHandler.receiveMessage(
       "game:destroy",

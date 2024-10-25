@@ -114,8 +114,6 @@ export abstract class Manager<T> implements MouseClicker {
       }
     });
 
-    console.log(selectedObject?.getPosition());
-
     if (selectedObject) {
       state.infoPanel.data = selectedObject;
       state.game.state = GameState.Selected;

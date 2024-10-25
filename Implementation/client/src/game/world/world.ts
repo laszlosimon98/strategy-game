@@ -50,6 +50,7 @@ export class World implements MouseClicker {
       });
 
       this.unitManager.setWorld(this.world);
+      this.buildingManager.setWorld(this.world);
     });
   }
 
