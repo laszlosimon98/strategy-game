@@ -15,7 +15,7 @@ export type ColorType =
   | "red"
   | "white";
 
-export type TileType = "grass" | "grass_flower" | "grass_rock";
+export type TileType = "grass" | "grass_flower" | "grass_rock" | "dirt";
 
 export type Position = {
   x: number;

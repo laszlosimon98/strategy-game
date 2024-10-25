@@ -1,8 +1,8 @@
 import { TileType } from "../../types/types";
+import { Indices } from "../utils/indices";
 
 export class Cell {
-  i: number;
-  j: number;
+  private indices: Indices;
 
   private g: number;
   private h: number;
@@ -11,14 +11,14 @@ export class Cell {
   private neighbors: Cell[];
   private previous?: Cell | undefined;
 
+  private prevType: TileType;
   private type: TileType;
 
   private hasBuilding: boolean;
   private hasObstacle: boolean;
 
-  public constructor(i: number, j: number) {
-    this.i = i;
-    this.j = j;
+  public constructor(indices: Indices) {
+    this.indices = indices;
 
     this.g = 0;
     this.h = 0;
@@ -27,30 +27,23 @@ export class Cell {
     this.neighbors = [];
     this.previous = undefined;
 
+    this.prevType = "grass";
     this.type = "grass";
 
     this.hasBuilding = false;
     this.hasObstacle = false;
   }
 
-  public addNeighbors(cell: Cell): void {
-    this.neighbors.push(cell);
+  public getIndices(): Indices {
+    return this.indices;
   }
 
-  public getNeighbors(): Cell[] {
-    return this.neighbors;
+  public setPrevType(type: TileType): void {
+    this.prevType = type;
   }
 
-  public isWalkAble(): boolean {
-    return !this.hasBuilding && !this.hasObstacle;
-  }
-
-  public isBuildAble(): boolean {
-    return this.type === "grass" && this.isWalkAble();
-  }
-
-  public hasCellBuilding(): boolean {
-    return this.hasBuilding;
+  public getPrevType(): TileType {
+    return this.prevType;
   }
 
   public setBuilding(state: boolean): void {
@@ -101,7 +94,29 @@ export class Cell {
     return this.f;
   }
 
+  public addNeighbors(cell: Cell): void {
+    this.neighbors.push(cell);
+  }
+
+  public getNeighbors(): Cell[] {
+    return this.neighbors;
+  }
+
+  public isWalkAble(): boolean {
+    return !this.hasBuilding && !this.hasObstacle;
+  }
+
+  public isBuildAble(): boolean {
+    return this.type === "grass" && this.isWalkAble();
+  }
+
+  public hasCellBuilding(): boolean {
+    return this.hasBuilding;
+  }
+
   public equals(other: Cell) {
-    return this.i === other.i && this.j === other.j;
+    return (
+      this.indices.i === other.indices.i && this.indices.j === other.indices.j
+    );
   }
 }

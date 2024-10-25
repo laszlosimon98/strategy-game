@@ -20,6 +20,10 @@ export class RangeIndicator {
     this.circlePoints = [];
   }
 
+  public getRange(): number {
+    return this.radius;
+  }
+
   public draw() {
     if (this.circlePoints.length) {
       ctx.save();

@@ -1,5 +1,6 @@
 import { Entity } from "../game/world/entity";
 import { TILE_SIZE } from "../settings";
+import { EntityType } from "../types/gameType";
 import { Indices } from "./indices";
 import { Position } from "./position";
 
@@ -41,6 +42,13 @@ export const getRandomNumberFromInterval = (
   max: number
 ): number => {
   return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const calculateDistance = (from: Position, to: Position): number => {
+  const x = to.x - from.x;
+  const y = to.y - from.y;
+  const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  return distance;
 };
 
 export const ySort = (entityArray: Entity[]): void => {

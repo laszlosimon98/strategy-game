@@ -4,7 +4,7 @@ import { Server, Socket } from "socket.io";
 
 import { authHandler } from "./handlers/authHandler";
 import { connectionHandler } from "./handlers/connectionHandler";
-import { gameHandler } from "./handlers/gameHandler";
+import { gameHandler } from "./handlers/gameHandler/gameHandler";
 import path from "path";
 import { imageHandler } from "./handlers/imageHandler";
 import { Loader } from "./classes/loader";

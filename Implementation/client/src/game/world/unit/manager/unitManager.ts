@@ -68,7 +68,7 @@ export class UnitManager extends Manager<Unit> {
 
   public handleRightClick(indices: Indices): void {
     if (this.selectedUnit) {
-      this.start = this.selectedUnit.getIndices();
+      // this.start = this.selectedUnit.getIndices();
       this.end = indices;
 
       const entity: EntityType = this.selectedUnit.getEntity();
@@ -87,8 +87,7 @@ export class UnitManager extends Manager<Unit> {
   private sendPathFindRequest(entity: EntityType): void {
     ServerHandler.sendMessage("game:pathFind", {
       entity,
-      start: this.start,
-      end: this.end,
+      goal: this.end,
     });
   }
 
@@ -102,20 +101,19 @@ export class UnitManager extends Manager<Unit> {
 
     ServerHandler.receiveMessage(
       "game:pathFind",
-      ({ indices, entity }: { indices: Indices[]; entity: EntityType }) => {
-        const path: Tile[] = [];
+      ({ path, entity }: { path: Indices[]; entity: EntityType }) => {
+        const _path: Tile[] = [];
 
-        indices.forEach((index) => {
+        path.forEach((index) => {
           const i = index.i;
           const j = index.j;
-          path.push(this.world[i][j]);
+          _path.push(this.world[i][j]);
         });
 
         state.game.players[entity.data.owner].units.forEach((unit) => {
           if (unit.equal(entity)) {
-            // unit.setTileReached(true);
             unit.setState(UnitStates.Walking);
-            unit.setPath(path);
+            unit.setPath(_path);
           }
         });
       }

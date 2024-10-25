@@ -1,4 +1,5 @@
 import { EntityType } from "../../types/types";
+import { Indices } from "../utils/indices";
 
 export class Unit {
   private entity: EntityType;
@@ -11,7 +12,7 @@ export class Unit {
     return this.entity;
   }
 
-  public setOwner(newOwner: string): void {
-    this.entity.data.owner = newOwner;
+  public setIndices(newIndices: Indices): void {
+    this.entity.data.indices = newIndices;
   }
 }

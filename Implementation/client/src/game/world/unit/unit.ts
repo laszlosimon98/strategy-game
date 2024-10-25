@@ -2,8 +2,10 @@ import { state } from "../../../data/state";
 import { UnitStates } from "../../../enums/unitsState";
 import { ctx } from "../../../init";
 import { CallAble } from "../../../interfaces/callAble";
+import { ServerHandler } from "../../../server/serverHandler";
 import { EntityType } from "../../../types/gameType";
 import { Dimension } from "../../../utils/dimension";
+import { Indices } from "../../../utils/indices";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
 import { getRandomNumberFromInterval, ySort } from "../../../utils/utils";
@@ -33,7 +35,7 @@ export abstract class Unit extends Entity implements CallAble {
   private facingTimer: Timer;
   private animationCounter: number;
 
-  private isTileReach: boolean;
+  protected isTileReach: boolean;
   private distanceVector: Vector;
   private distanceBetweenTwoTile: number;
 
@@ -154,6 +156,10 @@ export abstract class Unit extends Entity implements CallAble {
     this.isTileReach = state;
   }
 
+  public isTileReached(): boolean {
+    return this.isTileReach;
+  }
+
   public setState(newState: UnitStates): void {
     this.state = newState;
 
@@ -232,7 +238,7 @@ export abstract class Unit extends Entity implements CallAble {
     this.speedVector = dirVector.normalize().mult(this.unitSpeed);
   }
 
-  private calculateDistance(from: Position, to: Position): number {
+  protected calculateDistance(from: Position, to: Position): number {
     const x = to.x - from.x;
     const y = to.y - from.y;
     const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
@@ -246,12 +252,18 @@ export abstract class Unit extends Entity implements CallAble {
     this.isTileReach = true;
   }
 
-  private setNextTile(): void {
+  private async setNextTile(): Promise<void> {
     if (this.path.length > 1) {
       const currentTile: Tile = this.path[0];
       const nextTile: Tile = this.path[1];
-      this.setIndices(nextTile.getIndices());
+      const goal: Tile = this.path[this.path.length - 1];
 
+      this.sendMovingRequest(nextTile.getIndices(), goal.getIndices());
+      const indices: Indices = await ServerHandler.receiveAsyncMessage(
+        "game:unitMoving"
+      );
+
+      this.setIndices(indices);
       this.calculateFacing(currentTile, nextTile);
 
       const nextPos: Position = nextTile.getUnitPos();
@@ -267,30 +279,46 @@ export abstract class Unit extends Entity implements CallAble {
       );
 
       this.path.shift();
+      this.isTileReach = false;
     } else if (this.path.length === 1) {
-      const tile: Tile = this.path.shift() as Tile;
-      this.setIndices(tile.getIndices());
+      const nextTile: Tile = this.path[0];
+      this.sendMovingRequest(this.getIndices(), nextTile.getIndices());
+
+      const indices: Indices = await ServerHandler.receiveAsyncMessage(
+        "game:unitMoving"
+      );
+
+      this.path.shift();
+      this.setIndices(indices);
       this.reset();
     }
   }
 
   private move(dt: number): void {
     if (this.isTileReach) {
-      this.isTileReach = false;
       this.distanceVector = Vector.zero();
       this.setNextTile();
-    }
-    const speed: Vector = this.speedVector.mult(dt);
-    this.distanceVector = this.distanceVector.add(speed) as Vector;
-
-    if (
-      Math.abs(this.distanceVector.x) < this.distanceBetweenTwoTile &&
-      Math.abs(this.distanceVector.y) < this.distanceBetweenTwoTile
-    ) {
-      this.setPosition(this.getPosition().add(speed));
-      ySort(state.game.players[this.entity.data.owner].units);
     } else {
-      this.isTileReach = true;
+      const speed: Vector = this.speedVector.mult(dt);
+      this.distanceVector = this.distanceVector.add(speed) as Vector;
+
+      if (
+        Math.abs(this.distanceVector.x) < this.distanceBetweenTwoTile &&
+        Math.abs(this.distanceVector.y) < this.distanceBetweenTwoTile
+      ) {
+        this.setPosition(this.getPosition().add(speed));
+        ySort(state.game.players[this.entity.data.owner].units);
+      } else {
+        this.isTileReach = true;
+      }
     }
+  }
+
+  private sendMovingRequest(next: Indices, goal: Indices): void {
+    ServerHandler.sendMessage("game:unitMoving", {
+      entity: this.entity,
+      next,
+      goal,
+    });
   }
 }

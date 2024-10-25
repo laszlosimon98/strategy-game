@@ -1,4 +1,5 @@
 import { state } from "../../../../data/state";
+import { UnitStates } from "../../../../enums/unitsState";
 import { UNIT_SIZE } from "../../../../settings";
 import { EntityType } from "../../../../types/gameType";
 import { Position } from "../../../../utils/position";
@@ -22,7 +23,8 @@ export class Knight extends Soldier {
       this.range,
       state.game.players[this.entity.data.owner].color
     );
-    console.log(this.rangeIndicator);
+
+    this.range = this.rangeIndicator.getRange();
   }
 
   public draw(): void {
@@ -41,7 +43,13 @@ export class Knight extends Soldier {
     );
   }
 
-  protected attack(): void {
-    throw new Error("Method not implemented.");
+  protected attack(myUnit: Soldier, opponentUnit: Soldier): void {
+    if (myUnit.isTileReached() && opponentUnit.isTileReached()) {
+      if (!this.attackTimer.isTimerActive()) {
+        myUnit.setState(UnitStates.Attacking);
+        opponentUnit.setState(UnitStates.Attacking);
+        this.attackTimer.activate();
+      }
+    }
   }
 }

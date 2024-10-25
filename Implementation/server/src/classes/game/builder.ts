@@ -23,30 +23,48 @@ export class Builder {
   public static build(
     entity: EntityType,
     socket: Socket
-  ): Building | undefined {
+  ): {
+    newBuilding: Building | undefined;
+    changedCells: Cell[];
+  } {
     const { i, j } = entity.data.indices;
 
     if (!this.isPossibleToBuild(i, j, socket)) {
-      return;
+      return { newBuilding: undefined, changedCells: [] };
     }
 
     const world: Cell[][] = World.getWorld(socket);
     const newBuilding: Building = new Building(entity);
+    const changedCells: Cell[] = [];
     newBuilding.setOwner(socket.id);
 
     state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings.push(
       newBuilding
     );
 
-    for (let k = -1; k <= 1; ++k) {
-      for (let l = -1; l <= 1; ++l) {
-        if (i + k > 0 && i + k < MAP_SIZE && j + l > 0 && j + l < MAP_SIZE) {
-          world[i + k][j + l].setBuilding(true);
-        }
+    // for (let k = -1; k <= 1; ++k) {
+    //   for (let l = -1; l <= 1; ++l) {
+    //     if (i + k > 0 && i + k < MAP_SIZE && j + l > 0 && j + l < MAP_SIZE) {
+    //       const cell: Cell = world[i + k][j + l];
+    //       cell.setBuilding(true);
+    //       cell.setPrevType(cell.getType());
+    //       cell.setType("dirt");
+    //       changedCells.push(cell);
+    //     }
+    //   }
+    // }
+
+    for (let k = 0; k < 2; ++k) {
+      if (j + k < MAP_SIZE) {
+        const cell: Cell = world[i][j + k];
+        cell.setBuilding(true);
+        cell.setPrevType(cell.getType());
+        cell.setType("dirt");
+        changedCells.push(cell);
       }
     }
 
-    return newBuilding;
+    return { newBuilding, changedCells };
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {
@@ -76,13 +94,23 @@ export class Builder {
         }
       }
 
-      for (let k = -1; k <= 1; ++k) {
-        for (let l = -1; l <= 1; ++l) {
-          if (i + k > 0 && i + k < MAP_SIZE && j + l > 0 && j + l < MAP_SIZE) {
-            world[i + k][j + l].setBuilding(false);
-          }
+      for (let k = 0; k < 2; ++k) {
+        if (j + k < MAP_SIZE) {
+          const cell: Cell = world[i][j + k];
+          cell.setBuilding(false);
+          cell.setType(cell.getPrevType());
         }
       }
+
+      // for (let k = -1; k <= 1; ++k) {
+      //   for (let l = -1; l <= 1; ++l) {
+      //     if (i + k > 0 && i + k < MAP_SIZE && j + l > 0 && j + l < MAP_SIZE) {
+      //       const cell: Cell = world[i + k][j + l];
+      //       cell.setBuilding(false);
+      //       cell.setType(cell.getPrevType());
+      //     }
+      //   }
+      // }
       return true;
     }
     return false;

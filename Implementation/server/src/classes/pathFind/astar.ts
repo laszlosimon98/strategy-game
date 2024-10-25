@@ -7,9 +7,10 @@ export class AStar {
   private constructor() {}
 
   private static heuristic(current: Cell, end: Cell): number {
-    return Math.sqrt(
-      Math.pow(current.i - end.i, 2) + Math.pow(current.j - end.j, 2)
-    );
+    const { i: ci, j: cj } = current.getIndices();
+    const { i: ei, j: ej } = current.getIndices();
+
+    return Math.sqrt(Math.pow(ci - ei, 2) + Math.pow(cj - ej, 2));
     // return Math.abs(current.i - end.i) + Math.abs(current.j - end.j);
   }
 
@@ -115,7 +116,7 @@ export class AStar {
 
   private static convertPathToIndices(path: Cell[]): Indices[] {
     const result = path.map((cell) => {
-      return new Indices(cell.i, cell.j);
+      return cell.getIndices();
     });
 
     return result;

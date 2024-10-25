@@ -32,6 +32,7 @@ export class World implements MouseClicker {
   }
 
   public init(): void {
+    console.log(state.game.players);
     ServerHandler.receiveMessage("game:createWorld", (tiles: TileType[][]) => {
       for (let row = 0; row < tiles.length; ++row) {
         this.world.push([]);
@@ -159,8 +160,8 @@ export class World implements MouseClicker {
   private handleCommunication(): void {
     ServerHandler.receiveMessage(
       "game:pathFind",
-      ({ indices }: { indices: Indices[] }) => {
-        indices.forEach((index) => this.world[index.i][index.j].setTemp());
+      ({ path }: { path: Indices[] }) => {
+        path.forEach((index) => this.world[index.i][index.j].setTemp());
       }
     );
   }

@@ -3,41 +3,44 @@ import { MAP_SIZE } from "../../settings";
 import { Communicate } from "../communicate";
 import { Cell } from "./cell";
 import { state } from "../../data/state";
+import { Indices } from "../utils/indices";
 
 export class World {
   private constructor() {}
 
   private static initNeighbor = (result: Cell[][], cell: Cell) => {
-    if (cell.i > 0) {
-      cell.addNeighbors(result[cell.i - 1][cell.j]);
+    const { i, j } = cell.getIndices();
+
+    if (i > 0) {
+      cell.addNeighbors(result[i - 1][j]);
     }
 
-    if (cell.i < MAP_SIZE - 1) {
-      cell.addNeighbors(result[cell.i + 1][cell.j]);
+    if (i < MAP_SIZE - 1) {
+      cell.addNeighbors(result[i + 1][j]);
     }
 
-    if (cell.j > 0) {
-      cell.addNeighbors(result[cell.i][cell.j - 1]);
+    if (j > 0) {
+      cell.addNeighbors(result[i][j - 1]);
     }
 
-    if (cell.j < MAP_SIZE - 1) {
-      cell.addNeighbors(result[cell.i][cell.j + 1]);
+    if (j < MAP_SIZE - 1) {
+      cell.addNeighbors(result[i][j + 1]);
     }
 
-    if (cell.i > 0 && cell.j > 0) {
-      cell.addNeighbors(result[cell.i - 1][cell.j - 1]);
+    if (i > 0 && j > 0) {
+      cell.addNeighbors(result[i - 1][j - 1]);
     }
 
-    if (cell.i < MAP_SIZE - 1 && cell.j < MAP_SIZE - 1) {
-      cell.addNeighbors(result[cell.i + 1][cell.j + 1]);
+    if (i < MAP_SIZE - 1 && j < MAP_SIZE - 1) {
+      cell.addNeighbors(result[i + 1][j + 1]);
     }
 
-    if (cell.i > 0 && cell.j < MAP_SIZE - 1) {
-      cell.addNeighbors(result[cell.i - 1][cell.j + 1]);
+    if (i > 0 && j < MAP_SIZE - 1) {
+      cell.addNeighbors(result[i - 1][j + 1]);
     }
 
-    if (cell.i < MAP_SIZE - 1 && cell.j > 0) {
-      cell.addNeighbors(result[cell.i + 1][cell.j - 1]);
+    if (i < MAP_SIZE - 1 && j > 0) {
+      cell.addNeighbors(result[i + 1][j - 1]);
     }
   };
 
@@ -48,7 +51,7 @@ export class World {
       world.push([]);
       for (let j = 0; j < MAP_SIZE; ++j) {
         const r = Math.random();
-        const cell = new Cell(i, j);
+        const cell = new Cell(new Indices(i, j));
 
         if (r < 0.05) {
           const type = Math.random() < 0.5 ? "grass_flower" : "grass_rock";
