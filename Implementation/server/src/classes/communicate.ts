@@ -13,7 +13,7 @@ export class Communicate {
     event: string,
     data: any
   ): void {
-    io.to(this.getCurrentRoom(socket)).emit(event, data);
+    io.in(this.getCurrentRoom(socket)).emit(event, data);
   }
 
   public static sendMessageToSender(

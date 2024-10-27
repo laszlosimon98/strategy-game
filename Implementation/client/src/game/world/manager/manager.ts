@@ -10,11 +10,11 @@ import { MainMenuState } from "../../../enums/gameMenuState";
 import { Building } from "../building/building";
 import { Unit } from "@faker-js/faker";
 import { EntityType } from "../../../types/gameType";
-import { Tile } from "../tile";
+import { Cell } from "../cell";
 
 export abstract class Manager<T> implements MouseClicker {
   protected pos: Position;
-  protected world: Tile[][];
+  protected world: Cell[][];
 
   protected constructor() {
     this.pos = Position.zero();
@@ -47,7 +47,7 @@ export abstract class Manager<T> implements MouseClicker {
     });
   }
 
-  public setWorld(world: Tile[][]): void {
+  public setWorld(world: Cell[][]): void {
     this.world = world;
   }
 

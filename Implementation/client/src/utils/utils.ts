@@ -1,6 +1,5 @@
 import { Entity } from "../game/world/entity";
-import { TILE_SIZE } from "../settings";
-import { EntityType } from "../types/gameType";
+import { CELL_SIZE } from "../settings";
 import { Indices } from "./indices";
 import { Position } from "./position";
 
@@ -21,8 +20,8 @@ export const convertIsometricCoordsToCartesianCoords = (
   const cart_y = (2 * world_y - world_x) / 2;
   const cart_x = cart_y + world_x;
 
-  const grid_x = Math.floor(cart_x / TILE_SIZE);
-  const grid_y = Math.floor(cart_y / TILE_SIZE);
+  const grid_x = Math.floor(cart_x / CELL_SIZE);
+  const grid_y = Math.floor(cart_y / CELL_SIZE);
 
   return new Indices(grid_x, grid_y);
 };

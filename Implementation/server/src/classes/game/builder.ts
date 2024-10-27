@@ -54,13 +54,16 @@ export class Builder {
     //   }
     // }
 
-    for (let k = 0; k < 2; ++k) {
-      if (j + k < MAP_SIZE) {
-        const cell: Cell = world[i][j + k];
-        cell.setBuilding(true);
-        cell.setPrevType(cell.getType());
-        cell.setType("dirt");
-        changedCells.push(cell);
+    for (let l = 0; l < 2; ++l) {
+      for (let k = 0; k < 2; ++k) {
+        if (l === 1 && l === k) continue;
+        if (i + l < MAP_SIZE && j + k < MAP_SIZE) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setBuilding(true);
+          cell.setPrevType(cell.getType());
+          cell.setType("dirt");
+          changedCells.push(cell);
+        }
       }
     }
 
@@ -94,11 +97,14 @@ export class Builder {
         }
       }
 
-      for (let k = 0; k < 2; ++k) {
-        if (j + k < MAP_SIZE) {
-          const cell: Cell = world[i][j + k];
-          cell.setBuilding(false);
-          cell.setType(cell.getPrevType());
+      for (let l = 0; l < 2; ++l) {
+        for (let k = 0; k < 2; ++k) {
+          if (l === 1 && l === k) continue;
+          if (i + l < MAP_SIZE && j + k < MAP_SIZE) {
+            const cell: Cell = world[i + l][j + k];
+            cell.setBuilding(false);
+            cell.setType(cell.getPrevType());
+          }
         }
       }
 

@@ -9,7 +9,7 @@ import { Validator } from "../../../classes/validator";
 import { state } from "../../../data/state";
 import { EntityType } from "../../../types/types";
 
-export const handlePathFind = (io: Server, socket: Socket) => {
+export const handlePath = (io: Server, socket: Socket) => {
   const pathFind = ({
     entity,
     goal,

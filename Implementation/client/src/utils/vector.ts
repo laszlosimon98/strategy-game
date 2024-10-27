@@ -1,4 +1,4 @@
-import { TILE_SIZE } from "../settings";
+import { CELL_SIZE } from "../settings";
 import { Position } from "./position";
 
 export class Vector extends Position {
@@ -17,13 +17,13 @@ export class Vector extends Position {
 
   public getNormalPos(): Position[] {
     return [
-      new Position(this.x * TILE_SIZE, this.y * TILE_SIZE),
-      new Position(this.x * TILE_SIZE + TILE_SIZE, this.y * TILE_SIZE),
+      new Position(this.x * CELL_SIZE, this.y * CELL_SIZE),
+      new Position(this.x * CELL_SIZE + CELL_SIZE, this.y * CELL_SIZE),
       new Position(
-        this.x * TILE_SIZE + TILE_SIZE,
-        this.y * TILE_SIZE + TILE_SIZE
+        this.x * CELL_SIZE + CELL_SIZE,
+        this.y * CELL_SIZE + CELL_SIZE
       ),
-      new Position(this.x * TILE_SIZE, this.y * TILE_SIZE + TILE_SIZE),
+      new Position(this.x * CELL_SIZE, this.y * CELL_SIZE + CELL_SIZE),
     ];
   }
 
@@ -53,5 +53,9 @@ export class Vector extends Position {
     }
 
     return Vector.zero();
+  }
+
+  public getDistance(): number {
+    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
   }
 }

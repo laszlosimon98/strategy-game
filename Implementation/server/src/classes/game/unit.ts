@@ -15,4 +15,8 @@ export class Unit {
   public setIndices(newIndices: Indices): void {
     this.entity.data.indices = newIndices;
   }
+
+  public getIndices(): Indices {
+    return this.entity.data.indices;
+  }
 }

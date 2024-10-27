@@ -10,8 +10,8 @@ import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
 import { getRandomNumberFromInterval, ySort } from "../../../utils/utils";
 import { Vector } from "../../../utils/vector";
+import { Cell } from "../cell";
 import { Entity } from "../entity";
-import { Tile } from "../tile";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
@@ -21,7 +21,7 @@ const ANIMATION_SPEED = 8;
 export abstract class Unit extends Entity implements CallAble {
   protected name: string;
 
-  private path: Tile[];
+  private path: Cell[];
   private dimension: Dimension;
 
   private state: UnitStates;
@@ -30,14 +30,12 @@ export abstract class Unit extends Entity implements CallAble {
   private facing: string;
 
   private unitSpeed: number;
-  private speedVector: Vector;
 
   private facingTimer: Timer;
   private animationCounter: number;
 
-  protected isTileReach: boolean;
-  private distanceVector: Vector;
-  private distanceBetweenTwoTile: number;
+  private currentCellPos: Position = Position.zero();
+  private nextCellPos: Position = Position.zero();
 
   public constructor(entity: EntityType, name: string) {
     super(entity);
@@ -60,7 +58,6 @@ export abstract class Unit extends Entity implements CallAble {
     this.facing = this.randomFacing(Object.keys(this.directions));
 
     this.unitSpeed = UNIT_SPEED;
-    this.speedVector = Vector.zero();
 
     this.animationCounter = 0;
 
@@ -68,10 +65,6 @@ export abstract class Unit extends Entity implements CallAble {
       this.changeDirection()
     );
     this.facingTimer.activate();
-
-    this.isTileReach = true;
-    this.distanceVector = Vector.zero();
-    this.distanceBetweenTwoTile = 0;
   }
 
   private initDirections(): Record<string, number> {
@@ -148,16 +141,8 @@ export abstract class Unit extends Entity implements CallAble {
     this.facing = facing;
   }
 
-  public setPath(path: Tile[]): void {
+  public setPath(path: Cell[]): void {
     this.path = [...path];
-  }
-
-  public setTileReached(state: boolean): void {
-    this.isTileReach = state;
-  }
-
-  public isTileReached(): boolean {
-    return this.isTileReach;
   }
 
   public setState(newState: UnitStates): void {
@@ -201,41 +186,27 @@ export abstract class Unit extends Entity implements CallAble {
     }
   }
 
-  private calculateFacing(current: Tile, next: Tile): void {
+  private calculateFacing(current: Cell, next: Cell): void {
     const { i: currentI, j: currentJ } = current.getIndices();
     const { i: nextI, j: nextJ } = next.getIndices();
 
-    let facing: string = "";
-    let dirVector = Vector.zero();
-
     if (nextI < currentI && nextJ < currentJ) {
-      facing = "UP";
-      dirVector = new Vector(0, -1);
+      this.facing = "UP";
     } else if (nextI === currentI && nextJ < currentJ) {
-      facing = "UP_RIGHT";
-      dirVector = new Vector(1, -0.5);
+      this.facing = "UP_RIGHT";
     } else if (nextI > currentI && nextJ < currentJ) {
-      facing = "RIGHT";
-      dirVector = new Vector(1, 0);
+      this.facing = "RIGHT";
     } else if (nextI > currentI && nextJ === currentJ) {
-      facing = "DOWN_RIGHT";
-      dirVector = new Vector(1, 0.5);
+      this.facing = "DOWN_RIGHT";
     } else if (nextI > currentI && nextJ > currentJ) {
-      facing = "DOWN";
-      dirVector = new Vector(0, 1);
+      this.facing = "DOWN";
     } else if (nextI === currentI && nextJ > currentJ) {
-      facing = "DOWN_LEFT";
-      dirVector = new Vector(-1, 0.5);
+      this.facing = "DOWN_LEFT";
     } else if (nextI < currentI && nextJ > currentJ) {
-      facing = "LEFT";
-      dirVector = new Vector(-1, 0);
+      this.facing = "LEFT";
     } else if (nextI < currentI && nextJ === currentJ) {
-      facing = "UP_LEFT";
-      dirVector = new Vector(-1, -0.5);
+      this.facing = "UP_LEFT";
     }
-
-    this.facing = facing;
-    this.speedVector = dirVector.normalize().mult(this.unitSpeed);
   }
 
   protected calculateDistance(from: Position, to: Position): number {
@@ -249,68 +220,60 @@ export abstract class Unit extends Entity implements CallAble {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
     this.path = [];
-    this.isTileReach = true;
   }
 
-  private async setNextTile(): Promise<void> {
-    if (this.path.length > 1) {
-      const currentTile: Tile = this.path[0];
-      const nextTile: Tile = this.path[1];
-      const goal: Tile = this.path[this.path.length - 1];
+  private async setNextCell() {
+    const currentCell: Cell = this.path[0];
+    const nextCell: Cell = this.path[1];
+    const goal: Cell = this.path[this.path.length - 1];
 
-      this.sendMovingRequest(nextTile.getIndices(), goal.getIndices());
-      const indices: Indices = await ServerHandler.receiveAsyncMessage(
-        "game:unitMoving"
-      );
+    this.sendMovingRequest(nextCell.getIndices(), goal.getIndices());
+    const indices: Indices = await ServerHandler.receiveAsyncMessage(
+      "game:unitMoving"
+    );
 
-      this.setIndices(indices);
-      this.calculateFacing(currentTile, nextTile);
+    this.setIndices(indices);
+    this.calculateFacing(currentCell, nextCell);
+  }
 
-      const nextPos: Position = nextTile.getUnitPos();
+  private initCells(): void {
+    this.currentCellPos = this.getPosition();
+    this.nextCellPos = new Position(
+      this.path[1].getUnitPos().x - UNIT_ASSET_SIZE / 2,
+      this.path[1].getUnitPos().y - UNIT_ASSET_SIZE
+    );
+  }
 
-      const actualNextPos: Position = new Position(
-        nextPos.x - UNIT_ASSET_SIZE / 2,
-        nextPos.y - UNIT_ASSET_SIZE
-      );
-
-      this.distanceBetweenTwoTile = this.calculateDistance(
-        this.getPosition(),
-        actualNextPos
-      );
-
-      this.path.shift();
-      this.isTileReach = false;
-    } else if (this.path.length === 1) {
-      const nextTile: Tile = this.path[0];
-      this.sendMovingRequest(this.getIndices(), nextTile.getIndices());
-
-      const indices: Indices = await ServerHandler.receiveAsyncMessage(
-        "game:unitMoving"
-      );
-
-      this.path.shift();
-      this.setIndices(indices);
-      this.reset();
-    }
+  private setNextFace(): void {
+    const currentCell: Cell = this.path[0];
+    const nextCell: Cell = this.path[1];
+    this.calculateFacing(currentCell, nextCell);
   }
 
   private move(dt: number): void {
-    if (this.isTileReach) {
-      this.distanceVector = Vector.zero();
-      this.setNextTile();
-    } else {
-      const speed: Vector = this.speedVector.mult(dt);
-      this.distanceVector = this.distanceVector.add(speed) as Vector;
+    if (this.path.length > 1) {
+      this.setNextFace();
+      this.initCells();
 
-      if (
-        Math.abs(this.distanceVector.x) < this.distanceBetweenTwoTile &&
-        Math.abs(this.distanceVector.y) < this.distanceBetweenTwoTile
-      ) {
-        this.setPosition(this.getPosition().add(speed));
-        ySort(state.game.players[this.entity.data.owner].units);
+      const { x: startX, y: startY }: Position = this.currentCellPos;
+      const { x: endX, y: endY }: Position = this.nextCellPos;
+
+      let dirVector: Vector = new Vector(endX - startX, endY - startY);
+      const distance = dirVector.getDistance();
+
+      dirVector = dirVector.normalize();
+      const maxMove = UNIT_SPEED * dt;
+
+      if (distance > maxMove) {
+        const moveVector: Vector = dirVector.mult(maxMove);
+        this.setPosition(this.getPosition().add(moveVector));
       } else {
-        this.isTileReach = true;
+        this.setPosition(this.nextCellPos);
+        this.setNextCell();
+        this.path.shift();
       }
+    } else {
+      this.reset();
     }
   }
 

@@ -44,12 +44,12 @@ export class Knight extends Soldier {
   }
 
   protected attack(myUnit: Soldier, opponentUnit: Soldier): void {
-    if (myUnit.isTileReached() && opponentUnit.isTileReached()) {
-      if (!this.attackTimer.isTimerActive()) {
-        myUnit.setState(UnitStates.Attacking);
-        opponentUnit.setState(UnitStates.Attacking);
-        this.attackTimer.activate();
-      }
-    }
+    // if (myUnit.isCellReached() && opponentUnit.isCellReached()) {
+    //   if (!this.attackTimer.isTimerActive()) {
+    //     myUnit.setState(UnitStates.Attacking);
+    //     opponentUnit.setState(UnitStates.Attacking);
+    //     this.attackTimer.activate();
+    //   }
+    // }
   }
 }

@@ -1,5 +1,5 @@
 import { ctx } from "../init";
-import { TILE_SIZE } from "../settings";
+import { CELL_SIZE } from "../settings";
 import { Position } from "./position";
 
 export class RangeIndicator {
@@ -13,7 +13,7 @@ export class RangeIndicator {
 
   constructor(pos: Position, radius: number, color: string) {
     this.position = pos;
-    this.radius = radius * TILE_SIZE;
+    this.radius = radius * CELL_SIZE;
     this.color = color;
 
     this.cartesianCenter = Position.zero();

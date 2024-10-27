@@ -24,7 +24,7 @@ export const ITEM_SIZE: number = 96;
 export const ITEM_OFFSET: number = 19;
 export const HOUSE_ITEM_SIZE: Dimension = new Dimension(ITEM_SIZE, ITEM_SIZE);
 
-export const TILE_SIZE = 48;
+export const CELL_SIZE = 48;
 export const FPS = 30;
 
 export const CAMERA_SPEED = 700;

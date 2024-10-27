@@ -57,6 +57,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
         });
       } else {
         unit.setIndices(next);
+        console.log(unit.getIndices());
         Communicate.sendMessageToEveryOne(io, socket, "game:unitMoving", next);
       }
     }

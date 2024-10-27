@@ -7,12 +7,12 @@ import { Position } from "../../utils/position";
 import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
 import { Camera } from "../camera/camera";
 import { BuildingManager } from "./building/manager/buildingManager";
-import { Tile } from "./tile";
+import { Cell } from "./cell";
 import { UnitManager } from "./unit/manager/unitManager";
 
 export class World implements MouseClicker {
   private mousePos: Position;
-  private world: Tile[][];
+  private world: Cell[][];
   private camera: Camera;
 
   private buildingManager: BuildingManager;
@@ -38,7 +38,7 @@ export class World implements MouseClicker {
         this.world.push([]);
         for (let col = 0; col < tiles[row].length; ++col) {
           this.world[row].push(
-            new Tile(
+            new Cell(
               new Indices(row, col),
               state.images.ground[tiles[row][col]].url
             )

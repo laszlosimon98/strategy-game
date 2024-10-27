@@ -7,10 +7,10 @@ import { EntityType } from "../../../../types/gameType";
 import { Indices } from "../../../../utils/indices";
 import { Position } from "../../../../utils/position";
 import { Manager } from "../../manager/manager";
-import { Tile } from "../../tile";
 import { Unit } from "../unit";
 import { UnitStates } from "../../../../enums/unitsState";
 import { Knight } from "../units/knight";
+import { Cell } from "../../cell";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -102,7 +102,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:pathFind",
       ({ path, entity }: { path: Indices[]; entity: EntityType }) => {
-        const _path: Tile[] = [];
+        const _path: Cell[] = [];
 
         path.forEach((index) => {
           const i = index.i;
