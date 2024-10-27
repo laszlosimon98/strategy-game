@@ -128,10 +128,6 @@ export abstract class Unit extends Entity implements CallAble {
     }
   }
 
-  public getRange(): number {
-    return 0;
-  }
-
   public getState(): string {
     return this.state;
   }
@@ -269,7 +265,6 @@ export abstract class Unit extends Entity implements CallAble {
       let dirVector: Vector = new Vector(endX - startX, endY - startY);
       const distance = dirVector.getDistance();
       const maxMove = UNIT_SPEED * dt;
-      console.log(maxMove);
 
       if (distance > maxMove) {
         this.setNextCell();

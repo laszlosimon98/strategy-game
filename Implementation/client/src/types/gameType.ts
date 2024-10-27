@@ -3,6 +3,7 @@ import { GameState } from "../enums/gameState";
 import { PageState } from "../enums/pageState";
 import { Building } from "../game/world/building/building";
 import { Unit } from "../game/world/unit/unit";
+import { Soldier } from "../game/world/unit/units/soldier";
 import { Dimension } from "../utils/dimension";
 import { Indices } from "../utils/indices";
 import { Position } from "../utils/position";
@@ -81,7 +82,7 @@ export type PlayerGameType = {
     name: string;
     color: ColorType;
     buildings: Building[];
-    units: Unit[];
+    units: Soldier[];
   };
 };
 

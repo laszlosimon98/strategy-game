@@ -15,6 +15,7 @@ import {
   calculateDistance,
   isometricToCartesian,
 } from "../../../../utils/utils";
+import { Soldier } from "../units/soldier";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -44,17 +45,34 @@ export class UnitManager extends Manager<Unit> {
               isometricToCartesian(otherUnit.getPosition())
             );
 
+            let distanceToCurrentOpponent: number;
+
+            const opponent = myUnit.getOpponent();
+            if (opponent) {
+              distanceToCurrentOpponent = calculateDistance(
+                isometricToCartesian(myUnit.getPosition()),
+                isometricToCartesian(opponent.getPosition())
+              );
+              if (distanceToCurrentOpponent > myUnit.getRange()) {
+                myUnit.setOpponent(undefined);
+              }
+            }
+
             if (
               distance < myUnit.getRange() &&
               myUnit.getState() !== UnitStates.Attacking
             ) {
+              myUnit.setOpponent(otherUnit);
               ServerHandler.sendMessage(
                 "game:unitStartAttacking",
                 myUnit.getEntity()
               );
-            } else if (
+            }
+
+            if (
               distance > myUnit.getRange() &&
-              myUnit.getState() === UnitStates.Attacking
+              myUnit.getState() === UnitStates.Attacking &&
+              !myUnit.getOpponent()
             ) {
               ServerHandler.sendMessage(
                 "game:unitStopAttacking",
@@ -135,7 +153,7 @@ export class UnitManager extends Manager<Unit> {
         entity: EntityType;
         properties: SoldierPropertiesType;
       }) => {
-        const unit: Unit = this.creator(Knight, { ...entity }, "knight", {
+        const unit: Soldier = this.creator(Knight, { ...entity }, "knight", {
           ...properties,
         });
 
@@ -167,9 +185,8 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStartAttacking",
       (unit: { owner: string; id: string }) => {
-        const a = this.findUnit(unit.owner, unit.id);
-        a.setState(UnitStates.Attacking);
-        console.log(a);
+        const _unit = this.findUnit(unit.owner, unit.id);
+        _unit.setState(UnitStates.Attacking);
       }
     );
 
@@ -193,9 +210,9 @@ export class UnitManager extends Manager<Unit> {
     );
   }
 
-  private findUnit(owner: string, id: string): Unit {
+  private findUnit(owner: string, id: string): Soldier {
     return state.game.players[owner].units.find(
       (unit) => unit.getEntity().data.id === id
-    ) as Unit;
+    ) as Soldier;
   }
 }

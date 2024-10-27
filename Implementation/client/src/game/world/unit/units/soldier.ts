@@ -14,6 +14,8 @@ export abstract class Soldier extends Unit {
 
   private visionIndicator: RangeIndicator;
 
+  private opponent: Soldier | undefined;
+
   constructor(
     entity: EntityType,
     name: string,
@@ -45,7 +47,7 @@ export abstract class Soldier extends Unit {
 
   public draw(): void {
     this.rangeIndicator.draw();
-    this.visionIndicator.draw();
+    // this.visionIndicator.draw();
     super.draw();
   }
 
@@ -60,12 +62,20 @@ export abstract class Soldier extends Unit {
       )
     );
 
-    this.visionIndicator.update(
-      new Position(
-        this.renderPos.x + UNIT_SIZE.width / 2,
-        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
-      )
-    );
+    // this.visionIndicator.update(
+    //   new Position(
+    //     this.renderPos.x + UNIT_SIZE.width / 2,
+    //     this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+    //   )
+    // );
+  }
+
+  public setOpponent(soldier: Soldier | undefined): void {
+    this.opponent = soldier;
+  }
+
+  public getOpponent(): Soldier | undefined {
+    return this.opponent;
   }
 
   public getRange(): number {
