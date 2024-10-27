@@ -30,6 +30,12 @@ export type EntityType = {
   };
 };
 
+export type SoldierPropertiesType = {
+  damage: number;
+  range: number;
+  health: number;
+};
+
 type LanguageType = { language: "hu" | "en" };
 
 type ImagesType = {

@@ -43,13 +43,6 @@ export const getRandomNumberFromInterval = (
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-export const calculateDistance = (from: Position, to: Position): number => {
-  const x = to.x - from.x;
-  const y = to.y - from.y;
-  const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-  return distance;
-};
-
 export const ySort = (entityArray: Entity[]): void => {
   entityArray.sort((a: Entity, b: Entity) => {
     const { x: ax, y: ay } = a.getPosition();
@@ -67,4 +60,24 @@ export const ySort = (entityArray: Entity[]): void => {
 
     return 0;
   });
+};
+
+export const cartesianToIsometric = (pos: Position): Position => {
+  const { x, y } = pos;
+  const isoX = (x - y) * Math.cos(Math.PI / 6);
+  const isoY = (x + y) * Math.sin(Math.PI / 6);
+  return new Position(isoX, isoY);
+};
+
+export const isometricToCartesian = (iso: Position): Position => {
+  const x = (iso.x / Math.cos(Math.PI / 6) + iso.y / Math.sin(Math.PI / 6)) / 2;
+  const y = (iso.y / Math.sin(Math.PI / 6) - iso.x / Math.cos(Math.PI / 6)) / 2;
+  return new Position(x, y);
+};
+
+export const calculateDistance = (from: Position, to: Position): number => {
+  const x = to.x - from.x;
+  const y = to.y - from.y;
+  const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  return distance;
 };

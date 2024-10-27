@@ -29,6 +29,7 @@ export type EntityType = {
     url: string;
     indices: Indices;
     dimensions: Dimension;
+    position: Position;
   };
 };
 

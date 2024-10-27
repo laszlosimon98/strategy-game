@@ -1,6 +1,7 @@
 import { ctx } from "../init";
 import { CELL_SIZE } from "../settings";
 import { Position } from "./position";
+import { cartesianToIsometric, isometricToCartesian } from "./utils";
 
 export class RangeIndicator {
   private position: Position;
@@ -9,9 +10,9 @@ export class RangeIndicator {
 
   private cartesianCenter: Position;
   private circlePoints: Position[];
-  private color: string;
+  private color: string | undefined;
 
-  constructor(pos: Position, radius: number, color: string) {
+  constructor(pos: Position, radius: number, color?: string) {
     this.position = pos;
     this.radius = radius * CELL_SIZE;
     this.color = color;
@@ -28,16 +29,18 @@ export class RangeIndicator {
     if (this.circlePoints.length) {
       ctx.save();
       ctx.beginPath();
-      // ctx.strokeStyle = this.color;
-      ctx.strokeStyle = "yellow";
-      ctx.lineWidth = 2;
+      if (this.color) {
+        ctx.strokeStyle = this.color;
+      } else {
+        ctx.strokeStyle = "yellow";
+      }
+
+      ctx.lineWidth = 5;
       ctx.globalAlpha = 0.1;
-      const center: Position = this.cartesianToIsometric(this.cartesianCenter);
+      const center: Position = cartesianToIsometric(this.cartesianCenter);
 
       for (let i = 0; i < this.numPoints; ++i) {
-        const isoPoint: Position = this.cartesianToIsometric(
-          this.circlePoints[i]
-        );
+        const isoPoint: Position = cartesianToIsometric(this.circlePoints[i]);
         ctx.moveTo(center.x, center.y);
         ctx.lineTo(isoPoint.x, isoPoint.y);
       }
@@ -49,23 +52,8 @@ export class RangeIndicator {
   }
 
   public update(pos: Position): void {
-    this.cartesianCenter = this.isometricToCartesian(pos);
+    this.cartesianCenter = isometricToCartesian(pos);
     this.circlePoints = this.generateCirclePoints(this.cartesianCenter);
-  }
-
-  private cartesianToIsometric(pos: Position): Position {
-    const { x, y } = pos;
-    const isoX = (x - y) * Math.cos(Math.PI / 6);
-    const isoY = (x + y) * Math.sin(Math.PI / 6);
-    return new Position(isoX, isoY);
-  }
-
-  private isometricToCartesian(iso: Position): Position {
-    const x =
-      (iso.x / Math.cos(Math.PI / 6) + iso.y / Math.sin(Math.PI / 6)) / 2;
-    const y =
-      (iso.y / Math.sin(Math.PI / 6) - iso.x / Math.cos(Math.PI / 6)) / 2;
-    return new Position(x, y);
   }
 
   private generateCirclePoints(center: Position): Position[] {

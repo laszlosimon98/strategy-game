@@ -1,28 +1,51 @@
 import { state } from "../../../../data/state";
-import { ServerHandler } from "../../../../server/serverHandler";
-import { EntityType } from "../../../../types/gameType";
+import { UNIT_SIZE } from "../../../../settings";
+import { EntityType, SoldierPropertiesType } from "../../../../types/gameType";
 import { Position } from "../../../../utils/position";
+import { RangeIndicator } from "../../../../utils/rangeIndicator";
 import { Timer } from "../../../../utils/timer";
 import { Unit } from "../unit";
 
 export abstract class Soldier extends Unit {
-  protected range: number = 0;
-  protected health: number = 0;
-  protected damage: number = 0;
+  protected properties: SoldierPropertiesType;
 
   protected attackTimer: Timer;
-  private keys: string[];
+  private rangeIndicator: RangeIndicator;
 
-  constructor(entity: EntityType, name: string) {
+  private visionIndicator: RangeIndicator;
+
+  constructor(
+    entity: EntityType,
+    name: string,
+    properties: SoldierPropertiesType
+  ) {
     super(entity, name);
+    this.properties = properties;
 
     this.attackTimer = new Timer(1500);
     this.attackTimer.activate();
 
-    this.keys = Object.keys(state.game.players);
+    this.rangeIndicator = new RangeIndicator(
+      new Position(
+        this.renderPos.x + UNIT_SIZE.width / 2,
+        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+      ),
+      this.properties.range
+    );
+
+    this.visionIndicator = new RangeIndicator(
+      new Position(
+        this.renderPos.x + UNIT_SIZE.width / 2,
+        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+      ),
+      Math.max(this.properties.range, 5),
+      state.game.players[this.entity.data.owner].color
+    );
   }
 
   public draw(): void {
+    this.rangeIndicator.draw();
+    this.visionIndicator.draw();
     super.draw();
   }
 
@@ -30,40 +53,25 @@ export abstract class Soldier extends Unit {
     super.update(dt, cameraPos);
     this.attackTimer.update();
 
-    this.keys.forEach((key1) => {
-      this.keys.forEach((key2) => {
-        if (key1 !== key2) {
-          state.game.players[key1].units.forEach((unit1) => {
-            state.game.players[key2].units.forEach((unit2) => {
-              if (
-                this.calculateDistance(
-                  unit1.getPosition(),
-                  unit2.getPosition()
-                ) < this.range
-              ) {
-                this.attack(unit1 as Soldier, unit2 as Soldier);
-              }
-            });
-          });
-        }
-      });
-    });
+    this.rangeIndicator.update(
+      new Position(
+        this.renderPos.x + UNIT_SIZE.width / 2,
+        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+      )
+    );
 
-    // state.game.players[ServerHandler.getId()].units.forEach((myUnit) => {
-    //   this.oppenentKeys.forEach((key) => {
-    //     state.game.players[key].units.forEach((opponentUnit) => {
-    //       if (
-    //         this.calculateDistance(
-    //           myUnit.getPosition(),
-    //           opponentUnit.getPosition()
-    //         ) < this.range
-    //       ) {
-    //         this.attack(myUnit as Soldier, opponentUnit as Soldier);
-    //       }
-    //     });
-    //   });
-    // });
+    this.visionIndicator.update(
+      new Position(
+        this.renderPos.x + UNIT_SIZE.width / 2,
+        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+      )
+    );
+  }
+
+  public getRange(): number {
+    return this.rangeIndicator.getRange();
   }
 
   protected abstract attack(unit: Soldier, opponentUnit: Soldier): void;
+  protected abstract stopAttack(unit: Soldier, opponentUnit: Soldier): void;
 }

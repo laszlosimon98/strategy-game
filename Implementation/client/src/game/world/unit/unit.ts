@@ -15,7 +15,7 @@ import { Entity } from "../entity";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
-const UNIT_SPEED = 80;
+const UNIT_SPEED = 50;
 const ANIMATION_SPEED = 8;
 
 export abstract class Unit extends Entity implements CallAble {
@@ -29,13 +29,11 @@ export abstract class Unit extends Entity implements CallAble {
   private directions: Record<string, number>;
   private facing: string;
 
-  private unitSpeed: number;
-
   private facingTimer: Timer;
   private animationCounter: number;
 
-  private currentCellPos: Position = Position.zero();
-  private nextCellPos: Position = Position.zero();
+  private currentCellPos: Position;
+  private nextCellPos: Position;
 
   public constructor(entity: EntityType, name: string) {
     super(entity);
@@ -57,14 +55,15 @@ export abstract class Unit extends Entity implements CallAble {
     this.directions = this.initDirections();
     this.facing = this.randomFacing(Object.keys(this.directions));
 
-    this.unitSpeed = UNIT_SPEED;
-
     this.animationCounter = 0;
 
     this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000), () =>
       this.changeDirection()
     );
     this.facingTimer.activate();
+
+    this.currentCellPos = Position.zero();
+    this.nextCellPos = Position.zero();
   }
 
   private initDirections(): Record<string, number> {
@@ -127,6 +126,18 @@ export abstract class Unit extends Entity implements CallAble {
     if (this.state === UnitStates.Walking) {
       this.move(dt);
     }
+  }
+
+  public getRange(): number {
+    return 0;
+  }
+
+  public getState(): string {
+    return this.state;
+  }
+
+  public getPath(): Cell[] {
+    return this.path;
   }
 
   public getName(): string {
@@ -209,11 +220,8 @@ export abstract class Unit extends Entity implements CallAble {
     }
   }
 
-  protected calculateDistance(from: Position, to: Position): number {
-    const x = to.x - from.x;
-    const y = to.y - from.y;
-    const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-    return distance;
+  public resetAnimation(): void {
+    this.animationCounter = 0;
   }
 
   private reset(): void {
@@ -260,18 +268,18 @@ export abstract class Unit extends Entity implements CallAble {
 
       let dirVector: Vector = new Vector(endX - startX, endY - startY);
       const distance = dirVector.getDistance();
-
-      dirVector = dirVector.normalize();
       const maxMove = UNIT_SPEED * dt;
+      console.log(maxMove);
 
       if (distance > maxMove) {
-        const moveVector: Vector = dirVector.mult(maxMove);
+        this.setNextCell();
+        const moveVector: Vector = dirVector.normalize().mult(maxMove);
         this.setPosition(this.getPosition().add(moveVector));
       } else {
         this.setPosition(this.nextCellPos);
-        this.setNextCell();
         this.path.shift();
       }
+      this.updatePositionRequest(this.entity);
     } else {
       this.reset();
     }
@@ -283,5 +291,9 @@ export abstract class Unit extends Entity implements CallAble {
       next,
       goal,
     });
+  }
+
+  private updatePositionRequest(entity: EntityType): void {
+    ServerHandler.sendMessage("game:unitMovePositionUpdate", entity);
   }
 }

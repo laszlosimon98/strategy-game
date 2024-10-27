@@ -1,4 +1,4 @@
-import { EntityType } from "../../types/types";
+import { EntityType, Position } from "../../types/types";
 import { Indices } from "../utils/indices";
 
 export class Unit {
@@ -18,5 +18,13 @@ export class Unit {
 
   public getIndices(): Indices {
     return this.entity.data.indices;
+  }
+
+  public setPosition(position: Position): void {
+    this.entity.data.position = position;
+  }
+
+  public getPosition(): Position {
+    return this.entity.data.position;
   }
 }

@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { EntityType } from "../../types/types";
+import { EntityType, Position } from "../../types/types";
 import { state } from "../../data/state";
 import { Communicate } from "../communicate";
 import { Unit } from "../game/unit";
@@ -15,4 +15,11 @@ export const getUnit = (
   );
 
   return unit;
+};
+
+export const calculateDistance = (from: Position, to: Position): number => {
+  const x = to.x - from.x;
+  const y = to.y - from.y;
+  const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  return distance;
 };
