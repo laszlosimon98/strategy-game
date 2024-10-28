@@ -17,9 +17,6 @@ export class Game {
   private mousePos: Position;
   private key: string;
 
-  // private pathStart: Indices;
-  // private pathEnd: Indices;
-
   public constructor() {
     this.gameMenu = new GameMenu(
       new Position(0, (canvasHeight - 500) / 5),
@@ -27,11 +24,6 @@ export class Game {
     );
 
     this.world = undefined;
-    // this.world = new World();
-
-    // this.pathStart = Indices.zero();
-    // this.pathEnd = Indices.zero();
-
     this.mousePos = Position.zero();
     this.key = "";
 
@@ -80,17 +72,9 @@ export class Game {
         } else {
           this.world?.handleLeftClick();
         }
-
-        // this.pathStart.setIndices(new Indices(indices.i, indices.j));
         break;
       case MouseButtons.Right:
         this.world?.handleRightClick();
-        // this.world.moveWorld();
-        // this.pathEnd.setIndices(new Indices(indices.i, indices.j));
-        // ServerHandler.sendMessage("game:pathFind", {
-        //   start: this.pathStart,
-        //   end: this.pathEnd,
-        // });
         break;
       case MouseButtons.Middle:
         this.world?.handleMiddleClick();

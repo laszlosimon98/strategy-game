@@ -1,4 +1,6 @@
+import { state } from "../data/state";
 import { Entity } from "../game/world/entity";
+import { Soldier } from "../game/world/unit/units/soldier";
 import { CELL_SIZE } from "../settings";
 import { Indices } from "./indices";
 import { Position } from "./position";
@@ -80,4 +82,10 @@ export const calculateDistance = (from: Position, to: Position): number => {
   const y = to.y - from.y;
   const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
   return distance;
+};
+
+export const findUnit = (owner: string, id: string): Soldier => {
+  return state.game.players[owner].units.find(
+    (unit) => unit.getEntity().data.id === id
+  ) as Soldier;
 };

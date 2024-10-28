@@ -27,8 +27,6 @@ export class World implements MouseClicker {
     this.unitManager = new UnitManager();
 
     this.handleCommunication();
-
-    console.log(state.game);
   }
 
   public init(): void {

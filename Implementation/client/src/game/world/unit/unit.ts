@@ -15,7 +15,7 @@ import { Entity } from "../entity";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
-const UNIT_SPEED = 50;
+const UNIT_SPEED = 80;
 const ANIMATION_SPEED = 8;
 
 export abstract class Unit extends Entity implements CallAble {
@@ -44,8 +44,9 @@ export abstract class Unit extends Entity implements CallAble {
       data: {
         ...entity.data,
         static:
-          state.images.colors[state.game.players[entity.data.owner].color]
-            .static.url,
+          state.images.colors[state.game.players[entity.data.owner].color][
+            this.name + "static"
+          ].url,
       },
     };
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);

@@ -1,11 +1,16 @@
+import { PropertyType, units, UnitsType } from "../../data/units";
 import { EntityType, Position } from "../../types/types";
 import { Indices } from "../utils/indices";
 
 export class Unit {
   private entity: EntityType;
+  private properties: PropertyType;
 
-  public constructor(entity: EntityType) {
+  public constructor(entity: EntityType, name: string) {
     this.entity = entity;
+    this.properties = {
+      ...units[name],
+    };
   }
 
   public getEntity(): EntityType {
@@ -26,5 +31,25 @@ export class Unit {
 
   public getPosition(): Position {
     return this.entity.data.position;
+  }
+
+  public getDamage(): number {
+    return this.properties.damage;
+  }
+
+  public getHealth(): number {
+    return this.properties.health;
+  }
+
+  public getRange(): number {
+    return this.properties.range;
+  }
+
+  public takeDamage(damage: number): void {
+    this.properties.health -= damage;
+  }
+
+  public isAlive(): boolean {
+    return this.properties.health > 0;
   }
 }

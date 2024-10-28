@@ -24,7 +24,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
 
     entity.data.owner = socket.id;
-    const unit = new Unit(entity);
+    const unit = new Unit(entity, name);
 
     state[Communicate.getCurrentRoom(socket)].players[socket.id].units.push(
       unit
@@ -86,30 +86,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
       owner: unit.data.owner,
     };
 
-    console.log(state[Communicate.getCurrentRoom(socket)].players[socket.id]);
-    // state[Communicate.getCurrentRoom(socket)].players[socket.id].units.forEach(
-    //   (myUnit) => {
-    //     Object.keys(state.game.players).forEach((otherId) => {
-    //       if (socket.id !== otherId) {
-    //         state.game.players[otherId].units.forEach((otherUnit) => {
-    //           const distance = calculateDistance(
-    //             myUnit.getPosition(),
-    //             otherUnit.getPosition()
-    //           );
-
-    //           if (distance < 1.5 * 48) {
-    //             Communicate.sendMessageToEveryOne(
-    //               io,
-    //               socket,
-    //               "game:unitStartAttacking",
-    //               a
-    //             );
-    //           }
-    //         });
-    //       }
-    //     });
-    //   }
-    // );
     Communicate.sendMessageToEveryOne(io, socket, "game:unitStartAttacking", a);
   };
 
@@ -122,9 +98,38 @@ export const handleUnits = (io: Server, socket: Socket) => {
     Communicate.sendMessageToEveryOne(io, socket, "game:unitStopAttacking", a);
   };
 
+  const dealDamage = ({
+    unit,
+    opponent,
+  }: {
+    unit: EntityType;
+    opponent: EntityType;
+  }): void => {
+    const _unit: Unit | undefined = getUnit(socket, unit);
+    const _opponent: Unit | undefined = getUnit(socket, opponent);
+
+    if (_unit && _opponent) {
+      _opponent.takeDamage(_unit.getDamage());
+
+      if (_opponent.getHealth() > 0) {
+        Communicate.sendMessageToEveryOne(io, socket, "game:unitDealDamage", {
+          entity: _opponent.getEntity(),
+          health: _opponent.getHealth(),
+        });
+      } else {
+        Communicate.sendMessageToEveryOne(io, socket, "game:unitDies", {
+          unit: _unit.getEntity(),
+          opponent: _opponent.getEntity(),
+        });
+      }
+    }
+  };
+
   socket.on("game:unitCreate", unitCreate);
   socket.on("game:unitMoving", unitMoving);
   socket.on("game:unitMovePositionUpdate", unitUpdatePosition);
   socket.on("game:unitStartAttacking", startAttack);
   socket.on("game:unitStopAttacking", stopAttack);
+
+  socket.on("game:unitDealDamage", dealDamage);
 };

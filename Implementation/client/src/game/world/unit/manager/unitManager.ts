@@ -13,9 +13,11 @@ import { Knight } from "../units/knight";
 import { Cell } from "../../cell";
 import {
   calculateDistance,
+  findUnit,
   isometricToCartesian,
 } from "../../../../utils/utils";
 import { Soldier } from "../units/soldier";
+import { Archer } from "../units/archer";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -35,7 +37,57 @@ export class UnitManager extends Manager<Unit> {
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
+    this.calculateAttack();
+  }
 
+  public handleLeftClick(
+    indices: Indices,
+    mousePos: Position,
+    cameraScroll: Position
+  ): void {
+    this.selectedUnit = this.selectObject(
+      mousePos,
+      cameraScroll,
+      "units"
+    ) as unknown as Unit | undefined;
+  }
+
+  public handleMiddleClick(
+    indices: Indices,
+    mousePos: Position,
+    cameraScroll: Position
+  ): void {
+    const color: string = state.game.players[ServerHandler.getId()].color;
+
+    const unitEntity: EntityType = {
+      data: {
+        id: uuidv4(),
+        owner: ServerHandler.getId(),
+        url: state.images.colors[color].archeridle.url,
+        indices,
+        dimensions: UNIT_SIZE,
+        position: this.pos,
+        static: "",
+      },
+    };
+
+    this.sendUnitCreateRequest(unitEntity);
+  }
+
+  public handleRightClick(indices: Indices): void {
+    if (this.selectedUnit) {
+      this.end = indices;
+
+      const entity: EntityType = this.selectedUnit.getEntity();
+      this.sendPathFindRequest(entity);
+    }
+  }
+
+  public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
+    this.hoverObject(mousePos, cameraScroll, "units");
+  }
+
+  private calculateAttack(): void {
     state.game.players[ServerHandler.getId()].units.forEach((myUnit) => {
       this.keys.forEach((otherId) => {
         if (ServerHandler.getId() !== otherId) {
@@ -85,55 +137,8 @@ export class UnitManager extends Manager<Unit> {
     });
   }
 
-  public handleLeftClick(
-    indices: Indices,
-    mousePos: Position,
-    cameraScroll: Position
-  ): void {
-    this.selectedUnit = this.selectObject(
-      mousePos,
-      cameraScroll,
-      "units"
-    ) as unknown as Unit | undefined;
-  }
-
-  public handleMiddleClick(
-    indices: Indices,
-    mousePos: Position,
-    cameraScroll: Position
-  ): void {
-    const color: string = state.game.players[ServerHandler.getId()].color;
-
-    const unitEntity: EntityType = {
-      data: {
-        id: uuidv4(),
-        owner: ServerHandler.getId(),
-        url: state.images.colors[color].knightidle.url,
-        indices,
-        dimensions: UNIT_SIZE,
-        position: this.pos,
-        static: "",
-      },
-    };
-
-    this.sendUnitCreateRequest(unitEntity);
-  }
-
-  public handleRightClick(indices: Indices): void {
-    if (this.selectedUnit) {
-      this.end = indices;
-
-      const entity: EntityType = this.selectedUnit.getEntity();
-      this.sendPathFindRequest(entity);
-    }
-  }
-
-  public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
-    this.hoverObject(mousePos, cameraScroll, "units");
-  }
-
   private sendUnitCreateRequest(entity: EntityType): void {
-    ServerHandler.sendMessage("game:unitCreate", { entity, name: "knight" });
+    ServerHandler.sendMessage("game:unitCreate", { entity, name: "archer" });
   }
 
   private sendPathFindRequest(entity: EntityType): void {
@@ -153,7 +158,7 @@ export class UnitManager extends Manager<Unit> {
         entity: EntityType;
         properties: SoldierPropertiesType;
       }) => {
-        const unit: Soldier = this.creator(Knight, { ...entity }, "knight", {
+        const unit: Soldier = this.creator(Archer, { ...entity }, "archer", {
           ...properties,
         });
 
@@ -185,7 +190,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStartAttacking",
       (unit: { owner: string; id: string }) => {
-        const _unit = this.findUnit(unit.owner, unit.id);
+        const _unit = findUnit(unit.owner, unit.id);
         _unit.setState(UnitStates.Attacking);
       }
     );
@@ -193,7 +198,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStopAttacking",
       (unit: { owner: string; id: string }) => {
-        const _unit = this.findUnit(unit.owner, unit.id);
+        const _unit = findUnit(unit.owner, unit.id);
         _unit.setState(UnitStates.Idle);
         _unit.resetAnimation();
       }
@@ -202,17 +207,39 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitMoveUpdatePosition",
       (entity: EntityType) => {
-        const unit = this.findUnit(entity.data.owner, entity.data.id);
+        const { owner, id } = entity.data;
+        const unit = findUnit(owner, id);
         unit.setPosition(
           new Position(entity.data.position.x, entity.data.position.y)
         );
       }
     );
-  }
 
-  private findUnit(owner: string, id: string): Soldier {
-    return state.game.players[owner].units.find(
-      (unit) => unit.getEntity().data.id === id
-    ) as Soldier;
+    ServerHandler.receiveMessage(
+      "game:unitDealDamage",
+      ({ entity, health }: { entity: EntityType; health: number }) => {
+        const { owner, id } = entity.data;
+        const unit = findUnit(owner, id);
+
+        unit.setHealth(health);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:unitDies",
+      ({ unit, opponent }: { unit: EntityType; opponent: EntityType }) => {
+        const { owner, id } = opponent.data;
+
+        const units = state.game.players[owner].units;
+
+        for (let i = units.length - 1; i >= 0; --i) {
+          if (units[i].getEntity().data.id === id) {
+            units.splice(i, 1);
+          }
+        }
+
+        ServerHandler.sendMessage("game:unitStopAttacking", unit);
+      }
+    );
   }
 }
