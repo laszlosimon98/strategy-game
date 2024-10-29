@@ -236,12 +236,12 @@ export abstract class Unit extends Entity implements CallAble {
     this.setState(UnitStates.Idle);
     this.path = [];
 
-    // const movingUnits = state.game.players[ServerHandler.getId()].movingUnits;
-    // for (let i = movingUnits.length - 1; i >= 0; --i) {
-    //   if (movingUnits[i] === findUnit(this.getEntity())) {
-    //     movingUnits.splice(i, 1);
-    //   }
-    // }
+    const movingUnits = state.game.players[ServerHandler.getId()].movingUnits;
+    for (let i = movingUnits.length - 1; i >= 0; --i) {
+      if (movingUnits[i] === findUnit(this.getEntity())) {
+        movingUnits.splice(i, 1);
+      }
+    }
   }
 
   private async setNextCell() {

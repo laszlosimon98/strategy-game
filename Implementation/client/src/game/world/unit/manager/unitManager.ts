@@ -49,7 +49,7 @@ export class UnitManager extends Manager<Unit> {
       mousePos,
       cameraScroll,
       "units"
-    ) as unknown as Unit | undefined;
+    ) as unknown as Soldier | undefined;
   }
 
   public handleMiddleClick(
@@ -200,7 +200,6 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStartAttacking",
       (entity: EntityType) => {
-        console.log(entity);
         const _unit = findUnit(entity);
         _unit.setPrevState(_unit.getState());
         _unit.setState(UnitStates.Attacking);

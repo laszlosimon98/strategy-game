@@ -51,7 +51,10 @@ export abstract class Soldier extends Unit {
     this.rangeIndicator.draw();
     // this.visionIndicator.draw();
     super.draw();
-    this.drawHealthBar();
+
+    if (this.properties.health < 100) {
+      this.drawHealthBar();
+    }
   }
 
   public update(dt: number, cameraPos: Position): void {
