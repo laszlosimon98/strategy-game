@@ -91,3 +91,11 @@ export const findUnit = (entity: EntityType): Soldier => {
     (unit) => unit.getEntity().data.id === id
   ) as Soldier;
 };
+
+export const removeElementFromArray = (arr: Entity[], element: Entity) => {
+  for (let i = arr.length - 1; i >= 0; --i) {
+    if (arr[i] == element) {
+      arr.splice(i, 1);
+    }
+  }
+};

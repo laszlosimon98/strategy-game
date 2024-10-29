@@ -1,6 +1,6 @@
-import { BuildingActionInterface } from "../../../../interfaces/buildingAction";
-import { EntityType } from "../../../../types/gameType";
-import { Building } from "../building";
+import { BuildingActionInterface } from "../../../../../interfaces/buildingAction";
+import { EntityType } from "../../../../../types/gameType";
+import { Building } from "../../building";
 
 export class Sawmill extends Building implements BuildingActionInterface {
   public constructor(building: EntityType) {

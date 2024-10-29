@@ -1,31 +1,67 @@
-import { ctx } from "../../../../../init";
-import { Text } from "../../../../../page/components/textComponents/text";
-import { BLACK_COLOR } from "../../../../../settings";
+import { ITEM_OFFSET, ITEM_SIZE } from "../../../../../settings";
 import { Dimension } from "../../../../../utils/dimension";
 import { Position } from "../../../../../utils/position";
+import { LabelButton } from "../../labelButton";
 import { Section } from "../../section";
 
 export class MilitarySection extends Section {
-  private text: Text;
-  private readonly title: string = "Haderő";
+  private ironSmelter: LabelButton;
+  private weaponSmith: LabelButton;
+  private toolSmith: LabelButton;
+  private barracks: LabelButton;
+  private guardHouse: LabelButton;
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
 
-    this.text = new Text(
-      new Position(
-        pos.x + dim.width / 2 - ctx.measureText(this.title).width / 2,
-        pos.y
-      ),
-      Dimension.zero(),
-      this.title,
-      false,
-      BLACK_COLOR
+    this.ironSmelter = new LabelButton(
+      new Position(pos.x, pos.y),
+      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      "buildings",
+      "empty",
+      "ironsmelter"
     );
+
+    this.weaponSmith = new LabelButton(
+      new Position(pos.x + ITEM_SIZE + ITEM_OFFSET, pos.y),
+      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      "buildings",
+      "empty",
+      "weaponsmith"
+    );
+
+    this.toolSmith = new LabelButton(
+      new Position(pos.x, pos.y + ITEM_SIZE),
+      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      "buildings",
+      "empty",
+      "toolsmith"
+    );
+
+    this.barracks = new LabelButton(
+      new Position(pos.x + ITEM_SIZE + ITEM_OFFSET, pos.y + ITEM_SIZE),
+      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      "buildings",
+      "empty",
+      "barracks"
+    );
+
+    this.guardHouse = new LabelButton(
+      new Position(pos.x, pos.y + ITEM_SIZE * 2),
+      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      "buildings",
+      "empty",
+      "ironsmelter"
+    );
+
+    this.labelbuttons.push(this.ironSmelter);
+    this.labelbuttons.push(this.weaponSmith);
+    this.labelbuttons.push(this.toolSmith);
+    this.labelbuttons.push(this.barracks);
+    this.labelbuttons.push(this.guardHouse);
   }
 
   draw(): void {
     super.draw();
-    this.text.draw();
   }
 }

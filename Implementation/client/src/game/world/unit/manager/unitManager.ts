@@ -15,6 +15,7 @@ import {
   calculateDistance,
   findUnit,
   isometricToCartesian,
+  removeElementFromArray,
 } from "../../../../utils/utils";
 import { Soldier } from "../units/soldier";
 import { Archer } from "../units/archer";
@@ -244,15 +245,9 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitDies",
       ({ unit, opponent }: { unit: EntityType; opponent: EntityType }) => {
-        const { owner, id } = opponent.data;
-
+        const { owner } = opponent.data;
         const units = state.game.players[owner].units;
-
-        for (let i = units.length - 1; i >= 0; --i) {
-          if (units[i].getEntity().data.id === id) {
-            units.splice(i, 1);
-          }
-        }
+        removeElementFromArray(units, findUnit(opponent));
 
         ServerHandler.sendMessage("game:unitStopAttacking", unit);
       }
