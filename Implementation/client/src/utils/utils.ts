@@ -2,6 +2,7 @@ import { state } from "../data/state";
 import { Entity } from "../game/world/entity";
 import { Soldier } from "../game/world/unit/units/soldier";
 import { CELL_SIZE } from "../settings";
+import { EntityType } from "../types/gameType";
 import { Indices } from "./indices";
 import { Position } from "./position";
 
@@ -84,7 +85,8 @@ export const calculateDistance = (from: Position, to: Position): number => {
   return distance;
 };
 
-export const findUnit = (owner: string, id: string): Soldier => {
+export const findUnit = (entity: EntityType): Soldier => {
+  const { owner, id } = entity.data;
   return state.game.players[owner].units.find(
     (unit) => unit.getEntity().data.id === id
   ) as Soldier;

@@ -8,7 +8,11 @@ import { Dimension } from "../../../utils/dimension";
 import { Indices } from "../../../utils/indices";
 import { Position } from "../../../utils/position";
 import { Timer } from "../../../utils/timer";
-import { getRandomNumberFromInterval, ySort } from "../../../utils/utils";
+import {
+  findUnit,
+  getRandomNumberFromInterval,
+  ySort,
+} from "../../../utils/utils";
 import { Vector } from "../../../utils/vector";
 import { Cell } from "../cell";
 import { Entity } from "../entity";
@@ -24,6 +28,7 @@ export abstract class Unit extends Entity implements CallAble {
   private path: Cell[];
   private dimension: Dimension;
 
+  private prevState: UnitStates;
   private state: UnitStates;
 
   private directions: Record<string, number>;
@@ -51,6 +56,7 @@ export abstract class Unit extends Entity implements CallAble {
     };
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
 
+    this.prevState = UnitStates.Idle;
     this.state = UnitStates.Idle;
 
     this.directions = this.initDirections();
@@ -123,14 +129,35 @@ export abstract class Unit extends Entity implements CallAble {
         this.facingTimer.activate();
       }
     }
-
-    if (this.state === UnitStates.Walking) {
-      this.move(dt);
-    }
   }
 
-  public getState(): string {
+  public getPrevState(): UnitStates {
+    return this.prevState;
+  }
+
+  public setPrevState(state: UnitStates): void {
+    this.prevState = state;
+  }
+
+  public getState(): UnitStates {
     return this.state;
+  }
+
+  public setState(newState: UnitStates): void {
+    this.state = newState;
+
+    const owner: string = this.entity.data.owner;
+    const color: string = state.game.players[owner].color;
+
+    const entity: EntityType = {
+      data: {
+        ...this.entity.data,
+        url: state.images.colors[color][this.name + this.state].url,
+      },
+    };
+
+    this.setEntity(entity);
+    this.setImage(entity.data.url);
   }
 
   public getPath(): Cell[] {
@@ -151,23 +178,6 @@ export abstract class Unit extends Entity implements CallAble {
 
   public setPath(path: Cell[]): void {
     this.path = [...path];
-  }
-
-  public setState(newState: UnitStates): void {
-    this.state = newState;
-
-    const owner: string = this.entity.data.owner;
-    const color: string = state.game.players[owner].color;
-
-    const entity: EntityType = {
-      data: {
-        ...this.entity.data,
-        url: state.images.colors[color][this.name + this.state].url,
-      },
-    };
-
-    this.setEntity(entity);
-    this.setImage(entity.data.url);
   }
 
   private animate(dt: number): void {
@@ -225,6 +235,13 @@ export abstract class Unit extends Entity implements CallAble {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
     this.path = [];
+
+    // const movingUnits = state.game.players[ServerHandler.getId()].movingUnits;
+    // for (let i = movingUnits.length - 1; i >= 0; --i) {
+    //   if (movingUnits[i] === findUnit(this.getEntity())) {
+    //     movingUnits.splice(i, 1);
+    //   }
+    // }
   }
 
   private async setNextCell() {
@@ -255,7 +272,7 @@ export abstract class Unit extends Entity implements CallAble {
     this.calculateFacing(currentCell, nextCell);
   }
 
-  private move(dt: number): void {
+  public move(dt: number): void {
     if (this.path.length > 1) {
       this.setNextFace();
       this.initCells();
@@ -266,16 +283,18 @@ export abstract class Unit extends Entity implements CallAble {
       let dirVector: Vector = new Vector(endX - startX, endY - startY);
       const distance = dirVector.getDistance();
       const maxMove = UNIT_SPEED * dt;
+      let newPos: Position;
 
       if (distance > maxMove) {
         this.setNextCell();
         const moveVector: Vector = dirVector.normalize().mult(maxMove);
-        this.setPosition(this.getPosition().add(moveVector));
+        newPos = this.getPosition().add(moveVector as Position);
       } else {
-        this.setPosition(this.nextCellPos);
+        newPos = this.nextCellPos;
         this.path.shift();
       }
-      this.updatePositionRequest(this.entity);
+      this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
+      ySort(state.game.players[ServerHandler.getId()].units);
     } else {
       this.reset();
     }
@@ -289,7 +308,15 @@ export abstract class Unit extends Entity implements CallAble {
     });
   }
 
-  private updatePositionRequest(entity: EntityType): void {
-    ServerHandler.sendMessage("game:unitMovePositionUpdate", entity);
+  private sendUpdatePositionRequest(
+    entity: EntityType,
+    newPos: Position,
+    direction: string
+  ): void {
+    ServerHandler.sendMessage("game:unitUpdatePosition", {
+      entity,
+      newPos,
+      direction,
+    });
   }
 }

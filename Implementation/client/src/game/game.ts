@@ -48,6 +48,7 @@ export class Game {
         color: players[id].color,
         buildings: [],
         units: [],
+        movingUnits: [],
       };
     });
   }

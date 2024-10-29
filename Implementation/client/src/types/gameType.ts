@@ -83,6 +83,7 @@ export type PlayerGameType = {
     color: ColorType;
     buildings: Building[];
     units: Soldier[];
+    movingUnits: Unit[];
   };
 };
 

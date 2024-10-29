@@ -5,7 +5,7 @@ import { Indices } from "../../../classes/utils/indices";
 import { calculateDistance, getUnit } from "../../../classes/utils/utils";
 import { Validator } from "../../../classes/validator";
 import { state } from "../../../data/state";
-import { EntityType } from "../../../types/types";
+import { EntityType, Position } from "../../../types/types";
 import { Cell } from "../../../classes/game/cell";
 import { World } from "../../../classes/game/world";
 import { PathFinder } from "../../../classes/pathFind/pathFinder";
@@ -67,35 +67,43 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  const unitUpdatePosition = (entity: EntityType): void => {
+  const unitUpdatePosition = ({
+    entity,
+    newPos,
+    direction,
+  }: {
+    entity: EntityType;
+    newPos: Position;
+    direction: string;
+  }): void => {
     const unit: Unit | undefined = getUnit(socket, entity);
-    if (unit) {
-      unit.setPosition(entity.data.position);
-    }
 
-    Communicate.sendMessageToEveryOneExceptSender(
-      socket,
-      "game:unitMoveUpdatePosition",
-      entity
-    );
+    if (unit) {
+      unit.setPosition(newPos);
+      Communicate.sendMessageToEveryOne(io, socket, "game:unitUpdatePosition", {
+        entity: unit.getEntity(),
+        newPos: unit.getPosition(),
+        direction,
+      });
+    }
   };
 
   const startAttack = (unit: EntityType): void => {
-    const a = {
-      id: unit.data.id,
-      owner: unit.data.owner,
-    };
-
-    Communicate.sendMessageToEveryOne(io, socket, "game:unitStartAttacking", a);
+    Communicate.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:unitStartAttacking",
+      unit
+    );
   };
 
   const stopAttack = (unit: EntityType): void => {
-    const a = {
-      id: unit.data.id,
-      owner: unit.data.owner,
-    };
-
-    Communicate.sendMessageToEveryOne(io, socket, "game:unitStopAttacking", a);
+    Communicate.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:unitStopAttacking",
+      unit
+    );
   };
 
   const dealDamage = ({
@@ -126,10 +134,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   socket.on("game:unitCreate", unitCreate);
+
   socket.on("game:unitMoving", unitMoving);
-  socket.on("game:unitMovePositionUpdate", unitUpdatePosition);
+  socket.on("game:unitUpdatePosition", unitUpdatePosition);
+
   socket.on("game:unitStartAttacking", startAttack);
   socket.on("game:unitStopAttacking", stopAttack);
-
   socket.on("game:unitDealDamage", dealDamage);
 };

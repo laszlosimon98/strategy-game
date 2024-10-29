@@ -21,13 +21,11 @@ import { Archer } from "../units/archer";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
-  private end: Indices;
   private keys: string[];
 
   public constructor() {
     super();
     this.selectedUnit = undefined;
-    this.end = Indices.zero();
     this.keys = Object.keys(state.game.players);
   }
 
@@ -37,6 +35,8 @@ export class UnitManager extends Manager<Unit> {
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
+    this.handleMove(dt);
+
     this.calculateAttack();
   }
 
@@ -76,10 +76,11 @@ export class UnitManager extends Manager<Unit> {
 
   public handleRightClick(indices: Indices): void {
     if (this.selectedUnit) {
-      this.end = indices;
-
       const entity: EntityType = this.selectedUnit.getEntity();
-      this.sendPathFindRequest(entity);
+      state.game.players[ServerHandler.getId()].movingUnits.push(
+        this.selectedUnit
+      );
+      this.sendPathFindRequest(entity, indices);
     }
   }
 
@@ -137,14 +138,22 @@ export class UnitManager extends Manager<Unit> {
     });
   }
 
+  private handleMove(dt: number): void {
+    state.game.players[ServerHandler.getId()].movingUnits.forEach((unit) => {
+      if (unit.getState() === UnitStates.Walking) {
+        unit.move(dt);
+      }
+    });
+  }
+
   private sendUnitCreateRequest(entity: EntityType): void {
     ServerHandler.sendMessage("game:unitCreate", { entity, name: "archer" });
   }
 
-  private sendPathFindRequest(entity: EntityType): void {
+  private sendPathFindRequest(entity: EntityType, goal: Indices): void {
     ServerHandler.sendMessage("game:pathFind", {
       entity,
-      goal: this.end,
+      goal,
     });
   }
 
@@ -158,9 +167,12 @@ export class UnitManager extends Manager<Unit> {
         entity: EntityType;
         properties: SoldierPropertiesType;
       }) => {
-        const unit: Soldier = this.creator(Archer, { ...entity }, "archer", {
-          ...properties,
-        });
+        const unit: Soldier = this.creator(
+          Archer,
+          entity,
+          "archer",
+          properties
+        );
 
         this.setObjectPosition(unit, entity.data.position);
         state.game.players[entity.data.owner].units.push(unit);
@@ -178,48 +190,53 @@ export class UnitManager extends Manager<Unit> {
           _path.push(this.world[i][j]);
         });
 
-        state.game.players[entity.data.owner].units.forEach((unit) => {
-          if (unit.equal(entity)) {
-            unit.setState(UnitStates.Walking);
-            unit.setPath([..._path]);
-          }
-        });
+        const unit = findUnit(entity);
+        unit.setPrevState(unit.getState());
+        unit.setState(UnitStates.Walking);
+        unit.setPath([..._path]);
       }
     );
 
     ServerHandler.receiveMessage(
       "game:unitStartAttacking",
-      (unit: { owner: string; id: string }) => {
-        const _unit = findUnit(unit.owner, unit.id);
+      (entity: EntityType) => {
+        console.log(entity);
+        const _unit = findUnit(entity);
+        _unit.setPrevState(_unit.getState());
         _unit.setState(UnitStates.Attacking);
       }
     );
 
     ServerHandler.receiveMessage(
       "game:unitStopAttacking",
-      (unit: { owner: string; id: string }) => {
-        const _unit = findUnit(unit.owner, unit.id);
-        _unit.setState(UnitStates.Idle);
+      (entity: EntityType) => {
+        const _unit = findUnit(entity);
+        _unit.setState(_unit.getPrevState());
         _unit.resetAnimation();
       }
     );
 
     ServerHandler.receiveMessage(
-      "game:unitMoveUpdatePosition",
-      (entity: EntityType) => {
-        const { owner, id } = entity.data;
-        const unit = findUnit(owner, id);
-        unit.setPosition(
-          new Position(entity.data.position.x, entity.data.position.y)
-        );
+      "game:unitUpdatePosition",
+      ({
+        entity,
+        newPos,
+        direction,
+      }: {
+        entity: EntityType;
+        newPos: Position;
+        direction: string;
+      }) => {
+        const unit = findUnit(entity);
+        unit.setPosition(new Position(newPos.x, newPos.y));
+        unit.setFacing(direction);
       }
     );
 
     ServerHandler.receiveMessage(
       "game:unitDealDamage",
       ({ entity, health }: { entity: EntityType; health: number }) => {
-        const { owner, id } = entity.data;
-        const unit = findUnit(owner, id);
+        const unit = findUnit(entity) as Soldier;
 
         unit.setHealth(health);
       }
