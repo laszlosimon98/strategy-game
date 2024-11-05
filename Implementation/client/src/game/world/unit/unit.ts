@@ -232,7 +232,7 @@ export abstract class Unit extends Entity implements CallAble {
     this.animationCounter = 0;
   }
 
-  private reset(): void {
+  public reset(): void {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
     this.path = [];
@@ -293,8 +293,12 @@ export abstract class Unit extends Entity implements CallAble {
       this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
       ySort(state.game.players[ServerHandler.getId()].units);
     } else {
-      this.reset();
+      this.sendDestinationReachedRequest(this.entity);
     }
+  }
+
+  private sendDestinationReachedRequest(entity: EntityType): void {
+    ServerHandler.sendMessage("game:unitDestinationReached", entity);
   }
 
   private sendMovingRequest(next: Indices, goal: Indices): void {

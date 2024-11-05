@@ -8,7 +8,7 @@ import { RangeIndicator } from "../../../../utils/rangeIndicator";
 import { Timer } from "../../../../utils/timer";
 import { Unit } from "../unit";
 
-export abstract class Soldier extends Unit {
+export class Soldier extends Unit {
   protected properties: SoldierPropertiesType;
 
   protected attackTimer: Timer;

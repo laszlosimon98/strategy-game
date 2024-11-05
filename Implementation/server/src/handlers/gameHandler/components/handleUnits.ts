@@ -88,6 +88,19 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  const unitDestinationReached = (entity: EntityType) => {
+    const unit: Unit | undefined = getUnit(socket, entity);
+
+    if (unit) {
+      Communicate.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:unitDestinationReached",
+        entity
+      );
+    }
+  };
+
   const startAttack = (unit: EntityType): void => {
     Communicate.sendMessageToEveryOne(
       io,
@@ -137,6 +150,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   socket.on("game:unitMoving", unitMoving);
   socket.on("game:unitUpdatePosition", unitUpdatePosition);
+  socket.on("game:unitDestinationReached", unitDestinationReached);
 
   socket.on("game:unitStartAttacking", startAttack);
   socket.on("game:unitStopAttacking", stopAttack);

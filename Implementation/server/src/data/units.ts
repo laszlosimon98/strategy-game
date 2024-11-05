@@ -16,6 +16,6 @@ export const units: UnitsType = {
   archer: {
     damage: 9,
     health: 100,
-    range: 5,
+    range: 4,
   },
 };

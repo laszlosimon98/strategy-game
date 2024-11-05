@@ -9,16 +9,16 @@ import { Position } from "../../../../utils/position";
 import { Manager } from "../../manager/manager";
 import { Unit } from "../unit";
 import { UnitStates } from "../../../../enums/unitsState";
-import { Knight } from "../units/knight";
 import { Cell } from "../../cell";
 import {
   calculateDistance,
   findUnit,
+  getImageNameFromUrl,
   isometricToCartesian,
   removeElementFromArray,
 } from "../../../../utils/utils";
 import { Soldier } from "../units/soldier";
-import { Archer } from "../units/archer";
+import { unitRegister } from "../unitRegister/unitRegister";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -59,12 +59,13 @@ export class UnitManager extends Manager<Unit> {
     cameraScroll: Position
   ): void {
     const color: string = state.game.players[ServerHandler.getId()].color;
+    const name = Math.random() < 0.5 ? "knight" : "archer";
 
     const unitEntity: EntityType = {
       data: {
         id: uuidv4(),
         owner: ServerHandler.getId(),
-        url: state.images.colors[color].archeridle.url,
+        url: state.images.colors[color][name + "idle"].url,
         indices,
         dimensions: UNIT_SIZE,
         position: this.pos,
@@ -72,7 +73,7 @@ export class UnitManager extends Manager<Unit> {
       },
     };
 
-    this.sendUnitCreateRequest(unitEntity);
+    this.sendUnitCreateRequest(unitEntity, name);
   }
 
   public handleRightClick(indices: Indices): void {
@@ -147,8 +148,8 @@ export class UnitManager extends Manager<Unit> {
     });
   }
 
-  private sendUnitCreateRequest(entity: EntityType): void {
-    ServerHandler.sendMessage("game:unitCreate", { entity, name: "archer" });
+  private sendUnitCreateRequest(entity: EntityType, name: string): void {
+    ServerHandler.sendMessage("game:unitCreate", { entity, name });
   }
 
   private sendPathFindRequest(entity: EntityType, goal: Indices): void {
@@ -168,10 +169,14 @@ export class UnitManager extends Manager<Unit> {
         entity: EntityType;
         properties: SoldierPropertiesType;
       }) => {
-        const unit: Soldier = this.creator(
-          Archer,
+        const name = getImageNameFromUrl(entity.data.url).includes("knight")
+          ? "knight"
+          : "archer";
+
+        const unit: Soldier = this.creator<Soldier>(
+          unitRegister[name],
           entity,
-          "archer",
+          name,
           properties
         );
 
@@ -230,6 +235,14 @@ export class UnitManager extends Manager<Unit> {
         const unit = findUnit(entity);
         unit.setPosition(new Position(newPos.x, newPos.y));
         unit.setFacing(direction);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:unitDestinationReached",
+      (entity: EntityType) => {
+        const unit = findUnit(entity);
+        unit.reset();
       }
     );
 
