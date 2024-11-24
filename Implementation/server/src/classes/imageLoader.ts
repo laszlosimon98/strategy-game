@@ -71,7 +71,14 @@ export class Loader {
     });
 
     Object.keys(routes).forEach((key) => {
-      const arr: string[] = ["buildings", "colors", "ground", "menu", "ui"];
+      const arr: string[] = [
+        "buildings",
+        "colors",
+        "ground",
+        "menu",
+        "ui",
+        "obstacles",
+      ];
       if (!arr.some((dirName) => dirName === key)) {
         delete routes[key];
       }

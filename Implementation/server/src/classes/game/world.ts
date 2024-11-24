@@ -1,73 +1,134 @@
 import { Socket } from "socket.io";
-import { MAP_SIZE } from "../../settings";
+import {
+  MAP_SEED,
+  MAP_SIZE,
+  ROCK_SPAWN_CHANCE,
+  TREE_SPAWN_CHANCE,
+} from "../../settings";
 import { Communicate } from "../communicate";
 import { Cell } from "./cell";
 import { state } from "../../data/state";
 import { Indices } from "../utils/indices";
+import { createNoise2D } from "simplex-noise";
+import alea from "alea";
+import { getRandomNumberFromInterval } from "../utils/utils";
 
 export class World {
+  private static world: Cell[][] = [];
+  // private static noise2D = createNoise2D();
+  private static scale = MAP_SIZE / 2;
+  private static noise2D = createNoise2D(alea(MAP_SEED));
+  private static mapSize = Math.floor(MAP_SIZE / 2);
   private constructor() {}
 
-  private static initNeighbor = (result: Cell[][], cell: Cell) => {
-    const { i, j } = cell.getIndices();
+  private static initNeighbor() {
+    for (let l = 0; l < MAP_SIZE; ++l) {
+      for (let k = 0; k < MAP_SIZE; ++k) {
+        const cell: Cell = this.world[l][k];
+        const { i, j } = cell.getIndices();
 
-    if (i > 0) {
-      cell.addNeighbors(result[i - 1][j]);
-    }
-
-    if (i < MAP_SIZE - 1) {
-      cell.addNeighbors(result[i + 1][j]);
-    }
-
-    if (j > 0) {
-      cell.addNeighbors(result[i][j - 1]);
-    }
-
-    if (j < MAP_SIZE - 1) {
-      cell.addNeighbors(result[i][j + 1]);
-    }
-
-    if (i > 0 && j > 0) {
-      cell.addNeighbors(result[i - 1][j - 1]);
-    }
-
-    if (i < MAP_SIZE - 1 && j < MAP_SIZE - 1) {
-      cell.addNeighbors(result[i + 1][j + 1]);
-    }
-
-    if (i > 0 && j < MAP_SIZE - 1) {
-      cell.addNeighbors(result[i - 1][j + 1]);
-    }
-
-    if (i < MAP_SIZE - 1 && j > 0) {
-      cell.addNeighbors(result[i + 1][j - 1]);
-    }
-  };
-
-  public static create(): Cell[][] {
-    const world: Cell[][] = [];
-
-    for (let i = 0; i < MAP_SIZE; ++i) {
-      world.push([]);
-      for (let j = 0; j < MAP_SIZE; ++j) {
-        const r = Math.random();
-        const cell = new Cell(new Indices(i, j));
-
-        if (r < 0.05) {
-          const type = Math.random() < 0.5 ? "grass_flower" : "grass_rock";
-          cell.setType(type);
+        if (i > 0) {
+          cell.addNeighbors(this.world[i - 1][j]);
         }
 
-        world[i].push(cell);
+        if (i < MAP_SIZE - 1) {
+          cell.addNeighbors(this.world[i + 1][j]);
+        }
+
+        if (j > 0) {
+          cell.addNeighbors(this.world[i][j - 1]);
+        }
+
+        if (j < MAP_SIZE - 1) {
+          cell.addNeighbors(this.world[i][j + 1]);
+        }
+
+        if (i > 0 && j > 0) {
+          cell.addNeighbors(this.world[i - 1][j - 1]);
+        }
+
+        if (i < MAP_SIZE - 1 && j < MAP_SIZE - 1) {
+          cell.addNeighbors(this.world[i + 1][j + 1]);
+        }
+
+        if (i > 0 && j < MAP_SIZE - 1) {
+          cell.addNeighbors(this.world[i - 1][j + 1]);
+        }
+
+        if (i < MAP_SIZE - 1 && j > 0) {
+          cell.addNeighbors(this.world[i + 1][j - 1]);
+        }
+      }
+    }
+  }
+
+  private static populateWorld() {
+    for (let i = 0; i < this.mapSize; ++i) {
+      for (let j = 0; j < this.mapSize; ++j) {
+        const terrainNoise = 100 * this.noise2D(i, j);
+        const treeNoise = 100 * this.noise2D(i / this.scale, j / this.scale);
+        const stoneNoise =
+          100 * this.noise2D((i / this.scale) * 2, (j / this.scale) * 2);
+
+        const cell: Cell = this.world[i][j];
+
+        if (terrainNoise >= 0 && terrainNoise <= 1) {
+          cell.setType("grass_flower");
+        }
+
+        if (terrainNoise >= ROCK_SPAWN_CHANCE) {
+          cell.setType("grass_rock");
+        }
+
+        if (treeNoise >= 50 || treeNoise <= -50) {
+          cell.setObstacle(true);
+          cell.setObstacleType("tree");
+        } else if (stoneNoise >= 60 || stoneNoise <= -80) {
+          cell.setObstacle(true);
+          cell.setObstacleType("stone");
+        }
+      }
+    }
+  }
+
+  private static mirrorWorld() {
+    for (let i = 0; i < this.mapSize; ++i) {
+      for (let j = 0; j < this.mapSize; ++j) {
+        const originalCell: Cell = this.world[i][j];
+        const xAxis: Cell = this.world[i][MAP_SIZE - j - 1];
+        const yAxis: Cell = this.world[MAP_SIZE - i - 1][j];
+        const xyAxis: Cell = this.world[MAP_SIZE - i - 1][MAP_SIZE - j - 1];
+
+        xAxis.setType(originalCell.getType());
+        xAxis.setObstacleType(originalCell.getObstacleType());
+        xAxis.setObstacle(originalCell.cellHasObstacle());
+
+        yAxis.setType(originalCell.getType());
+        yAxis.setObstacleType(originalCell.getObstacleType());
+        yAxis.setObstacle(originalCell.cellHasObstacle());
+
+        xyAxis.setType(originalCell.getType());
+        xyAxis.setObstacleType(originalCell.getObstacleType());
+        xyAxis.setObstacle(originalCell.cellHasObstacle());
+      }
+    }
+  }
+
+  public static createWorld(): Cell[][] {
+    this.world = [];
+    for (let i = 0; i < MAP_SIZE; ++i) {
+      this.world.push([]);
+      for (let j = 0; j < MAP_SIZE; ++j) {
+        const cell = new Cell(new Indices(i, j));
+        this.world[i].push(cell);
       }
     }
 
-    for (let i = 0; i < MAP_SIZE; ++i) {
-      for (let j = 0; j < MAP_SIZE; ++j) {
-        this.initNeighbor(world, world[i][j]);
-      }
-    }
-    return world;
+    this.populateWorld();
+    this.mirrorWorld();
+    this.initNeighbor();
+
+    return this.world;
   }
 
   public static getWorld(socket: Socket): Cell[][] {

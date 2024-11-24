@@ -8,6 +8,7 @@ import { Communicate } from "../communicate";
 import { Cell } from "./cell";
 import { EntityType } from "../../types/types";
 import { MAP_SIZE } from "../../settings";
+import { getImageNameFromUrl } from "../utils/utils";
 
 export class Builder {
   private constructor() {}
@@ -23,51 +24,35 @@ export class Builder {
   public static build(
     entity: EntityType,
     socket: Socket
-  ): {
-    newBuilding: Building | undefined;
-    changedCells: Cell[];
-  } {
+  ): Building | undefined {
     const { i, j } = entity.data.indices;
 
     if (!this.isPossibleToBuild(i, j, socket)) {
-      return { newBuilding: undefined, changedCells: [] };
+      return;
     }
 
     const world: Cell[][] = World.getWorld(socket);
     const newBuilding: Building = new Building(entity);
-    const changedCells: Cell[] = [];
+    const buildingName = getImageNameFromUrl(entity.data.url);
+
     newBuilding.setOwner(socket.id);
 
     state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings.push(
       newBuilding
     );
 
-    // for (let k = -1; k <= 1; ++k) {
-    //   for (let l = -1; l <= 1; ++l) {
-    //     if (i + k > 0 && i + k < MAP_SIZE && j + l > 0 && j + l < MAP_SIZE) {
-    //       const cell: Cell = world[i + k][j + l];
-    //       cell.setBuilding(true);
-    //       cell.setPrevType(cell.getType());
-    //       cell.setType("dirt");
-    //       changedCells.push(cell);
-    //     }
-    //   }
-    // }
-
     for (let l = 0; l < 2; ++l) {
       for (let k = 0; k < 2; ++k) {
         if (l === 1 && l === k) continue;
         if (i + l < MAP_SIZE && j + k < MAP_SIZE) {
           const cell: Cell = world[i + l][j + k];
-          cell.setBuilding(true);
-          cell.setPrevType(cell.getType());
-          cell.setType("dirt");
-          changedCells.push(cell);
+          cell.setObstacle(true);
+          cell.setObstacleType(buildingName);
         }
       }
     }
 
-    return { newBuilding, changedCells };
+    return newBuilding;
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {
@@ -75,7 +60,7 @@ export class Builder {
     const i = indices.i;
     const j = indices.j;
 
-    if (world[i][j].hasCellBuilding()) {
+    if (world[i][j].cellHasObstacle()) {
       const buildings: Building[] =
         state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings;
 
@@ -102,21 +87,11 @@ export class Builder {
           if (l === 1 && l === k) continue;
           if (i + l < MAP_SIZE && j + k < MAP_SIZE) {
             const cell: Cell = world[i + l][j + k];
-            cell.setBuilding(false);
-            cell.setType(cell.getPrevType());
+            cell.setObstacle(false);
+            cell.setObstacleType(null);
           }
         }
       }
-
-      // for (let k = -1; k <= 1; ++k) {
-      //   for (let l = -1; l <= 1; ++l) {
-      //     if (i + k > 0 && i + k < MAP_SIZE && j + l > 0 && j + l < MAP_SIZE) {
-      //       const cell: Cell = world[i + k][j + l];
-      //       cell.setBuilding(false);
-      //       cell.setType(cell.getPrevType());
-      //     }
-      //   }
-      // }
       return true;
     }
     return false;

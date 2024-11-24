@@ -25,45 +25,60 @@ export class World implements MouseClicker {
 
     this.buildingManager = new BuildingManager();
     this.unitManager = new UnitManager();
-
-    this.handleCommunication();
   }
 
   public init(): void {
     console.log(state.game.players);
-    ServerHandler.receiveMessage("game:createWorld", (tiles: TileType[][]) => {
-      for (let row = 0; row < tiles.length; ++row) {
-        this.world.push([]);
-        for (let col = 0; col < tiles[row].length; ++col) {
-          this.world[row].push(
-            new Cell(
-              new Indices(row, col),
-              state.images.ground[tiles[row][col]].url
-            )
-          );
+    ServerHandler.receiveMessage(
+      "game:createWorld",
+      ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any }) => {
+        for (let row = 0; row < tiles.length; ++row) {
+          this.world.push([]);
+          for (let col = 0; col < tiles[row].length; ++col) {
+            if (obstacles[row][col]) {
+              this.world[row].push(
+                new Cell(
+                  new Indices(row, col),
+                  state.images.ground[tiles[row][col]].url,
+                  state.images.obstacles[obstacles[row][col]].url
+                )
+              );
+            } else {
+              this.world[row].push(
+                new Cell(
+                  new Indices(row, col),
+                  state.images.ground[tiles[row][col]].url
+                )
+              );
+            }
+          }
         }
+
+        ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
+          this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+        });
+
+        this.unitManager.setWorld(this.world);
+        this.buildingManager.setWorld(this.world);
       }
-
-      ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-        this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
-      });
-
-      this.unitManager.setWorld(this.world);
-      this.buildingManager.setWorld(this.world);
-    });
+    );
   }
 
   public draw(): void {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
-        // tile.drawNormalGrid();
-        // tile.drawIsometricGrid();
         tile.draw();
+        tile.drawObstacles();
       });
     });
-
     this.unitManager.draw();
     this.buildingManager.draw();
+
+    // this.world.forEach((tiles) => {
+    //   tiles.forEach((tile) => {
+    //     tile.drawObstacles();
+    //   });
+    // });
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
@@ -153,14 +168,5 @@ export class World implements MouseClicker {
 
   public getCameraScroll(): Position {
     return this.camera.getScroll();
-  }
-
-  private handleCommunication(): void {
-    ServerHandler.receiveMessage(
-      "game:pathFind",
-      ({ path }: { path: Indices[] }) => {
-        path.forEach((index) => this.world[index.i][index.j].setTemp());
-      }
-    );
   }
 }

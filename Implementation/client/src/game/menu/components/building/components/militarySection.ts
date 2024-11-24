@@ -47,11 +47,11 @@ export class MilitarySection extends Section {
     );
 
     this.guardHouse = new LabelButton(
-      new Position(pos.x, pos.y + ITEM_SIZE * 2),
+      new Position(pos.x, pos.y + ITEM_SIZE * 2 + ITEM_OFFSET),
       new Dimension(ITEM_SIZE, ITEM_SIZE),
       "buildings",
       "empty",
-      "ironsmelter"
+      "guardhouse"
     );
 
     this.labelbuttons.push(this.ironSmelter);

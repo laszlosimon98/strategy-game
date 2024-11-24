@@ -20,7 +20,7 @@ export const buildingRegister: Record<string, typeof Building> = {
   barracks: Barracks,
   farm: Farm,
   forester: Forester,
-  guardHouse: GuardHouse,
+  guardhouse: GuardHouse,
   ironsmelter: IronSmelter,
   mill: Mill,
   residence: Residence,

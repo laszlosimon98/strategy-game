@@ -13,26 +13,15 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const {
-      newBuilding,
-      changedCells,
-    }: {
-      newBuilding: Building | undefined;
-      changedCells: Cell[];
-    } = Builder.build(entity, socket);
+    const newBuilding: Building | undefined = Builder.build(entity, socket);
 
     if (newBuilding) {
-      const cells = changedCells.map((cell) => {
-        return {
-          indices: cell.getIndices(),
-          type: cell.getType(),
-        };
-      });
-
-      Communicate.sendMessageToEveryOne(io, socket, "game:build", {
-        newBuilding: newBuilding.getEntity(),
-        changedCells: cells,
-      });
+      Communicate.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:build",
+        newBuilding.getEntity()
+      );
     }
   };
 

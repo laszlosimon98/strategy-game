@@ -7,16 +7,18 @@ import { Vector } from "../../utils/vector";
 export class Cell {
   private indices: Indices;
   private position: Vector;
+
   private renderPos: Position;
   private buildingPos: Position;
   private unitPos: Position;
   private cameraPos: Position;
+  private obstaclePos: Position;
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
-  private temp: boolean = false;
+  private obstacleImage: HTMLImageElement | undefined;
 
-  public constructor(indices: Indices, type: string) {
+  public constructor(indices: Indices, type: string, obstacle?: string) {
     this.indices = indices;
     this.position = new Vector(indices.i, indices.j);
 
@@ -45,21 +47,28 @@ export class Cell {
         CELL_SIZE / 2
     );
 
+    this.obstaclePos = new Position(
+      this.isometricPos[0].x,
+      this.isometricPos[0].y - 64
+    );
+
     this.image = new Image();
     this.image.src = type;
-  }
 
-  public setTemp(): void {
-    this.temp = !this.temp;
+    if (obstacle) {
+      this.obstacleImage = new Image();
+      this.obstacleImage.src = obstacle;
+    }
   }
 
   public draw(): void {
-    ctx.save();
-    if (this.temp) {
-      ctx.globalAlpha = 0.5;
-    }
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
-    ctx.restore();
+  }
+
+  public drawObstacles(): void {
+    if (this.obstacleImage) {
+      ctx.drawImage(this.obstacleImage, this.obstaclePos.x, this.obstaclePos.y);
+    }
   }
 
   public update(cameraScroll: Position): void {
@@ -67,6 +76,13 @@ export class Cell {
       this.isometricPos[0].x - CELL_SIZE + cameraScroll.x,
       this.isometricPos[0].y - 1 + cameraScroll.y
     );
+
+    if (this.obstacleImage) {
+      this.obstaclePos = new Position(
+        this.isometricPos[0].x - this.obstacleImage.width / 2 + cameraScroll.x,
+        this.isometricPos[0].y - this.obstacleImage.height / 2 + cameraScroll.y
+      );
+    }
   }
 
   public setImage(image: string): void {

@@ -25,8 +25,14 @@ export const handleStart = (io: Server, socket: Socket) => {
       getPlayers()
     );
 
-    const tiles = createWorld();
-    Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", tiles);
+    const world = createWorld();
+    const tiles = getTiles(world);
+    const obstacles = getObstacles(world);
+
+    Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", {
+      tiles,
+      obstacles,
+    });
 
     const players: PlayerType = getPlayers();
 
@@ -38,15 +44,27 @@ export const handleStart = (io: Server, socket: Socket) => {
     });
   };
 
-  const createWorld = (): TileType[][] => {
-    const world: Cell[][] = World.create();
+  const createWorld = (): Cell[][] => {
+    const world: Cell[][] = World.createWorld();
     World.setWorld(world, socket);
 
+    return world;
+  };
+
+  const getTiles = (world: Cell[][]): TileType[][] => {
     const tiles: TileType[][] = world.map((cells) =>
       cells.map((cell) => cell.getType())
     );
 
     return tiles;
+  };
+
+  const getObstacles = (world: Cell[][]): any => {
+    const obstacles: any = world.map((cells) =>
+      cells.map((cell) => cell.getObstacleType())
+    );
+
+    return obstacles;
   };
 
   socket.on("game:starts", gameStarts);

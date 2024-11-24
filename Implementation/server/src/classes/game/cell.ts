@@ -14,8 +14,8 @@ export class Cell {
   private prevType: TileType;
   private type: TileType;
 
-  private hasBuilding: boolean;
   private hasObstacle: boolean;
+  private obstacleType: string | null = null;
 
   public constructor(indices: Indices) {
     this.indices = indices;
@@ -30,7 +30,6 @@ export class Cell {
     this.prevType = "grass";
     this.type = "grass";
 
-    this.hasBuilding = false;
     this.hasObstacle = false;
   }
 
@@ -46,12 +45,20 @@ export class Cell {
     return this.prevType;
   }
 
-  public setBuilding(state: boolean): void {
-    this.hasBuilding = state;
-  }
-
   public setObstacle(state: boolean): void {
     this.hasObstacle = state;
+  }
+
+  public cellHasObstacle(): boolean {
+    return this.hasObstacle;
+  }
+
+  public setObstacleType(type: string | null): void {
+    this.obstacleType = type;
+  }
+
+  public getObstacleType(): string | null {
+    return this.obstacleType;
   }
 
   public setType(type: TileType): void {
@@ -103,15 +110,11 @@ export class Cell {
   }
 
   public isWalkAble(): boolean {
-    return !this.hasBuilding && !this.hasObstacle;
+    return !this.hasObstacle;
   }
 
   public isBuildAble(): boolean {
     return this.type === "grass" && this.isWalkAble();
-  }
-
-  public hasCellBuilding(): boolean {
-    return this.hasBuilding;
   }
 
   public equals(other: Cell) {

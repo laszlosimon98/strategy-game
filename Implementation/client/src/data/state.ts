@@ -27,6 +27,7 @@ export const state: stateType = {
     ui: {},
     colors: {},
     ground: {},
+    obstacles: {},
   },
   navigation: {
     pageState: PageState.MainMenu,

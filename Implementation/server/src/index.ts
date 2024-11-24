@@ -7,7 +7,7 @@ import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler/gameHandler";
 import path from "path";
 import { imageHandler } from "./handlers/imageHandler";
-import { Loader } from "./classes/loader";
+import { Loader } from "./classes/imageLoader";
 
 const PORT = 3000;
 

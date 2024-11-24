@@ -45,6 +45,7 @@ type ImagesType = {
     colors: any;
     ground: any;
     ui: any;
+    obstacles: any;
   };
 };
 
