@@ -6,6 +6,11 @@ import sizeOf from "image-size";
 export class Loader {
   private constructor() {}
 
+  /**
+   * Kinyeri a megadott könyvtárból és alkönyvtáraiból a .png kiterjesztésű képeket
+   * @param {string} _dir könyvtár elérési út
+   * @returns
+   */
   private static async getFiles(_dir: string): Promise<string[]> {
     const result: string[] = [];
     try {
@@ -22,12 +27,14 @@ export class Loader {
     return result;
   }
 
-  public static async loadImages(_dir: string) {
-    const files: string[] = await this.getFiles(_dir);
-    const result = this.generateRoutes(_dir, files);
-    return result;
-  }
-
+  /**
+   * Képfájlok alapján URL-eket és dimenziókat tartalmazó útvonalstruktúrát generál.
+   *
+   * @param {string} _dir - A képfájlok alapkönyvtára.
+   * @param {string[]} files - A feldolgozandó fájlok listája.
+   * @returns {Record<string, any>} - Egy objektum, amely a fájlszerkezetet és az egyes képek URL-jeit, valamint dimenzióit tartalmazza.
+   *
+   */
   private static generateRoutes(_dir: string, files: string[]) {
     const routes: any = {};
     const paths: string[] = [];
@@ -85,5 +92,11 @@ export class Loader {
     });
 
     return routes;
+  }
+
+  public static async loadImages(_dir: string) {
+    const files: string[] = await this.getFiles(_dir);
+    const result = this.generateRoutes(_dir, files);
+    return result;
   }
 }

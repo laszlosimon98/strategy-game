@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { Communicate } from "../../../classes/communicate";
 import { Unit } from "../../../classes/game/unit";
 import { Indices } from "../../../classes/utils/indices";
-import { calculateDistance, getUnit } from "../../../classes/utils/utils";
+import { getUnit } from "../../../classes/utils/utils";
 import { Validator } from "../../../classes/validator";
 import { state } from "../../../data/state";
 import { EntityType, Position } from "../../../types/types";
@@ -12,6 +12,12 @@ import { PathFinder } from "../../../classes/pathFind/pathFinder";
 import { units } from "../../../data/units";
 
 export const handleUnits = (io: Server, socket: Socket) => {
+  /**
+   * Létrehoz egy új egységet, majd értesíti a játékosokat
+   * @param {EntityType} entity egység
+   * @param {string} name egység neve (knight, archer)
+   * @returns
+   */
   const unitCreate = ({
     entity,
     name,
@@ -36,6 +42,13 @@ export const handleUnits = (io: Server, socket: Socket) => {
     });
   };
 
+  /**
+   * Mozgatja a kiválasztott egységet a megtalált úton,
+   * menet közben figyelve a világ változásait
+   * @param {EntityType} entity egység
+   * @param {Indices} next a megtalált út következő cellája
+   * @param {Indices} goal a megtalált út cél cellája
+   */
   const unitMoving = ({
     entity,
     next,
@@ -67,6 +80,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Frissíti a kliensek között az egységek pozícióját
+   * @param {EntityType} entity egység
+   * @param {Position} newPos új pozíció
+   * @param {string} direction irány
+   */
   const unitUpdatePosition = ({
     entity,
     newPos,
@@ -88,6 +107,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Értesíti a játékosokat ha az egység elérte a cél celláját
+   * @param entity egység
+   */
   const unitDestinationReached = (entity: EntityType) => {
     const unit: Unit | undefined = getUnit(socket, entity);
 
@@ -101,46 +124,60 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  const startAttack = (unit: EntityType): void => {
+  /**
+   * Értesíti a játékosokat, hogy az adott egység támadást kezdett
+   * @param {EntityType} entity egység
+   */
+  const startAttack = (entity: EntityType): void => {
     Communicate.sendMessageToEveryOne(
       io,
       socket,
       "game:unitStartAttacking",
-      unit
+      entity
     );
   };
 
-  const stopAttack = (unit: EntityType): void => {
+  /**
+   * Értesíti a játékosokat, hogy az adott egység befejezte a támadást
+   * @param {EntityType} entity egység
+   */
+  const stopAttack = (entity: EntityType): void => {
     Communicate.sendMessageToEveryOne(
       io,
       socket,
       "game:unitStopAttacking",
-      unit
+      entity
     );
   };
 
+  /**
+   * Értesíti a játékosokat, hogy két egység támadja egymást és
+   * frissíti az egységet életerejét
+   * @param {EntityType} entity egység
+   * @param {EntityType} opponentEntity ellenséges egység
+   */
   const dealDamage = ({
-    unit,
-    opponent,
+    entity,
+    opponentEntity,
   }: {
-    unit: EntityType;
-    opponent: EntityType;
+    entity: EntityType;
+    opponentEntity: EntityType;
   }): void => {
-    const _unit: Unit | undefined = getUnit(socket, unit);
-    const _opponent: Unit | undefined = getUnit(socket, opponent);
+    const unit: Unit | undefined = getUnit(socket, entity);
+    const opponent: Unit | undefined = getUnit(socket, opponentEntity);
 
-    if (_unit && _opponent) {
-      _opponent.takeDamage(_unit.getDamage());
+    if (unit && opponent) {
+      opponent.takeDamage(unit.getDamage());
 
-      if (_opponent.getHealth() > 0) {
+      if (opponent.getHealth() > 0) {
         Communicate.sendMessageToEveryOne(io, socket, "game:unitDealDamage", {
-          entity: _opponent.getEntity(),
-          health: _opponent.getHealth(),
+          entity: opponent.getEntity(),
+          health: opponent.getHealth(),
         });
       } else {
         Communicate.sendMessageToEveryOne(io, socket, "game:unitDies", {
-          unit: _unit.getEntity(),
-          opponent: _opponent.getEntity(),
+          unit: unit.getEntity(),
+          opponentEntity: opponent.getEntity(),
         });
       }
     }

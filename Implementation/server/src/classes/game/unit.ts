@@ -45,10 +45,18 @@ export class Unit {
     return this.properties.range;
   }
 
+  /**
+   * Csökkenti az egység életerejét a kapott sebzéssel
+   * @param {number} damage kapott sebzés
+   */
   public takeDamage(damage: number): void {
     this.properties.health -= damage;
   }
 
+  /**
+   *
+   * @returns Megnézi, hogy az egység él-e
+   */
   public isAlive(): boolean {
     return this.properties.health > 0;
   }

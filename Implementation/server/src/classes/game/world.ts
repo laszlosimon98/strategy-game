@@ -1,17 +1,11 @@
 import { Socket } from "socket.io";
-import {
-  MAP_SEED,
-  MAP_SIZE,
-  ROCK_SPAWN_CHANCE,
-  TREE_SPAWN_CHANCE,
-} from "../../settings";
+import { MAP_SEED, MAP_SIZE, ROCK_SPAWN_CHANCE } from "../../settings";
 import { Communicate } from "../communicate";
 import { Cell } from "./cell";
 import { state } from "../../data/state";
 import { Indices } from "../utils/indices";
 import { createNoise2D } from "simplex-noise";
 import alea from "alea";
-import { getRandomNumberFromInterval } from "../utils/utils";
 
 export class World {
   private static world: Cell[][] = [];
@@ -21,6 +15,9 @@ export class World {
   private static mapSize = Math.floor(MAP_SIZE / 2);
   private constructor() {}
 
+  /**
+   * Inicializálja a az adott cella szomszédait
+   */
   private static initNeighbor() {
     for (let l = 0; l < MAP_SIZE; ++l) {
       for (let k = 0; k < MAP_SIZE; ++k) {
@@ -62,6 +59,9 @@ export class World {
     }
   }
 
+  /**
+   * Feltölti a pályát akadályokkal, nyersanyagokkal
+   */
   private static populateWorld() {
     for (let i = 0; i < this.mapSize; ++i) {
       for (let j = 0; j < this.mapSize; ++j) {
@@ -91,6 +91,9 @@ export class World {
     }
   }
 
+  /**
+   * Letükrözi a pályát a különböző irányok mentén
+   */
   private static mirrorWorld() {
     for (let i = 0; i < this.mapSize; ++i) {
       for (let j = 0; j < this.mapSize; ++j) {
@@ -114,6 +117,10 @@ export class World {
     }
   }
 
+  /**
+   *
+   * @returns {Cell[][]} Visszatér a populált, tükrözött világgal
+   */
   public static createWorld(): Cell[][] {
     this.world = [];
     for (let i = 0; i < MAP_SIZE; ++i) {
@@ -131,10 +138,20 @@ export class World {
     return this.world;
   }
 
+  /**
+   *
+   * @param socket kliens
+   * @returns Visszatér a klienshez tartozó világgal
+   */
   public static getWorld(socket: Socket): Cell[][] {
     return state[Communicate.getCurrentRoom(socket)].world;
   }
 
+  /**
+   *
+   * @param {Cell[][] } world új világ
+   * @param {Socket} socket kliens
+   */
   public static setWorld(world: Cell[][], socket: Socket): void {
     state[Communicate.getCurrentRoom(socket)].world = world;
   }
