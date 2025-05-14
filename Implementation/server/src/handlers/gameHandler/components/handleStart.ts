@@ -6,6 +6,8 @@ import { Indices } from "../../../classes/utils/indices";
 import { state } from "../../../data/state";
 import { START_POSITIONS } from "../../../settings";
 import { PlayerType, TileType } from "../../../types/types";
+import path from "path";
+import { Loader } from "../../../classes/imageLoader";
 
 export const handleStart = (io: Server, socket: Socket) => {
   /**
@@ -29,6 +31,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     const startPositions = [...START_POSITIONS];
 
     Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
+
     Communicate.sendMessageToEveryOne(
       io,
       socket,

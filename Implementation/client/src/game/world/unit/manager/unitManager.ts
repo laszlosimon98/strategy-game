@@ -169,6 +169,8 @@ export class UnitManager extends Manager<Unit> {
         entity: EntityType;
         properties: SoldierPropertiesType;
       }) => {
+        console.log(entity);
+        console.log(properties);
         const name = getImageNameFromUrl(entity.data.url).includes("knight")
           ? "knight"
           : "archer";

@@ -86,12 +86,13 @@ export class BuildingManager extends Manager<Building> {
   private setFakeHouse(): void {
     const entity: EntityType = {
       data: {
-        ...state.game.builder.data,
+        ...state.game.builder.data, // url & dimension
         position: this.pos,
         owner: ServerHandler.getId(),
         id: uuidv4(),
       },
     };
+    console.log(entity);
 
     this.fakeHouse.setBuilding(entity);
     this.setObjectPosition(this.fakeHouse, this.pos);
