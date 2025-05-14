@@ -1,20 +1,18 @@
-import { UnitStates } from "../../../../enums/unitsState";
-import { ctx } from "../../../../init";
-import { ServerHandler } from "../../../../server/serverHandler";
-import { UNIT_SIZE } from "../../../../settings";
-import { EntityType, SoldierPropertiesType } from "../../../../types/gameType";
-import { Position } from "../../../../utils/position";
-import { RangeIndicator } from "../../../../utils/rangeIndicator";
-import { Timer } from "../../../../utils/timer";
-import { Unit } from "../unit";
+import { ServerHandler } from "server/serverHandler";
+import { UNIT_SIZE } from "@/game/settings";
+import { Position } from "@/game/utils/position";
+import { RangeIndicator } from "@/game/utils/rangeIndicator";
+import { Timer } from "@/game/utils/timer";
+import { Unit } from "@/game/world/unit/unit";
+import { ctx } from "@/game/main";
+import { SoldierPropertiesType, EntityType } from "services/types/gameTypes";
+import { UnitStatus } from "@/game/enums/unitStatus";
 
 export class Soldier extends Unit {
   protected properties: SoldierPropertiesType;
 
   protected attackTimer: Timer;
   private rangeIndicator: RangeIndicator;
-
-  // private visionIndicator: RangeIndicator;
 
   private opponent: Soldier | undefined;
 
@@ -29,27 +27,11 @@ export class Soldier extends Unit {
     this.attackTimer = new Timer(1500);
     this.attackTimer.activate();
 
-    this.rangeIndicator = new RangeIndicator(
-      new Position(
-        this.renderPos.x + UNIT_SIZE.width / 2,
-        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
-      ),
-      this.properties.range
-    );
-
-    // this.visionIndicator = new RangeIndicator(
-    //   new Position(
-    //     this.renderPos.x + UNIT_SIZE.width / 2,
-    //     this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
-    //   ),
-    //   Math.max(this.properties.range, 5),
-    //   state.game.players[this.entity.data.owner].color
-    // );
+    this.rangeIndicator = new RangeIndicator(this.properties.range);
   }
 
   public draw(): void {
     this.rangeIndicator.draw();
-    // this.visionIndicator.draw();
     super.draw();
 
     if (this.properties.health < 100) {
@@ -67,14 +49,6 @@ export class Soldier extends Unit {
         this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
       )
     );
-
-    // this.visionIndicator.update(
-    //   new Position(
-    //     this.renderPos.x + UNIT_SIZE.width / 2,
-    //     this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
-    //   )
-    // );
-
     this.attack();
   }
 
@@ -96,7 +70,7 @@ export class Soldier extends Unit {
 
   private attack(): void {
     const opponent = this.getOpponent();
-    if (this.getState() === UnitStates.Attacking && opponent) {
+    if (this.getState() === UnitStatus.Attacking && opponent) {
       if (!this.attackTimer.isTimerActive()) {
         ServerHandler.sendMessage("game:unitDealDamage", {
           unit: this.getEntity(),

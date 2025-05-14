@@ -1,19 +1,19 @@
-import { state } from "../../data/state";
-import { ctx } from "../../init";
-import { MouseClicker } from "../../interfaces/mouseClicker";
-import { ServerHandler } from "../../server/serverHandler";
-import { CELL_SIZE, ERROR_COLOR } from "../../settings";
-import { TileType } from "../../types/gameType";
-import { Indices } from "../../utils/indices";
-import { Position } from "../../utils/position";
-import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
-import { Camera } from "../camera/camera";
-import { BuildingManager } from "./building/manager/buildingManager";
-import { Cell } from "./cell";
-import { UnitManager } from "./unit/manager/unitManager";
+import { Camera } from "@/game/camera/camera";
+import { imagesFromState } from "@/game/data/state";
+import { MouseClicker } from "@/game/interfaces/mouseClicker";
+import { ctx } from "@/game/main";
+import { ERROR_COLOR } from "@/game/settings";
+import { Indices } from "@/game/utils/indices";
+import { Position } from "@/game/utils/position";
+import { convertMouseIsometricCoordsToCartesianCoords } from "@/game/utils/utils";
+import { BuildingManager } from "@/game/world/building/manager/buildingManager";
+import { Cell } from "@/game/world/cell";
+import { UnitManager } from "@/game/world/unit/manager/unitManager";
+import { ServerHandler } from "@/server/serverHandler";
+import { TileType } from "@/services/types/gameTypes";
 
 export class World implements MouseClicker {
-  private mousePos: Position;
+  private mousePos: Position; // temp for printMouseCoord
   private world: Cell[][];
   private camera: Camera;
 
@@ -29,8 +29,8 @@ export class World implements MouseClicker {
     this.unitManager = new UnitManager();
   }
 
+  // TODO: nem az igazi ez így
   public init(): void {
-    console.log(state.game.players);
     ServerHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any }) => {
@@ -41,15 +41,15 @@ export class World implements MouseClicker {
               this.world[row].push(
                 new Cell(
                   new Indices(row, col),
-                  state.images.ground[tiles[row][col]].url,
-                  state.images.obstacles[obstacles[row][col]].url
+                  imagesFromState.ground[tiles[row][col]].url,
+                  imagesFromState.obstacles[obstacles[row][col]].url
                 )
               );
             } else {
               this.world[row].push(
                 new Cell(
                   new Indices(row, col),
-                  state.images.ground[tiles[row][col]].url
+                  imagesFromState.ground[tiles[row][col]].url
                 )
               );
             }
@@ -69,8 +69,9 @@ export class World implements MouseClicker {
     ctx.save();
 
     ctx.fillStyle = ERROR_COLOR;
-    const position = this.convertIsometricCoordsToCartesianCoords(
-      new Position(this.mousePos.x, this.mousePos.y)
+    const position = convertMouseIsometricCoordsToCartesianCoords(
+      this.mousePos,
+      this.camera.getScroll()
     );
     const text = `x: ${position.i}, y: ${position.j}`;
 
@@ -83,21 +84,6 @@ export class World implements MouseClicker {
     ctx.restore();
   }
 
-  private convertIsometricCoordsToCartesianCoords = (
-    position: Position
-  ): Indices => {
-    const world_x = position.x - this.camera.getScroll().x;
-    const world_y = position.y - this.camera.getScroll().y;
-
-    const cart_y = (2 * world_y - world_x) / 2;
-    const cart_x = cart_y + world_x;
-
-    const grid_x = Math.floor(cart_x / CELL_SIZE);
-    const grid_y = Math.floor(cart_y / CELL_SIZE);
-
-    return new Indices(grid_x, grid_y);
-  };
-
   public draw(): void {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
@@ -105,20 +91,15 @@ export class World implements MouseClicker {
         tile.drawObstacles();
       });
     });
+
     this.unitManager.draw();
     this.buildingManager.draw();
-    this.printMouseCoords();
 
-    // this.world.forEach((tiles) => {
-    //   tiles.forEach((tile) => {
-    //     tile.drawObstacles();
-    //   });
-    // });
+    this.printMouseCoords();
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
-    this.mousePos = mousePos;
-    this.camera.update(dt, this.mousePos, key);
+    this.camera.update(dt, mousePos, key);
 
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => tile.update(this.camera.getScroll()));
@@ -128,47 +109,47 @@ export class World implements MouseClicker {
     this.buildingManager.update(dt, this.camera.getScroll());
   }
 
-  public handleLeftClick(): void {
-    const indices: Indices = convertIsometricCoordsToCartesianCoords(
-      new Position(this.mousePos.x, this.mousePos.y),
-      this.getCameraScroll()
+  public handleLeftClick(mousePos: Position): void {
+    const indices: Indices = convertMouseIsometricCoordsToCartesianCoords(
+      mousePos,
+      this.camera.getScroll()
     );
 
     if (this.isActionInsideOfTheMap(indices)) {
       this.buildingManager.handleLeftClick(
         indices,
-        this.mousePos,
-        this.getCameraScroll()
+        mousePos,
+        this.camera.getScroll()
       );
 
       this.unitManager.handleLeftClick(
         indices,
-        this.mousePos,
-        this.getCameraScroll()
+        mousePos,
+        this.camera.getScroll()
       );
     }
   }
 
-  handleMiddleClick(): void {
-    const indices: Indices = convertIsometricCoordsToCartesianCoords(
-      new Position(this.mousePos.x, this.mousePos.y),
-      this.getCameraScroll()
+  handleMiddleClick(mousePos: Position): void {
+    const indices: Indices = convertMouseIsometricCoordsToCartesianCoords(
+      mousePos,
+      this.camera.getScroll()
     );
 
     if (this.isActionInsideOfTheMap(indices)) {
       this.unitManager.setPos(this.world[indices.i][indices.j].getUnitPos());
       this.unitManager.handleMiddleClick(
         indices,
-        this.mousePos,
-        this.getCameraScroll()
+        mousePos,
+        this.camera.getScroll()
       );
     }
   }
 
-  public handleRightClick(): void {
-    const indices: Indices = convertIsometricCoordsToCartesianCoords(
-      new Position(this.mousePos.x, this.mousePos.y),
-      this.getCameraScroll()
+  public handleRightClick(mousePos: Position): void {
+    const indices: Indices = convertMouseIsometricCoordsToCartesianCoords(
+      mousePos,
+      this.camera.getScroll()
     );
 
     this.buildingManager.handleRightClick();
@@ -176,21 +157,22 @@ export class World implements MouseClicker {
   }
 
   public handleMouseMove(mousePos: Position): void {
-    const indices: Indices = convertIsometricCoordsToCartesianCoords(
-      new Position(this.mousePos.x, this.mousePos.y),
-      this.getCameraScroll()
+    this.mousePos = mousePos;
+
+    const indices: Indices = convertMouseIsometricCoordsToCartesianCoords(
+      mousePos,
+      this.camera.getScroll()
     );
 
     if (this.isActionInsideOfTheMap(indices)) {
       this.buildingManager.setPos(
         this.world[indices.i][indices.j].getBuildingPos()
       );
-      this.buildingManager.handleMouseMove(mousePos, this.getCameraScroll());
-      this.unitManager.handleMouseMove(mousePos, this.getCameraScroll());
+
+      this.buildingManager.handleMouseMove(mousePos, this.camera.getScroll());
+      this.unitManager.handleMouseMove(mousePos, this.camera.getScroll());
     }
   }
-
-  public moveWorld(): void {}
 
   public isActionInsideOfTheMap(indices: Indices): boolean {
     return (
@@ -199,9 +181,5 @@ export class World implements MouseClicker {
       indices.j >= 0 &&
       indices.j < this.world.length
     );
-  }
-
-  public getCameraScroll(): Position {
-    return this.camera.getScroll();
   }
 }

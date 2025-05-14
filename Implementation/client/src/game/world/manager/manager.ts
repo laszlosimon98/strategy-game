@@ -1,16 +1,17 @@
-import { MouseClicker } from "../../../interfaces/mouseClicker";
-import { CallAble } from "../../../interfaces/callAble";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { initState, state } from "../../../data/state";
-import { GameState } from "../../../enums/gameState";
-import { ServerHandler } from "../../../server/serverHandler";
-import { isMouseIntersect } from "../../../utils/utils";
-import { MainMenuState } from "../../../enums/gameMenuState";
-import { Building } from "../building/building";
+import { CallAble } from "@/game/interfaces/callAble";
+import { MouseClicker } from "@/game/interfaces/mouseClicker";
+import { ServerHandler } from "server/serverHandler";
+import { Dimension } from "@/game/utils/dimension";
+import { Position } from "@/game/utils/position";
+import { isMouseIntersect } from "@/game/utils/utils";
+import { Building } from "@/game/world/building/building";
+import { Cell } from "@/game/world/cell";
 import { Unit } from "@faker-js/faker";
-import { EntityType } from "../../../types/gameType";
-import { Cell } from "../cell";
+import { EntityType } from "services/types/gameTypes";
+import { initEntity, setGameState } from "services/slices/gameSlice";
+import { GameStatus } from "@/game/enums/gameStatus";
+import { gameStatus, playersFromState } from "@/game/data/state";
+import { dispatch } from "@/services/store";
 
 export abstract class Manager<T> implements MouseClicker {
   protected pos: Position;
@@ -30,8 +31,8 @@ export abstract class Manager<T> implements MouseClicker {
   protected abstract handleCommunication(): void;
 
   protected draw<T extends CallAble>(objectKey: string): void {
-    Object.keys(state.game.players).forEach((key) => {
-      const arr: T[] = state.game.players[key][objectKey] as unknown as T[];
+    Object.keys(playersFromState).forEach((key) => {
+      const arr: T[] = playersFromState[key][objectKey] as unknown as T[];
       arr.forEach((object) => object.draw());
     });
   }
@@ -41,8 +42,8 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     objectKey: string
   ): void {
-    Object.keys(state.game.players).forEach((key) => {
-      const arr: T[] = state.game.players[key][objectKey] as unknown as T[];
+    Object.keys(playersFromState).forEach((key) => {
+      const arr: T[] = playersFromState[key][objectKey] as unknown as T[];
       arr.forEach((object) => object.update(dt, cameraScroll));
     });
   }
@@ -65,7 +66,7 @@ export abstract class Manager<T> implements MouseClicker {
   protected initObject(): EntityType {
     return {
       data: {
-        ...initState.data,
+        ...initEntity.data,
         owner: ServerHandler.getId(),
       },
     };
@@ -88,8 +89,8 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): void {
-    if (state.game.state !== GameState.Build) {
-      const objectArray: T[] = state.game.players[ServerHandler.getId()][
+    if (gameStatus !== GameStatus.Build) {
+      const objectArray: T[] = playersFromState[ServerHandler.getId()][
         key
       ] as unknown as T[];
 
@@ -104,7 +105,7 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): T | undefined {
-    const objectArray: T[] = state.game.players[ServerHandler.getId()][
+    const objectArray: T[] = playersFromState[ServerHandler.getId()][
       key
     ] as unknown as T[];
 
@@ -115,12 +116,9 @@ export abstract class Manager<T> implements MouseClicker {
     });
 
     if (selectedObject) {
-      state.infoPanel.data = selectedObject;
-      state.game.state = GameState.Selected;
-      state.navigation.prevMenuState = state.navigation.gameMenuState;
-      state.navigation.gameMenuState = MainMenuState.Info;
+      dispatch(setGameState(GameStatus.Selected));
     } else {
-      state.game.state = GameState.Default;
+      dispatch(setGameState(GameStatus.Default));
     }
 
     return selectedObject;

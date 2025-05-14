@@ -1,22 +1,23 @@
-import { state } from "../../../data/state";
-import { UnitStates } from "../../../enums/unitsState";
-import { ctx } from "../../../init";
-import { CallAble } from "../../../interfaces/callAble";
-import { ServerHandler } from "../../../server/serverHandler";
-import { EntityType } from "../../../types/gameType";
-import { Dimension } from "../../../utils/dimension";
-import { Indices } from "../../../utils/indices";
-import { Position } from "../../../utils/position";
-import { Timer } from "../../../utils/timer";
+import { CallAble } from "@/game/interfaces/callAble";
+import { ctx } from "@/game/main";
+import { Dimension } from "@/game/utils/dimension";
+import { Indices } from "@/game/utils/indices";
+import { Position } from "@/game/utils/position";
+import { Timer } from "@/game/utils/timer";
 import {
-  findUnit,
   getRandomNumberFromInterval,
-  removeElementFromArray,
+  findUnit,
   ySort,
-} from "../../../utils/utils";
-import { Vector } from "../../../utils/vector";
-import { Cell } from "../cell";
-import { Entity } from "../entity";
+} from "@/game/utils/utils";
+import { Vector } from "@/game/utils/vector";
+import { Cell } from "@/game/world/cell";
+import { Entity } from "@/game/world/entity";
+import { UnitStatus } from "@/game/enums/unitStatus";
+import { ServerHandler } from "@/server/serverHandler";
+import { EntityType } from "@/services/types/gameTypes";
+import { imagesFromState, playersFromState } from "@/game/data/state";
+import { dispatch } from "@/services/store";
+import { removeMovingUnit } from "@/services/slices/gameSlice";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;
@@ -29,8 +30,8 @@ export abstract class Unit extends Entity implements CallAble {
   private path: Cell[];
   private dimension: Dimension;
 
-  private prevState: UnitStates;
-  private state: UnitStates;
+  private prevState: UnitStatus;
+  private state: UnitStatus;
 
   private directions: Record<string, number>;
   private facing: string;
@@ -46,27 +47,29 @@ export abstract class Unit extends Entity implements CallAble {
     this.name = name;
     this.path = [];
 
+    // FIXME: valszeg nem jó
     this.entity = {
       data: {
         ...entity.data,
         static:
-          state.images.colors[state.game.players[entity.data.owner].color][
+          imagesFromState.colors[playersFromState[entity.data.owner].color][
             this.name + "static"
           ].url,
       },
     };
     this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
 
-    this.prevState = UnitStates.Idle;
-    this.state = UnitStates.Idle;
+    this.prevState = UnitStatus.Idle;
+    this.state = UnitStatus.Idle;
 
     this.directions = this.initDirections();
     this.facing = this.randomFacing(Object.keys(this.directions));
 
     this.animationCounter = 0;
 
-    this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000), () =>
-      this.changeDirection()
+    this.facingTimer = new Timer(
+      getRandomNumberFromInterval(2000, 5000),
+      this.changeDirection
     );
     this.facingTimer.activate();
 
@@ -119,11 +122,11 @@ export abstract class Unit extends Entity implements CallAble {
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
-    if (this.state !== UnitStates.Idle) {
+    if (this.state !== UnitStatus.Idle) {
       this.animate(dt);
     }
 
-    if (this.state === UnitStates.Idle) {
+    if (this.state === UnitStatus.Idle) {
       if (this.facingTimer.isTimerActive()) {
         this.facingTimer.update();
       } else {
@@ -132,28 +135,28 @@ export abstract class Unit extends Entity implements CallAble {
     }
   }
 
-  public getPrevState(): UnitStates {
+  public getPrevState(): UnitStatus {
     return this.prevState;
   }
 
-  public setPrevState(state: UnitStates): void {
+  public setPrevState(state: UnitStatus): void {
     this.prevState = state;
   }
 
-  public getState(): UnitStates {
+  public getState(): UnitStatus {
     return this.state;
   }
 
-  public setState(newState: UnitStates): void {
+  public setState(newState: UnitStatus): void {
     this.state = newState;
 
     const owner: string = this.entity.data.owner;
-    const color: string = state.game.players[owner].color;
+    const color: string = playersFromState[owner].color;
 
     const entity: EntityType = {
       data: {
         ...this.entity.data,
-        url: state.images.colors[color][this.name + this.state].url,
+        url: imagesFromState.colors[color][this.name + this.state].url,
       },
     };
 
@@ -195,7 +198,7 @@ export abstract class Unit extends Entity implements CallAble {
   }
 
   private changeDirection(): void {
-    if (this.state === UnitStates.Idle) {
+    if (this.state === UnitStatus.Idle) {
       const excludedKeys = Object.keys(this.directions).filter(
         (key) => key !== this.facing
       );
@@ -234,11 +237,18 @@ export abstract class Unit extends Entity implements CallAble {
 
   public reset(): void {
     this.animationCounter = 0;
-    this.setState(UnitStates.Idle);
+    this.setState(UnitStatus.Idle);
     this.path = [];
 
-    const movingUnits = state.game.players[ServerHandler.getId()].movingUnits;
-    removeElementFromArray(movingUnits, findUnit(this.getEntity()));
+    const movingUnit = findUnit(this.getEntity());
+    if (movingUnit) {
+      dispatch(
+        removeMovingUnit({
+          id: ServerHandler.getId(),
+          removingUnit: movingUnit,
+        })
+      );
+    }
   }
 
   private async setNextCell() {
@@ -277,7 +287,7 @@ export abstract class Unit extends Entity implements CallAble {
       const { x: startX, y: startY }: Position = this.currentCellPos;
       const { x: endX, y: endY }: Position = this.nextCellPos;
 
-      let dirVector: Vector = new Vector(endX - startX, endY - startY);
+      const dirVector: Vector = new Vector(endX - startX, endY - startY);
       const distance = dirVector.getDistance();
       const maxMove = UNIT_SPEED * dt;
       let newPos: Position;
@@ -291,7 +301,7 @@ export abstract class Unit extends Entity implements CallAble {
         this.path.shift();
       }
       this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
-      ySort(state.game.players[ServerHandler.getId()].units);
+      // ySort(playersFromState[ServerHandler.getId()].units);
     } else {
       this.sendDestinationReachedRequest(this.entity);
     }

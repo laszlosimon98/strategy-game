@@ -1,5 +1,4 @@
 import { io, Socket } from "socket.io-client";
-import { state } from "../data/state";
 
 export class ServerHandler {
   private static socket: Socket;
@@ -10,15 +9,6 @@ export class ServerHandler {
       this.socket = io("http://localhost:3000");
       // this.socket = io("http://192.168.1.70:3000");
     }
-
-    this.socket.once("connect_error", () => {
-      state.server.status = "offline";
-      return;
-    });
-
-    this.socket.on("connect", () => {
-      state.server.status = "online";
-    });
 
     return this.socket;
   }
@@ -39,7 +29,14 @@ export class ServerHandler {
     });
   }
 
-  public static receiveMessage(event: string, callback: Function): void {
+  public static receiveMessage(
+    event: string,
+    callback: (data: any) => void
+  ): void {
     this.getInstance().on(event, (data: any) => callback(data));
+  }
+
+  public static removeListener(event: string): void {
+    this.getInstance().off(event);
   }
 }

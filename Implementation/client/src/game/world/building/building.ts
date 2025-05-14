@@ -1,14 +1,13 @@
-import { state } from "../../../data/state";
-import { ctx } from "../../../init";
-import { CallAble } from "../../../interfaces/callAble";
-import { EntityType } from "../../../types/gameType";
-import { Position } from "../../../utils/position";
-import { Entity } from "../entity";
-import { Flag } from "./flag";
+import { imagesFromState, playersFromState } from "@/game/data/state";
+import { CallAble } from "@/game/interfaces/callAble";
+import { ctx } from "@/game/main";
+import { Position } from "@/game/utils/position";
+import { Flag } from "@/game/world/building/flag";
+import { Entity } from "@/game/world/entity";
+import { EntityType } from "services/types/gameTypes";
 
 export class Building extends Entity implements CallAble {
   private flagEntity: EntityType;
-
   private flag: Flag | undefined;
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
@@ -16,7 +15,7 @@ export class Building extends Entity implements CallAble {
 
     this.flagEntity = {
       data: {
-        ...state.images.colors[state.game.players[entity.data.owner].color]
+        ...imagesFromState.colors[playersFromState[entity.data.owner].color]
           .flag,
         indices: {
           ...entity.data.indices,

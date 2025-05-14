@@ -1,8 +1,11 @@
-import { canvasHeight, canvasWidth, ctx } from "../../init";
-import { CELL_SIZE } from "../../settings";
-import { Indices } from "../../utils/indices";
-import { Position } from "../../utils/position";
-import { Vector } from "../../utils/vector";
+import { ctx } from "@/game/main";
+import { CELL_SIZE } from "@/game/settings";
+import { Indices } from "@/game/utils/indices";
+import { Position } from "@/game/utils/position";
+import { Vector } from "@/game/utils/vector";
+import { selectState } from "services/store";
+
+const { canvasWidth, canvasHeight } = selectState((state) => state.canvas);
 
 export class Cell {
   private indices: Indices;

@@ -1,100 +1,64 @@
-import { canvasHeight } from "../init";
-import { GameMenu } from "./menu/gameMenu";
-import { Position } from "../utils/position";
-import { MouseButtons } from "../enums/mouse";
-import { World } from "./world/world";
-import { Dimension } from "../utils/dimension";
-import { state } from "../data/state";
-import { GameState } from "../enums/gameState";
-import { isMouseIntersect } from "../utils/utils";
-import { ServerHandler } from "../server/serverHandler";
-import { PlayerGameType } from "../types/gameType";
+import { MouseButtons } from "@/game/enums/mouse";
+import { Position } from "@/game/utils/position";
+import { World } from "@/game/world/world";
+import { ServerHandler } from "@/server/serverHandler";
+import { setPlayer } from "@/services/slices/gameSlice";
+import { dispatch } from "@/services/store";
+import { PlayerType } from "@/services/types/gameTypes";
 
 export class Game {
-  private gameMenu: GameMenu;
-  private world: World | undefined;
-
-  private mousePos: Position;
-  private key: string;
+  private world?: World;
 
   public constructor() {
-    this.gameMenu = new GameMenu(
-      new Position(0, (canvasHeight - 500) / 5),
-      new Dimension(250, 500)
-    );
-
-    this.world = undefined;
-    this.mousePos = Position.zero();
-    this.key = "";
-
-    this.handleCommunication();
-
     this.init();
   }
 
-  private async init(): Promise<void> {
-    const players = await this.handleCommunication();
-    this.initPlayers(players);
-
-    state.game.state = GameState.Default;
+  private async init() {
+    await this.initPlayers();
     this.world = new World();
     this.world.init();
   }
 
-  private initPlayers(players: PlayerGameType): void {
+  private async initPlayers(): Promise<void> {
+    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
+
     Object.keys(players).forEach((id) => {
-      state.game.players[id] = {
+      const newPlayer: PlayerType = {
         name: players[id].name,
         color: players[id].color,
         buildings: [],
         units: [],
         movingUnits: [],
       };
+
+      dispatch(setPlayer({ id, player: newPlayer }));
     });
   }
 
   public draw(): void {
     this.world?.draw();
-    this.gameMenu.draw();
   }
 
-  public update(dt: number) {
-    this.gameMenu.update(dt, this.mousePos);
-    this.world?.update(dt, this.mousePos, this.key);
+  public update(dt: number, key: string, mousePos: Position) {
+    this.world?.update(dt, mousePos, key);
   }
 
-  public handleClick(e: MouseEvent) {
+  public handleClick(e: MouseEvent, mousePos: Position) {
     const button = e.button;
 
     switch (button) {
       case MouseButtons.Left:
-        if (isMouseIntersect(this.mousePos, this.gameMenu)) {
-          this.gameMenu.handleClick(this.mousePos);
-        } else {
-          this.world?.handleLeftClick();
-        }
+        this.world?.handleLeftClick(mousePos);
         break;
       case MouseButtons.Right:
-        this.world?.handleRightClick();
+        this.world?.handleRightClick(mousePos);
         break;
       case MouseButtons.Middle:
-        this.world?.handleMiddleClick();
+        this.world?.handleMiddleClick(mousePos);
     }
   }
 
   public handleMouseMove(pos: Position): void {
-    this.mousePos.setPosition(pos);
     this.world?.handleMouseMove(pos);
-  }
-
-  public handleKeyPress(key: string): void {
-    this.key = key;
-  }
-
-  public resize(): void {}
-
-  private async handleCommunication(): Promise<any> {
-    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
-    return players;
   }
 }

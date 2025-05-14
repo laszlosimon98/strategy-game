@@ -1,24 +1,24 @@
-import { v4 as uuidv4 } from "uuid";
-
-import { state } from "../../../../data/state";
-import { ServerHandler } from "../../../../server/serverHandler";
-import { UNIT_SIZE } from "../../../../settings";
-import { EntityType, SoldierPropertiesType } from "../../../../types/gameType";
-import { Indices } from "../../../../utils/indices";
-import { Position } from "../../../../utils/position";
-import { Manager } from "../../manager/manager";
-import { Unit } from "../unit";
-import { UnitStates } from "../../../../enums/unitsState";
-import { Cell } from "../../cell";
+import { ServerHandler } from "server/serverHandler";
+import { UNIT_SIZE } from "@/game/settings";
+import { Indices } from "@/game/utils/indices";
+import { Position } from "@/game/utils/position";
 import {
   calculateDistance,
-  findUnit,
-  getImageNameFromUrl,
   isometricToCartesian,
-  removeElementFromArray,
-} from "../../../../utils/utils";
-import { Soldier } from "../units/soldier";
-import { unitRegister } from "../unitRegister/unitRegister";
+  getImageNameFromUrl,
+  findUnit,
+} from "@/game/utils/utils";
+import { Cell } from "@/game/world/cell";
+import { Manager } from "@/game/world/manager/manager";
+import { Unit } from "@/game/world/unit/unit";
+import { unitRegister } from "@/game/world/unit/unitRegister/unitRegister";
+import { Soldier } from "@/game/world/unit/units/soldier";
+import { v4 as uuidv4 } from "uuid";
+import { EntityType, SoldierPropertiesType } from "services/types/gameTypes";
+import { UnitStatus } from "@/game/enums/unitStatus";
+import { imagesFromState, playersFromState } from "@/game/data/state";
+import { dispatch } from "@/services/store";
+import { addMovingUnit, addUnit } from "@/services/slices/gameSlice";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -27,7 +27,7 @@ export class UnitManager extends Manager<Unit> {
   public constructor() {
     super();
     this.selectedUnit = undefined;
-    this.keys = Object.keys(state.game.players);
+    this.keys = Object.keys(playersFromState);
   }
 
   public draw(): void {
@@ -58,14 +58,14 @@ export class UnitManager extends Manager<Unit> {
     mousePos: Position,
     cameraScroll: Position
   ): void {
-    const color: string = state.game.players[ServerHandler.getId()].color;
+    const color: string = playersFromState[ServerHandler.getId()].color;
     const name = Math.random() < 0.5 ? "knight" : "archer";
 
     const unitEntity: EntityType = {
       data: {
         id: uuidv4(),
         owner: ServerHandler.getId(),
-        url: state.images.colors[color][name + "idle"].url,
+        url: imagesFromState.colors[color][name + "idle"].url,
         indices,
         dimensions: UNIT_SIZE,
         position: this.pos,
@@ -79,8 +79,8 @@ export class UnitManager extends Manager<Unit> {
   public handleRightClick(indices: Indices): void {
     if (this.selectedUnit) {
       const entity: EntityType = this.selectedUnit.getEntity();
-      state.game.players[ServerHandler.getId()].movingUnits.push(
-        this.selectedUnit
+      dispatch(
+        addMovingUnit({ id: ServerHandler.getId(), unit: this.selectedUnit })
       );
       this.sendPathFindRequest(entity, indices);
     }
@@ -90,11 +90,12 @@ export class UnitManager extends Manager<Unit> {
     this.hoverObject(mousePos, cameraScroll, "units");
   }
 
+  // FIXME: WTH is this
   private calculateAttack(): void {
-    state.game.players[ServerHandler.getId()].units.forEach((myUnit) => {
+    playersFromState[ServerHandler.getId()].units.forEach((myUnit: Soldier) => {
       this.keys.forEach((otherId) => {
         if (ServerHandler.getId() !== otherId) {
-          state.game.players[otherId].units.forEach((otherUnit) => {
+          playersFromState[otherId].units.forEach((otherUnit: Soldier) => {
             const distance = calculateDistance(
               isometricToCartesian(myUnit.getPosition()),
               isometricToCartesian(otherUnit.getPosition())
@@ -115,7 +116,7 @@ export class UnitManager extends Manager<Unit> {
 
             if (
               distance < myUnit.getRange() &&
-              myUnit.getState() !== UnitStates.Attacking
+              myUnit.getState() !== UnitStatus.Attacking
             ) {
               myUnit.setOpponent(otherUnit);
               ServerHandler.sendMessage(
@@ -126,7 +127,7 @@ export class UnitManager extends Manager<Unit> {
 
             if (
               distance > myUnit.getRange() &&
-              myUnit.getState() === UnitStates.Attacking &&
+              myUnit.getState() === UnitStatus.Attacking &&
               !myUnit.getOpponent()
             ) {
               ServerHandler.sendMessage(
@@ -141,11 +142,13 @@ export class UnitManager extends Manager<Unit> {
   }
 
   private handleMove(dt: number): void {
-    state.game.players[ServerHandler.getId()].movingUnits.forEach((unit) => {
-      if (unit.getState() === UnitStates.Walking) {
-        unit.move(dt);
+    playersFromState[ServerHandler.getId()].movingUnits.forEach(
+      (unit: Unit) => {
+        if (unit.getState() === UnitStatus.Walking) {
+          unit.move(dt);
+        }
       }
-    });
+    );
   }
 
   private sendUnitCreateRequest(entity: EntityType, name: string): void {
@@ -169,8 +172,6 @@ export class UnitManager extends Manager<Unit> {
         entity: EntityType;
         properties: SoldierPropertiesType;
       }) => {
-        console.log(entity);
-        console.log(properties);
         const name = getImageNameFromUrl(entity.data.url).includes("knight")
           ? "knight"
           : "archer";
@@ -183,7 +184,7 @@ export class UnitManager extends Manager<Unit> {
         );
 
         this.setObjectPosition(unit, entity.data.position);
-        state.game.players[entity.data.owner].units.push(unit);
+        dispatch(addUnit({ id: ServerHandler.getId(), unit }));
       }
     );
 
@@ -198,9 +199,9 @@ export class UnitManager extends Manager<Unit> {
           _path.push(this.world[i][j]);
         });
 
-        const unit = findUnit(entity);
+        const unit = findUnit(entity) as Soldier;
         unit.setPrevState(unit.getState());
-        unit.setState(UnitStates.Walking);
+        unit.setState(UnitStatus.Walking);
         unit.setPath([..._path]);
       }
     );
@@ -208,18 +209,18 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStartAttacking",
       (entity: EntityType) => {
-        const _unit = findUnit(entity);
-        _unit.setPrevState(_unit.getState());
-        _unit.setState(UnitStates.Attacking);
+        const unit = findUnit(entity) as Soldier;
+        unit.setPrevState(unit.getState());
+        unit.setState(UnitStatus.Attacking);
       }
     );
 
     ServerHandler.receiveMessage(
       "game:unitStopAttacking",
       (entity: EntityType) => {
-        const _unit = findUnit(entity);
-        _unit.setState(_unit.getPrevState());
-        _unit.resetAnimation();
+        const unit = findUnit(entity) as Soldier;
+        unit.setState(unit.getPrevState());
+        unit.resetAnimation();
       }
     );
 
@@ -234,7 +235,7 @@ export class UnitManager extends Manager<Unit> {
         newPos: Position;
         direction: string;
       }) => {
-        const unit = findUnit(entity);
+        const unit = findUnit(entity) as Soldier;
         unit.setPosition(new Position(newPos.x, newPos.y));
         unit.setFacing(direction);
       }
@@ -243,7 +244,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitDestinationReached",
       (entity: EntityType) => {
-        const unit = findUnit(entity);
+        const unit = findUnit(entity) as Soldier;
         unit.reset();
       }
     );
@@ -257,12 +258,13 @@ export class UnitManager extends Manager<Unit> {
       }
     );
 
+    // FIXME:
     ServerHandler.receiveMessage(
       "game:unitDies",
       ({ unit, opponent }: { unit: EntityType; opponent: EntityType }) => {
         const { owner } = opponent.data;
-        const units = state.game.players[owner].units;
-        removeElementFromArray(units, findUnit(opponent));
+        const units = playersFromState[owner].units;
+        // removeElementFromArray(units, findUnit(opponent) as Soldier);
 
         ServerHandler.sendMessage("game:unitStopAttacking", unit);
       }
