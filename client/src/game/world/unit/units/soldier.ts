@@ -1,12 +1,15 @@
-import { ServerHandler } from "server/serverHandler";
-import { UNIT_SIZE } from "@/game/settings";
-import { Position } from "@/game/utils/position";
-import { RangeIndicator } from "@/game/utils/rangeIndicator";
-import { Timer } from "@/game/utils/timer";
-import { Unit } from "@/game/world/unit/unit";
-import { ctx } from "@/game/main";
-import { SoldierPropertiesType, EntityType } from "services/types/gameTypes";
-import { UnitStatus } from "@/game/enums/unitStatus";
+import { UnitStatus } from "@/src/game/enums/unitStatus";
+import { ctx } from "@/src/game/main";
+import { UNIT_SIZE } from "@/src/game/settings";
+import { Position } from "@/src/game/utils/position";
+import { RangeIndicator } from "@/src/game/utils/rangeIndicator";
+import { Timer } from "@/src/game/utils/timer";
+import { Unit } from "@/src/game/world/unit/unit";
+import { ServerHandler } from "@/src/server/serverHandler";
+import {
+  SoldierPropertiesType,
+  EntityType,
+} from "@/src/services/types/gameTypes";
 
 export class Soldier extends Unit {
   protected properties: SoldierPropertiesType;

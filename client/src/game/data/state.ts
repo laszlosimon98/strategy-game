@@ -1,7 +1,7 @@
-import { GameStatus } from "@/game/enums/gameStatus";
-import { getState } from "@/services/store";
-import { PlayerIdType, ServerHouseType } from "@/services/types/gameTypes";
-import { ImageType } from "@/services/types/utilTypes";
+import { GameStatus } from "@/src/game/enums/gameStatus";
+import { getState } from "@/src/services/store";
+import { PlayerIdType, ServerHouseType } from "@/src/services/types/gameTypes";
+import { ImageType } from "@/src/services/types/utilTypes";
 
 export let imagesFromState: ImageType;
 export let playersFromState: PlayerIdType;

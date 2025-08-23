@@ -1,5 +1,5 @@
 import { imagesFromState } from "@/game/data/state";
-import Icon from "@/view/gamepage/components/Icon";
+import Icon from "features/gamepage/components/Icon";
 import { ReactElement } from "react";
 import { useAppDispatch } from "services/hooks/storeHooks";
 import { setModalVisibility } from "services/slices/modalSlice";

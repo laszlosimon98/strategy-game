@@ -1,6 +1,6 @@
-import Button from "@/view/components/Button";
-import PageTitle from "@/view/components/PageTitle";
-import PlayersContainer from "@/view/components/PlayersContainer";
+import Button from "features/components/Button";
+import PageTitle from "features/components/PageTitle";
+import PlayersContainer from "features/components/PlayersContainer";
 import { ReactElement, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ServerHandler } from "server/serverHandler";

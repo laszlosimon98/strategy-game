@@ -1,18 +1,17 @@
-import { GameStatus } from "@/game/enums/gameStatus";
-import { Dimension } from "@/game/utils/dimension";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
-import { Building } from "@/game/world/building/building";
-import { Unit } from "@/game/world/unit/unit";
-import { Soldier } from "@/game/world/unit/units/soldier";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { act } from "react";
+import { GameStatus } from "@/src/game/enums/gameStatus";
+import { Dimension } from "@/src/game/utils/dimension";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
+import { Building } from "@/src/game/world/building/building";
+import { Unit } from "@/src/game/world/unit/unit";
+import { Soldier } from "@/src/game/world/unit/units/soldier";
 import {
-  EntityType,
   PlayerIdType,
-  PlayerType,
   ServerHouseType,
-} from "services/types/gameTypes";
+  EntityType,
+  PlayerType,
+} from "@/src/services/types/gameTypes";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type GameState = {
   data: {
@@ -96,7 +95,7 @@ export const gameSlice = createSlice({
 
       state.data.players[id].movingUnits.push(unit);
     },
-    removeUnit: (state, action: PayloadAction<Soldier>) => {},
+    removeUnit: (state, action: PayloadAction<Unit>) => {},
     removeMovingUnit: (
       state,
       action: PayloadAction<{ id: string; removingUnit: Unit }>

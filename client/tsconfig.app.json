@@ -23,20 +23,9 @@
     "noUncheckedSideEffectImports": true,
 
     /* Paths */
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/view/*": ["./view/*"],
-      "@/services/*": ["./services/*"],
-      "@/server/*": ["./server/*"],
-      "@/game/*": ["./game/*"],
-      "@/game/camera/*": ["./game/camera/*"],
-      "@/game/data/*": ["./game/data/*"],
-      "@/game/enums/*": ["./game/enums/*"],
-      "@/game/interfaces/*": ["./game/interfaces/*"],
-      "@/game/server/*": ["./game/server/*"],
-      "@/game/types/*": ["./game/types/*"],
-      "@/game/utils/*": ["./game/utils/*"],
-      "@/game/world/*": ["./game/world/*"]
+      "@/*": ["./*"]
     }
   },
   "include": ["src"]

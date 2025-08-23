@@ -1,22 +1,21 @@
-import { v4 as uuidv4 } from "uuid";
-
-import { FakeBuilding } from "@/game/world/building/fakeBuilding";
-import { ServerHandler } from "server/serverHandler";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
-import { getImageNameFromUrl, ySort } from "@/game/utils/utils";
-import { buildingRegister } from "@/game/world/building/buildingRegister/buildingRegister";
-import { Building } from "@/game/world/building/building";
-import { Manager } from "@/game/world/manager/manager";
-import { dispatch, getState } from "services/store";
-import { EntityType } from "services/types/gameTypes";
+import { gameStatus, playersFromState, builder } from "@/src/game/data/state";
+import { GameStatus } from "@/src/game/enums/gameStatus";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
+import { getImageNameFromUrl } from "@/src/game/utils/utils";
+import { Building } from "@/src/game/world/building/building";
+import { buildingRegister } from "@/src/game/world/building/buildingRegister/buildingRegister";
+import { FakeBuilding } from "@/src/game/world/building/fakeBuilding";
+import { Manager } from "@/src/game/world/manager/manager";
+import { ServerHandler } from "@/src/server/serverHandler";
 import {
   addBuilding,
-  initEntity,
   resetBuilder,
-} from "services/slices/gameSlice";
-import { GameStatus } from "@/game/enums/gameStatus";
-import { builder, gameStatus, playersFromState } from "@/game/data/state";
+  initEntity,
+} from "@/src/services/slices/gameSlice";
+import { getState, dispatch } from "@/src/services/store";
+import { EntityType } from "@/src/services/types/gameTypes";
+import { v4 as uuidv4 } from "uuid";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;

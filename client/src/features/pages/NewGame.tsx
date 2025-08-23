@@ -1,5 +1,5 @@
-import Button from "@/view/components/Button";
-import PageTitle from "@/view/components/PageTitle";
+import Button from "features/components/Button";
+import PageTitle from "features/components/PageTitle";
 import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ServerHandler } from "server/serverHandler";
@@ -40,6 +40,8 @@ const NewGame = (): ReactElement => {
       setError("Sikertelen csatlakozás!");
     }
   };
+
+  // const handleDisconnect
 
   return (
     <>

@@ -1,16 +1,16 @@
-import { Camera } from "@/game/camera/camera";
-import { imagesFromState } from "@/game/data/state";
-import { MouseClicker } from "@/game/interfaces/mouseClicker";
-import { ctx } from "@/game/main";
-import { ERROR_COLOR } from "@/game/settings";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
-import { convertMouseIsometricCoordsToCartesianCoords } from "@/game/utils/utils";
-import { BuildingManager } from "@/game/world/building/manager/buildingManager";
-import { Cell } from "@/game/world/cell";
-import { UnitManager } from "@/game/world/unit/manager/unitManager";
-import { ServerHandler } from "@/server/serverHandler";
-import { TileType } from "@/services/types/gameTypes";
+import { Camera } from "@/src/game/camera/camera";
+import { imagesFromState } from "@/src/game/data/state";
+import { MouseClicker } from "@/src/game/interfaces/mouseClicker";
+import { ctx } from "@/src/game/main";
+import { ERROR_COLOR } from "@/src/game/settings";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
+import { convertMouseIsometricCoordsToCartesianCoords } from "@/src/game/utils/utils";
+import { BuildingManager } from "@/src/game/world/building/manager/buildingManager";
+import { Cell } from "@/src/game/world/cell";
+import { UnitManager } from "@/src/game/world/unit/manager/unitManager";
+import { ServerHandler } from "@/src/server/serverHandler";
+import { TileType } from "@/src/services/types/gameTypes";
 
 export class World implements MouseClicker {
   private mousePos: Position; // temp for printMouseCoord

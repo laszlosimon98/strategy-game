@@ -1,5 +1,5 @@
-import { Program } from "./program";
-import { FPS } from "./settings";
+import { Program } from "@/src/game/program";
+import { FPS } from "@/src/game/settings";
 
 export let canvas: HTMLCanvasElement;
 export let ctx: CanvasRenderingContext2D;

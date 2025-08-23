@@ -1,6 +1,6 @@
-import Button from "@/view/components/Button";
-import Input from "@/view/components/Input";
-import PageTitle from "@/view/components/PageTitle";
+import Button from "features/components/Button";
+import Input from "features/components/Input";
+import PageTitle from "features/components/PageTitle";
 import { ChangeEvent, ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ServerHandler } from "server/serverHandler";

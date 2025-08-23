@@ -1,24 +1,27 @@
-import { ServerHandler } from "server/serverHandler";
-import { UNIT_SIZE } from "@/game/settings";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
+import { playersFromState, imagesFromState } from "@/src/game/data/state";
+import { UnitStatus } from "@/src/game/enums/unitStatus";
+import { UNIT_SIZE } from "@/src/game/settings";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
 import {
   calculateDistance,
   isometricToCartesian,
   getImageNameFromUrl,
   findUnit,
-} from "@/game/utils/utils";
-import { Cell } from "@/game/world/cell";
-import { Manager } from "@/game/world/manager/manager";
-import { Unit } from "@/game/world/unit/unit";
-import { unitRegister } from "@/game/world/unit/unitRegister/unitRegister";
-import { Soldier } from "@/game/world/unit/units/soldier";
+} from "@/src/game/utils/utils";
+import { Cell } from "@/src/game/world/cell";
+import { Manager } from "@/src/game/world/manager/manager";
+import { Unit } from "@/src/game/world/unit/unit";
+import { unitRegister } from "@/src/game/world/unit/unitRegister/unitRegister";
+import { Soldier } from "@/src/game/world/unit/units/soldier";
+import { ServerHandler } from "@/src/server/serverHandler";
+import { addMovingUnit, addUnit } from "@/src/services/slices/gameSlice";
+import { dispatch } from "@/src/services/store";
+import {
+  EntityType,
+  SoldierPropertiesType,
+} from "@/src/services/types/gameTypes";
 import { v4 as uuidv4 } from "uuid";
-import { EntityType, SoldierPropertiesType } from "services/types/gameTypes";
-import { UnitStatus } from "@/game/enums/unitStatus";
-import { imagesFromState, playersFromState } from "@/game/data/state";
-import { dispatch } from "@/services/store";
-import { addMovingUnit, addUnit } from "@/services/slices/gameSlice";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;

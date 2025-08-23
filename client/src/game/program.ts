@@ -1,7 +1,7 @@
-import { Game } from "@/game/game";
-import { ctx } from "@/game/main";
-import { Position } from "@/game/utils/position";
-import { selectState } from "services/store";
+import { Game } from "@/src/game/game";
+import { ctx } from "@/src/game/main";
+import { Position } from "@/src/game/utils/position";
+import { selectState } from "@/src/services/store";
 
 const { canvasWidth, canvasHeight } = selectState((state) => state.canvas);
 

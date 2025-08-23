@@ -1,17 +1,17 @@
-import { CallAble } from "@/game/interfaces/callAble";
-import { MouseClicker } from "@/game/interfaces/mouseClicker";
-import { ServerHandler } from "server/serverHandler";
-import { Dimension } from "@/game/utils/dimension";
-import { Position } from "@/game/utils/position";
-import { isMouseIntersect } from "@/game/utils/utils";
-import { Building } from "@/game/world/building/building";
-import { Cell } from "@/game/world/cell";
+import { playersFromState, gameStatus } from "@/src/game/data/state";
+import { GameStatus } from "@/src/game/enums/gameStatus";
+import { CallAble } from "@/src/game/interfaces/callAble";
+import { MouseClicker } from "@/src/game/interfaces/mouseClicker";
+import { Dimension } from "@/src/game/utils/dimension";
+import { Position } from "@/src/game/utils/position";
+import { isMouseIntersect } from "@/src/game/utils/utils";
+import { Building } from "@/src/game/world/building/building";
+import { Cell } from "@/src/game/world/cell";
+import { ServerHandler } from "@/src/server/serverHandler";
+import { initEntity, setGameState } from "@/src/services/slices/gameSlice";
+import { dispatch } from "@/src/services/store";
+import { EntityType } from "@/src/services/types/gameTypes";
 import { Unit } from "@faker-js/faker";
-import { EntityType } from "services/types/gameTypes";
-import { initEntity, setGameState } from "services/slices/gameSlice";
-import { GameStatus } from "@/game/enums/gameStatus";
-import { gameStatus, playersFromState } from "@/game/data/state";
-import { dispatch } from "@/services/store";
 
 export abstract class Manager<T> implements MouseClicker {
   protected pos: Position;

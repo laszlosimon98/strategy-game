@@ -1,6 +1,6 @@
 import main from "@/game/main";
-import Modal from "@/view/gamepage/components/Modal";
-import SelectionPanel from "@/view/gamepage/components/SelectionPanel";
+import Modal from "features/gamepage/components/Modal";
+import SelectionPanel from "features/gamepage/components/SelectionPanel";
 import { ReactElement, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "services/hooks/storeHooks";
 import { setModalVisibility } from "services/slices/modalSlice";

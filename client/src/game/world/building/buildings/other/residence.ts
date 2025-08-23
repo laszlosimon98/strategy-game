@@ -1,6 +1,6 @@
-import { BuildingActionInterface } from "@/game/interfaces/buildingAction";
-import { EntityType } from "@/game/types/gameType";
-import { Building } from "@/game/world/building/building";
+import { BuildingActionInterface } from "@/src/game/interfaces/buildingAction";
+import { Building } from "@/src/game/world/building/building";
+import { EntityType } from "@/src/services/types/gameTypes";
 
 export class Residence extends Building implements BuildingActionInterface {
   public constructor(building: EntityType) {

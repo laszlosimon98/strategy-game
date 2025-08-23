@@ -1,9 +1,9 @@
-import { Dimension } from "@/game/utils/dimension";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
-import { Building } from "@/game/world/building/building";
-import { Unit } from "@/game/world/unit/unit";
-import { Soldier } from "@/game/world/unit/units/soldier";
+import { Dimension } from "@/src/game/utils/dimension";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
+import { Building } from "@/src/game/world/building/building";
+import { Unit } from "@/src/game/world/unit/unit";
+import { Soldier } from "@/src/game/world/unit/units/soldier";
 
 export type TileType = "grass" | "grass_flower" | "grass_rock" | "dirt";
 

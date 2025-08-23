@@ -1,23 +1,19 @@
-import { CallAble } from "@/game/interfaces/callAble";
-import { ctx } from "@/game/main";
-import { Dimension } from "@/game/utils/dimension";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
-import { Timer } from "@/game/utils/timer";
-import {
-  getRandomNumberFromInterval,
-  findUnit,
-  ySort,
-} from "@/game/utils/utils";
-import { Vector } from "@/game/utils/vector";
-import { Cell } from "@/game/world/cell";
-import { Entity } from "@/game/world/entity";
-import { UnitStatus } from "@/game/enums/unitStatus";
-import { ServerHandler } from "@/server/serverHandler";
-import { EntityType } from "@/services/types/gameTypes";
-import { imagesFromState, playersFromState } from "@/game/data/state";
-import { dispatch } from "@/services/store";
-import { removeMovingUnit } from "@/services/slices/gameSlice";
+import { imagesFromState, playersFromState } from "@/src/game/data/state";
+import { UnitStatus } from "@/src/game/enums/unitStatus";
+import { CallAble } from "@/src/game/interfaces/callAble";
+import { ctx } from "@/src/game/main";
+import { Dimension } from "@/src/game/utils/dimension";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
+import { Timer } from "@/src/game/utils/timer";
+import { getRandomNumberFromInterval, findUnit } from "@/src/game/utils/utils";
+import { Vector } from "@/src/game/utils/vector";
+import { Cell } from "@/src/game/world/cell";
+import { Entity } from "@/src/game/world/entity";
+import { ServerHandler } from "@/src/server/serverHandler";
+import { removeMovingUnit } from "@/src/services/slices/gameSlice";
+import { dispatch } from "@/src/services/store";
+import { EntityType } from "@/src/services/types/gameTypes";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;

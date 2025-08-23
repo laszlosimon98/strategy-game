@@ -1,6 +1,6 @@
-import Button from "@/view/components/Button";
-import NamePlate from "@/view/components/NamePlate";
-import PageTitle from "@/view/components/PageTitle";
+import Button from "features/components/Button";
+import NamePlate from "features/components/NamePlate";
+import PageTitle from "features/components/PageTitle";
 import { ReactElement } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "services/hooks/storeHooks";

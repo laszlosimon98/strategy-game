@@ -1,9 +1,9 @@
-import { ctx } from "@/game/main";
-import { CELL_SIZE } from "@/game/settings";
-import { Indices } from "@/game/utils/indices";
-import { Position } from "@/game/utils/position";
-import { Vector } from "@/game/utils/vector";
-import { selectState } from "services/store";
+import { ctx } from "@/src/game/main";
+import { CELL_SIZE } from "@/src/game/settings";
+import { Indices } from "@/src/game/utils/indices";
+import { Position } from "@/src/game/utils/position";
+import { Vector } from "@/src/game/utils/vector";
+import { selectState } from "@/src/services/store";
 
 const { canvasWidth, canvasHeight } = selectState((state) => state.canvas);
 

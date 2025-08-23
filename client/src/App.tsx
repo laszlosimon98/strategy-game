@@ -1,12 +1,12 @@
-import Description from "@/view/pages/Description";
-import GamePage from "@/view/gamepage/GamePage";
-import Join from "@/view/pages/Join";
-import Lobby from "@/view/pages/Lobby";
-import Login from "@/view/pages/auth/Login";
-import MainPage from "@/view/pages/MainPage";
-import NewGame from "@/view/pages/NewGame";
-import Register from "@/view/pages/auth/Register";
-import Statistic from "@/view/pages/Statistic";
+import GamePage from "@/src/features/gamepage/GamePage";
+import Login from "@/src/features/pages/auth/Login";
+import Register from "@/src/features/pages/auth/Register";
+import Description from "@/src/features/pages/Description";
+import Join from "@/src/features/pages/Join";
+import Lobby from "@/src/features/pages/Lobby";
+import MainPage from "@/src/features/pages/MainPage";
+import NewGame from "@/src/features/pages/NewGame";
+import Statistic from "@/src/features/pages/Statistic";
 import { ReactElement } from "react";
 import { Route, Routes } from "react-router-dom";
 

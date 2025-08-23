@@ -1,6 +1,6 @@
 import { imagesFromState } from "@/game/data/state";
 import { GameStatus } from "@/game/enums/gameStatus";
-import Icon from "@/view/gamepage/components/Icon";
+import Icon from "features/gamepage/components/Icon";
 import { ReactElement } from "react";
 import { useAppDispatch } from "services/hooks/storeHooks";
 import { setGameState, setSelectedHouse } from "services/slices/gameSlice";
