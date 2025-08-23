@@ -1,10 +1,13 @@
-import { imagesFromState } from "@/game/data/state";
-import { GameStatus } from "@/game/enums/gameStatus";
-import Icon from "features/gamepage/components/Icon";
+import Icon from "@/src/features/gamepage/components/Icon";
+import { imagesFromState } from "@/src/game/data/state";
+import { GameStatus } from "@/src/game/enums/gameStatus";
+import { useAppDispatch } from "@/src/services/hooks/storeHooks";
+import {
+  setSelectedHouse,
+  setGameState,
+} from "@/src/services/slices/gameSlice";
+import { setModalVisibility } from "@/src/services/slices/modalSlice";
 import { ReactElement } from "react";
-import { useAppDispatch } from "services/hooks/storeHooks";
-import { setGameState, setSelectedHouse } from "services/slices/gameSlice";
-import { setModalVisibility } from "services/slices/modalSlice";
 
 const Modal = (): ReactElement => {
   const dispatch = useAppDispatch();

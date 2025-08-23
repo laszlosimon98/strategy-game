@@ -1,15 +1,18 @@
-import Button from "features/components/Button";
-import Input from "features/components/Input";
-import PageTitle from "features/components/PageTitle";
-import { ChangeEvent, ReactElement, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ServerHandler } from "server/serverHandler";
-import { useAppDispatch, useAppSelector } from "services/hooks/storeHooks";
+import Button from "@/src/features/components/Button";
+import Input from "@/src/features/components/Input";
+import PageTitle from "@/src/features/components/PageTitle";
+import { ServerHandler } from "@/src/server/serverHandler";
+import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/src/services/hooks/storeHooks";
 import {
   setCode,
   setMessage,
   addPlayersToLobby,
-} from "services/slices/utilsSlice";
+} from "@/src/services/slices/utilsSlice";
+import { ReactElement, useState, ChangeEvent } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 const Join = (): ReactElement => {
   const [input, setInput] = useState<string>("");

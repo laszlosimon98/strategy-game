@@ -1,0 +1,58 @@
+import { state } from '@/src/game/data/data';
+import { MessageSenderService } from '@/src/handlers/message-sender/message-sender.service';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Socket, Server } from 'socket.io';
+
+@Injectable()
+export class PlayerService {
+  constructor(
+    @Inject(forwardRef(() => MessageSenderService))
+    private readonly messageSenderService: MessageSenderService,
+  ) {}
+
+  public getCurrentRoom(socket: Socket): string {
+    return Array.from(socket.rooms)[1];
+  }
+
+  private getPlayerNames(code: string): string[] {
+    const result: string[] = [];
+
+    Object.keys(state[code].players).forEach((id) => {
+      result.push(state[code].players[id].name);
+    });
+
+    return result;
+  }
+
+  public newPlayerMessage(
+    server: Server,
+    socket: Socket,
+    code: string,
+    name: string,
+  ): void {
+    const names = this.getPlayerNames(code);
+
+    this.messageSenderService.sendMessageToEveryOneInRoom(
+      server,
+      socket,
+      'connect:newPlayer',
+      {
+        players: names,
+        message: `${name} csatlakozott a váróhoz!`,
+      },
+    );
+  }
+
+  public playerLeftMessage(server: Server, socket: Socket, name: string): void {
+    console.log(name);
+    this.messageSenderService.sendMessageToEveryOneInRoom(
+      server,
+      socket,
+      'connect:playerLeft',
+      {
+        name,
+        message: `${name} elhagyta a várót!`,
+      },
+    );
+  }
+}

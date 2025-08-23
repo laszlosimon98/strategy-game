@@ -15,11 +15,13 @@ type ColorType =
   | "orange"
   | "purple"
   | "red"
-  | "white";
+  | "white"
+  | "";
 
 export type PlayerType = {
-  [key: string]: string | ColorType | Building[] | Unit[] | Soldier[];
+  [key: string]: string | ColorType | Building[] | Unit[] | Soldier[] | boolean;
   name: string;
+  host: boolean;
   color: ColorType;
   buildings: Building[];
   units: Soldier[];

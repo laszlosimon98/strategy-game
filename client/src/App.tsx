@@ -7,10 +7,19 @@ import Lobby from "@/src/features/pages/Lobby";
 import MainPage from "@/src/features/pages/MainPage";
 import NewGame from "@/src/features/pages/NewGame";
 import Statistic from "@/src/features/pages/Statistic";
-import { ReactElement } from "react";
-import { Route, Routes } from "react-router-dom";
+import { ReactElement, useEffect } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 const App = (): ReactElement => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname !== "/") {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <Routes>
       <Route index element={<MainPage />} />

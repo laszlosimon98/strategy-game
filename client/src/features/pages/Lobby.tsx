@@ -1,19 +1,21 @@
-import Button from "features/components/Button";
-import PageTitle from "features/components/PageTitle";
-import PlayersContainer from "features/components/PlayersContainer";
-import { ReactElement, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ServerHandler } from "server/serverHandler";
-import { useAppDispatch, useAppSelector } from "services/hooks/storeHooks";
+import Button from "@/src/features/components/Button";
+import PageTitle from "@/src/features/components/PageTitle";
+import PlayersContainer from "@/src/features/components/PlayersContainer";
+import { ServerHandler } from "@/src/server/serverHandler";
 import {
+  useAppSelector,
+  useAppDispatch,
+} from "@/src/services/hooks/storeHooks";
+import {
+  setMessage,
   addPlayersToLobby,
   removePlayerFromLobby,
   setImages,
-  setMessage,
-} from "services/slices/utilsSlice";
+} from "@/src/services/slices/utilsSlice";
+import { ReactElement, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 
 const Lobby = (): ReactElement => {
-  const location = useLocation();
   const navigate = useNavigate();
 
   const code = useAppSelector((state) => state.utils.data.player.code);
@@ -36,13 +38,12 @@ const Lobby = (): ReactElement => {
       dispatch(addPlayersToLobby(players));
     });
 
-    ServerHandler.receiveMessage(
-      "connect:playerLeft",
-      ({ name, message }: { name: string; message: string }) => {
-        dispatch(removePlayerFromLobby(name));
-        dispatch(setMessage({ message, type: "leave" }));
-      }
-    );
+    ServerHandler.receiveMessage("connect:playerLeft", (data) => {
+      const { name, message } = data;
+      console.log("LEAVE: ", data);
+      dispatch(removePlayerFromLobby(name));
+      dispatch(setMessage({ message, type: "leave" }));
+    });
 
     const fetchImages = async () => {
       ServerHandler.sendMessage("game:images", {});
@@ -77,7 +78,7 @@ const Lobby = (): ReactElement => {
             {info.message}
           </p>
         )}
-        <p className="text-2xl">Kód: {code}</p>
+        <p className="text-2xl">Kód: {String(code)}</p>
         <h2 className="text-xl font-semibold">Csatlakozott játékosok</h2>
         <PlayersContainer>
           {players &&
@@ -86,7 +87,7 @@ const Lobby = (): ReactElement => {
       </div>
 
       <div className="flex justify-around mb-16 mt-1 flex-wrap gap-6 sm:mt-4">
-        <Link to={`${location.state.redirectTo}`}>
+        <Link to={`/`}>
           <Button radius="rounded" onClick={handleLeave}>
             Vissza
           </Button>

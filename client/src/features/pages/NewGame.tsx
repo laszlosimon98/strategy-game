@@ -1,15 +1,18 @@
-import Button from "features/components/Button";
-import PageTitle from "features/components/PageTitle";
-import { ReactElement, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ServerHandler } from "server/serverHandler";
-import { useAppDispatch, useAppSelector } from "services/hooks/storeHooks";
+import Button from "@/src/features/components/Button";
+import PageTitle from "@/src/features/components/PageTitle";
+import { ServerHandler } from "@/src/server/serverHandler";
 import {
-  addPlayersToLobby,
+  useAppSelector,
+  useAppDispatch,
+} from "@/src/services/hooks/storeHooks";
+import {
   setCode,
   setHost,
   setMessage,
-} from "services/slices/utilsSlice";
+  addPlayersToLobby,
+} from "@/src/services/slices/utilsSlice";
+import { ReactElement, useState } from "react";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 
 const NewGame = (): ReactElement => {
   const location = useLocation();
@@ -40,8 +43,6 @@ const NewGame = (): ReactElement => {
       setError("Sikertelen csatlakozás!");
     }
   };
-
-  // const handleDisconnect
 
   return (
     <>

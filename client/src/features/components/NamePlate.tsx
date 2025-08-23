@@ -1,5 +1,5 @@
+import { cn } from "@/src/utils/cn";
 import { HTMLAttributes, PropsWithChildren, ReactElement } from "react";
-import { cn } from "utils/cn";
 
 type NamePlateProps = PropsWithChildren & HTMLAttributes<HTMLDivElement> & {};
 

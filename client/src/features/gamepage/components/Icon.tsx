@@ -1,5 +1,5 @@
+import { cn } from "@/src/utils/cn";
 import { HTMLAttributes, ReactElement } from "react";
-import { cn } from "utils/cn";
 
 type IconProps = HTMLAttributes<HTMLImageElement> & {
   url: string;

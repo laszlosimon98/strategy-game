@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MessageSenderModule } from './handlers/message-sender/message-sender.module';
+import { HandleConnectionModule } from './handlers/handle-connection/handle-connection.module';
+import { PlayerModule } from './handlers/player/player.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [MessageSenderModule, HandleConnectionModule, PlayerModule],
 })
 export class AppModule {}

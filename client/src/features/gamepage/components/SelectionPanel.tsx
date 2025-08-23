@@ -1,8 +1,8 @@
-import { imagesFromState } from "@/game/data/state";
-import Icon from "features/gamepage/components/Icon";
+import Icon from "@/src/features/gamepage/components/Icon";
+import { imagesFromState } from "@/src/game/data/state";
+import { useAppDispatch } from "@/src/services/hooks/storeHooks";
+import { setModalVisibility } from "@/src/services/slices/modalSlice";
 import { ReactElement } from "react";
-import { useAppDispatch } from "services/hooks/storeHooks";
-import { setModalVisibility } from "services/slices/modalSlice";
 
 const SelectionPanel = (): ReactElement => {
   const dispatch = useAppDispatch();

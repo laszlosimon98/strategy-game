@@ -1,9 +1,9 @@
-import Button from "features/components/Button";
-import NamePlate from "features/components/NamePlate";
-import PageTitle from "features/components/PageTitle";
+import Button from "@/src/features/components/Button";
+import NamePlate from "@/src/features/components/NamePlate";
+import PageTitle from "@/src/features/components/PageTitle";
+import { useAppSelector } from "@/src/services/hooks/storeHooks";
 import { ReactElement } from "react";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "services/hooks/storeHooks";
 
 const MainPage = (): ReactElement => {
   const name = useAppSelector((state) => state.utils.data.player.name);

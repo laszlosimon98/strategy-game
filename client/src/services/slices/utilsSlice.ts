@@ -1,6 +1,7 @@
+import { PlayerType } from "@/src/services/types/gameTypes";
+import { LobbyType, ImageType } from "@/src/services/types/utilTypes";
 import { faker } from "@faker-js/faker/locale/hu";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ImageType, LobbyType, PlayerType } from "services/types/utilTypes";
 
 type UtilsState = {
   data: {
@@ -16,6 +17,10 @@ const initialState: UtilsState = {
       name: faker.person.firstName(),
       host: false,
       code: "",
+      buildings: [],
+      color: "",
+      movingUnits: [],
+      units: [],
     },
     lobby: {
       players: [],
