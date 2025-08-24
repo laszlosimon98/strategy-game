@@ -44,7 +44,6 @@ export class PlayerService {
   }
 
   public playerLeftMessage(server: Server, socket: Socket, name: string): void {
-    console.log(name);
     this.messageSenderService.sendMessageToEveryOneInRoom(
       server,
       socket,

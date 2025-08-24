@@ -45,24 +45,24 @@ const Lobby = (): ReactElement => {
       dispatch(setMessage({ message, type: "leave" }));
     });
 
-    const fetchImages = async () => {
-      ServerHandler.sendMessage("game:images", {});
-      const images = await ServerHandler.receiveAsyncMessage("game:images");
-      dispatch(setImages(images));
+    // const fetchImages = async () => {
+    //   ServerHandler.sendMessage("game:images", {});
+    //   const images = await ServerHandler.receiveAsyncMessage("game:images");
+    //   dispatch(setImages(images));
 
-      ServerHandler.receiveMessage("game:starts", () => {
-        navigate("/game");
-      });
-    };
-    fetchImages();
+    //   ServerHandler.receiveMessage("game:starts", () => {
+    //     navigate("/game");
+    //   });
+    // };
+    // fetchImages();
 
     return () => {
       ServerHandler.removeListener("connect:newPlayer");
       ServerHandler.removeListener("connect:playerLeft");
-      ServerHandler.removeListener("start:images");
-      ServerHandler.removeListener("game:starts");
+      // ServerHandler.removeListener("start:images");
+      // ServerHandler.removeListener("game:starts");
     };
-  }, [dispatch, navigate]);
+  }, []);
 
   return (
     <div className="h-dvh flex flex-col justify-around">

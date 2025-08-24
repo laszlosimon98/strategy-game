@@ -79,17 +79,16 @@ export class HandleConnectionService {
     socket.join(code);
   }
 
-  public disconnect(socket: Socket): string {
+  public disconnect(server: Server, socket: Socket): string {
     const currentRoom = this.playerService.getCurrentRoom(socket);
-
-    console.log('State before leaving: ', state);
 
     const user = state[currentRoom].players[socket.id];
     state[currentRoom].remainingColors.push(user.color);
+
+    this.playerService.playerLeftMessage(server, socket, user.name);
+
     delete state[currentRoom].players[socket.id];
     socket.leave(currentRoom);
-
-    console.log('State after leaving: ', state[currentRoom]);
 
     return user.name;
   }

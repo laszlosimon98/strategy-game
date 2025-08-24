@@ -91,15 +91,14 @@ export class HandleConnectionGateway {
 
   @SubscribeMessage('connect:disconnect')
   disconnect(@ConnectedSocket() socket: Socket) {
-    const userName = this.handleConnectionService.disconnect(socket);
-
-    this.playerService.playerLeftMessage(this.server, socket, userName);
+    this.handleConnectionService.disconnect(this.server, socket);
   }
 
-  @SubscribeMessage('disconnecting')
-  disconnecting(@ConnectedSocket() socket: Socket) {
-    const userName = this.handleConnectionService.disconnect(socket);
-
-    this.playerService.playerLeftMessage(this.server, socket, userName);
+  afterInit(server: Server) {
+    server.on('connection', (socket: Socket) => {
+      socket.on('disconnecting', () => {
+        this.handleConnectionService.disconnect(this.server, socket);
+      });
+    });
   }
 }
