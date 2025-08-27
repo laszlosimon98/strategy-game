@@ -1,10 +1,13 @@
 import Icon from "@/src/features/gamepage/components/Icon";
-import { imagesFromState } from "@/src/game/data/state";
-import { useAppDispatch } from "@/src/services/hooks/storeHooks";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "@/src/services/hooks/storeHooks";
 import { setModalVisibility } from "@/src/services/slices/modalSlice";
 import { ReactElement } from "react";
 
 const SelectionPanel = (): ReactElement => {
+  const { images } = useAppSelector((state) => state.utils.data);
   const dispatch = useAppDispatch();
 
   return (
@@ -14,11 +17,11 @@ const SelectionPanel = (): ReactElement => {
     >
       <div className="h-full flex justify-around items-center">
         <Icon
-          url={imagesFromState.ui.gamemenu.house.url}
+          url={images.ui.gamemenu.house.url}
           onClick={() => dispatch(setModalVisibility(true))}
         />
-        <Icon url={imagesFromState.ui.gamemenu.storage.url} />
-        <Icon url={imagesFromState.ui.gamemenu.population.url} />
+        <Icon url={images.ui.gamemenu.storage.url} />
+        <Icon url={images.ui.gamemenu.population.url} />
       </div>
     </div>
   );

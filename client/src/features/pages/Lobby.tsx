@@ -44,22 +44,28 @@ const Lobby = (): ReactElement => {
       dispatch(setMessage({ message, type: "leave" }));
     });
 
-    // const fetchImages = async () => {
-    //   ServerHandler.sendMessage("game:images", {});
-    //   const images = await ServerHandler.receiveAsyncMessage("game:images");
-    //   dispatch(setImages(images));
+    const fetchImages = async () => {
+      ServerHandler.sendMessage("game:images", {});
+      const images = await ServerHandler.receiveAsyncMessage("game:images");
 
-    //   ServerHandler.receiveMessage("game:starts", () => {
-    //     navigate("/game");
-    //   });
-    // };
-    // fetchImages();
+      ServerHandler.receiveMessage("game:imagesError", (data) => {
+        console.error(data);
+        return;
+      });
+
+      dispatch(setImages(images));
+    };
+    fetchImages();
+
+    ServerHandler.receiveMessage("game:starts", () => {
+      navigate("/game");
+    });
 
     return () => {
       ServerHandler.removeListener("connect:newPlayer");
       ServerHandler.removeListener("connect:playerLeft");
-      // ServerHandler.removeListener("start:images");
-      // ServerHandler.removeListener("game:starts");
+      ServerHandler.removeListener("start:images");
+      ServerHandler.removeListener("game:starts");
     };
   }, []);
 
@@ -94,11 +100,9 @@ const Lobby = (): ReactElement => {
 
         <Button radius="rounded">Kész</Button>
 
-        <Link to="/game">
-          <Button radius="rounded" onClick={handleStart}>
-            Indítás
-          </Button>
-        </Link>
+        <Button radius="rounded" onClick={handleStart}>
+          Indítás
+        </Button>
       </div>
     </div>
   );
