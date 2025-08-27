@@ -40,7 +40,6 @@ const Lobby = (): ReactElement => {
 
     ServerHandler.receiveMessage("connect:playerLeft", (data) => {
       const { name, message } = data;
-      console.log("LEAVE: ", data);
       dispatch(removePlayerFromLobby(name));
       dispatch(setMessage({ message, type: "leave" }));
     });

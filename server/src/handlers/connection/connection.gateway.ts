@@ -5,21 +5,22 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { HandleConnectionService } from './handle-connection.service';
-import { MessageSenderService } from '@/src/handlers/message-sender/message-sender.service';
-import { Server, Socket } from 'socket.io';
-import { PlayerService } from '@/src/handlers/player/player.service';
-import { CreateConnectionDto } from '@/src/handlers/handle-connection/dto/create-connection.dto';
-import { JoinConnectionDto } from '@/src/handlers/handle-connection/dto/join-connection.dto';
+import { ConnectionService } from './connection.service';
+import { CreateConnectionDto } from '@/src/handlers/connection/dto/create-connection.dto';
+import { JoinConnectionDto } from '@/src/handlers/connection/dto/join-connection.dto';
 import { MAX_PLAYER } from '@/src/settings';
+import { MessageSenderService } from '@/src/handlers/message-sender/message-sender.service';
+import { PlayerService } from '@/src/handlers/player/player.service';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway()
-export class HandleConnectionGateway {
+export class ConnectionGateway {
   @WebSocketServer()
   server: Server;
 
   constructor(
-    private readonly handleConnectionService: HandleConnectionService,
+    private readonly connectionService: ConnectionService,
+
     private readonly messageSenderService: MessageSenderService,
     private readonly playerService: PlayerService,
   ) {}
@@ -31,10 +32,7 @@ export class HandleConnectionGateway {
   ) {
     const { name } = createConnectionDto;
 
-    const code = this.handleConnectionService.create(
-      createConnectionDto,
-      socket,
-    );
+    const code = this.connectionService.create(createConnectionDto, socket);
 
     this.messageSenderService.sendMessageToSender(socket, 'connect:code', {
       code,
@@ -50,7 +48,7 @@ export class HandleConnectionGateway {
   ) {
     const { name, code } = joinConnectionDto;
 
-    if (!this.handleConnectionService.isRoomExists(this.server, code)) {
+    if (!this.connectionService.isRoomExists(this.server, code)) {
       this.messageSenderService.sendMessageToSender(
         socket,
         'connect:error',
@@ -59,9 +57,7 @@ export class HandleConnectionGateway {
       return;
     }
 
-    if (
-      this.handleConnectionService.getRoomSize(this.server, code) >= MAX_PLAYER
-    ) {
+    if (this.connectionService.getRoomSize(this.server, code) >= MAX_PLAYER) {
       this.messageSenderService.sendMessageToSender(
         socket,
         'connect:error',
@@ -70,7 +66,7 @@ export class HandleConnectionGateway {
       return;
     }
 
-    if (this.handleConnectionService.isGameStarted(code)) {
+    if (this.connectionService.isGameStarted(code)) {
       this.messageSenderService.sendMessageToSender(
         socket,
         'connect:error',
@@ -79,7 +75,7 @@ export class HandleConnectionGateway {
       return;
     }
 
-    this.handleConnectionService.join(socket, joinConnectionDto);
+    this.connectionService.join(socket, joinConnectionDto);
 
     this.messageSenderService.sendMessageToSender(socket, 'connect:error', '');
     this.messageSenderService.sendMessageToSender(socket, 'connect:code', {
@@ -91,13 +87,13 @@ export class HandleConnectionGateway {
 
   @SubscribeMessage('connect:disconnect')
   disconnect(@ConnectedSocket() socket: Socket) {
-    this.handleConnectionService.disconnect(this.server, socket);
+    this.connectionService.disconnect(this.server, socket);
   }
 
-  afterInit(server: Server) {
-    server.on('connection', (socket: Socket) => {
+  afterInit() {
+    this.server.on('connection', (socket: Socket) => {
       socket.on('disconnecting', () => {
-        this.handleConnectionService.disconnect(this.server, socket);
+        this.connectionService.disconnect(this.server, socket);
       });
     });
   }

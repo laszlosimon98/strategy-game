@@ -1,15 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { CONNECTION_CODE_LENGTH } from '@/src/settings';
-import { colors, state } from '@/src/game/data/data';
+import { state, colors } from '@/src/game/data/data';
 import { ColorType } from '@/src/game/types/types';
-import { Socket } from 'socket.io';
-import { CreateConnectionDto } from '@/src/handlers/handle-connection/dto/create-connection.dto';
-import { Server } from 'socket.io';
-import { JoinConnectionDto } from '@/src/handlers/handle-connection/dto/join-connection.dto';
+import { CreateConnectionDto } from '@/src/handlers/connection/dto/create-connection.dto';
+import { JoinConnectionDto } from '@/src/handlers/connection/dto/join-connection.dto';
 import { PlayerService } from '@/src/handlers/player/player.service';
+import { CONNECTION_CODE_LENGTH } from '@/src/settings';
+import { Injectable } from '@nestjs/common';
+import { Server, Socket } from 'socket.io';
 
 @Injectable()
-export class HandleConnectionService {
+export class ConnectionService {
   constructor(private readonly playerService: PlayerService) {}
 
   private generateCode(codeLength: number): string {
@@ -82,14 +81,16 @@ export class HandleConnectionService {
   public disconnect(server: Server, socket: Socket): string {
     const currentRoom = this.playerService.getCurrentRoom(socket);
 
-    const user = state[currentRoom].players[socket.id];
-    state[currentRoom].remainingColors.push(user.color);
+    if (currentRoom) {
+      const user = state[currentRoom].players[socket.id];
+      state[currentRoom].remainingColors.push(user.color);
 
-    this.playerService.playerLeftMessage(server, socket, user.name);
+      this.playerService.playerLeftMessage(server, socket, user.name);
 
-    delete state[currentRoom].players[socket.id];
-    socket.leave(currentRoom);
+      delete state[currentRoom].players[socket.id];
+      socket.leave(currentRoom);
 
-    return user.name;
+      return user.name;
+    }
   }
 }
