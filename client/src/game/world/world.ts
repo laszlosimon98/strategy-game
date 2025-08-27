@@ -29,7 +29,7 @@ export class World implements MouseClicker {
     this.unitManager = new UnitManager();
   }
 
-  // TODO: nem az igazi ez így
+  // FIXME: nem az igazi ez így
   public init(): void {
     ServerHandler.receiveMessage(
       "game:createWorld",

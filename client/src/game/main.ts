@@ -4,7 +4,7 @@ import { FPS } from "@/src/game/settings";
 export let canvas: HTMLCanvasElement;
 export let ctx: CanvasRenderingContext2D;
 
-const main = async (_canvas: HTMLCanvasElement) => {
+const main = (_canvas: HTMLCanvasElement) => {
   canvas = _canvas;
   const context = canvas.getContext("2d");
 

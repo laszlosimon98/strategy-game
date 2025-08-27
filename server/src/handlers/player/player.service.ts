@@ -1,4 +1,5 @@
 import { state } from '@/src/game/data/data';
+import { PlayerType } from '@/src/game/types/types';
 import { MessageSenderService } from '@/src/handlers/message-sender/message-sender.service';
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
@@ -10,10 +11,6 @@ export class PlayerService {
     private readonly messageSenderService: MessageSenderService,
   ) {}
 
-  public getCurrentRoom(socket: Socket): string {
-    return Array.from(socket.rooms)[1];
-  }
-
   private getPlayerNames(code: string): string[] {
     const result: string[] = [];
 
@@ -22,6 +19,15 @@ export class PlayerService {
     });
 
     return result;
+  }
+
+  public getCurrentRoom(socket: Socket): string {
+    return Array.from(socket.rooms)[1];
+  }
+
+  public getPlayersInRoom(socket: Socket): PlayerType {
+    const currentRoom: string = this.getCurrentRoom(socket);
+    return state[currentRoom].players;
   }
 
   public newPlayerMessage(

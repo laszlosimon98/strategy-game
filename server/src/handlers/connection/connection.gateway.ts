@@ -16,7 +16,7 @@ import { Server, Socket } from 'socket.io';
 @WebSocketGateway()
 export class ConnectionGateway {
   @WebSocketServer()
-  server: Server;
+  private server: Server;
 
   constructor(
     private readonly connectionService: ConnectionService,
@@ -26,7 +26,7 @@ export class ConnectionGateway {
   ) {}
 
   @SubscribeMessage('connect:create')
-  create(
+  public create(
     @MessageBody() createConnectionDto: CreateConnectionDto,
     @ConnectedSocket() socket: Socket,
   ) {
@@ -42,9 +42,9 @@ export class ConnectionGateway {
   }
 
   @SubscribeMessage('connect:join')
-  join(
+  public join(
     @MessageBody() joinConnectionDto: JoinConnectionDto,
-    @ConnectedSocket() socket,
+    @ConnectedSocket() socket: Socket,
   ) {
     const { name, code } = joinConnectionDto;
 
@@ -86,11 +86,11 @@ export class ConnectionGateway {
   }
 
   @SubscribeMessage('connect:disconnect')
-  disconnect(@ConnectedSocket() socket: Socket) {
+  public disconnect(@ConnectedSocket() socket: Socket) {
     this.connectionService.disconnect(this.server, socket);
   }
 
-  afterInit() {
+  public afterInit() {
     this.server.on('connection', (socket: Socket) => {
       socket.on('disconnecting', () => {
         this.connectionService.disconnect(this.server, socket);

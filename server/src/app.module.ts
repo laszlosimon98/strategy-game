@@ -6,7 +6,7 @@ import { ImageSenderModule } from './handlers/image-sender/image-sender.module';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { GameStartModule } from './handlers/game-start/game-start.module';
+import { GameModule } from './handlers/game/game.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { GameStartModule } from './handlers/game-start/game-start.module';
       rootPath: join(__dirname, '..', 'public', 'assets'),
       serveRoot: '/assets',
     }),
-    GameStartModule,
+    GameModule,
   ],
 })
 export class AppModule {}

@@ -10,10 +10,12 @@ export class Game {
   private world?: World;
 
   public constructor() {
+    console.log("game init");
     this.init();
   }
 
   private async init() {
+    ServerHandler.sendMessage("game:init", {});
     await this.initPlayers();
     this.world = new World();
     this.world.init();
@@ -22,9 +24,11 @@ export class Game {
   private async initPlayers(): Promise<void> {
     const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
 
+    // FIXME: backendről kell jönnie a hostnak is
     Object.keys(players).forEach((id) => {
       const newPlayer: PlayerType = {
         name: players[id].name,
+        host: false,
         color: players[id].color,
         buildings: [],
         units: [],

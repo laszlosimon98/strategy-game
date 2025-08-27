@@ -15,7 +15,7 @@ export class ImageSenderGateway {
   ) {}
 
   @SubscribeMessage('game:images')
-  async handleImages(@ConnectedSocket() socket) {
+  public async handleImages(@ConnectedSocket() socket) {
     try {
       const images = await this.imageSenderService.loadImages(
         path.join(__dirname, '..', '..', '..', 'public', 'assets'),

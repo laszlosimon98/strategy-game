@@ -23,9 +23,12 @@ export class ServerHandler {
 
   public static receiveAsyncMessage(event: string): Promise<any> {
     return new Promise((resolve) => {
-      this.getInstance().on(event, (data: any) => {
+      const handler = (data: any) => {
+        // Távolítsuk el a listener-t a válasz megérkezése után
+        this.getInstance().off(event, handler);
         resolve(data);
-      });
+      };
+      this.getInstance().on(event, handler);
     });
   }
 

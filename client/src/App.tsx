@@ -1,12 +1,12 @@
 import GamePage from "@/src/features/gamepage/game-page";
-import Login from "@/src/features/pages/auth/Login";
-import Register from "@/src/features/pages/auth/Register";
+import Login from "@/src/features/pages/auth/login";
+import Register from "@/src/features/pages/auth/register";
 import Description from "@/src/features/pages/description";
-import Join from "@/src/features/pages/Join";
-import Lobby from "@/src/features/pages/Lobby";
+import Join from "@/src/features/pages/join";
+import Lobby from "@/src/features/pages/lobby";
 import MainPage from "@/src/features/pages/main-page";
 import NewGame from "@/src/features/pages/new-game";
-import Statistic from "@/src/features/pages/Statistic";
+import Statistic from "@/src/features/pages/statistic";
 import { ReactElement, useEffect } from "react";
 import { useNavigate, useLocation, Routes, Route } from "react-router-dom";
 
