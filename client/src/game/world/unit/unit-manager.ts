@@ -1,5 +1,5 @@
 import { playersFromState, imagesFromState } from "@/src/game/data/state";
-import { UnitStatus } from "@/src/game/enums/unitStatus";
+import { UnitStatus } from "@/src/game/enums/unit-status";
 import { UNIT_SIZE } from "@/src/game/settings";
 import { Indices } from "@/src/game/utils/indices";
 import { Position } from "@/src/game/utils/position";
@@ -12,15 +12,15 @@ import {
 import { Cell } from "@/src/game/world/cell";
 import { Manager } from "@/src/game/world/manager/manager";
 import { Unit } from "@/src/game/world/unit/unit";
-import { unitRegister } from "@/src/game/world/unit/unitRegister/unitRegister";
+import { unitRegister } from "@/src/game/world/unit/unit-register";
 import { Soldier } from "@/src/game/world/unit/units/soldier";
-import { ServerHandler } from "@/src/server/serverHandler";
-import { addMovingUnit, addUnit } from "@/src/services/slices/gameSlice";
+import { ServerHandler } from "@/src/server/server-handler";
+import { addMovingUnit, addUnit } from "@/src/services/slices/game.slice";
 import { dispatch } from "@/src/services/store";
 import {
   EntityType,
   SoldierPropertiesType,
-} from "@/src/services/types/gameTypes";
+} from "@/src/services/types/game.types";
 import { v4 as uuidv4 } from "uuid";
 
 export class UnitManager extends Manager<Unit> {

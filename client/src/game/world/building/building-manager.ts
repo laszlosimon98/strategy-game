@@ -1,20 +1,20 @@
 import { gameStatus, playersFromState, builder } from "@/src/game/data/state";
-import { GameStatus } from "@/src/game/enums/gameStatus";
+import { GameStatus } from "@/src/game/enums/game-status";
 import { Indices } from "@/src/game/utils/indices";
 import { Position } from "@/src/game/utils/position";
 import { getImageNameFromUrl } from "@/src/game/utils/utils";
 import { Building } from "@/src/game/world/building/building";
-import { buildingRegister } from "@/src/game/world/building/buildingRegister/buildingRegister";
-import { FakeBuilding } from "@/src/game/world/building/fakeBuilding";
+import { buildingRegister } from "@/src/game/world/building/building-register";
+import { FakeBuilding } from "@/src/game/world/building/fake-building";
 import { Manager } from "@/src/game/world/manager/manager";
-import { ServerHandler } from "@/src/server/serverHandler";
+import { ServerHandler } from "@/src/server/server-handler";
 import {
   addBuilding,
   resetBuilder,
   initEntity,
-} from "@/src/services/slices/gameSlice";
+} from "@/src/services/slices/game.slice";
 import { getState, dispatch } from "@/src/services/store";
-import { EntityType } from "@/src/services/types/gameTypes";
+import { EntityType } from "@/src/services/types/game.types";
 import { v4 as uuidv4 } from "uuid";
 
 export class BuildingManager extends Manager<Building> {

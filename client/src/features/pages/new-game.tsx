@@ -1,16 +1,16 @@
-import Button from "@/src/features/components/Button";
-import PageTitle from "@/src/features/components/PageTitle";
-import { ServerHandler } from "@/src/server/serverHandler";
+import Button from "@/src/features/components/button";
+import PageTitle from "@/src/features/components/page-title";
+import { ServerHandler } from "@/src/server/server-handler";
 import {
   useAppSelector,
   useAppDispatch,
-} from "@/src/services/hooks/storeHooks";
+} from "@/src/services/hooks/store.hooks";
 import {
   setCode,
   setHost,
   setMessage,
   addPlayersToLobby,
-} from "@/src/services/slices/utilsSlice";
+} from "@/src/services/slices/init.slice";
 import { ReactElement, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 

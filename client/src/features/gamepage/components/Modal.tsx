@@ -1,12 +1,12 @@
-import Icon from "@/src/features/gamepage/components/Icon";
+import Icon from "@/src/features/gamepage/components/icon";
 import { imagesFromState } from "@/src/game/data/state";
-import { GameStatus } from "@/src/game/enums/gameStatus";
-import { useAppDispatch } from "@/src/services/hooks/storeHooks";
+import { GameStatus } from "@/src/game/enums/game-status";
+import { useAppDispatch } from "@/src/services/hooks/store.hooks";
 import {
   setSelectedHouse,
   setGameState,
-} from "@/src/services/slices/gameSlice";
-import { setModalVisibility } from "@/src/services/slices/modalSlice";
+} from "@/src/services/slices/game.slice";
+import { setModalVisibility } from "@/src/services/slices/modal.slice";
 import { ReactElement } from "react";
 
 const Modal = (): ReactElement => {

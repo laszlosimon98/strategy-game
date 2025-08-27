@@ -3,7 +3,7 @@ import { Soldier } from "@/src/game/world/unit/units/soldier";
 import {
   EntityType,
   SoldierPropertiesType,
-} from "@/src/services/types/gameTypes";
+} from "@/src/services/types/game.types";
 
 export class Archer extends Soldier {
   constructor(

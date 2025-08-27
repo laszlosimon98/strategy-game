@@ -1,9 +1,9 @@
-import Icon from "@/src/features/gamepage/components/Icon";
+import Icon from "@/src/features/gamepage/components/icon";
 import {
-  useAppDispatch,
   useAppSelector,
-} from "@/src/services/hooks/storeHooks";
-import { setModalVisibility } from "@/src/services/slices/modalSlice";
+  useAppDispatch,
+} from "@/src/services/hooks/store.hooks";
+import { setModalVisibility } from "@/src/services/slices/modal.slice";
 import { ReactElement } from "react";
 
 const SelectionPanel = (): ReactElement => {

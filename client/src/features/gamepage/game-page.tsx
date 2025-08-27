@@ -1,12 +1,12 @@
-import Modal from "@/src/features/gamepage/components/Modal";
-import SelectionPanel from "@/src/features/gamepage/components/SelectionPanel";
+import Modal from "@/src/features/gamepage/components/modal";
+import SelectionPanel from "@/src/features/gamepage/components/selection-panel";
 import main from "@/src/game/main";
 import {
   useAppDispatch,
   useAppSelector,
-} from "@/src/services/hooks/storeHooks";
-import { setModalVisibility } from "@/src/services/slices/modalSlice";
-import { ReactElement, useEffect, useRef } from "react";
+} from "@/src/services/hooks/store.hooks";
+import { setModalVisibility } from "@/src/services/slices/modal.slice";
+import { ReactElement, useRef, useEffect } from "react";
 
 const GamePage = (): ReactElement => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);

@@ -1,6 +1,6 @@
 import { imagesFromState, playersFromState } from "@/src/game/data/state";
-import { UnitStatus } from "@/src/game/enums/unitStatus";
-import { CallAble } from "@/src/game/interfaces/callAble";
+import { UnitStatus } from "@/src/game/enums/unit-status";
+import { CallAble } from "@/src/game/interfaces/callable";
 import { ctx } from "@/src/game/main";
 import { Dimension } from "@/src/game/utils/dimension";
 import { Indices } from "@/src/game/utils/indices";
@@ -10,10 +10,10 @@ import { getRandomNumberFromInterval, findUnit } from "@/src/game/utils/utils";
 import { Vector } from "@/src/game/utils/vector";
 import { Cell } from "@/src/game/world/cell";
 import { Entity } from "@/src/game/world/entity";
-import { ServerHandler } from "@/src/server/serverHandler";
-import { removeMovingUnit } from "@/src/services/slices/gameSlice";
+import { ServerHandler } from "@/src/server/server-handler";
+import { removeMovingUnit } from "@/src/services/slices/game.slice";
 import { dispatch } from "@/src/services/store";
-import { EntityType } from "@/src/services/types/gameTypes";
+import { EntityType } from "@/src/services/types/game.types";
 
 const ANIMATION_COUNT: number = 8;
 const UNIT_ASSET_SIZE: number = 64;

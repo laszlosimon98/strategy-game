@@ -4,7 +4,7 @@ import { Position } from "@/src/game/utils/position";
 import { Entity } from "@/src/game/world/entity";
 import { Soldier } from "@/src/game/world/unit/units/soldier";
 import { getCurrentState } from "@/src/services/store";
-import { EntityType, PlayerIdType } from "@/src/services/types/gameTypes";
+import { EntityType, PlayerIdType } from "@/src/services/types/game.types";
 
 /**
  * Visszatér a url-ből kinyert kép névvel, a kiterjesztés nélkül

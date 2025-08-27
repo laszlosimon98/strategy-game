@@ -1,16 +1,16 @@
 import { Camera } from "@/src/game/camera/camera";
 import { imagesFromState } from "@/src/game/data/state";
-import { MouseClicker } from "@/src/game/interfaces/mouseClicker";
+import { MouseClicker } from "@/src/game/interfaces/mouse-clicker";
 import { ctx } from "@/src/game/main";
 import { ERROR_COLOR } from "@/src/game/settings";
 import { Indices } from "@/src/game/utils/indices";
 import { Position } from "@/src/game/utils/position";
 import { convertMouseIsometricCoordsToCartesianCoords } from "@/src/game/utils/utils";
-import { BuildingManager } from "@/src/game/world/building/manager/buildingManager";
+import { BuildingManager } from "@/src/game/world/building/building-manager";
 import { Cell } from "@/src/game/world/cell";
-import { UnitManager } from "@/src/game/world/unit/manager/unitManager";
-import { ServerHandler } from "@/src/server/serverHandler";
-import { TileType } from "@/src/services/types/gameTypes";
+import { UnitManager } from "@/src/game/world/unit/unit-manager";
+import { ServerHandler } from "@/src/server/server-handler";
+import { TileType } from "@/src/services/types/game.types";
 
 export class World implements MouseClicker {
   private mousePos: Position; // temp for printMouseCoord

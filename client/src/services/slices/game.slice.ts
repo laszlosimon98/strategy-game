@@ -1,4 +1,4 @@
-import { GameStatus } from "@/src/game/enums/gameStatus";
+import { GameStatus } from "@/src/game/enums/game-status";
 import { Dimension } from "@/src/game/utils/dimension";
 import { Indices } from "@/src/game/utils/indices";
 import { Position } from "@/src/game/utils/position";
@@ -10,7 +10,7 @@ import {
   ServerHouseType,
   EntityType,
   PlayerType,
-} from "@/src/services/types/gameTypes";
+} from "@/src/services/types/game.types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type GameState = {

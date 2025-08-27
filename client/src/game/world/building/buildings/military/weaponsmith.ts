@@ -1,6 +1,6 @@
-import { BuildingActionInterface } from "@/src/game/interfaces/buildingAction";
+import { BuildingActionInterface } from "@/src/game/interfaces/building-action";
 import { Building } from "@/src/game/world/building/building";
-import { EntityType } from "@/src/services/types/gameTypes";
+import { EntityType } from "@/src/services/types/game.types";
 
 export class WeaponSmith extends Building implements BuildingActionInterface {
   public constructor(building: EntityType) {

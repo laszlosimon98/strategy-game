@@ -1,7 +1,7 @@
-import Button from "@/src/features/components/Button";
-import NamePlate from "@/src/features/components/NamePlate";
-import PageTitle from "@/src/features/components/PageTitle";
-import { useAppSelector } from "@/src/services/hooks/storeHooks";
+import Button from "@/src/features/components/button";
+import NamePlate from "@/src/features/components/name-plate";
+import PageTitle from "@/src/features/components/page-title";
+import { useAppSelector } from "@/src/services/hooks/store.hooks";
 import { ReactElement } from "react";
 import { Link } from "react-router-dom";
 

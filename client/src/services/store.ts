@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authReducer from "@/src/services/slices/authSlice";
-import canvasReducer from "@/src/services/slices/canvasSlice";
-import gameReducer from "@/src/services/slices/gameSlice";
-import modalReducer from "@/src/services/slices/modalSlice";
-import utilsReducer from "@/src/services/slices/utilsSlice";
+import authReducer from "@/src/services/slices/auth.slice";
+import canvasReducer from "@/src/services/slices/canvas.slice";
+import gameReducer from "@/src/services/slices/game.slice";
+import modalReducer from "@/src/services/slices/modal.slice";
+import utilsReducer from "@/src/services/slices/init.slice";
 
 const store = configureStore({
   reducer: {
