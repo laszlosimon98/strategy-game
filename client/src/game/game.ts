@@ -1,10 +1,10 @@
-import { MouseButtons } from "@/src/game/enums/mouse";
-import { Position } from "@/src/game/utils/position";
-import { World } from "@/src/game/world/world";
-import { ServerHandler } from "@/src/server/server-handler";
-import { setPlayer } from "@/src/services/slices/game.slice";
-import { dispatch } from "@/src/services/store";
-import { PlayerType } from "@/src/services/types/game.types";
+import { MouseButtons } from "@/game/enums/mouse";
+import { Position } from "@/game/utils/position";
+import { World } from "@/game/world/world";
+import { ServerHandler } from "@/server/server-handler";
+import { setPlayer } from "@/services/slices/game.slice";
+import { dispatch } from "@/services/store";
+import { PlayerType } from "@/services/types/game.types";
 
 export class Game {
   private world?: World;

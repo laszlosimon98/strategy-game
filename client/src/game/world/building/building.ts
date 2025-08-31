@@ -1,10 +1,10 @@
-import { imagesFromState, playersFromState } from "@/src/game/data/state";
-import { CallAble } from "@/src/game/interfaces/callable";
-import { ctx } from "@/src/game/main";
-import { Position } from "@/src/game/utils/position";
-import { Flag } from "@/src/game/world/building/flag";
-import { Entity } from "@/src/game/world/entity";
-import { EntityType } from "@/src/services/types/game.types";
+import { imagesFromState, playersFromState } from "@/game/data/state";
+import { CallAble } from "@/game/interfaces/callAble";
+import { ctx } from "@/game/main";
+import { Position } from "@/game/utils/position";
+import { Flag } from "@/game/world/building/flag";
+import { Entity } from "@/game/world/entity";
+import { EntityType } from "@/services/types/game.types";
 
 export class Building extends Entity implements CallAble {
   private flagEntity: EntityType;

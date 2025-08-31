@@ -1,5 +1,5 @@
-import { CELL_SIZE } from "@/src/game/settings";
-import { Position } from "@/src/game/utils/position";
+import { CELL_SIZE } from "@/game/settings";
+import { Position } from "@/game/utils/position";
 
 export class Vector extends Position {
   public constructor(x: number, y: number) {

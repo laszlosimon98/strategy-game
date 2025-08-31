@@ -1,6 +1,6 @@
-import { CAMERA_SPEED } from "@/src/game/settings";
-import { Position } from "@/src/game/utils/position";
-import { Vector } from "@/src/game/utils/vector";
+import { CAMERA_SPEED } from "@/game/settings";
+import { Position } from "@/game/utils/position";
+import { Vector } from "@/game/utils/vector";
 
 export class Camera {
   private dir: Vector;

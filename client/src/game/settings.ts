@@ -1,4 +1,4 @@
-import { Dimension } from "./utils/dimension";
+import { Dimension } from "@/game/utils/dimension";
 
 // GUI - POS
 // export const BUTTON_SIZE: Dimension = new Dimension(192, 60);

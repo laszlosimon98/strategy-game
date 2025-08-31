@@ -88,6 +88,7 @@ export class ImageSenderService {
   public async loadImages(_dir: string) {
     const files: string[] = await this.getFiles(_dir);
     const result = this.generateRoutes(_dir, files);
+    console.log(result);
     return result;
   }
 }

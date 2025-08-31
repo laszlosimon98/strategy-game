@@ -1,10 +1,10 @@
-import { CELL_SIZE } from "@/src/game/settings";
-import { Indices } from "@/src/game/utils/indices";
-import { Position } from "@/src/game/utils/position";
-import { Entity } from "@/src/game/world/entity";
-import { Soldier } from "@/src/game/world/unit/units/soldier";
-import { getCurrentState } from "@/src/services/store";
-import { EntityType, PlayerIdType } from "@/src/services/types/game.types";
+import { CELL_SIZE } from "@/game/settings";
+import { Indices } from "@/game/utils/indices";
+import { Position } from "@/game/utils/position";
+import { Entity } from "@/game/world/entity";
+import { Soldier } from "@/game/world/unit/units/soldier";
+import { getCurrentState } from "@/services/store";
+import { EntityType, PlayerIdType } from "@/services/types/game.types";
 
 /**
  * Visszatér a url-ből kinyert kép névvel, a kiterjesztés nélkül

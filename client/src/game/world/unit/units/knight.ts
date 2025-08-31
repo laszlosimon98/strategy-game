@@ -1,9 +1,6 @@
-import { Position } from "@/src/game/utils/position";
-import { Soldier } from "@/src/game/world/unit/units/soldier";
-import {
-  EntityType,
-  SoldierPropertiesType,
-} from "@/src/services/types/game.types";
+import { Position } from "@/game/utils/position";
+import { Soldier } from "@/game/world/unit/units/soldier";
+import { EntityType, SoldierPropertiesType } from "@/services/types/game.types";
 
 export class Knight extends Soldier {
   constructor(

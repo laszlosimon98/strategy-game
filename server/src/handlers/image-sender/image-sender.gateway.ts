@@ -6,6 +6,7 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import * as path from 'path';
+import { Socket } from 'socket.io';
 
 @WebSocketGateway()
 export class ImageSenderGateway {
@@ -15,11 +16,13 @@ export class ImageSenderGateway {
   ) {}
 
   @SubscribeMessage('game:images')
-  public async handleImages(@ConnectedSocket() socket) {
+  public async handleImages(@ConnectedSocket() socket: Socket) {
     try {
       const images = await this.imageSenderService.loadImages(
         path.join(__dirname, '..', '..', '..', 'public', 'assets'),
       );
+
+      console.log(images);
 
       this.messageSenderService.sendMessageToSender(
         socket,

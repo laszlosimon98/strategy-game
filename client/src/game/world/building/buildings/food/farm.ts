@@ -1,6 +1,6 @@
-import { BuildingActionInterface } from "@/src/game/interfaces/building-action";
-import { Building } from "@/src/game/world/building/building";
-import { EntityType } from "@/src/services/types/game.types";
+import { BuildingActionInterface } from "@/game/interfaces/building-action";
+import { Building } from "@/game/world/building/building";
+import { EntityType } from "@/services/types/game.types";
 
 export class Farm extends Building implements BuildingActionInterface {
   public constructor(building: EntityType) {

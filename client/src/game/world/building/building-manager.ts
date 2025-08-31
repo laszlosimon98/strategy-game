@@ -1,20 +1,20 @@
-import { gameStatus, playersFromState, builder } from "@/src/game/data/state";
-import { GameStatus } from "@/src/game/enums/game-status";
-import { Indices } from "@/src/game/utils/indices";
-import { Position } from "@/src/game/utils/position";
-import { getImageNameFromUrl } from "@/src/game/utils/utils";
-import { Building } from "@/src/game/world/building/building";
-import { buildingRegister } from "@/src/game/world/building/building-register";
-import { FakeBuilding } from "@/src/game/world/building/fake-building";
-import { Manager } from "@/src/game/world/manager/manager";
-import { ServerHandler } from "@/src/server/server-handler";
+import { gameStatus, playersFromState, builder } from "@/game/data/state";
+import { GameStatus } from "@/game/enums/game-status";
+import { Indices } from "@/game/utils/indices";
+import { Position } from "@/game/utils/position";
+import { getImageNameFromUrl } from "@/game/utils/utils";
+import { Building } from "@/game/world/building/building";
+import { buildingRegister } from "@/game/world/building/building-register";
+import { FakeBuilding } from "@/game/world/building/fake-building";
+import { Manager } from "@/game/world/manager/manager";
+import { ServerHandler } from "@/server/server-handler";
 import {
   addBuilding,
   resetBuilder,
   initEntity,
-} from "@/src/services/slices/game.slice";
-import { getState, dispatch } from "@/src/services/store";
-import { EntityType } from "@/src/services/types/game.types";
+} from "@/services/slices/game.slice";
+import { subscribeState, dispatch } from "@/services/store";
+import { EntityType } from "@/services/types/game.types";
 import { v4 as uuidv4 } from "uuid";
 
 export class BuildingManager extends Manager<Building> {
@@ -26,7 +26,7 @@ export class BuildingManager extends Manager<Building> {
     this.fakeHouse = new FakeBuilding(this.initObject(), false);
     this.builder = this.initObject();
 
-    getState(
+    subscribeState(
       (state) => state.game.data.builder.selectedHouse,
       (value) => {
         this.builder.data = {

@@ -1,10 +1,7 @@
-import { ctx } from "@/src/game/main";
-import { CELL_SIZE } from "@/src/game/settings";
-import { Position } from "@/src/game/utils/position";
-import {
-  cartesianToIsometric,
-  isometricToCartesian,
-} from "@/src/game/utils/utils";
+import { ctx } from "@/game/main";
+import { CELL_SIZE } from "@/game/settings";
+import { Position } from "@/game/utils/position";
+import { cartesianToIsometric, isometricToCartesian } from "@/game/utils/utils";
 
 export class RangeIndicator {
   private radius: number;
