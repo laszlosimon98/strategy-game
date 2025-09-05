@@ -131,7 +131,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       Communicate.sendMessageToSender(
         socket,
         "connect:error",
-        "Sikertelen csatlakozás. A játék elkezdődött!"
+        "A játék elkezdődött!"
       );
       return;
     }

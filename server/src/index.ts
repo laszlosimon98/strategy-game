@@ -6,7 +6,7 @@ import { authHandler } from "./handlers/authHandler";
 import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler/gameHandler";
 import path from "path";
-import { imageHandler, imageHandler2 } from "./handlers/imageHandler";
+import { imageHandler } from "./handlers/imageHandler";
 import { Loader } from "./classes/imageLoader";
 
 const PORT = 3000;
@@ -37,7 +37,6 @@ let images: any;
 const onConnecton = (socket: Socket) => {
   connectionHandler(io, socket);
   imageHandler(io, socket);
-  imageHandler2(io, socket, images);
   gameHandler(io, socket);
   // authHandler();
 };

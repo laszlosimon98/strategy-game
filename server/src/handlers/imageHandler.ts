@@ -19,15 +19,3 @@ export const imageHandler = async (io: Server, socket: Socket) => {
 
   socket.on("game:images", images);
 };
-
-export const imageHandler2 = async (
-  io: Server,
-  socket: Socket,
-  images: any
-) => {
-  const page = () => {
-    Communicate.sendMessageToSender(socket, "start:page", images);
-  };
-
-  page();
-};

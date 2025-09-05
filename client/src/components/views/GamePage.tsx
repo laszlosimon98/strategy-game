@@ -1,3 +1,4 @@
+import GamePanel from "@/components/custom/GamePanel";
 import main from "@/game/main";
 import { useAppSelector } from "@/services/hooks/store.hooks";
 import { useEffect, useRef } from "react";
@@ -26,6 +27,7 @@ const GamePage = () => {
     <div className="relative">
       {/* <SelectionPanel />
       {isModalVisible && <Modal />} */}
+      <GamePanel />
 
       <canvas ref={canvasRef} width={canvasWidth} height={canvasHeight} />
     </div>
