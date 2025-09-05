@@ -22,8 +22,6 @@ export class ImageSenderGateway {
         path.join(__dirname, '..', '..', '..', 'public', 'assets'),
       );
 
-      console.log(images);
-
       this.messageSenderService.sendMessageToSender(
         socket,
         'game:images',

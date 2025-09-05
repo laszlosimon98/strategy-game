@@ -15,7 +15,11 @@ export class MessageSenderService {
     event: string,
     data: any,
   ): void {
-    server.in(this.playerService.getCurrentRoom(socket)).emit(event, data);
+    const currentRoom = this.playerService.getCurrentRoom(socket);
+
+    if (currentRoom) {
+      server.in(currentRoom).emit(event, data);
+    }
   }
 
   public sendMessageToSender(socket: Socket, event: string, data: any): void {
@@ -36,8 +40,10 @@ export class MessageSenderService {
     event: string,
     data: any,
   ): void {
-    socket.broadcast
-      .to(this.playerService.getCurrentRoom(socket))
-      .emit(event, data);
+    const currentRoom = this.playerService.getCurrentRoom(socket);
+
+    if (currentRoom) {
+      socket.broadcast.to(currentRoom).emit(event, data);
+    }
   }
 }

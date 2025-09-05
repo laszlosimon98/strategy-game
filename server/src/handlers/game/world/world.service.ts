@@ -16,11 +16,19 @@ export class WorldService {
   }
 
   public setWorld(world: Cell[][], socket: Socket) {
-    state[this.playerService.getCurrentRoom(socket)].world = world;
+    const currentRoom = this.playerService.getCurrentRoom(socket);
+
+    if (currentRoom) {
+      state[currentRoom].world = world;
+    }
   }
 
   public getWorld(socket: Socket): Cell[][] {
-    return state[this.playerService.getCurrentRoom(socket)].world;
+    const currentRoom = this.playerService.getCurrentRoom(socket);
+
+    if (currentRoom) {
+      return state[currentRoom].world;
+    }
   }
 
   public getTiles(world: Cell[][]): TileType[][] {

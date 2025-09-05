@@ -81,7 +81,7 @@ export class ConnectionService {
   public disconnect(server: Server, socket: Socket): string {
     const currentRoom = this.playerService.getCurrentRoom(socket);
 
-    if (currentRoom) {
+    if (currentRoom && state[currentRoom]) {
       const user = state[currentRoom].players[socket.id];
       state[currentRoom].remainingColors.push(user.color);
 

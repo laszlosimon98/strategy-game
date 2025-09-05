@@ -49,23 +49,32 @@ export class GameGateway {
 
   @SubscribeMessage('game:init')
   public initPlayers(@ConnectedSocket() socket) {
-    const { players, startPositions, obstacles, tiles } =
-      this.gameService.startGame(socket);
+    try {
+      const { players, startPositions, obstacles, tiles } =
+        this.gameService.startGame(socket);
 
-    this.messageSenderService.sendMessageToEveryOneInRoom(
-      this.server,
-      socket,
-      'game:initPlayers',
-      players,
-    );
+      if (!players) {
+        console.error(`A ${socket.id} játékos nem található a szobában!`);
+        return;
+      }
 
-    this.messageSenderService.sendMessageToEveryOneInRoom(
-      this.server,
-      socket,
-      'game:createWorld',
-      { tiles, obstacles },
-    );
+      this.messageSenderService.sendMessageToEveryOneInRoom(
+        this.server,
+        socket,
+        'game:initPlayers',
+        players,
+      );
 
-    this.sendPlayerPositions(players, startPositions);
+      this.messageSenderService.sendMessageToEveryOneInRoom(
+        this.server,
+        socket,
+        'game:createWorld',
+        { tiles, obstacles },
+      );
+
+      this.sendPlayerPositions(players, startPositions);
+    } catch (error) {
+      console.error(error.message);
+    }
   }
 }

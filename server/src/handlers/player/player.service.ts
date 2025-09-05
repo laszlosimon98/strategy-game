@@ -21,13 +21,22 @@ export class PlayerService {
     return result;
   }
 
-  public getCurrentRoom(socket: Socket): string {
-    return Array.from(socket.rooms)[1];
+  public getCurrentRoom(socket: Socket): string | null {
+    const rooms = Array.from(socket.rooms);
+    return rooms.length > 1 ? rooms[1] : null;
   }
 
-  public getPlayersInRoom(socket: Socket): PlayerType {
-    const currentRoom: string = this.getCurrentRoom(socket);
-    return state[currentRoom].players;
+  public getPlayersInRoom(socket: Socket): PlayerType | null {
+    const currentRoom: string | null = this.getCurrentRoom(socket);
+    return currentRoom && state[currentRoom]
+      ? state[currentRoom].players
+      : null;
+  }
+
+  public getPlayerName(socket: Socket): string | null {
+    const currentRoom: string | null = this.getCurrentRoom(socket);
+
+    return state[currentRoom].players[socket.id].name || null;
   }
 
   public newPlayerMessage(

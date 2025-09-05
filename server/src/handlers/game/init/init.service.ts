@@ -2,7 +2,7 @@ import { state } from '@/src/game/data/data';
 import { WorldService } from '@/src/handlers/game/world/world.service';
 import { PlayerService } from '@/src/handlers/player/player.service';
 import { START_POSITIONS } from '@/src/settings';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Socket } from 'socket.io';
 
 @Injectable()
@@ -18,6 +18,10 @@ export class InitService {
 
   public initGame(socket: Socket) {
     const currentRoom: string = this.playerService.getCurrentRoom(socket);
+
+    if (!currentRoom || !state[currentRoom]) {
+      throw new BadRequestException(`Játékos kilépett a meccsből!`);
+    }
 
     this.setGameStartedInRoom(currentRoom);
 
