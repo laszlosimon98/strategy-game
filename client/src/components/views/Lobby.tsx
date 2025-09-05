@@ -1,4 +1,9 @@
+import HeaderContainer from "@/components/custom/HeaderContainer";
+import PageTitle from "@/components/custom/PageTitle";
+import PageTitleContainer from "@/components/custom/PageTitleContainer";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ServerHandler } from "@/server/server-handler";
 import { useAppSelector, useAppDispatch } from "@/services/hooks/store.hooks";
 import {
@@ -43,8 +48,6 @@ const Lobby = () => {
       ServerHandler.sendMessage("game:images", {});
       const images = await ServerHandler.receiveAsyncMessage("game:images");
 
-      console.log(images);
-
       ServerHandler.receiveMessage("game:imagesError", (data) => {
         console.error(data);
         return;
@@ -67,28 +70,48 @@ const Lobby = () => {
   }, []);
 
   return (
-    <div>
-      {/* <PageTitle>Váró</PageTitle> */}
+    <div className="h-dvh">
+      <HeaderContainer>
+        <PageTitleContainer>
+          <PageTitle title="Játék váró" />
+        </PageTitleContainer>
+      </HeaderContainer>
 
-      <div>
-        {info && (
-          <p
-            className={`text-center text-lg font-semibold sm:pt-4 ${
-              info.type === "connect" ? "text-green-700" : "text-red-700"
-            }`}
-          >
-            {info.message}
-          </p>
-        )}
-        <p>Kód: {String(code)}</p>
-        <h2>Csatlakozott játékosok</h2>
-        {/* <PlayersContainer> */}
-        {players &&
-          players.map((player, index) => <div key={index}>{player}</div>)}
-        {/* </PlayersContainer> */}
+      {info && (
+        <p
+          className={`text-center text-lg font-semibold pt-8 ${
+            info.type === "connect" ? "text-green-700" : "text-red-700"
+          }`}
+        >
+          {info.message}
+        </p>
+      )}
+
+      <div className="max-w-xl mx-auto h-[70vh]">
+        <div className="text-center mt-6">
+          <Badge className="min-h-fit w-32 h-8 text-xl">{code as string}</Badge>
+        </div>
+
+        <h2 className="text-center font-semibold text-lg mt-20">
+          Csatlakozott játékosok
+        </h2>
+
+        <div className="bg-primary py-5 rounded-lg shadow-xl h-[25vh] my-4 overflow-y-auto scrollbar-custom">
+          {players &&
+            players.map((player, index) => (
+              <div
+                key={index}
+                className="flex mx-auto max-w-sm justify-between py-2"
+              >
+                <div className="text-primary-foreground">{player}</div>
+                {/* TODO:  */}
+                <div className={cn("text-green-500")}>Kész</div>
+              </div>
+            ))}
+        </div>
       </div>
 
-      <div>
+      <div className="flex justify-around">
         <Link to={`/`}>
           <Button onClick={handleLeave}>Vissza</Button>
         </Link>

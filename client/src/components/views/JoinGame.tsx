@@ -1,3 +1,7 @@
+import HeaderContainer from "@/components/custom/HeaderContainer";
+import PageTitle from "@/components/custom/PageTitle";
+import PageTitleContainer from "@/components/custom/PageTitleContainer";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,25 +47,31 @@ const JoinGame = () => {
   };
 
   return (
-    <div>
-      {/* <PageTitle>Csatlakozás</PageTitle> */}
+    <div className="h-dvh">
+      <HeaderContainer>
+        <PageTitleContainer>
+          <PageTitle title="Csatlakozás" />
+        </PageTitleContainer>
+      </HeaderContainer>
 
-      <div>
-        {error && <p className="text-red-700 self-center text-lg">{error}</p>}
-
-        <Label htmlFor="game-code">Játék kód</Label>
-        <Input
-          id="game-code"
-          placeholder="Játék kód"
-          onChange={(e) =>
-            setInput((e as ChangeEvent<HTMLInputElement>).target.value)
-          }
-          value={input}
-        />
+      <div className="w-full flex flex-col items-center justify-center h-[75vh]">
+        <div className="w-xl">
+          <Label htmlFor="game-code" className="pb-2">
+            Játék kód:
+          </Label>
+          <Input
+            id="game-code"
+            placeholder="Játék kód"
+            onChange={(e) =>
+              setInput((e as ChangeEvent<HTMLInputElement>).target.value)
+            }
+            value={input}
+          />
+          {error && <p className="text-red-700 text-right  pt-2 ">{error}</p>}
+        </div>
       </div>
-
-      <div>
-        <Link to="/newgame">
+      <div className="w-full flex justify-around pt-12">
+        <Link to="/new-game">
           <Button>Vissza</Button>
         </Link>
 

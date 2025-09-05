@@ -9,6 +9,7 @@ import Register from "@/components/views/auth/Register";
 import Statistic from "@/components/views/other/Statistic";
 import { useEffect } from "react";
 import { useNavigate, useLocation, Route, Routes } from "react-router-dom";
+import Layout from "@/components/Layout";
 
 const App = () => {
   const navigate = useNavigate();
@@ -22,19 +23,21 @@ const App = () => {
 
   return (
     <Routes>
-      <Route index element={<MainPage />} />
+      <Route element={<Layout />}>
+        <Route index element={<MainPage />} />
 
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
 
-      <Route path="description" element={<Description />} />
-      <Route path="statistic" element={<Statistic />} />
+        <Route path="description" element={<Description />} />
+        <Route path="statistic" element={<Statistic />} />
 
-      <Route path="new-game" element={<NewGame />} />
-      <Route path="join-game" element={<JoinGame />} />
-      <Route path="lobby" element={<Lobby />} />
+        <Route path="new-game" element={<NewGame />} />
+        <Route path="join-game" element={<JoinGame />} />
+        <Route path="lobby" element={<Lobby />} />
 
-      <Route path="game" element={<GamePage />} />
+        <Route path="game" element={<GamePage />} />
+      </Route>
     </Routes>
   );
 };

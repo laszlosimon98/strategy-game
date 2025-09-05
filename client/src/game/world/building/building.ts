@@ -7,26 +7,26 @@ import { Entity } from "@/game/world/entity";
 import { EntityType } from "@/services/types/game.types";
 
 export class Building extends Entity implements CallAble {
-  private flagEntity: EntityType;
+  private flagEntity: EntityType | undefined;
   private flag: Flag | undefined;
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
 
-    this.flagEntity = {
-      data: {
-        ...imagesFromState.colors[playersFromState[entity.data.owner].color]
-          .flag,
-        indices: {
-          ...entity.data.indices,
-          i: entity.data.indices.i + 1,
-        },
-        owner: entity.data.owner,
-        position: entity.data.position,
-      },
-    };
-
     if (hasFlag) {
+      this.flagEntity = {
+        data: {
+          ...imagesFromState.colors[playersFromState[entity.data.owner].color]
+            .flag,
+          indices: {
+            ...entity.data.indices,
+            i: entity.data.indices.i + 1,
+          },
+          owner: entity.data.owner,
+          position: entity.data.position,
+        },
+      };
+
       this.flag = new Flag(this.flagEntity);
     }
   }

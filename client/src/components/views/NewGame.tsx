@@ -1,3 +1,7 @@
+import ButtonContainer from "@/components/custom/ButtonContainer";
+import HeaderContainer from "@/components/custom/HeaderContainer";
+import PageTitle from "@/components/custom/PageTitle";
+import PageTitleContainer from "@/components/custom/PageTitleContainer";
 import { Button } from "@/components/ui/button";
 import { ServerHandler } from "@/server/server-handler";
 import { useAppSelector, useAppDispatch } from "@/services/hooks/store.hooks";
@@ -41,16 +45,24 @@ const NewGame = () => {
   };
 
   return (
-    <div>
-      <Button onClick={handleCreate}>Létrehozás</Button>
+    <div className="h-dvh">
+      <HeaderContainer>
+        <PageTitleContainer>
+          <PageTitle title="Új játék" />
+        </PageTitleContainer>
+      </HeaderContainer>
 
-      <Link to="/join-game">
-        <Button>Csatlakozás</Button>
-      </Link>
+      <ButtonContainer>
+        <Button onClick={handleCreate}>Létrehozás</Button>
 
-      <Link to="/">
-        <Button>Vissza</Button>
-      </Link>
+        <Link to="/join-game">
+          <Button className="w-full">Csatlakozás</Button>
+        </Link>
+
+        <Link to="/">
+          <Button className="w-full">Vissza</Button>
+        </Link>
+      </ButtonContainer>
     </div>
   );
 };
