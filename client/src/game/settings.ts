@@ -27,4 +27,4 @@ export const UNIT_SIZE: Dimension = new Dimension(64, 64);
 export const CELL_SIZE = 48;
 export const FPS = 30;
 
-export const CAMERA_SPEED = 700;
+export const CAMERA_SPEED = 1000;

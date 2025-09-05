@@ -10,31 +10,23 @@ export class Program {
   private mousePos: Position;
   private key: string;
 
+  private mouseClickListener = (e: MouseEvent) => this.handleMouseClick(e);
+  private mouseMoveListener = (e: MouseEvent) => this.handleMouseMove(e);
+  private keydownListener = (e: KeyboardEvent) => this.handleKeyDown(e);
+  private keyupListener = () => this.handleKeyUp();
+  private contextListener = (e: MouseEvent) => e.preventDefault();
+
   public constructor() {
     this.mousePos = Position.zero();
     this.key = "";
 
     this.game = new Game();
 
-    document.addEventListener("mousedown", (e: MouseEvent) =>
-      this.handleMouseClick(e)
-    );
-
-    document.addEventListener("mousemove", (e: MouseEvent) =>
-      this.handleMouseMove(e)
-    );
-
-    document.addEventListener("keydown", (e: KeyboardEvent) =>
-      this.handleKeyDown(e)
-    );
-
-    document.addEventListener("keyup", () => {
-      this.handleKeyUp();
-    });
-
-    document.addEventListener("contextmenu", (e: MouseEvent) =>
-      e.preventDefault()
-    );
+    document.addEventListener("mousedown", this.mouseClickListener);
+    document.addEventListener("mousemove", this.mouseMoveListener);
+    document.addEventListener("keydown", this.keydownListener);
+    document.addEventListener("keyup", this.keyupListener);
+    document.addEventListener("contextmenu", this.contextListener);
   }
 
   public draw(): void {
@@ -62,5 +54,13 @@ export class Program {
 
   private handleKeyUp(): void {
     this.key = "";
+  }
+
+  public cleanUp(): void {
+    document.removeEventListener("mousedown", this.mouseClickListener);
+    document.removeEventListener("mousemove", this.mouseMoveListener);
+    document.removeEventListener("keydown", this.keydownListener);
+    document.removeEventListener("keyup", this.keyupListener);
+    document.removeEventListener("contextmenu", this.contextListener);
   }
 }

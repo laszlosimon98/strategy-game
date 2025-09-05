@@ -1,29 +1,29 @@
 import main from "@/game/main";
-import { useAppDispatch, useAppSelector } from "@/services/hooks/store.hooks";
-import { setModalVisibility } from "@/services/slices/modal.slice";
+import { useAppSelector } from "@/services/hooks/store.hooks";
 import { useEffect, useRef } from "react";
 
 const GamePage = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const dispatch = useAppDispatch();
   const { canvasWidth, canvasHeight } = useAppSelector((state) => state.canvas);
-  const isModalVisible = useAppSelector((state) => state.modal.isModalVisible);
 
   useEffect(() => {
+    let cleanup: (() => void) | undefined;
+
     if (canvasRef.current) {
-      main(canvasRef.current);
+      cleanup = main(canvasRef.current);
     }
 
     return () => {
       console.log("end");
+
+      if (cleanup) {
+        cleanup();
+      }
     };
   }, []);
 
   return (
-    <div
-      className="relative"
-      onClick={() => dispatch(setModalVisibility(false))}
-    >
+    <div className="relative">
       {/* <SelectionPanel />
       {isModalVisible && <Modal />} */}
 

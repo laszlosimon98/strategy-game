@@ -19,6 +19,7 @@ const main = (_canvas: HTMLCanvasElement) => {
 
   const perfectFrameTime: number = 1000;
   let lastFrameTime: number = performance.now();
+  let animationId: ReturnType<typeof setTimeout>;
 
   const next = (currentTime = performance.now()) => {
     const dt: number = (currentTime - lastFrameTime) / perfectFrameTime;
@@ -27,10 +28,20 @@ const main = (_canvas: HTMLCanvasElement) => {
     program.draw();
     program.update(dt);
 
-    setTimeout(() => requestAnimationFrame(next), perfectFrameTime / FPS);
+    animationId = setTimeout(
+      () => requestAnimationFrame(next),
+      perfectFrameTime / FPS
+    );
   };
 
   next();
+
+  return () => {
+    if (animationId) {
+      clearTimeout(animationId);
+    }
+    program.cleanUp();
+  };
 };
 
 export default main;
