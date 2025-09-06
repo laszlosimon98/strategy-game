@@ -15,7 +15,6 @@ export class Game {
   }
 
   private async init() {
-    ServerHandler.sendMessage("game:init", {});
     await this.initPlayers();
     this.world = new World();
     this.world.init();
@@ -23,7 +22,7 @@ export class Game {
 
   private async initPlayers(): Promise<void> {
     const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
-
+    console.log("initPlayers", players);
     // FIXME: backendről kell jönnie a hostnak is
     Object.keys(players).forEach((id) => {
       const newPlayer: PlayerType = {

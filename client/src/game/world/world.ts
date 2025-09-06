@@ -34,6 +34,7 @@ export class World implements MouseClicker {
     ServerHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any }) => {
+        console.log("initWorld");
         for (let row = 0; row < tiles.length; ++row) {
           this.world.push([]);
           for (let col = 0; col < tiles[row].length; ++col) {

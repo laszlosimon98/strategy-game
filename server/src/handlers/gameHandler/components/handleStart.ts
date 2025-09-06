@@ -97,3 +97,106 @@ export const handleStart = (io: Server, socket: Socket) => {
 
   socket.on("game:starts", gameStarts);
 };
+
+// import { Server, Socket } from "socket.io";
+// import { Communicate } from "../../../classes/communicate";
+// import { Cell } from "../../../classes/game/cell";
+// import { World } from "../../../classes/game/world";
+// import { Indices } from "../../../classes/utils/indices";
+// import { state } from "../../../data/state";
+// import { START_POSITIONS } from "../../../settings";
+// import { PlayerType, TileType } from "../../../types/types";
+// import path from "path";
+// import { Loader } from "../../../classes/imageLoader";
+
+// export const handleStart = (io: Server, socket: Socket) => {
+//   /**
+//    *
+//    * @returns Visszatér a szobában lévő játékosokkal
+//    */
+//   const getPlayers = (): PlayerType => {
+//     const currentRoom: string = Communicate.getCurrentRoom(socket);
+//     return state[currentRoom].players;
+//   };
+
+//   /**
+//    * Létrehozza a világot,
+//    * üzeneteket küld a klienseknek,
+//    * meghatározza a kezdő koordinátákat
+//    */
+//   const gameStarts = async () => {
+//     const currentRoom: string = Communicate.getCurrentRoom(socket);
+//     state[currentRoom].isGameStarted = true;
+
+//     Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
+//   };
+
+//   const initPlayers = (): void => {
+//     Communicate.sendMessageToEveryOne(
+//       io,
+//       socket,
+//       "game:initPlayers",
+//       getPlayers()
+//     );
+//   };
+
+//   /**
+//    *
+//    * @returns Létrehozza a világot, meghívva a world creatWorld metódusát
+//    */
+//   const createWorld = (): void => {
+//     const world: Cell[][] = World.createWorld();
+//     World.setWorld(world, socket);
+
+//     const tiles = getTiles(world);
+//     const obstacles = getObstacles(world);
+
+//     Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", {
+//       tiles,
+//       obstacles,
+//     });
+//   };
+
+//   /**
+//    *
+//    * @param {Cell[][]} world világ
+//    * @returns Visszatér a cellák típusaival
+//    */
+//   const getTiles = (world: Cell[][]): TileType[][] => {
+//     const tiles: TileType[][] = world.map((cells) =>
+//       cells.map((cell) => cell.getType())
+//     );
+
+//     return tiles;
+//   };
+
+//   /**
+//    *
+//    * @param {Cell[][]} world világ
+//    * @returns Visszatér a cellák akadályok típusaival
+//    */
+//   const getObstacles = (world: Cell[][]): any => {
+//     const obstacles: any = world.map((cells) =>
+//       cells.map((cell) => cell.getObstacleType())
+//     );
+
+//     return obstacles;
+//   };
+
+//   const calcPositions = (): void => {
+//     const players: PlayerType = getPlayers();
+//     const startPositions = [...START_POSITIONS];
+
+//     Object.keys(players).forEach((id) => {
+//       const index = Math.floor(Math.random() * startPositions.length);
+//       const { i, j } = startPositions.splice(index, 1)[0];
+//       const pos = new Indices(i, j);
+//       Communicate.sendPrivateMessage(io, id, "game:startPos", pos);
+//     });
+//   };
+
+//   socket.on("game:starts", gameStarts);
+//   socket.on("game:initPlayers", initPlayers);
+//   socket.on("game:createWorld", createWorld);
+//   socket.on("game:startPos", calcPositions);
+// };

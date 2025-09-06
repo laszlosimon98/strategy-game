@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ServerHandler } from "@/server/server-handler";
 import { useAppSelector, useAppDispatch } from "@/services/hooks/store.hooks";
+import { setPlayer } from "@/services/slices/game.slice";
 import {
   setMessage,
   addPlayersToLobby,
   removePlayerFromLobby,
   setImages,
 } from "@/services/slices/init.slice";
+import { PlayerType } from "@/services/types/game.types";
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -57,7 +59,27 @@ const Lobby = () => {
     };
     fetchImages();
 
-    ServerHandler.receiveMessage("game:starts", () => {
+    ServerHandler.receiveMessage("game:starts", async () => {
+      console.log("game Starts");
+      // ServerHandler.sendMessage("game:initPlayers", {});
+      // const players = await ServerHandler.receiveAsyncMessage(
+      //   "game:initPlayers"
+      // );
+      // console.log("initplayers", players);
+
+      // Object.keys(players).forEach((id) => {
+      //   const newPlayer: PlayerType = {
+      //     name: players[id].name,
+      //     host: false,
+      //     color: players[id].color,
+      //     buildings: [],
+      //     units: [],
+      //     movingUnits: [],
+      //   };
+
+      //   dispatch(setPlayer({ id, player: newPlayer }));
+      // });
+
       navigate("/game");
     });
 
