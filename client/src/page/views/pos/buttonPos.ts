@@ -1,6 +1,6 @@
-import { canvasHeight, canvasWidth } from "../../../init";
-import { BUTTON_SIZE, MARGIN } from "../../../settings";
-import { Position } from "../../../utils/position";
+import { canvasWidth, canvasHeight } from "@/init";
+import { BUTTON_SIZE, MARGIN } from "@/settings";
+import { Position } from "@/utils/position";
 
 export const buttonPos = {
   mainMenu: {

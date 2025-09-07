@@ -1,9 +1,9 @@
-import { ctx } from "../../../init";
-import { INPUT_BACKGROUND_COLOR } from "../../../settings";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { Button } from "../buttonComponents/button";
-import { PageComponents } from "../pageComponents";
+import { ctx } from "@/init";
+import { Button } from "@/page/components/buttonComponents/button";
+import { PageComponents } from "@/page/components/pageComponents";
+import { INPUT_BACKGROUND_COLOR } from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Frame extends PageComponents {
   protected buttons: Button[] = [];

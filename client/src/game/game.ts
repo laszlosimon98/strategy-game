@@ -1,14 +1,14 @@
-import { canvasHeight } from "../init";
-import { GameMenu } from "./menu/gameMenu";
-import { Position } from "../utils/position";
-import { MouseButtons } from "../enums/mouse";
-import { World } from "./world/world";
-import { Dimension } from "../utils/dimension";
-import { state } from "../data/state";
-import { GameState } from "../enums/gameState";
-import { isMouseIntersect } from "../utils/utils";
-import { ServerHandler } from "../server/serverHandler";
-import { PlayerGameType } from "../types/gameType";
+import { state } from "@/data/state";
+import { GameState } from "@/enums/gameState";
+import { MouseButtons } from "@/enums/mouse";
+import { GameMenu } from "@/game/menu/gameMenu";
+import { World } from "@/game/world/world";
+import { canvasHeight } from "@/init";
+import { ServerHandler } from "@/server/serverHandler";
+import { PlayerGameType } from "@/types/gameType";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
+import { isMouseIntersect } from "@/utils/utils";
 
 export class Game {
   private gameMenu: GameMenu;

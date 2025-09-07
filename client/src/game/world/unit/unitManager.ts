@@ -1,24 +1,24 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { state } from "../../../../data/state";
-import { ServerHandler } from "../../../../server/serverHandler";
-import { UNIT_SIZE } from "../../../../settings";
-import { EntityType, SoldierPropertiesType } from "../../../../types/gameType";
-import { Indices } from "../../../../utils/indices";
-import { Position } from "../../../../utils/position";
-import { Manager } from "../../manager/manager";
-import { Unit } from "../unit";
-import { UnitStates } from "../../../../enums/unitsState";
-import { Cell } from "../../cell";
+import { state } from "@/data/state";
+import { UnitStates } from "@/enums/unitsState";
+import { Manager } from "@/game/world/abstract/manager";
+import { Cell } from "@/game/world/cell";
+import { unitRegister } from "@/game/world/unit/unitRegister";
+import { Soldier } from "@/game/world/unit/units/soldier";
+import { ServerHandler } from "@/server/serverHandler";
+import { UNIT_SIZE } from "@/settings";
+import { EntityType, SoldierPropertiesType } from "@/types/gameType";
+import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
 import {
   calculateDistance,
-  findUnit,
-  getImageNameFromUrl,
   isometricToCartesian,
+  getImageNameFromUrl,
+  findUnit,
   removeElementFromArray,
-} from "../../../../utils/utils";
-import { Soldier } from "../units/soldier";
-import { unitRegister } from "../unitRegister/unitRegister";
+} from "@/utils/utils";
+import { Unit } from "@/game/world/unit/unit";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;

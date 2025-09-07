@@ -1,9 +1,9 @@
 import { Server, Socket } from "socket.io";
 
-import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "../settings";
-import { Communicate } from "../classes/communicate";
-import { state } from "../data/state";
-import { ColorType } from "../types/types";
+import { Communicate } from "@/classes/communicate";
+import { state } from "@/data/state";
+import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "@/settings";
+import { ColorType } from "@/types/types";
 
 const colors: ColorType[] = [
   "black",

@@ -1,23 +1,23 @@
-import { PageState } from "../../enums/pageState";
-import { canvasHeight, canvasWidth } from "../../init";
-import { ServerHandler } from "../../server/serverHandler";
+import { state } from "@/data/state";
+import { PageState } from "@/enums/pageState";
+import { canvasWidth, canvasHeight } from "@/init";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Frame } from "@/page/components/frameComponets/frame";
+import { Text } from "@/page/components/textComponents/text";
+import { Page } from "@/page/views/page";
+import { buttonPos } from "@/page/views/pos/buttonPos";
+import { titlePos } from "@/page/views/pos/titlePos";
+import { ServerHandler } from "@/server/serverHandler";
 import {
-  BLACK_COLOR,
   BUTTON_SIZE,
-  ERROR_COLOR,
-  INFO_COLOR,
   MARGIN,
+  BLACK_COLOR,
   TEXT_COLOR,
-} from "../../settings";
-import { Button } from "../components/buttonComponents/button";
-import { Frame } from "../components/frameComponets/frame";
-import { Text } from "../components/textComponents/text";
-import { Page } from "./page";
-import { buttonPos } from "./pos/buttonPos";
-import { titlePos } from "./pos/titlePos";
-import { Position } from "../../utils/position";
-import { state } from "../../data/state";
-import { Dimension } from "../../utils/dimension";
+  INFO_COLOR,
+  ERROR_COLOR,
+} from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Lobby extends Page {
   private backButton: Button;

@@ -1,27 +1,28 @@
-import { state } from "../../../data/state";
-import { UnitStates } from "../../../enums/unitsState";
-import { ctx } from "../../../init";
-import { CallAble } from "../../../interfaces/callAble";
-import { ServerHandler } from "../../../server/serverHandler";
-import { EntityType } from "../../../types/gameType";
-import { Dimension } from "../../../utils/dimension";
-import { Indices } from "../../../utils/indices";
-import { Position } from "../../../utils/position";
-import { Timer } from "../../../utils/timer";
+import { state } from "@/data/state";
+import { UnitStates } from "@/enums/unitsState";
+import { Cell } from "@/game/world/cell";
+import { Entity } from "@/game/world/entity";
+import { ctx } from "@/init";
+import { CallAble } from "@/interfaces/callAble";
+import { ServerHandler } from "@/server/serverHandler";
 import {
-  findUnit,
+  UNIT_ASSET_SIZE,
+  ANIMATION_SPEED,
+  ANIMATION_COUNT,
+  UNIT_SPEED,
+} from "@/settings";
+import { EntityType } from "@/types/gameType";
+import { Dimension } from "@/utils/dimension";
+import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
+import { Timer } from "@/utils/timer";
+import {
   getRandomNumberFromInterval,
   removeElementFromArray,
+  findUnit,
   ySort,
-} from "../../../utils/utils";
-import { Vector } from "../../../utils/vector";
-import { Cell } from "../cell";
-import { Entity } from "../entity";
-
-const ANIMATION_COUNT: number = 8;
-const UNIT_ASSET_SIZE: number = 64;
-const UNIT_SPEED = 80;
-const ANIMATION_SPEED = 8;
+} from "@/utils/utils";
+import { Vector } from "@/utils/vector";
 
 export abstract class Unit extends Entity implements CallAble {
   protected name: string;

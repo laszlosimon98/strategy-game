@@ -1,8 +1,8 @@
-import { CallAble } from "../../../interfaces/callAble";
-import { Position } from "../../../utils/position";
-import { Dimension } from "../../../utils/dimension";
-import { Entity } from "../entity";
-import { EntityType } from "../../../types/gameType";
+import { Entity } from "@/game/world/entity";
+import { CallAble } from "@/interfaces/callAble";
+import { EntityType } from "@/types/gameType";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Flag extends Entity implements CallAble {
   constructor(entity: EntityType) {

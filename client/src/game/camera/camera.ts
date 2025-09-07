@@ -1,7 +1,6 @@
-import { canvasHeight, canvasWidth } from "../../init";
-import { CAMERA_SPEED } from "../../settings";
-import { Position } from "../../utils/position";
-import { Vector } from "../../utils/vector";
+import { CAMERA_SPEED } from "@/settings";
+import { Position } from "@/utils/position";
+import { Vector } from "@/utils/vector";
 
 export class Camera {
   private dir: Vector;

@@ -1,11 +1,11 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "../../../classes/communicate";
-import { Cell } from "../../../classes/game/cell";
-import { World } from "../../../classes/game/world";
-import { Indices } from "../../../classes/utils/indices";
-import { state } from "../../../data/state";
-import { MAP_SIZE } from "../../../settings";
-import { PlayerType, TileType } from "../../../types/types";
+import { Communicate } from "@/classes/communicate";
+import { Cell } from "@/classes/game/cell";
+import { World } from "@/classes/game/world";
+import { Indices } from "@/classes/utils/indices";
+import { state } from "@/data/state";
+import { MAP_SIZE } from "@/settings";
+import { PlayerType, TileType } from "@/types/types";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const getPlayers = (): PlayerType => {

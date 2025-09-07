@@ -1,14 +1,14 @@
-import { state } from "../../data/state";
-import { MainMenuState } from "../../enums/gameMenuState";
-import { CallAble } from "../../interfaces/callAble";
-import { Button } from "../../page/components/buttonComponents/button";
-import { Dimension } from "../../utils/dimension";
-import { Position } from "../../utils/position";
-import { getImageNameFromUrl } from "../../utils/utils";
-import { BuildingSection } from "./components/building/buildingSection";
-import { InfoPanel } from "./components/infoPanel";
-import { MainSection } from "./components/main/mainSection";
-import { Section } from "./components/section";
+import { state } from "@/data/state";
+import { MainMenuState } from "@/enums/gameMenuState";
+import { BuildingSection } from "@/game/menu/components/building/buildingSection";
+import { InfoPanel } from "@/game/menu/components/infoPanel";
+import { MainSection } from "@/game/menu/components/main/mainSection";
+import { Section } from "@/game/menu/components/section";
+import { CallAble } from "@/interfaces/callAble";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
+import { getImageNameFromUrl } from "@/utils/utils";
 
 export class GameMenu implements CallAble {
   private mainSection: MainSection;

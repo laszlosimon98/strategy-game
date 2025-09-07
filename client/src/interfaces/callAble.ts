@@ -1,5 +1,5 @@
-import { Dimension } from "../utils/dimension";
-import { Position } from "../utils/position";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export interface CallAble {
   getPosition(): Position;

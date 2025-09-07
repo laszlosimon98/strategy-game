@@ -1,8 +1,8 @@
-import { state } from "../../../data/state";
-import { GameState } from "../../../enums/gameState";
-import { Button } from "../../../page/components/buttonComponents/button";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
+import { state } from "@/data/state";
+import { GameState } from "@/enums/gameState";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class LabelButton extends Button {
   private name: string;

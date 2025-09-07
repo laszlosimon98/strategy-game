@@ -1,11 +1,10 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "../../../classes/communicate";
-import { Builder } from "../../../classes/game/builder";
-import { Building } from "../../../classes/game/building";
-import { Cell } from "../../../classes/game/cell";
-import { Indices } from "../../../classes/utils/indices";
-import { Validator } from "../../../classes/validator";
-import { EntityType } from "../../../types/types";
+import { Communicate } from "@/classes/communicate";
+import { Builder } from "@/classes/game/builder";
+import { Building } from "@/classes/game/building";
+import { Indices } from "@/classes/utils/indices";
+import { Validator } from "@/classes/validator";
+import { EntityType } from "@/types/types";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const build = (entity: EntityType): void => {

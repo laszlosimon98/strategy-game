@@ -1,18 +1,14 @@
-import {
-  BLACK_COLOR,
-  BUTTON_SIZE,
-  INPUT_BACKGROUND_COLOR,
-} from "../../../settings";
-import { Button } from "../../components/buttonComponents/button";
-import { buttonPos } from "../pos/buttonPos";
-import { TextInput } from "../../components/textComponents/textInput";
-import { AuthType } from "../../../types/authType";
-import { PageState } from "../../../enums/pageState";
-import { Text } from "../../components/textComponents/text";
-import { inputPos } from "../pos/inputPos";
-import { Page } from "../page";
-import { state } from "../../../data/state";
-import { Dimension } from "../../../utils/dimension";
+import { state } from "@/data/state";
+import { PageState } from "@/enums/pageState";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Text } from "@/page/components/textComponents/text";
+import { TextInput } from "@/page/components/textComponents/textInput";
+import { Page } from "@/page/views/page";
+import { buttonPos } from "@/page/views/pos/buttonPos";
+import { inputPos } from "@/page/views/pos/inputPos";
+import { BUTTON_SIZE, INPUT_BACKGROUND_COLOR, BLACK_COLOR } from "@/settings";
+import { AuthType } from "@/types/authType";
+import { Dimension } from "@/utils/dimension";
 
 export class Auth extends Page {
   protected backButton: Button;

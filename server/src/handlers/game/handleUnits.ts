@@ -1,15 +1,15 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "../../../classes/communicate";
-import { Unit } from "../../../classes/game/unit";
-import { Indices } from "../../../classes/utils/indices";
-import { calculateDistance, getUnit } from "../../../classes/utils/utils";
-import { Validator } from "../../../classes/validator";
-import { state } from "../../../data/state";
-import { EntityType, Position } from "../../../types/types";
-import { Cell } from "../../../classes/game/cell";
-import { World } from "../../../classes/game/world";
-import { PathFinder } from "../../../classes/pathFind/pathFinder";
-import { units } from "../../../data/units";
+import { Communicate } from "@/classes/communicate";
+import { Unit } from "@/classes/game/unit";
+import { Indices } from "@/classes/utils/indices";
+import { getUnit } from "@/classes/utils/utils";
+import { Validator } from "@/classes/validator";
+import { state } from "@/data/state";
+import { EntityType, Position } from "@/types/types";
+import { Cell } from "@/classes/game/cell";
+import { World } from "@/classes/game/world";
+import { PathFinder } from "@/classes/pathFind/pathFinder";
+import { units } from "@/data/units";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const unitCreate = ({

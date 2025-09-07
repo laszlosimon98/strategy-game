@@ -1,5 +1,5 @@
-import { state } from "../../../data/state";
-import { Auth } from "./auth";
+import { state } from "@/data/state";
+import { Auth } from "@/page/views/auth/auth";
 
 export class Login extends Auth {
   public constructor(title: string) {

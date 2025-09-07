@@ -1,23 +1,23 @@
-import { Button } from "../components/buttonComponents/button";
-import { buttonPos } from "./pos/buttonPos";
-import { TextInput } from "../components/textComponents/textInput";
-import { inputPos } from "./pos/inputPos";
-import { PageState } from "../../enums/pageState";
-import { Text } from "../components/textComponents/text";
-import { ServerHandler } from "../../server/serverHandler";
+import { state } from "@/data/state";
+import { PageState } from "@/enums/pageState";
+import { canvasWidth } from "@/init";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Text } from "@/page/components/textComponents/text";
+import { TextInput } from "@/page/components/textComponents/textInput";
+import { Page } from "@/page/views/page";
+import { buttonPos } from "@/page/views/pos/buttonPos";
+import { inputPos } from "@/page/views/pos/inputPos";
+import { titlePos } from "@/page/views/pos/titlePos";
+import { ServerHandler } from "@/server/serverHandler";
 import {
-  BLACK_COLOR,
   BUTTON_SIZE,
-  ERROR_COLOR,
   INPUT_BACKGROUND_COLOR,
+  BLACK_COLOR,
   MARGIN,
-} from "../../settings";
-import { titlePos } from "./pos/titlePos";
-import { Page } from "./page";
-import { Position } from "../../utils/position";
-import { state } from "../../data/state";
-import { Dimension } from "../../utils/dimension";
-import { canvasWidth } from "../../init";
+  ERROR_COLOR,
+} from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Join extends Page {
   private backButton: Button;

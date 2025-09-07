@@ -1,6 +1,6 @@
-import { PropertyType, units, UnitsType } from "../../data/units";
-import { EntityType, Position } from "../../types/types";
-import { Indices } from "../utils/indices";
+import { Indices } from "@/classes/utils/indices";
+import { PropertyType, units } from "@/data/units";
+import { EntityType, Position } from "@/types/types";
 
 export class Unit {
   private entity: EntityType;

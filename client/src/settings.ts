@@ -1,4 +1,4 @@
-import { Dimension } from "./utils/dimension";
+import { Dimension } from "@/utils/dimension";
 
 // GUI - POS
 export const BUTTON_SIZE: Dimension = new Dimension(192, 60);
@@ -28,3 +28,9 @@ export const CELL_SIZE = 48;
 export const FPS = 30;
 
 export const CAMERA_SPEED = 700;
+
+// UNITS
+export const ANIMATION_COUNT: number = 8;
+export const UNIT_ASSET_SIZE: number = 64;
+export const UNIT_SPEED = 80;
+export const ANIMATION_SPEED = 8;

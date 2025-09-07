@@ -1,4 +1,4 @@
-import { Auth } from "./auth";
+import { Auth } from "@/page/views/auth/auth";
 
 export class Registration extends Auth {
   public constructor(title: string) {

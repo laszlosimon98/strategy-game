@@ -1,24 +1,23 @@
-import { PageState } from "./enums/pageState";
-import { Description } from "./page/views/description";
-import { Join } from "./page/views/join";
-import { Lobby } from "./page/views/lobby";
-import { Login } from "./page/views/auth/login";
-import { MainMenu } from "./page/views/mainMenu";
-import { NewGame } from "./page/views/newGame";
-import { Statistic } from "./page/views/statistic";
-import { canvasHeight, canvasWidth, ctx } from "./init";
-import { Registration } from "./page/views/auth/registration";
-import { Button } from "./page/components/buttonComponents/button";
-import { TextInput } from "./page/components/textComponents/textInput";
-import { BACKGROUND_COLOR, BLACK_COLOR } from "./settings";
-import { Page } from "./page/views/page";
-import { Game } from "./game/game";
-import { ServerHandler } from "./server/serverHandler";
-import { Position } from "./utils/position";
-import { state } from "./data/state";
-import { RenderInterface } from "./interfaces/render";
+import { state } from "@/data/state";
+import { PageState } from "@/enums/pageState";
+import { Game } from "@/game/game";
+import { ctx, canvasWidth, canvasHeight } from "@/init";
+import { Button } from "@/page/components/buttonComponents/button";
+import { TextInput } from "@/page/components/textComponents/textInput";
+import { Login } from "@/page/views/auth/login";
+import { Registration } from "@/page/views/auth/registration";
+import { Description } from "@/page/views/description";
+import { Join } from "@/page/views/join";
+import { Lobby } from "@/page/views/lobby";
+import { MainMenu } from "@/page/views/mainMenu";
+import { NewGame } from "@/page/views/newGame";
+import { Page } from "@/page/views/page";
+import { Statistic } from "@/page/views/statistic";
+import { ServerHandler } from "@/server/serverHandler";
+import { BACKGROUND_COLOR, BLACK_COLOR } from "@/settings";
+import { Position } from "@/utils/position";
 
-export class Program implements RenderInterface {
+export class Program {
   private pages: Partial<Record<PageState, Page>>;
   private buttons?: Button[];
   private inputs?: TextInput[];

@@ -1,7 +1,7 @@
-import { ctx } from "../../../init";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { Plate } from "./plate";
+import { ctx } from "@/init";
+import { Plate } from "@/page/components/buttonComponents/plate";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Button extends Plate {
   private func: Function[];

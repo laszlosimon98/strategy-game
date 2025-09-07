@@ -1,5 +1,5 @@
-import { CELL_SIZE } from "../settings";
-import { Position } from "./position";
+import { CELL_SIZE } from "@/settings";
+import { Position } from "@/utils/position";
 
 export class Vector extends Position {
   public constructor(x: number, y: number) {

@@ -1,13 +1,13 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "../../../classes/communicate";
-import { Cell } from "../../../classes/game/cell";
-import { Unit } from "../../../classes/game/unit";
-import { PathFinder } from "../../../classes/pathFind/pathFinder";
-import { Indices } from "../../../classes/utils/indices";
-import { getUnit } from "../../../classes/utils/utils";
-import { Validator } from "../../../classes/validator";
-import { state } from "../../../data/state";
-import { EntityType } from "../../../types/types";
+import { Communicate } from "@/classes/communicate";
+import { Cell } from "@/classes/game/cell";
+import { Unit } from "@/classes/game/unit";
+import { PathFinder } from "@/classes/pathFind/pathFinder";
+import { Indices } from "@/classes/utils/indices";
+import { getUnit } from "@/classes/utils/utils";
+import { Validator } from "@/classes/validator";
+import { state } from "@/data/state";
+import { EntityType } from "@/types/types";
 
 export const handlePath = (io: Server, socket: Socket) => {
   const pathFind = ({

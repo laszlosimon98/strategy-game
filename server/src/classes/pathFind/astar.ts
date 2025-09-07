@@ -1,5 +1,5 @@
-import { Cell } from "../game/cell";
-import { Indices } from "../utils/indices";
+import { Cell } from "@/classes/game/cell";
+import { Indices } from "@/classes/utils/indices";
 
 export class AStar {
   private static currentCell: Cell;

@@ -1,17 +1,17 @@
 import { v4 as uuidv4 } from "uuid";
 
-import { ServerHandler } from "../../../../server/serverHandler";
-import { Indices } from "../../../../utils/indices";
-import { Position } from "../../../../utils/position";
-import { FakeBuilding } from "../fakeBuilding";
-import { buildingRegister } from "../buildingRegister/buildingRegister";
-import { initState, state } from "../../../../data/state";
-import { GameState } from "../../../../enums/gameState";
-import { getImageNameFromUrl, ySort } from "../../../../utils/utils";
-import { MainMenuState } from "../../../../enums/gameMenuState";
-import { EntityType } from "../../../../types/gameType";
-import { Manager } from "../../manager/manager";
-import { Building } from "../building";
+import { state, initState } from "@/data/state";
+import { MainMenuState } from "@/enums/gameMenuState";
+import { GameState } from "@/enums/gameState";
+import { Building } from "@/game/world/building/building";
+import { buildingRegister } from "@/game/world/building/buildingRegister";
+import { FakeBuilding } from "@/game/world/building/fakeBuilding";
+import { Manager } from "@/game/world/abstract/manager";
+import { ServerHandler } from "@/server/serverHandler";
+import { EntityType } from "@/types/gameType";
+import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
+import { getImageNameFromUrl, ySort } from "@/utils/utils";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;

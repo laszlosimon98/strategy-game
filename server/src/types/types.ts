@@ -1,9 +1,8 @@
-import { Socket } from "socket.io";
-import { Building } from "../classes/game/building";
-import { Cell } from "../classes/game/cell";
-import { Indices } from "../classes/utils/indices";
-import { Dimension } from "../classes/utils/dimension";
-import { Unit } from "../classes/game/unit";
+import { Building } from "@/classes/game/building";
+import { Cell } from "@/classes/game/cell";
+import { Unit } from "@/classes/game/unit";
+import { Dimension } from "@/classes/utils/dimension";
+import { Indices } from "@/classes/utils/indices";
 
 export type ColorType =
   | "black"

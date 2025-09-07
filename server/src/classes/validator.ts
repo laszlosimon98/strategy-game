@@ -1,6 +1,7 @@
 import { Socket } from "socket.io";
-import { MAP_SIZE } from "../settings";
-import { Indices } from "./utils/indices";
+
+import { Indices } from "@/classes/utils/indices";
+import { MAP_SIZE } from "@/settings";
 
 export class Validator {
   private constructor() {}

@@ -1,14 +1,14 @@
-import { state } from "../../../../data/state";
-import { SubMenuState } from "../../../../enums/gameMenuState";
-import { MENU_ITEM_SIZE } from "../../../../settings";
-import { Dimension } from "../../../../utils/dimension";
-import { Position } from "../../../../utils/position";
-import { LabelButton } from "../labelButton";
-import { Section } from "../section";
-import { FoodSection } from "./components/foodSection";
-import { MilitarySection } from "./components/militarySection";
-import { ResourceSection } from "./components/resourceSection";
-import { StorageSection } from "./components/storageSection";
+import { state } from "@/data/state";
+import { SubMenuState } from "@/enums/gameMenuState";
+import { FoodSection } from "@/game/menu/components/building/components/foodSection";
+import { MilitarySection } from "@/game/menu/components/building/components/militarySection";
+import { ResourceSection } from "@/game/menu/components/building/components/resourceSection";
+import { StorageSection } from "@/game/menu/components/building/components/storageSection";
+import { LabelButton } from "@/game/menu/components/labelButton";
+import { Section } from "@/game/menu/components/section";
+import { MENU_ITEM_SIZE } from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class BuildingSection extends Section {
   private readonly margin: number = 125;

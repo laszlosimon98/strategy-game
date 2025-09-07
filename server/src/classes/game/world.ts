@@ -1,17 +1,12 @@
 import { Socket } from "socket.io";
-import {
-  MAP_SEED,
-  MAP_SIZE,
-  ROCK_SPAWN_CHANCE,
-  TREE_SPAWN_CHANCE,
-} from "../../settings";
-import { Communicate } from "../communicate";
-import { Cell } from "./cell";
-import { state } from "../../data/state";
-import { Indices } from "../utils/indices";
-import { createNoise2D } from "simplex-noise";
 import alea from "alea";
-import { getRandomNumberFromInterval } from "../utils/utils";
+import { createNoise2D } from "simplex-noise";
+
+import { Communicate } from "@/classes/communicate";
+import { Cell } from "@/classes/game/cell";
+import { Indices } from "@/classes/utils/indices";
+import { state } from "@/data/state";
+import { MAP_SIZE, MAP_SEED, ROCK_SPAWN_CHANCE } from "@/settings";
 
 export class World {
   private static world: Cell[][] = [];

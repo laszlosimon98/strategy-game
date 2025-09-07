@@ -1,14 +1,14 @@
 import { Socket } from "socket.io";
-import { Indices } from "../utils/indices";
-import { World } from "./world";
-import { Validator } from "../validator";
-import { Building } from "./building";
-import { state } from "../../data/state";
-import { Communicate } from "../communicate";
-import { Cell } from "./cell";
-import { EntityType } from "../../types/types";
-import { MAP_SIZE } from "../../settings";
-import { getImageNameFromUrl } from "../utils/utils";
+import { Communicate } from "@/classes/communicate";
+import { Building } from "@/classes/game/building";
+import { Cell } from "@/classes/game/cell";
+import { World } from "@/classes/game/world";
+import { Indices } from "@/classes/utils/indices";
+import { getImageNameFromUrl } from "@/classes/utils/utils";
+import { Validator } from "@/classes/validator";
+import { state } from "@/data/state";
+import { MAP_SIZE } from "@/settings";
+import { EntityType } from "@/types/types";
 
 export class Builder {
   private constructor() {}

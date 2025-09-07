@@ -1,8 +1,8 @@
-import { state } from "./data/state";
-import init from "./init";
-import { Program } from "./program";
-import { ServerHandler } from "./server/serverHandler";
-import { FPS } from "./settings";
+import { state } from "@/data/state";
+import init from "@/init";
+import { Program } from "@/program";
+import { ServerHandler } from "@/server/serverHandler";
+import { FPS } from "@/settings";
 
 const main = async () => {
   init();

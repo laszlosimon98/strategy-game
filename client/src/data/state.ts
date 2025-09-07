@@ -1,12 +1,13 @@
-import { PageState } from "../enums/pageState";
-import { faker } from "@faker-js/faker";
-import { GameState } from "../enums/gameState";
-import { EntityType, stateType } from "../types/gameType";
-import { MainMenuState, SubMenuState } from "../enums/gameMenuState";
-import { Indices } from "../utils/indices";
-import { Dimension } from "../utils/dimension";
-import { Position } from "../utils/position";
-import { ServerHandler } from "../server/serverHandler";
+import { faker } from "@faker-js/faker/locale/hu";
+
+import { MainMenuState, SubMenuState } from "@/enums/gameMenuState";
+import { GameState } from "@/enums/gameState";
+import { PageState } from "@/enums/pageState";
+import { ServerHandler } from "@/server/serverHandler";
+import { EntityType, stateType } from "@/types/gameType";
+import { Dimension } from "@/utils/dimension";
+import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
 
 export const initState: EntityType = {
   data: {

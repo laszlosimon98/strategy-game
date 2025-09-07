@@ -1,6 +1,6 @@
-import { Cell } from "../game/cell";
-import { Indices } from "../utils/indices";
-import { AStar } from "./astar";
+import { Cell } from "@/classes/game/cell";
+import { AStar } from "@/classes/pathFind/astar";
+import { Indices } from "@/classes/utils/indices";
 
 export class PathFinder {
   private constructor() {}

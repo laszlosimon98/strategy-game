@@ -1,10 +1,10 @@
-import { state } from "../../../data/state";
-import { ctx } from "../../../init";
-import { Button } from "../../../page/components/buttonComponents/button";
-import { ServerHandler } from "../../../server/serverHandler";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { Section } from "./section";
+import { state } from "@/data/state";
+import { Section } from "@/game/menu/components/section";
+import { ctx } from "@/init";
+import { Button } from "@/page/components/buttonComponents/button";
+import { ServerHandler } from "@/server/serverHandler";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class InfoPanel extends Section {
   private dim: Dimension;

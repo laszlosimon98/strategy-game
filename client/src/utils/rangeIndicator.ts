@@ -1,7 +1,7 @@
-import { ctx } from "../init";
-import { CELL_SIZE } from "../settings";
-import { Position } from "./position";
-import { cartesianToIsometric, isometricToCartesian } from "./utils";
+import { ctx } from "@/init";
+import { CELL_SIZE } from "@/settings";
+import { Position } from "@/utils/position";
+import { cartesianToIsometric, isometricToCartesian } from "@/utils/utils";
 
 export class RangeIndicator {
   private position: Position;

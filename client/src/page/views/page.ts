@@ -1,12 +1,11 @@
-import { RenderInterface } from "../../interfaces/render";
-import { Dimension } from "../../utils/dimension";
-import { Position } from "../../utils/position";
-import { Button } from "../components/buttonComponents/button";
-import { Plate } from "../components/buttonComponents/plate";
-import { TextInput } from "../components/textComponents/textInput";
-import { titlePos } from "./pos/titlePos";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Plate } from "@/page/components/buttonComponents/plate";
+import { TextInput } from "@/page/components/textComponents/textInput";
+import { titlePos } from "@/page/views/pos/titlePos";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
-export abstract class Page implements RenderInterface {
+export abstract class Page {
   protected buttons: Button[];
   protected inputs: TextInput[];
   private titlePos: Position;

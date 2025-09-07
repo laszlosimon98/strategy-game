@@ -1,8 +1,8 @@
-import { MENU_ITEM_SIZE } from "../../../../settings";
-import { Dimension } from "../../../../utils/dimension";
-import { Position } from "../../../../utils/position";
-import { LabelButton } from "../labelButton";
-import { Section } from "../section";
+import { LabelButton } from "@/game/menu/components/labelButton";
+import { Section } from "@/game/menu/components/section";
+import { MENU_ITEM_SIZE } from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class MainSection extends Section {
   public constructor(pos: Position, dim: Dimension) {

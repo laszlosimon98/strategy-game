@@ -1,11 +1,11 @@
-import { data } from "../../../data/data";
-import { state } from "../../../data/state";
-import { ctx } from "../../../init";
-import { TEXT_COLOR } from "../../../settings";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { PageComponents } from "../pageComponents";
-import { Text } from "../textComponents/text";
+import { data } from "@/data/data";
+import { state } from "@/data/state";
+import { ctx } from "@/init";
+import { PageComponents } from "@/page/components/pageComponents";
+import { TEXT_COLOR } from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
+import { Text } from "@/page/components/textComponents/text";
 
 export class Plate extends PageComponents {
   protected image: HTMLImageElement;

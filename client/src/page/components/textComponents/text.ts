@@ -1,8 +1,8 @@
-import { canvasWidth, ctx } from "../../../init";
-import { TEXT_COLOR } from "../../../settings";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { PageComponents } from "../pageComponents";
+import { ctx } from "@/init";
+import { PageComponents } from "@/page/components/pageComponents";
+import { TEXT_COLOR } from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Text extends PageComponents {
   protected text: string;

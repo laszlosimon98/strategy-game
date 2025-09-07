@@ -1,14 +1,14 @@
-import { state } from "../../data/state";
-import { MouseClicker } from "../../interfaces/mouseClicker";
-import { ServerHandler } from "../../server/serverHandler";
-import { TileType } from "../../types/gameType";
-import { Indices } from "../../utils/indices";
-import { Position } from "../../utils/position";
-import { convertIsometricCoordsToCartesianCoords } from "../../utils/utils";
-import { Camera } from "../camera/camera";
-import { BuildingManager } from "./building/manager/buildingManager";
-import { Cell } from "./cell";
-import { UnitManager } from "./unit/manager/unitManager";
+import { state } from "@/data/state";
+import { Camera } from "@/game/camera/camera";
+import { BuildingManager } from "@/game/world/building/buildingManager";
+import { Cell } from "@/game/world/cell";
+import { UnitManager } from "@/game/world/unit/unitManager";
+import { MouseClicker } from "@/interfaces/mouseClicker";
+import { ServerHandler } from "@/server/serverHandler";
+import { TileType } from "@/types/gameType";
+import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
+import { convertIsometricCoordsToCartesianCoords } from "@/utils/utils";
 
 export class World implements MouseClicker {
   private mousePos: Position;

@@ -1,8 +1,8 @@
-import { ctx } from "../../../init";
-import { BACKGROUND_COLOR, TEXT_COLOR } from "../../../settings";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { Text } from "./text";
+import { ctx } from "@/init";
+import { Text } from "@/page/components/textComponents/text";
+import { TEXT_COLOR, BACKGROUND_COLOR } from "@/settings";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class TextInput extends Text {
   private backgroundColor: string;

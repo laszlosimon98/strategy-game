@@ -1,6 +1,6 @@
-import { ctx } from "../../../init";
-import { EntityType } from "../../../types/gameType";
-import { Building } from "./building";
+import { Building } from "@/game/world/building/building";
+import { ctx } from "@/init";
+import { EntityType } from "@/types/gameType";
 
 export class FakeBuilding extends Building {
   public constructor(entity: EntityType, hasFlag: boolean) {

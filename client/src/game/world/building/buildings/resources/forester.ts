@@ -1,6 +1,6 @@
-import { BuildingActionInterface } from "../../../../../interfaces/buildingAction";
-import { EntityType } from "../../../../../types/gameType";
-import { Building } from "../../building";
+import { Building } from "@/game/world/building/building";
+import { BuildingActionInterface } from "@/interfaces/buildingAction";
+import { EntityType } from "@/types/gameType";
 
 export class Forester extends Building implements BuildingActionInterface {
   public constructor(building: EntityType) {

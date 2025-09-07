@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { state } from "../data/state";
+import { state } from "@/data/state";
 
 export class ServerHandler {
   private static socket: Socket;

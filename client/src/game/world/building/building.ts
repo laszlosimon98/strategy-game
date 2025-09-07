@@ -1,33 +1,32 @@
-import { state } from "../../../data/state";
-import { ctx } from "../../../init";
-import { CallAble } from "../../../interfaces/callAble";
-import { EntityType } from "../../../types/gameType";
-import { Position } from "../../../utils/position";
-import { Entity } from "../entity";
-import { Flag } from "./flag";
+import { state } from "@/data/state";
+import { Flag } from "@/game/world/building/flag";
+import { Entity } from "@/game/world/entity";
+import { ctx } from "@/init";
+import { CallAble } from "@/interfaces/callAble";
+import { EntityType } from "@/types/gameType";
+import { Position } from "@/utils/position";
 
 export class Building extends Entity implements CallAble {
-  private flagEntity: EntityType;
-
+  private flagEntity: EntityType | undefined;
   private flag: Flag | undefined;
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
 
-    this.flagEntity = {
-      data: {
-        ...state.images.colors[state.game.players[entity.data.owner].color]
-          .flag,
-        indices: {
-          ...entity.data.indices,
-          i: entity.data.indices.i + 1,
-        },
-        owner: entity.data.owner,
-        position: entity.data.position,
-      },
-    };
-
     if (hasFlag) {
+      this.flagEntity = {
+        data: {
+          ...state.images.colors[state.game.players[entity.data.owner].color]
+            .flag,
+          indices: {
+            ...entity.data.indices,
+            i: entity.data.indices.i + 1,
+          },
+          owner: entity.data.owner,
+          position: entity.data.position,
+        },
+      };
+
       this.flag = new Flag(this.flagEntity);
     }
   }

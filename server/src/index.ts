@@ -1,13 +1,15 @@
 import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
-
-import { authHandler } from "./handlers/authHandler";
-import { connectionHandler } from "./handlers/connectionHandler";
-import { gameHandler } from "./handlers/gameHandler/gameHandler";
 import path from "path";
-import { imageHandler } from "./handlers/imageHandler";
-import { Loader } from "./classes/imageLoader";
+
+import { Loader } from "@/classes/imageLoader";
+import { imageHandler } from "@/handlers/imageHandler";
+import { handleBuildings } from "@/handlers/game/handleBuildings";
+import { handlePath } from "@/handlers/game/handlePath";
+import { handleStart } from "@/handlers/game/handleStart";
+import { handleUnits } from "@/handlers/game/handleUnits";
+import { connectionHandler } from "@/handlers/connectionHandler";
 
 const PORT = 3000;
 
@@ -30,15 +32,21 @@ let images: any;
   );
 })();
 
+const gameHandler = (io: Server, socket: Socket) => {
+  handleStart(io, socket);
+  handlePath(io, socket);
+  handleBuildings(io, socket);
+  handleUnits(io, socket);
+};
+
 const onConnecton = async (socket: Socket) => {
   await imageHandler(io, socket, images);
   connectionHandler(io, socket);
   gameHandler(io, socket);
-  // authHandler();
 };
 
 io.on("connection", onConnecton);
 
 httpServer.listen(PORT, () => {
-  console.log(`Game server is listening on port ${PORT}`);
+  console.log(`Játék szerver elindult a ${PORT} porton.`);
 });

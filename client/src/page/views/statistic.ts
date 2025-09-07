@@ -1,9 +1,9 @@
-import { state } from "../../data/state";
-import { PageState } from "../../enums/pageState";
-import { BUTTON_SIZE } from "../../settings";
-import { Button } from "../components/buttonComponents/button";
-import { Page } from "./page";
-import { buttonPos } from "./pos/buttonPos";
+import { state } from "@/data/state";
+import { PageState } from "@/enums/pageState";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Page } from "@/page/views/page";
+import { buttonPos } from "@/page/views/pos/buttonPos";
+import { BUTTON_SIZE } from "@/settings";
 
 export class Statistic extends Page {
   private backButton: Button;

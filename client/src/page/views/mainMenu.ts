@@ -1,10 +1,10 @@
-import { Button } from "../components/buttonComponents/button";
-import { buttonPos } from "./pos/buttonPos";
-import { PageState } from "../../enums/pageState";
-import { BUTTON_SIZE } from "../../settings";
-import { Page } from "./page";
-import { state } from "../../data/state";
-import { Plate } from "../components/buttonComponents/plate";
+import { state } from "@/data/state";
+import { PageState } from "@/enums/pageState";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Plate } from "@/page/components/buttonComponents/plate";
+import { Page } from "@/page/views/page";
+import { buttonPos } from "@/page/views/pos/buttonPos";
+import { BUTTON_SIZE } from "@/settings";
 
 export class MainMenu extends Page {
   private newGame: Button;

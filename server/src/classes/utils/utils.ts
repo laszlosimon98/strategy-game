@@ -1,8 +1,9 @@
 import { Socket } from "socket.io";
-import { EntityType, Position } from "../../types/types";
-import { state } from "../../data/state";
-import { Communicate } from "../communicate";
-import { Unit } from "../game/unit";
+
+import { Communicate } from "@/classes/communicate";
+import { Unit } from "@/classes/game/unit";
+import { state } from "@/data/state";
+import { EntityType, Position } from "@/types/types";
 
 export const getUnit = (
   socket: Socket,

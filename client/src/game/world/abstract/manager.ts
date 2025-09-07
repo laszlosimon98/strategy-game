@@ -1,16 +1,16 @@
-import { MouseClicker } from "../../../interfaces/mouseClicker";
-import { CallAble } from "../../../interfaces/callAble";
-import { Dimension } from "../../../utils/dimension";
-import { Position } from "../../../utils/position";
-import { initState, state } from "../../../data/state";
-import { GameState } from "../../../enums/gameState";
-import { ServerHandler } from "../../../server/serverHandler";
-import { isMouseIntersect } from "../../../utils/utils";
-import { MainMenuState } from "../../../enums/gameMenuState";
-import { Building } from "../building/building";
-import { Unit } from "@faker-js/faker";
-import { EntityType } from "../../../types/gameType";
-import { Cell } from "../cell";
+import { state, initState } from "@/data/state";
+import { MainMenuState } from "@/enums/gameMenuState";
+import { GameState } from "@/enums/gameState";
+import { Building } from "@/game/world/building/building";
+import { Cell } from "@/game/world/cell";
+import { Unit } from "@/game/world/unit/unit";
+import { CallAble } from "@/interfaces/callAble";
+import { MouseClicker } from "@/interfaces/mouseClicker";
+import { ServerHandler } from "@/server/serverHandler";
+import { EntityType } from "@/types/gameType";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
+import { isMouseIntersect } from "@/utils/utils";
 
 export abstract class Manager<T> implements MouseClicker {
   protected pos: Position;

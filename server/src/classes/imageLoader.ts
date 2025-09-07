@@ -1,7 +1,8 @@
 import fs from "fs/promises";
 import path from "path";
-import { SERVER_URL } from "../settings";
 import sizeOf from "image-size";
+
+import { SERVER_URL } from "@/settings";
 
 export class Loader {
   private constructor() {}

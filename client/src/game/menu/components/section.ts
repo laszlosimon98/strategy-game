@@ -1,10 +1,10 @@
-import { Button } from "../../../page/components/buttonComponents/button";
-import { Frame } from "../../../page/components/frameComponets/frame";
-import { SubMenuState } from "../../../enums/gameMenuState";
-import { Position } from "../../../utils/position";
-import { LabelButton } from "./labelButton";
-import { state } from "../../../data/state";
-import { Dimension } from "../../../utils/dimension";
+import { state } from "@/data/state";
+import { SubMenuState } from "@/enums/gameMenuState";
+import { LabelButton } from "@/game/menu/components/labelButton";
+import { Button } from "@/page/components/buttonComponents/button";
+import { Frame } from "@/page/components/frameComponets/frame";
+import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Section {
   private section: Frame;

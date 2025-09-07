@@ -1,10 +1,10 @@
-import { ctx } from "../../init";
-import { CallAble } from "../../interfaces/callAble";
-import { EntityType } from "../../types/gameType";
-import { Dimension } from "../../utils/dimension";
-import { Indices } from "../../utils/indices";
-import { Position } from "../../utils/position";
-import { getImageNameFromUrl } from "../../utils/utils";
+import { ctx } from "@/init";
+import { CallAble } from "@/interfaces/callAble";
+import { EntityType } from "@/types/gameType";
+import { Dimension } from "@/utils/dimension";
+import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
+import { getImageNameFromUrl } from "@/utils/utils";
 
 export abstract class Entity implements CallAble {
   protected image: HTMLImageElement;
