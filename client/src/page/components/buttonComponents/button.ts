@@ -1,0 +1,49 @@
+import { ctx } from "../../../init";
+import { Dimension } from "../../../utils/dimension";
+import { Position } from "../../../utils/position";
+import { Plate } from "./plate";
+
+export class Button extends Plate {
+  private func: Function[];
+  protected isHovered: boolean;
+
+  public constructor(
+    pos: Position,
+    dim: Dimension,
+    type: "name" | "title" | "buildings" | "menu",
+    text: string,
+    ...fn: Function[]
+  ) {
+    super(pos, dim, type, text);
+    this.func = fn;
+
+    this.isHovered = false;
+  }
+
+  public draw(): void {
+    ctx.save();
+    if (this.isHovered) {
+      ctx.globalAlpha = 0.8;
+    }
+    super.draw();
+    ctx.restore();
+  }
+
+  public update(dt: number, mousePos: Position) {
+    this.isHovered = this.isClicked(mousePos.x, mousePos.y);
+  }
+
+  public click(): void {
+    this.func.forEach((fn) => fn());
+  }
+
+  public setImage(imageSrc: string) {
+    super.setImage(imageSrc);
+  }
+
+  public getImage(): string {
+    return this.image.src;
+  }
+
+  public async handleError(): Promise<any> {}
+}
