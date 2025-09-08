@@ -5,8 +5,8 @@ import { createNoise2D } from "simplex-noise";
 import { Communicate } from "@/classes/communicate";
 import { Cell } from "@/classes/game/cell";
 import { Indices } from "@/classes/utils/indices";
-import { state } from "@/data/state";
 import { settings } from "@/settings";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export class World {
   private static world: Cell[][] = [];
@@ -128,10 +128,12 @@ export class World {
   }
 
   public static getWorld(socket: Socket): Cell[][] {
-    return state[Communicate.getCurrentRoom(socket)].world;
+    const room = Communicate.getCurrentRoom(socket);
+    return GameStateManager.getWorld(room);
   }
 
   public static setWorld(world: Cell[][], socket: Socket): void {
-    state[Communicate.getCurrentRoom(socket)].world = world;
+    const room = Communicate.getCurrentRoom(socket);
+    GameStateManager.setWorld(room, world);
   }
 }

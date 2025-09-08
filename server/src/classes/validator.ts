@@ -15,7 +15,7 @@ export class Validator {
     );
   }
 
-  public static areSenderAndOwnerSame(socket: Socket, owner?: string): boolean {
+  public static canDemolishBuilding(socket: Socket, owner: string): boolean {
     return socket.id === owner;
   }
 }

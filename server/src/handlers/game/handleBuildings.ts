@@ -4,7 +4,7 @@ import { Builder } from "@/classes/game/builder";
 import { Building } from "@/classes/game/building";
 import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
-import { EntityType } from "@/types/types";
+import { EntityType } from "@/types/state.types";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const build = (entity: EntityType): void => {

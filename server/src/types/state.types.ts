@@ -3,6 +3,7 @@ import { Cell } from "@/classes/game/cell";
 import { Unit } from "@/classes/game/unit";
 import { Dimension } from "@/classes/utils/dimension";
 import { Indices } from "@/classes/utils/indices";
+import { Position } from "@/types/position.types";
 
 export type ColorType =
   | "black"
@@ -13,13 +14,6 @@ export type ColorType =
   | "purple"
   | "red"
   | "white";
-
-export type TileType = "grass" | "grass_flower" | "grass_rock" | "dirt";
-
-export type Position = {
-  x: number;
-  y: number;
-};
 
 export type EntityType = {
   data: {

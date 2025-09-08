@@ -1,5 +1,5 @@
 import { Indices } from "@/classes/utils/indices";
-import { TileType } from "@/types/types";
+import { TileType } from "@/types/world.types";
 
 export class Cell {
   private indices: Indices;

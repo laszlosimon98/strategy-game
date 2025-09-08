@@ -1,6 +1,8 @@
 import { Indices } from "@/classes/utils/indices";
-import { PropertyType, units } from "@/data/units";
-import { EntityType, Position } from "@/types/types";
+import { GameStateManager } from "@/manager/gameStateManager";
+import { Position } from "@/types/position.types";
+import { EntityType } from "@/types/state.types";
+import { PropertyType } from "@/types/units.types";
 
 export class Unit {
   private entity: EntityType;
@@ -9,7 +11,7 @@ export class Unit {
   public constructor(entity: EntityType, name: string) {
     this.entity = entity;
     this.properties = {
-      ...units[name],
+      ...GameStateManager.getUnitProperties()[name],
     };
   }
 

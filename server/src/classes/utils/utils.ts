@@ -1,22 +1,4 @@
-import { Socket } from "socket.io";
-
-import { Communicate } from "@/classes/communicate";
-import { Unit } from "@/classes/game/unit";
-import { state } from "@/data/state";
-import { EntityType, Position } from "@/types/types";
-
-export const getUnit = (
-  socket: Socket,
-  entity: EntityType
-): Unit | undefined => {
-  const unit: Unit | undefined = state[
-    Communicate.getCurrentRoom(socket)
-  ].players[entity.data.owner].units.find(
-    (unit) => unit.getEntity().data.id === entity.data.id
-  );
-
-  return unit;
-};
+import { Position } from "@/types/position.types";
 
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;

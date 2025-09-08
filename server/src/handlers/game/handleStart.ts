@@ -3,29 +3,36 @@ import { Communicate } from "@/classes/communicate";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
-import { state } from "@/data/state";
-import { PlayerType, TileType } from "@/types/types";
+import { PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
+import { TileType } from "@/types/world.types";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handleStart = (io: Server, socket: Socket) => {
-  const getPlayers = (): PlayerType => {
-    const currentRoom: string = Communicate.getCurrentRoom(socket);
-    return state[currentRoom].players;
-  };
-
   const gameStarts = async () => {
     const currentRoom: string = Communicate.getCurrentRoom(socket);
-    state[currentRoom].isGameStarted = true;
 
+    GameStateManager.startGame(currentRoom);
     Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
+
+    initPlayers(currentRoom);
+    createWorld();
+    placePlayers(currentRoom);
+  };
+
+  const initPlayers = (currentRoom: string) => {
     Communicate.sendMessageToEveryOne(
       io,
       socket,
       "game:initPlayers",
-      getPlayers()
+      GameStateManager.getPlayers(currentRoom)
     );
+  };
 
-    const world = createWorld();
+  const createWorld = () => {
+    const world: Cell[][] = World.createWorld();
+    World.setWorld(world, socket);
+
     const tiles = getTiles(world);
     const obstacles = getObstacles(world);
 
@@ -33,8 +40,10 @@ export const handleStart = (io: Server, socket: Socket) => {
       tiles,
       obstacles,
     });
+  };
 
-    const players: PlayerType = getPlayers();
+  const placePlayers = (currentRoom: string) => {
+    const players: PlayerType = GameStateManager.getPlayers(currentRoom);
 
     Object.keys(players).forEach((id) => {
       const i = Math.floor(Math.random() * settings.mapSize);
@@ -42,13 +51,6 @@ export const handleStart = (io: Server, socket: Socket) => {
       const pos = new Indices(i, j);
       Communicate.sendPrivateMessage(io, id, "game:startPos", pos);
     });
-  };
-
-  const createWorld = (): Cell[][] => {
-    const world: Cell[][] = World.createWorld();
-    World.setWorld(world, socket);
-
-    return world;
   };
 
   const getTiles = (world: Cell[][]): TileType[][] => {

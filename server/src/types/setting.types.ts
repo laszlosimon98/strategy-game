@@ -1,4 +1,4 @@
-import { ColorType } from "@/types/types";
+import { ColorType } from "@/types/state.types";
 
 export type Settings = {
   colors: ColorType[];

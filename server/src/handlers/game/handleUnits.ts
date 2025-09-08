@@ -2,14 +2,13 @@ import { Server, Socket } from "socket.io";
 import { Communicate } from "@/classes/communicate";
 import { Unit } from "@/classes/game/unit";
 import { Indices } from "@/classes/utils/indices";
-import { getUnit } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
-import { state } from "@/data/state";
-import { EntityType, Position } from "@/types/types";
+import { EntityType } from "@/types/state.types";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
-import { units } from "@/data/units";
+import { Position } from "@/types/position.types";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const unitCreate = ({
@@ -26,13 +25,13 @@ export const handleUnits = (io: Server, socket: Socket) => {
     entity.data.owner = socket.id;
     const unit = new Unit(entity, name);
 
-    state[Communicate.getCurrentRoom(socket)].players[socket.id].units.push(
-      unit
-    );
+    const room = Communicate.getCurrentRoom(socket);
+
+    GameStateManager.createUnit(room, socket, unit);
 
     Communicate.sendMessageToEveryOne(io, socket, "game:unitCreate", {
       entity: unit.getEntity(),
-      properties: units[name],
+      properties: GameStateManager.getUnitProperties()[name],
     });
   };
 
@@ -45,7 +44,9 @@ export const handleUnits = (io: Server, socket: Socket) => {
     next: Indices;
     goal: Indices;
   }) => {
-    const unit: Unit | undefined = getUnit(socket, entity);
+    const room: string = Communicate.getCurrentRoom(socket);
+    const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
+
     if (unit) {
       const world: Cell[][] = World.getWorld(socket);
 
@@ -76,7 +77,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
     newPos: Position;
     direction: string;
   }): void => {
-    const unit: Unit | undefined = getUnit(socket, entity);
+    const room: string = Communicate.getCurrentRoom(socket);
+    const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
     if (unit) {
       unit.setPosition(newPos);
@@ -89,7 +91,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const unitDestinationReached = (entity: EntityType) => {
-    const unit: Unit | undefined = getUnit(socket, entity);
+    const room: string = Communicate.getCurrentRoom(socket);
+    const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
     if (unit) {
       Communicate.sendMessageToEveryOne(
@@ -126,8 +129,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
     unit: EntityType;
     opponent: EntityType;
   }): void => {
-    const _unit: Unit | undefined = getUnit(socket, unit);
-    const _opponent: Unit | undefined = getUnit(socket, opponent);
+    const room: string = Communicate.getCurrentRoom(socket);
+    const _unit: Unit | undefined = GameStateManager.getUnit(room, unit);
+    const _opponent: Unit | undefined = GameStateManager.getUnit(
+      room,
+      opponent
+    );
 
     if (_unit && _opponent) {
       _opponent.takeDamage(_unit.getDamage());
@@ -145,6 +152,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
       }
     }
   };
+
+  const deleteUnit = ({}): void => {};
 
   socket.on("game:unitCreate", unitCreate);
 

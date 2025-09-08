@@ -1,63 +1,24 @@
 import { Server, Socket } from "socket.io";
 
 import { Communicate } from "@/classes/communicate";
-import { state } from "@/data/state";
 import { settings } from "@/settings";
-import { ColorType } from "@/types/types";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export const connectionHandler = (io: Server, socket: Socket) => {
-  const generateCode = (): string => {
-    let result = "";
-    for (let i = 0; i < settings.codeLength; ++i) {
-      result += Math.floor(Math.random() * 10).toString();
-    }
-    return result;
-  };
-
-  const chooseColor = (colors: ColorType[]): ColorType => {
-    const randomNumber = Math.floor(Math.random() * colors.length);
-
-    const playerColor = colors[randomNumber];
-    colors.splice(randomNumber, 1);
-    return playerColor;
-  };
-
-  const isRoomExists = (code: string): boolean => {
-    return io.sockets.adapter.rooms.has(code);
-  };
-
-  const getRoomSize = (code: string): number => {
-    return io.sockets.adapter.rooms.get(code)!.size;
-  };
-
-  const isGameStarted = (code: string): boolean => {
-    return state[code].isGameStarted;
-  };
-
   const createGame = ({ name }: { name: string }) => {
-    const code = generateCode();
+    const room = GameStateManager.generateGameCode();
 
-    state[code] = {
-      isGameStarted: false,
-      players: {},
-      world: [],
-      remainingColors: [...settings.colors],
-    };
+    GameStateManager.initRoom(room);
+    GameStateManager.initPlayerInRoom(room, name, socket);
 
-    state[code].players[socket.id] = {
-      name,
-      color: chooseColor(state[code].remainingColors),
-      buildings: [],
-      units: [],
-    };
+    socket.join(room);
 
-    socket.join(code);
-    Communicate.sendMessageToSender(socket, "connect:code", { code });
-    newPlayerMessage(code, name);
+    Communicate.sendMessageToSender(socket, "connect:code", { code: room });
+    GameStateManager.newPlayerMessage(io, socket, room, name);
   };
 
-  const joinGame = ({ code, name }: { code: string; name: string }) => {
-    if (!isRoomExists(code)) {
+  const joinGame = ({ code: room, name }: { code: string; name: string }) => {
+    if (!GameStateManager.isRoomExists(room, io)) {
       Communicate.sendMessageToSender(
         socket,
         "connect:error",
@@ -66,7 +27,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (getRoomSize(code) >= settings.maxPlayer) {
+    if (GameStateManager.getRoomSize(room, io) >= settings.maxPlayer) {
       Communicate.sendMessageToSender(
         socket,
         "connect:error",
@@ -75,7 +36,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (isGameStarted(code)) {
+    if (GameStateManager.isGameStarted(room)) {
       Communicate.sendMessageToSender(
         socket,
         "connect:error",
@@ -84,54 +45,25 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    state[code].players[socket.id] = {
-      name,
-      color: chooseColor(state[code].remainingColors),
-      buildings: [],
-      units: [],
-    };
+    GameStateManager.initPlayerInRoom(room, name, socket);
 
-    socket.join(code);
+    socket.join(room);
 
     Communicate.sendMessageToSender(socket, "connect:error", "");
-    Communicate.sendMessageToSender(socket, "connect:code", { code });
-    newPlayerMessage(code, name);
+    Communicate.sendMessageToSender(socket, "connect:code", { code: room });
+    GameStateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const disconnect = () => {
-    const currentRoom = Communicate.getCurrentRoom(socket);
+    const room = Communicate.getCurrentRoom(socket);
 
-    if (currentRoom) {
-      const user = state[currentRoom].players[socket.id];
-      state[currentRoom].remainingColors.push(user.color);
-      playerleftMessage(user.name);
-      delete state[currentRoom].players[socket.id];
+    if (room) {
+      const user = GameStateManager.getPlayer(room, socket);
+      GameStateManager.restoreColor(room, user.color);
+      GameStateManager.playerleftMessage(io, socket, user.name);
+      GameStateManager.disconnectPlayer(room, socket);
     }
-    socket.leave(currentRoom);
-  };
-
-  const newPlayerMessage = (code: string, name: string) => {
-    const names = getPlayerNames(code);
-    Communicate.sendMessageToEveryOne(io, socket, "connect:newPlayer", {
-      players: names,
-      message: `${name} csatlakozott a váróhoz!`,
-    });
-  };
-
-  const playerleftMessage = (name: string) => {
-    Communicate.sendMessageToEveryOne(io, socket, "connect:playerLeft", {
-      name,
-      message: `${name} elhagyta a várót!`,
-    });
-  };
-
-  const getPlayerNames = (code: string): string[] => {
-    const result: string[] = [];
-    Object.keys(state[code].players).forEach((id) => {
-      result.push(state[code].players[id].name);
-    });
-
-    return result;
+    socket.leave(room);
   };
 
   socket.on("connect:create", createGame);

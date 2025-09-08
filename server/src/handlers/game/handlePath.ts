@@ -4,10 +4,9 @@ import { Cell } from "@/classes/game/cell";
 import { Unit } from "@/classes/game/unit";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
 import { Indices } from "@/classes/utils/indices";
-import { getUnit } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
-import { state } from "@/data/state";
-import { EntityType } from "@/types/types";
+import { EntityType } from "@/types/state.types";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handlePath = (io: Server, socket: Socket) => {
   const pathFind = ({
@@ -21,8 +20,9 @@ export const handlePath = (io: Server, socket: Socket) => {
       return;
     }
 
-    const world: Cell[][] = state[Communicate.getCurrentRoom(socket)].world;
-    const unit: Unit | undefined = getUnit(socket, entity);
+    const room: string = Communicate.getCurrentRoom(socket);
+    const world: Cell[][] = GameStateManager.getWorld(room);
+    const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
     if (unit) {
       const indices: Indices[] = PathFinder.getPath(

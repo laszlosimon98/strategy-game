@@ -6,9 +6,9 @@ import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
 import { getImageNameFromUrl } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
-import { state } from "@/data/state";
-import { EntityType } from "@/types/types";
+import { EntityType } from "@/types/state.types";
 import { settings } from "@/settings";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export class Builder {
   private constructor() {}
@@ -32,14 +32,13 @@ export class Builder {
     }
 
     const world: Cell[][] = World.getWorld(socket);
-    const newBuilding: Building = new Building(entity);
+    const building: Building = new Building(entity);
     const buildingName = getImageNameFromUrl(entity.data.url);
 
-    newBuilding.setOwner(socket.id);
+    building.setOwner(socket.id);
 
-    state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings.push(
-      newBuilding
-    );
+    const room: string = Communicate.getCurrentRoom(socket);
+    GameStateManager.createBuilding(room, socket, building);
 
     for (let l = 0; l < 2; ++l) {
       for (let k = 0; k < 2; ++k) {
@@ -52,24 +51,24 @@ export class Builder {
       }
     }
 
-    return newBuilding;
+    return building;
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {
+    const room: string = Communicate.getCurrentRoom(socket);
     const world: Cell[][] = World.getWorld(socket);
     const i = indices.i;
     const j = indices.j;
 
     if (world[i][j].cellHasObstacle()) {
-      const buildings: Building[] =
-        state[Communicate.getCurrentRoom(socket)].players[socket.id].buildings;
+      const buildings: Building[] = GameStateManager.getBuildings(room, socket);
 
       for (let index = buildings.length - 1; index >= 0; --index) {
         const building: Building = buildings[index];
         const buildingIndices: Indices = building.getEntity().data.indices;
 
         if (
-          !Validator.areSenderAndOwnerSame(
+          !Validator.canDemolishBuilding(
             socket,
             building.getEntity().data.owner
           )
