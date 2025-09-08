@@ -1,8 +1,8 @@
 import { Indices } from "@/classes/utils/indices";
 import { GameStateManager } from "@/manager/gameStateManager";
-import { Position } from "@/types/position.types";
-import { EntityType } from "@/types/state.types";
-import { PropertyType } from "@/types/units.types";
+import type { Position } from "@/types/position.types";
+import type { EntityType } from "@/types/state.types";
+import type { PropertyType } from "@/types/units.types";
 
 export class Unit {
   private entity: EntityType;

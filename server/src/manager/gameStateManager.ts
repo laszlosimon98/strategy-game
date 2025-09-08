@@ -3,13 +3,13 @@ import { Building } from "@/classes/game/building";
 import { Cell } from "@/classes/game/cell";
 import { Unit } from "@/classes/game/unit";
 import { settings } from "@/settings";
-import {
+import type {
   ColorType,
   EntityType,
   InitialStateType,
   PlayerType,
 } from "@/types/state.types";
-import { UnitsType } from "@/types/units.types";
+import type { UnitsType } from "@/types/units.types";
 import { Server, Socket } from "socket.io";
 
 export class GameStateManager {

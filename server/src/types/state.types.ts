@@ -3,7 +3,7 @@ import { Cell } from "@/classes/game/cell";
 import { Unit } from "@/classes/game/unit";
 import { Dimension } from "@/classes/utils/dimension";
 import { Indices } from "@/classes/utils/indices";
-import { Position } from "@/types/position.types";
+import type { Position } from "@/types/position.types";
 
 export type ColorType =
   | "black"

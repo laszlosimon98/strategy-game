@@ -6,7 +6,7 @@ import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
 import { getImageNameFromUrl } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
-import { EntityType } from "@/types/state.types";
+import type { EntityType } from "@/types/state.types";
 import { settings } from "@/settings";
 import { GameStateManager } from "@/manager/gameStateManager";
 

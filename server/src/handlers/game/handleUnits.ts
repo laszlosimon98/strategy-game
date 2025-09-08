@@ -3,11 +3,11 @@ import { Communicate } from "@/classes/communicate";
 import { Unit } from "@/classes/game/unit";
 import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
-import { EntityType } from "@/types/state.types";
+import type { EntityType } from "@/types/state.types";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
-import { Position } from "@/types/position.types";
+import type { Position } from "@/types/position.types";
 import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handleUnits = (io: Server, socket: Socket) => {

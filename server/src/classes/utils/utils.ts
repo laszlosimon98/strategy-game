@@ -1,4 +1,4 @@
-import { Position } from "@/types/position.types";
+import type { Position } from "@/types/position.types";
 
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;

@@ -1,4 +1,4 @@
-import { Settings } from "@/types/setting.types";
+import type { Settings } from "@/types/setting.types";
 
 export const settings: Settings = {
   colors: [

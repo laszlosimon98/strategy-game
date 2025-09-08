@@ -1,4 +1,4 @@
-import { EntityType } from "@/types/state.types";
+import type { EntityType } from "@/types/state.types";
 
 export class Building {
   private entity: EntityType;

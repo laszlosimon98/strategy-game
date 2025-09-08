@@ -5,7 +5,7 @@ import { Unit } from "@/classes/game/unit";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
 import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
-import { EntityType } from "@/types/state.types";
+import type { EntityType } from "@/types/state.types";
 import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handlePath = (io: Server, socket: Socket) => {

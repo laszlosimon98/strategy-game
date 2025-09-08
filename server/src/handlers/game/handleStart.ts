@@ -3,9 +3,9 @@ import { Communicate } from "@/classes/communicate";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
-import { PlayerType } from "@/types/state.types";
+import type { PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
-import { TileType } from "@/types/world.types";
+import type { TileType } from "@/types/world.types";
 import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handleStart = (io: Server, socket: Socket) => {
