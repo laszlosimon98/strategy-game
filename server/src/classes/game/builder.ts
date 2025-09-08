@@ -77,7 +77,7 @@ export class Builder {
         }
 
         if (buildingIndices.i === i && buildingIndices.j === j) {
-          buildings.splice(index, 1);
+          GameStateManager.destroyBuilding(room, socket, building);
         }
       }
 

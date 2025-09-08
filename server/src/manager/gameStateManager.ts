@@ -22,8 +22,8 @@ export class GameStateManager {
     },
     archer: {
       damage: 9,
-      health: 100,
-      range: 4,
+      health: 75,
+      range: 5,
     },
   };
 
@@ -157,13 +157,40 @@ export class GameStateManager {
     return [...this.state[room].players[socket.id].buildings];
   }
 
-  // public static destroyBuilding(
-  //   room: string,
-  //   socket: Socket,
-  //   building: Building
-  // ) {
-  //   this.state[room].players.buil;
-  // }
+  public static getBuilding(
+    room: string,
+    socket: Socket,
+    building: Building
+  ): Building | undefined {
+    const buildings: Building[] = this.getBuildings(room, socket);
+    return buildings.find(
+      (b) => b.getEntity().data.id === building.getEntity().data.id
+    );
+  }
+
+  public static destroyBuilding(
+    room: string,
+    socket: Socket,
+    building: Building
+  ) {
+    const buildingToDemolish: Building | undefined = this.getBuilding(
+      room,
+      socket,
+      building
+    );
+
+    if (!buildingToDemolish) return;
+
+    const buildingIndex: number = this.state[room].players[
+      socket.id
+    ].buildings.findIndex(
+      (b) => b.getEntity().data.id === buildingToDemolish.getEntity().data.id
+    );
+
+    if (buildingIndex === -1) return;
+
+    this.state[room].players[socket.id].buildings.splice(buildingIndex, 1);
+  }
 
   public static createUnit(room: string, socket: Socket, unit: Unit): void {
     this.state[room].players[socket.id].units.push(unit);
