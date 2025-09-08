@@ -1,6 +1,6 @@
-import { Button } from "@/page/components/buttonComponents/button";
-import { Plate } from "@/page/components/buttonComponents/plate";
-import { TextInput } from "@/page/components/textComponents/textInput";
+import { Button } from "@/page/components/button";
+import { Plate } from "@/page/components/plate";
+import { TextInput } from "@/page/components/textInput";
 import { titlePos } from "@/page/views/pos/titlePos";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";

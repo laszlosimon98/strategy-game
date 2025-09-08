@@ -8,9 +8,7 @@ import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
-export type TileType = "grass" | "grass_flower" | "grass_rock" | "dirt";
-
-type ColorType =
+type ColorsType =
   | "black"
   | "blue"
   | "brown"
@@ -19,6 +17,22 @@ type ColorType =
   | "purple"
   | "red"
   | "white";
+
+type ColorItemType =
+  | "archerattacking"
+  | "archeridle"
+  | "archerstatic"
+  | "archerwalking"
+  | "flag"
+  | "knightattacking"
+  | "knightidle"
+  | "knightstatic"
+  | "knightwalking";
+
+type ItemType = {
+  url: string;
+  dimension: { width: number; height: number };
+};
 
 export type EntityType = {
   data: {
@@ -38,11 +52,16 @@ export type SoldierPropertiesType = {
   health: number;
 };
 
-type LanguageType = { language: "hu" | "en" };
+type Language = { language: "hu" | "en" };
 
-type ImagesType = {
+type Images = {
   images: {
     buildings: any;
+    // colors: {
+    //   [colors in ColorsType]: {
+    //     [item in ColorItemType]: ItemType;
+    //   };
+    // };
     colors: any;
     ground: any;
     ui: any;
@@ -80,16 +99,16 @@ type InfoType = {
 
 export type PlayerGameType = {
   [code: string]: {
-    [key: string]: string | ColorType | Building[] | Unit[];
+    [key: string]: string | ColorsType | Building[] | Unit[];
     name: string;
-    color: ColorType;
+    color: ColorsType;
     buildings: Building[];
     units: Soldier[];
     movingUnits: Unit[];
   };
 };
 
-type GameType = {
+type Game = {
   game: {
     worldSize: number;
     state: GameState;
@@ -98,10 +117,10 @@ type GameType = {
   };
 };
 
-export type stateType = LanguageType &
-  ImagesType &
+export type State = Language &
+  Images &
   NavigationType &
   ServerType &
   PlayerType &
   InfoType &
-  GameType;
+  Game;

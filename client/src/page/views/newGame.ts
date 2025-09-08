@@ -1,10 +1,10 @@
 import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
-import { Button } from "@/page/components/buttonComponents/button";
+import { Button } from "@/page/components/button";
 import { Page } from "@/page/views/page";
 import { buttonPos } from "@/page/views/pos/buttonPos";
 import { ServerHandler } from "@/server/serverHandler";
-import { BUTTON_SIZE } from "@/settings";
+import { settings } from "@/settings";
 
 export class NewGame extends Page {
   private backButton: Button;
@@ -16,7 +16,7 @@ export class NewGame extends Page {
 
     this.create = new Button(
       buttonPos.newGame.create,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "create",
       this.handleCreate
@@ -24,7 +24,7 @@ export class NewGame extends Page {
 
     this.join = new Button(
       buttonPos.newGame.join,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "join",
       this.handleJoin
@@ -32,7 +32,7 @@ export class NewGame extends Page {
 
     this.backButton = new Button(
       buttonPos.newGame.back,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "back",
       () => (state.navigation.pageState = PageState.MainMenu)

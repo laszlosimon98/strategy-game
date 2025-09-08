@@ -1,8 +1,8 @@
 import { state } from "@/data/state";
 import { SubMenuState } from "@/enums/gameMenuState";
 import { LabelButton } from "@/game/menu/components/labelButton";
-import { Button } from "@/page/components/buttonComponents/button";
-import { Frame } from "@/page/components/frameComponets/frame";
+import { Button } from "@/page/components/button";
+import { Frame } from "@/page/components/frame";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 

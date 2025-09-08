@@ -1,21 +1,14 @@
 import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
 import { canvasWidth, canvasHeight } from "@/init";
-import { Button } from "@/page/components/buttonComponents/button";
-import { Frame } from "@/page/components/frameComponets/frame";
-import { Text } from "@/page/components/textComponents/text";
+import { Button } from "@/page/components/button";
+import { Frame } from "@/page/components/frame";
+import { Text } from "@/page/components/text";
 import { Page } from "@/page/views/page";
 import { buttonPos } from "@/page/views/pos/buttonPos";
 import { titlePos } from "@/page/views/pos/titlePos";
 import { ServerHandler } from "@/server/serverHandler";
-import {
-  BUTTON_SIZE,
-  MARGIN,
-  BLACK_COLOR,
-  TEXT_COLOR,
-  INFO_COLOR,
-  ERROR_COLOR,
-} from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -33,7 +26,7 @@ export class Lobby extends Page {
 
     this.start = new Button(
       buttonPos.default.next,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "start",
       this.handleStart
@@ -41,7 +34,7 @@ export class Lobby extends Page {
 
     this.backButton = new Button(
       buttonPos.default.back,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "back",
       this.handleLeaveRoom
@@ -50,24 +43,27 @@ export class Lobby extends Page {
     this.buttons.push(this.backButton);
 
     this.playerLabel = new Text(
-      new Position(canvasWidth / 2, titlePos.y + MARGIN + 55),
+      new Position(canvasWidth / 2, titlePos.y + settings.margin + 55),
       new Dimension(0, -20),
       state.player.name,
       false,
-      BLACK_COLOR
+      settings.color.black
     );
     this.playerLabel.setCenter();
 
     this.gameCode = new Text(
-      new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 80),
+      new Position(
+        titlePos.x - settings.margin * 2,
+        titlePos.y + settings.margin + 80
+      ),
       new Dimension(0, -20),
       "Játék Kód:",
       false,
-      BLACK_COLOR
+      settings.color.black
     );
 
     this.info = new Text(
-      new Position(canvasWidth / 2, titlePos.y + MARGIN + 115),
+      new Position(canvasWidth / 2, titlePos.y + settings.margin + 115),
       new Dimension(0, -20),
       "",
       false
@@ -75,7 +71,10 @@ export class Lobby extends Page {
     this.info.setCenter();
 
     this.playersContainer = new Frame(
-      new Position(titlePos.x - MARGIN * 2, titlePos.y + MARGIN + 125),
+      new Position(
+        titlePos.x - settings.margin * 2,
+        titlePos.y + settings.margin + 125
+      ),
       new Dimension(580, Math.max(canvasHeight / 3, 200))
     );
 
@@ -129,15 +128,15 @@ export class Lobby extends Page {
     const newPlayers = players.map((player, index) => {
       const text = new Text(
         new Position(
-          this.playersContainer.getPos().x + MARGIN / 2,
+          this.playersContainer.getPos().x + settings.margin / 2,
           this.playersContainer.getPos().y +
-            MARGIN / 1.5 +
-            (MARGIN / 1.5) * index
+            settings.margin / 1.5 +
+            (settings.margin / 1.5) * index
         ),
         new Dimension(0, -40),
         player,
         false,
-        TEXT_COLOR
+        settings.color.text
       );
 
       return { [player]: text };
@@ -158,8 +157,8 @@ export class Lobby extends Page {
       const pos: Position = Object.values(player)[0].getPos();
       const newY =
         this.playersContainer.getPos().y +
-        MARGIN / 1.5 +
-        (MARGIN / 1.5) * index;
+        settings.margin / 1.5 +
+        (settings.margin / 1.5) * index;
 
       Object.values(player)[0].setPos(new Position(pos.x, newY));
     });
@@ -177,7 +176,7 @@ export class Lobby extends Page {
       "connect:newPlayer",
       ({ players, message }: { players: string[]; message: string }) => {
         this.info.setText(message);
-        this.info.setColor(INFO_COLOR);
+        this.info.setColor(settings.color.info);
 
         this.addNewPlayer(players);
       }
@@ -187,7 +186,7 @@ export class Lobby extends Page {
       "connect:playerLeft",
       ({ name, message }: { name: string; message: string }) => {
         this.info.setText(message);
-        this.info.setColor(ERROR_COLOR);
+        this.info.setColor(settings.color.error);
 
         this.removePlayer(name);
       }

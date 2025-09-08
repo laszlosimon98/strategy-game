@@ -1,6 +1,6 @@
 import { Entity } from "@/game/world/entity";
-import { CallAble } from "@/interfaces/callAble";
-import { EntityType } from "@/types/gameType";
+import type { CallAble } from "@/interfaces/callAble";
+import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 

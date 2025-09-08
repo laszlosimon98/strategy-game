@@ -2,8 +2,8 @@ import { UnitStates } from "@/enums/unitsState";
 import { Unit } from "@/game/world/unit/unit";
 import { ctx } from "@/init";
 import { ServerHandler } from "@/server/serverHandler";
-import { UNIT_SIZE } from "@/settings";
-import { SoldierPropertiesType, EntityType } from "@/types/gameType";
+import { settings } from "@/settings";
+import type { SoldierPropertiesType, EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { RangeIndicator } from "@/utils/rangeIndicator";
 import { Timer } from "@/utils/timer";
@@ -31,16 +31,18 @@ export class Soldier extends Unit {
 
     this.rangeIndicator = new RangeIndicator(
       new Position(
-        this.renderPos.x + UNIT_SIZE.width / 2,
-        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+        this.renderPos.x + settings.size.unit.width / 2,
+        this.renderPos.y +
+          settings.size.unit.height -
+          settings.size.unit.height / 4
       ),
       this.properties.range
     );
 
     // this.visionIndicator = new RangeIndicator(
     //   new Position(
-    //     this.renderPos.x + UNIT_SIZE.width / 2,
-    //     this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+    //     this.renderPos.x + settings.size.unit.width / 2,
+    //     this.renderPos.y + settings.size.unit.height - settings.size.unit.height / 4
     //   ),
     //   Math.max(this.properties.range, 5),
     //   state.game.players[this.entity.data.owner].color
@@ -63,15 +65,17 @@ export class Soldier extends Unit {
 
     this.rangeIndicator.update(
       new Position(
-        this.renderPos.x + UNIT_SIZE.width / 2,
-        this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+        this.renderPos.x + settings.size.unit.width / 2,
+        this.renderPos.y +
+          settings.size.unit.height -
+          settings.size.unit.height / 4
       )
     );
 
     // this.visionIndicator.update(
     //   new Position(
-    //     this.renderPos.x + UNIT_SIZE.width / 2,
-    //     this.renderPos.y + UNIT_SIZE.height - UNIT_SIZE.height / 4
+    //     this.renderPos.x + settings.size.unit.width / 2,
+    //     this.renderPos.y + settings.size.unit.height - settings.size.unit.height / 4
     //   )
     // );
 

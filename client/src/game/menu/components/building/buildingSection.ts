@@ -6,7 +6,7 @@ import { ResourceSection } from "@/game/menu/components/building/components/reso
 import { StorageSection } from "@/game/menu/components/building/components/storageSection";
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
-import { MENU_ITEM_SIZE } from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -37,29 +37,41 @@ export class BuildingSection extends Section {
 
     this.buttons.push(
       new LabelButton(
-        new Position(dim.width / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
-        MENU_ITEM_SIZE,
+        new Position(
+          dim.width / 8 - settings.size.menuItem.width / 2,
+          pos.y + 5
+        ),
+        settings.size.menuItem,
         "menu",
         "empty",
         "resource"
       ),
       new LabelButton(
-        new Position((dim.width * 3) / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
-        MENU_ITEM_SIZE,
+        new Position(
+          (dim.width * 3) / 8 - settings.size.menuItem.width / 2,
+          pos.y + 5
+        ),
+        settings.size.menuItem,
         "menu",
         "empty",
         "food"
       ),
       new LabelButton(
-        new Position((dim.width * 5) / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
-        MENU_ITEM_SIZE,
+        new Position(
+          (dim.width * 5) / 8 - settings.size.menuItem.width / 2,
+          pos.y + 5
+        ),
+        settings.size.menuItem,
         "menu",
         "empty",
         "military"
       ),
       new LabelButton(
-        new Position((dim.width * 7) / 8 - MENU_ITEM_SIZE.width / 2, pos.y + 5),
-        MENU_ITEM_SIZE,
+        new Position(
+          (dim.width * 7) / 8 - settings.size.menuItem.width / 2,
+          pos.y + 5
+        ),
+        settings.size.menuItem,
         "menu",
         "empty",
         "house"

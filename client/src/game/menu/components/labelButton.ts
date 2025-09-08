@@ -1,6 +1,6 @@
 import { state } from "@/data/state";
 import { GameState } from "@/enums/gameState";
-import { Button } from "@/page/components/buttonComponents/button";
+import { Button } from "@/page/components/button";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 

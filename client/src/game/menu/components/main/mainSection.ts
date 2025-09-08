@@ -1,6 +1,6 @@
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
-import { MENU_ITEM_SIZE } from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -11,30 +11,30 @@ export class MainSection extends Section {
     this.buttons.push(
       new LabelButton(
         new Position(
-          dim.width / 6 - MENU_ITEM_SIZE.width / 2,
-          pos.y - MENU_ITEM_SIZE.height / 2 + dim.height / 2
+          dim.width / 6 - settings.size.menuItem.width / 2,
+          pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
-        MENU_ITEM_SIZE,
+        settings.size.menuItem,
         "menu",
         "empty",
         "house"
       ),
       new LabelButton(
         new Position(
-          dim.width / 2 - MENU_ITEM_SIZE.width / 2,
-          pos.y - MENU_ITEM_SIZE.height / 2 + dim.height / 2
+          dim.width / 2 - settings.size.menuItem.width / 2,
+          pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
-        MENU_ITEM_SIZE,
+        settings.size.menuItem,
         "menu",
         "empty",
         "storage"
       ),
       new LabelButton(
         new Position(
-          (dim.width * 5) / 6 - MENU_ITEM_SIZE.width / 2,
-          pos.y - MENU_ITEM_SIZE.height / 2 + dim.height / 2
+          (dim.width * 5) / 6 - settings.size.menuItem.width / 2,
+          pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
-        MENU_ITEM_SIZE,
+        settings.size.menuItem,
         "menu",
         "empty",
         "population"

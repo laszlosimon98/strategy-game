@@ -2,7 +2,7 @@ import { state } from "@/data/state";
 import init from "@/init";
 import { Program } from "@/program";
 import { ServerHandler } from "@/server/serverHandler";
-import { FPS } from "@/settings";
+import { settings } from "@/settings";
 
 const main = async () => {
   init();
@@ -22,7 +22,10 @@ const main = async () => {
     program.draw();
     program.update(dt);
 
-    setTimeout(() => requestAnimationFrame(next), perfectFrameTime / FPS);
+    setTimeout(
+      () => requestAnimationFrame(next),
+      perfectFrameTime / settings.fps
+    );
   };
 
   next();

@@ -1,5 +1,5 @@
 import { ctx } from "@/init";
-import { CELL_SIZE } from "@/settings";
+import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 import { cartesianToIsometric, isometricToCartesian } from "@/utils/utils";
 
@@ -14,7 +14,7 @@ export class RangeIndicator {
 
   constructor(pos: Position, radius: number, color?: string) {
     this.position = pos;
-    this.radius = radius * CELL_SIZE;
+    this.radius = radius * settings.size.cell;
     this.color = color;
 
     this.cartesianCenter = Position.zero();

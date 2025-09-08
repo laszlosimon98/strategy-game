@@ -21,6 +21,42 @@ export class Builder {
     return World.getWorld(socket)[xPos][yPos].isBuildAble();
   };
 
+  private static occupyCells(
+    indices: Indices,
+    world: Cell[][],
+    buildingName: string
+  ) {
+    const i = indices.i;
+    const j = indices.j;
+
+    for (let l = 0; l < 2; ++l) {
+      for (let k = 0; k < 2; ++k) {
+        if (l === 1 && l === k) continue;
+        if (i + l < settings.mapSize && j + k < settings.mapSize) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setObstacle(true);
+          cell.setObstacleType(buildingName);
+        }
+      }
+    }
+  }
+
+  private static restoreCells(indices: Indices, world: Cell[][]) {
+    const i = indices.i;
+    const j = indices.j;
+
+    for (let l = 0; l < 2; ++l) {
+      for (let k = 0; k < 2; ++k) {
+        if (l === 1 && l === k) continue;
+        if (i + l < settings.mapSize && j + k < settings.mapSize) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setObstacle(false);
+          cell.setObstacleType(null);
+        }
+      }
+    }
+  }
+
   public static build(
     entity: EntityType,
     socket: Socket
@@ -40,16 +76,7 @@ export class Builder {
     const room: string = Communicate.getCurrentRoom(socket);
     GameStateManager.createBuilding(room, socket, building);
 
-    for (let l = 0; l < 2; ++l) {
-      for (let k = 0; k < 2; ++k) {
-        if (l === 1 && l === k) continue;
-        if (i + l < settings.mapSize && j + k < settings.mapSize) {
-          const cell: Cell = world[i + l][j + k];
-          cell.setObstacle(true);
-          cell.setObstacleType(buildingName);
-        }
-      }
-    }
+    this.occupyCells(entity.data.indices, world, buildingName);
 
     return building;
   }
@@ -81,16 +108,8 @@ export class Builder {
         }
       }
 
-      for (let l = 0; l < 2; ++l) {
-        for (let k = 0; k < 2; ++k) {
-          if (l === 1 && l === k) continue;
-          if (i + l < settings.mapSize && j + k < settings.mapSize) {
-            const cell: Cell = world[i + l][j + k];
-            cell.setObstacle(false);
-            cell.setObstacleType(null);
-          }
-        }
-      }
+      this.restoreCells(indices, world);
+
       return true;
     }
     return false;

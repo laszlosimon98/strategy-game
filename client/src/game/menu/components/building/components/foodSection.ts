@@ -1,6 +1,6 @@
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
-import { ITEM_SIZE, ITEM_OFFSET } from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -15,31 +15,34 @@ export class FoodSection extends Section {
 
     this.farm = new LabelButton(
       new Position(pos.x, pos.y),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "farm"
     );
 
     this.mill = new LabelButton(
-      new Position(pos.x + ITEM_SIZE + ITEM_OFFSET, pos.y),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "mill"
     );
 
     this.bakery = new LabelButton(
-      new Position(pos.x, pos.y + ITEM_SIZE),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(pos.x, pos.y + settings.size.item),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "bakery"
     );
 
     this.well = new LabelButton(
-      new Position(pos.x + ITEM_SIZE + ITEM_OFFSET, pos.y + ITEM_SIZE),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(
+        pos.x + settings.size.item + settings.offset.item,
+        pos.y + settings.size.item
+      ),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "well"

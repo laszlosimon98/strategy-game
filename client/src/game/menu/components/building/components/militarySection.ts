@@ -1,6 +1,6 @@
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
-import { ITEM_SIZE, ITEM_OFFSET } from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -16,39 +16,45 @@ export class MilitarySection extends Section {
 
     this.ironSmelter = new LabelButton(
       new Position(pos.x, pos.y),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "ironsmelter"
     );
 
     this.weaponSmith = new LabelButton(
-      new Position(pos.x + ITEM_SIZE + ITEM_OFFSET, pos.y),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "weaponsmith"
     );
 
     this.toolSmith = new LabelButton(
-      new Position(pos.x, pos.y + ITEM_SIZE),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(pos.x, pos.y + settings.size.item),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "toolsmith"
     );
 
     this.barracks = new LabelButton(
-      new Position(pos.x + ITEM_SIZE + ITEM_OFFSET, pos.y + ITEM_SIZE),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(
+        pos.x + settings.size.item + settings.offset.item,
+        pos.y + settings.size.item
+      ),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "barracks"
     );
 
     this.guardHouse = new LabelButton(
-      new Position(pos.x, pos.y + ITEM_SIZE * 2 + ITEM_OFFSET),
-      new Dimension(ITEM_SIZE, ITEM_SIZE),
+      new Position(
+        pos.x,
+        pos.y + settings.size.item * 2 + settings.offset.item
+      ),
+      new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
       "guardhouse"

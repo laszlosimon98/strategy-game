@@ -2,8 +2,8 @@ import { state } from "@/data/state";
 import { Flag } from "@/game/world/building/flag";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
-import { CallAble } from "@/interfaces/callAble";
-import { EntityType } from "@/types/gameType";
+import type { CallAble } from "@/interfaces/callAble";
+import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 
 export class Building extends Entity implements CallAble {

@@ -2,8 +2,8 @@ import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
 import { Game } from "@/game/game";
 import { ctx, canvasWidth, canvasHeight } from "@/init";
-import { Button } from "@/page/components/buttonComponents/button";
-import { TextInput } from "@/page/components/textComponents/textInput";
+import { Button } from "@/page/components/button";
+import { TextInput } from "@/page/components/textInput";
 import { Login } from "@/page/views/auth/login";
 import { Registration } from "@/page/views/auth/registration";
 import { Description } from "@/page/views/description";
@@ -14,7 +14,8 @@ import { NewGame } from "@/page/views/newGame";
 import { Page } from "@/page/views/page";
 import { Statistic } from "@/page/views/statistic";
 import { ServerHandler } from "@/server/serverHandler";
-import { BACKGROUND_COLOR, BLACK_COLOR } from "@/settings";
+import { settings } from "@/settings";
+// import { BACKGROUND_COLOR, BLACK_COLOR } from "@/settings";
 import { Position } from "@/utils/position";
 
 export class Program {
@@ -78,10 +79,10 @@ export class Program {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     if (state.navigation.pageState !== PageState.Game) {
-      ctx.fillStyle = BACKGROUND_COLOR;
+      ctx.fillStyle = settings.color.background;
       this.pages[state.navigation.pageState]?.draw();
     } else {
-      ctx.fillStyle = BLACK_COLOR;
+      ctx.fillStyle = settings.color.black;
       this.game?.draw();
     }
   }

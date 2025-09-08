@@ -1,6 +1,6 @@
 import { ctx } from "@/init";
-import { Text } from "@/page/components/textComponents/text";
-import { TEXT_COLOR, BACKGROUND_COLOR } from "@/settings";
+import { Text } from "@/page/components/text";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -25,7 +25,7 @@ export class TextInput extends Text {
     ctx.fillStyle = this.backgroundColor;
     ctx.fillRect(this.pos.x, this.pos.y, this.dim.width, this.dim.height);
 
-    ctx.fillStyle = TEXT_COLOR;
+    ctx.fillStyle = settings.color.text;
     if (this.isSelected) {
       ctx.fillText(
         "|",
@@ -34,7 +34,7 @@ export class TextInput extends Text {
       );
     }
 
-    ctx.fillStyle = BACKGROUND_COLOR;
+    ctx.fillStyle = settings.color.background;
     super.draw();
   }
 

@@ -4,8 +4,8 @@ import { BuildingSection } from "@/game/menu/components/building/buildingSection
 import { InfoPanel } from "@/game/menu/components/infoPanel";
 import { MainSection } from "@/game/menu/components/main/mainSection";
 import { Section } from "@/game/menu/components/section";
-import { CallAble } from "@/interfaces/callAble";
-import { Button } from "@/page/components/buttonComponents/button";
+import type { CallAble } from "@/interfaces/callAble";
+import { Button } from "@/page/components/button";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";

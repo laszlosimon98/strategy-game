@@ -5,7 +5,7 @@ import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { canvasHeight } from "@/init";
 import { ServerHandler } from "@/server/serverHandler";
-import { PlayerGameType } from "@/types/gameType";
+import type { PlayerGameType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";

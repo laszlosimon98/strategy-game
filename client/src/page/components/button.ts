@@ -1,5 +1,5 @@
 import { ctx } from "@/init";
-import { Plate } from "@/page/components/buttonComponents/plate";
+import { Plate } from "@/page/components/plate";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 

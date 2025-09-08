@@ -1,6 +1,6 @@
 import { ctx } from "@/init";
 import { PageComponents } from "@/page/components/pageComponents";
-import { TEXT_COLOR } from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -27,7 +27,7 @@ export class Text extends PageComponents {
     this.isCentered = false;
     this.metrics = ctx.measureText(this.text);
 
-    this.color = color ? color : TEXT_COLOR;
+    this.color = color ? color : settings.color.text;
   }
 
   public setCenter(): void {

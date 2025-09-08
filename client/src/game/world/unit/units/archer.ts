@@ -1,5 +1,5 @@
 import { Soldier } from "@/game/world/unit/units/soldier";
-import { EntityType, SoldierPropertiesType } from "@/types/gameType";
+import type { EntityType, SoldierPropertiesType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 
 export class Archer extends Soldier {

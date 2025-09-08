@@ -1,4 +1,4 @@
-import { CELL_SIZE } from "@/settings";
+import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 
 export class Vector extends Position {
@@ -17,13 +17,19 @@ export class Vector extends Position {
 
   public getNormalPos(): Position[] {
     return [
-      new Position(this.x * CELL_SIZE, this.y * CELL_SIZE),
-      new Position(this.x * CELL_SIZE + CELL_SIZE, this.y * CELL_SIZE),
+      new Position(this.x * settings.size.cell, this.y * settings.size.cell),
       new Position(
-        this.x * CELL_SIZE + CELL_SIZE,
-        this.y * CELL_SIZE + CELL_SIZE
+        this.x * settings.size.cell + settings.size.cell,
+        this.y * settings.size.cell
       ),
-      new Position(this.x * CELL_SIZE, this.y * CELL_SIZE + CELL_SIZE),
+      new Position(
+        this.x * settings.size.cell + settings.size.cell,
+        this.y * settings.size.cell + settings.size.cell
+      ),
+      new Position(
+        this.x * settings.size.cell,
+        this.y * settings.size.cell + settings.size.cell
+      ),
     ];
   }
 

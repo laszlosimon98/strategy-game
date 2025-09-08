@@ -1,8 +1,8 @@
 import { state } from "@/data/state";
 import { Entity } from "@/game/world/entity";
 import { Soldier } from "@/game/world/unit/units/soldier";
-import { CELL_SIZE } from "@/settings";
-import { EntityType } from "@/types/gameType";
+import { settings } from "@/settings";
+import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
@@ -23,8 +23,8 @@ export const convertIsometricCoordsToCartesianCoords = (
   const cart_y = (2 * world_y - world_x) / 2;
   const cart_x = cart_y + world_x;
 
-  const grid_x = Math.floor(cart_x / CELL_SIZE);
-  const grid_y = Math.floor(cart_y / CELL_SIZE);
+  const grid_x = Math.floor(cart_x / settings.size.cell);
+  const grid_y = Math.floor(cart_y / settings.size.cell);
 
   return new Indices(grid_x, grid_y);
 };

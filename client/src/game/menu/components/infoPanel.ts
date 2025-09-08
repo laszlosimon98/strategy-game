@@ -1,7 +1,7 @@
 import { state } from "@/data/state";
 import { Section } from "@/game/menu/components/section";
 import { ctx } from "@/init";
-import { Button } from "@/page/components/buttonComponents/button";
+import { Button } from "@/page/components/button";
 import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";

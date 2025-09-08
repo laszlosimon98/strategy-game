@@ -7,8 +7,7 @@ import { Cell } from "@/game/world/cell";
 import { unitRegister } from "@/game/world/unit/unitRegister";
 import { Soldier } from "@/game/world/unit/units/soldier";
 import { ServerHandler } from "@/server/serverHandler";
-import { UNIT_SIZE } from "@/settings";
-import { EntityType, SoldierPropertiesType } from "@/types/gameType";
+import type { EntityType, SoldierPropertiesType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import {
@@ -19,6 +18,7 @@ import {
   removeElementFromArray,
 } from "@/utils/utils";
 import { Unit } from "@/game/world/unit/unit";
+import { settings } from "@/settings";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -67,7 +67,7 @@ export class UnitManager extends Manager<Unit> {
         owner: ServerHandler.getId(),
         url: state.images.colors[color][name + "idle"].url,
         indices,
-        dimensions: UNIT_SIZE,
+        dimensions: settings.size.unit,
         position: this.pos,
         static: "",
       },

@@ -3,15 +3,7 @@ import { UnitStates } from "@/enums/unitsState";
 import { Cell } from "@/game/world/cell";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
-import { CallAble } from "@/interfaces/callAble";
 import { ServerHandler } from "@/server/serverHandler";
-import {
-  UNIT_ASSET_SIZE,
-  ANIMATION_SPEED,
-  ANIMATION_COUNT,
-  UNIT_SPEED,
-} from "@/settings";
-import { EntityType } from "@/types/gameType";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -23,6 +15,10 @@ import {
   ySort,
 } from "@/utils/utils";
 import { Vector } from "@/utils/vector";
+
+import type { EntityType } from "@/types/game.types";
+import type { CallAble } from "@/interfaces/callAble";
+import { settings } from "@/settings";
 
 export abstract class Unit extends Entity implements CallAble {
   protected name: string;
@@ -56,7 +52,10 @@ export abstract class Unit extends Entity implements CallAble {
           ].url,
       },
     };
-    this.dimension = new Dimension(UNIT_ASSET_SIZE, UNIT_ASSET_SIZE);
+    this.dimension = new Dimension(
+      settings.size.unitAsset,
+      settings.size.unitAsset
+    );
 
     this.prevState = UnitStates.Idle;
     this.state = UnitStates.Idle;
@@ -93,14 +92,14 @@ export abstract class Unit extends Entity implements CallAble {
   public draw(): void {
     ctx.drawImage(
       this.image,
-      Math.floor(this.animationCounter) * UNIT_ASSET_SIZE,
+      Math.floor(this.animationCounter) * settings.size.unitAsset,
       this.directions[this.facing],
-      UNIT_ASSET_SIZE,
-      UNIT_ASSET_SIZE,
+      settings.size.unitAsset,
+      settings.size.unitAsset,
       this.renderPos.x,
       this.renderPos.y,
-      UNIT_ASSET_SIZE,
-      UNIT_ASSET_SIZE
+      settings.size.unitAsset,
+      settings.size.unitAsset
     );
 
     if (this.isHovered) {
@@ -183,9 +182,9 @@ export abstract class Unit extends Entity implements CallAble {
   }
 
   private animate(dt: number): void {
-    this.animationCounter += ANIMATION_SPEED * dt;
+    this.animationCounter += settings.animation.speed * dt;
 
-    if (this.animationCounter >= ANIMATION_COUNT - 1) {
+    if (this.animationCounter >= settings.animation.count - 1) {
       this.animationCounter = 0;
     }
   }
@@ -259,8 +258,8 @@ export abstract class Unit extends Entity implements CallAble {
   private initCells(): void {
     this.currentCellPos = this.getPosition();
     this.nextCellPos = new Position(
-      this.path[1].getUnitPos().x - UNIT_ASSET_SIZE / 2,
-      this.path[1].getUnitPos().y - UNIT_ASSET_SIZE
+      this.path[1].getUnitPos().x - settings.size.unitAsset / 2,
+      this.path[1].getUnitPos().y - settings.size.unitAsset
     );
   }
 
@@ -280,7 +279,7 @@ export abstract class Unit extends Entity implements CallAble {
 
       let dirVector: Vector = new Vector(endX - startX, endY - startY);
       const distance = dirVector.getDistance();
-      const maxMove = UNIT_SPEED * dt;
+      const maxMove = settings.speed.unit * dt;
       let newPos: Position;
 
       if (distance > maxMove) {

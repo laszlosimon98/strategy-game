@@ -1,10 +1,10 @@
 import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
-import { Button } from "@/page/components/buttonComponents/button";
-import { Plate } from "@/page/components/buttonComponents/plate";
+import { Button } from "@/page/components/button";
+import { Plate } from "@/page/components/plate";
 import { Page } from "@/page/views/page";
 import { buttonPos } from "@/page/views/pos/buttonPos";
-import { BUTTON_SIZE } from "@/settings";
+import { settings } from "@/settings";
 
 export class MainMenu extends Page {
   private newGame: Button;
@@ -19,7 +19,7 @@ export class MainMenu extends Page {
 
     this.newGame = new Button(
       buttonPos.mainMenu.newGame,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "newGame",
       () => (state.navigation.pageState = PageState.NewGame)
@@ -27,7 +27,7 @@ export class MainMenu extends Page {
 
     this.description = new Button(
       buttonPos.mainMenu.description,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "description",
       () => (state.navigation.pageState = PageState.Description)
@@ -35,7 +35,7 @@ export class MainMenu extends Page {
 
     this.statistic = new Button(
       buttonPos.mainMenu.statistic,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "statistic",
       () => (state.navigation.pageState = PageState.Statistic)
@@ -43,7 +43,7 @@ export class MainMenu extends Page {
 
     this.login = new Button(
       buttonPos.mainMenu.login,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "login",
       () => (state.navigation.pageState = PageState.Login)
@@ -51,7 +51,7 @@ export class MainMenu extends Page {
 
     this.registration = new Button(
       buttonPos.mainMenu.registration,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "registration",
       () => (state.navigation.pageState = PageState.Registration)
@@ -59,7 +59,7 @@ export class MainMenu extends Page {
 
     this.namePlate = new Plate(
       buttonPos.mainMenu.namePlate,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "name"
     );

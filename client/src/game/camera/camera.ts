@@ -1,4 +1,4 @@
-import { CAMERA_SPEED } from "@/settings";
+import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 import { Vector } from "@/utils/vector";
 
@@ -10,7 +10,7 @@ export class Camera {
   public constructor() {
     this.dir = Vector.zero();
     this.scroll = Position.zero();
-    this.speed = CAMERA_SPEED;
+    this.speed = settings.speed.camera;
   }
 
   public getScroll(): Position {

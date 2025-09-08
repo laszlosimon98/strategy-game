@@ -1,5 +1,5 @@
 import { canvasWidth, canvasHeight, ctx } from "@/init";
-import { CELL_SIZE } from "@/settings";
+import { settings } from "@/settings";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { Vector } from "@/utils/vector";
@@ -25,7 +25,7 @@ export class Cell {
     this.isometricPos = this.position.getIsometricPos();
 
     this.renderPos = new Position(
-      this.isometricPos[0].x - CELL_SIZE,
+      this.isometricPos[0].x - settings.size.cell,
       this.isometricPos[0].y - 1
     );
 
@@ -36,7 +36,7 @@ export class Cell {
 
     this.unitPos = new Position(
       this.isometricPos[2].x,
-      this.isometricPos[2].y - CELL_SIZE / 4
+      this.isometricPos[2].y - settings.size.cell / 4
     );
 
     this.cameraPos = new Position(
@@ -44,7 +44,7 @@ export class Cell {
       canvasHeight / 4 +
         canvasHeight / 4 -
         this.isometricPos[0].y -
-        CELL_SIZE / 2
+        settings.size.cell / 2
     );
 
     this.obstaclePos = new Position(
@@ -73,7 +73,7 @@ export class Cell {
 
   public update(cameraScroll: Position): void {
     this.renderPos = new Position(
-      this.isometricPos[0].x - CELL_SIZE + cameraScroll.x,
+      this.isometricPos[0].x - settings.size.cell + cameraScroll.x,
       this.isometricPos[0].y - 1 + cameraScroll.y
     );
 

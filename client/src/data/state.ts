@@ -4,10 +4,11 @@ import { MainMenuState, SubMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { PageState } from "@/enums/pageState";
 import { ServerHandler } from "@/server/serverHandler";
-import { EntityType, stateType } from "@/types/gameType";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
+
+import type { EntityType, State } from "@/types/game.types";
 
 export const initState: EntityType = {
   data: {
@@ -21,7 +22,7 @@ export const initState: EntityType = {
   },
 };
 
-export const state: stateType = {
+export const state: State = {
   language: "hu",
   images: {
     buildings: {},

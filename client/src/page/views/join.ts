@@ -1,21 +1,15 @@
 import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
 import { canvasWidth } from "@/init";
-import { Button } from "@/page/components/buttonComponents/button";
-import { Text } from "@/page/components/textComponents/text";
-import { TextInput } from "@/page/components/textComponents/textInput";
+import { Button } from "@/page/components/button";
+import { Text } from "@/page/components/text";
+import { TextInput } from "@/page/components/textInput";
 import { Page } from "@/page/views/page";
 import { buttonPos } from "@/page/views/pos/buttonPos";
 import { inputPos } from "@/page/views/pos/inputPos";
 import { titlePos } from "@/page/views/pos/titlePos";
 import { ServerHandler } from "@/server/serverHandler";
-import {
-  BUTTON_SIZE,
-  INPUT_BACKGROUND_COLOR,
-  BLACK_COLOR,
-  MARGIN,
-  ERROR_COLOR,
-} from "@/settings";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -31,7 +25,7 @@ export class Join extends Page {
 
     this.backButton = new Button(
       buttonPos.default.back,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "back",
       this.handleLeave
@@ -39,7 +33,7 @@ export class Join extends Page {
 
     this.joinButton = new Button(
       buttonPos.default.next,
-      BUTTON_SIZE,
+      settings.size.button,
       "name",
       "join",
       this.handleJoin
@@ -49,7 +43,7 @@ export class Join extends Page {
       inputPos.code,
       new Dimension(500, 40),
       "",
-      INPUT_BACKGROUND_COLOR,
+      settings.color.inputBackground,
       false
     );
 
@@ -58,7 +52,7 @@ export class Join extends Page {
       new Dimension(0, -40),
       "Játék kód:",
       false,
-      BLACK_COLOR
+      settings.color.black
     );
 
     this.buttons.push(this.joinButton);
@@ -66,11 +60,11 @@ export class Join extends Page {
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      new Position(canvasWidth / 2, titlePos.y + MARGIN * 2),
+      new Position(canvasWidth / 2, titlePos.y + settings.margin * 2),
       Dimension.zero(),
       "",
       false,
-      ERROR_COLOR
+      settings.color.error
     );
     this.errorMessage.setCenter();
 

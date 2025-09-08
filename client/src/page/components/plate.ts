@@ -2,10 +2,10 @@ import { data } from "@/languages/language";
 import { state } from "@/data/state";
 import { ctx } from "@/init";
 import { PageComponents } from "@/page/components/pageComponents";
-import { TEXT_COLOR } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
-import { Text } from "@/page/components/textComponents/text";
+import { Text } from "@/page/components/text";
+import { settings } from "@/settings";
 
 export class Plate extends PageComponents {
   protected image: HTMLImageElement;
@@ -30,7 +30,7 @@ export class Plate extends PageComponents {
       dim,
       data[state.language][text],
       false,
-      TEXT_COLOR
+      settings.color.text
     );
 
     this.text.setCenter();
