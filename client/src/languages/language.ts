@@ -1,5 +1,5 @@
-import { en } from "@/data/languages/en";
-import { hu } from "@/data/languages/hu";
+import { en } from "@/languages/en";
+import { hu } from "@/languages/hu";
 
 type availableLanguages = "hu" | "en";
 

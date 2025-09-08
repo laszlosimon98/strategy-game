@@ -6,7 +6,7 @@ import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
 import { buildingRegister } from "@/game/world/building/buildingRegister";
 import { FakeBuilding } from "@/game/world/building/fakeBuilding";
-import { Manager } from "@/game/world/abstract/manager";
+import { Manager } from "@/game/world/manager/manager";
 import { ServerHandler } from "@/server/serverHandler";
 import { EntityType } from "@/types/gameType";
 import { Indices } from "@/utils/indices";

@@ -1,4 +1,4 @@
-import { data } from "@/data/data";
+import { data } from "@/languages/language";
 import { state } from "@/data/state";
 import { ctx } from "@/init";
 import { PageComponents } from "@/page/components/pageComponents";

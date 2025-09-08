@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import { state } from "@/data/state";
 import { UnitStates } from "@/enums/unitsState";
-import { Manager } from "@/game/world/abstract/manager";
+import { Manager } from "@/game/world/manager/manager";
 import { Cell } from "@/game/world/cell";
 import { unitRegister } from "@/game/world/unit/unitRegister";
 import { Soldier } from "@/game/world/unit/units/soldier";
