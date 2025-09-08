@@ -7,8 +7,8 @@ import { Indices } from "@/classes/utils/indices";
 import { getImageNameFromUrl } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
 import { state } from "@/data/state";
-import { MAP_SIZE } from "@/settings";
 import { EntityType } from "@/types/types";
+import { settings } from "@/settings";
 
 export class Builder {
   private constructor() {}
@@ -44,7 +44,7 @@ export class Builder {
     for (let l = 0; l < 2; ++l) {
       for (let k = 0; k < 2; ++k) {
         if (l === 1 && l === k) continue;
-        if (i + l < MAP_SIZE && j + k < MAP_SIZE) {
+        if (i + l < settings.mapSize && j + k < settings.mapSize) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(true);
           cell.setObstacleType(buildingName);
@@ -85,7 +85,7 @@ export class Builder {
       for (let l = 0; l < 2; ++l) {
         for (let k = 0; k < 2; ++k) {
           if (l === 1 && l === k) continue;
-          if (i + l < MAP_SIZE && j + k < MAP_SIZE) {
+          if (i + l < settings.mapSize && j + k < settings.mapSize) {
             const cell: Cell = world[i + l][j + k];
             cell.setObstacle(false);
             cell.setObstacleType(null);

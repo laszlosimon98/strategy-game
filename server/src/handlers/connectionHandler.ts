@@ -2,24 +2,13 @@ import { Server, Socket } from "socket.io";
 
 import { Communicate } from "@/classes/communicate";
 import { state } from "@/data/state";
-import { CONNECTION_CODE_LENGTH, MAX_PLAYER } from "@/settings";
+import { settings } from "@/settings";
 import { ColorType } from "@/types/types";
-
-const colors: ColorType[] = [
-  "black",
-  "blue",
-  "brown",
-  "green",
-  "orange",
-  "purple",
-  "red",
-  "white",
-];
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const generateCode = (): string => {
     let result = "";
-    for (let i = 0; i < CONNECTION_CODE_LENGTH; ++i) {
+    for (let i = 0; i < settings.codeLength; ++i) {
       result += Math.floor(Math.random() * 10).toString();
     }
     return result;
@@ -52,7 +41,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       isGameStarted: false,
       players: {},
       world: [],
-      remainingColors: [...colors],
+      remainingColors: [...settings.colors],
     };
 
     state[code].players[socket.id] = {
@@ -77,7 +66,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (getRoomSize(code) >= MAX_PLAYER) {
+    if (getRoomSize(code) >= settings.maxPlayer) {
       Communicate.sendMessageToSender(
         socket,
         "connect:error",

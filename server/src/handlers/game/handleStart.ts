@@ -4,8 +4,8 @@ import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
 import { state } from "@/data/state";
-import { MAP_SIZE } from "@/settings";
 import { PlayerType, TileType } from "@/types/types";
+import { settings } from "@/settings";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const getPlayers = (): PlayerType => {
@@ -37,8 +37,8 @@ export const handleStart = (io: Server, socket: Socket) => {
     const players: PlayerType = getPlayers();
 
     Object.keys(players).forEach((id) => {
-      const i = Math.floor(Math.random() * MAP_SIZE);
-      const j = Math.floor(Math.random() * MAP_SIZE);
+      const i = Math.floor(Math.random() * settings.mapSize);
+      const j = Math.floor(Math.random() * settings.mapSize);
       const pos = new Indices(i, j);
       Communicate.sendPrivateMessage(io, id, "game:startPos", pos);
     });

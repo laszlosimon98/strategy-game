@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 
 import { Indices } from "@/classes/utils/indices";
-import { MAP_SIZE } from "@/settings";
+import { settings } from "@/settings";
 
 export class Validator {
   private constructor() {}
@@ -9,9 +9,9 @@ export class Validator {
   public static validateIndices(indices: Indices): boolean {
     return (
       indices.i > -1 &&
-      indices.i < MAP_SIZE &&
+      indices.i < settings.mapSize &&
       indices.j > -1 &&
-      indices.j < MAP_SIZE
+      indices.j < settings.mapSize
     );
   }
 

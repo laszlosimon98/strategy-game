@@ -1,10 +1,21 @@
-export const SERVER_URL = "http://localhost:3000";
-// export const SERVER_URL = "http://192.168.1.70:3000";
+import { Settings } from "@/types/setting.types";
 
-export const MAX_PLAYER = 4;
-export const CONNECTION_CODE_LENGTH = 2;
-
-export const MAP_SEED = "seed";
-export const MAP_SIZE = 80;
-export const TREE_SPAWN_CHANCE = 10;
-export const ROCK_SPAWN_CHANCE = 93;
+export const settings: Settings = {
+  colors: [
+    "black",
+    "blue",
+    "brown",
+    "green",
+    "orange",
+    "purple",
+    "red",
+    "white",
+  ],
+  serverUrl: "http://localhost:3000",
+  maxPlayer: 4,
+  codeLength: 2,
+  mapSeed: "seed",
+  mapSize: 80,
+  treespawnChance: 10,
+  rockspawnChance: 93,
+};

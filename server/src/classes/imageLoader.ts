@@ -1,8 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import sizeOf from "image-size";
-
-import { SERVER_URL } from "@/settings";
+import { settings } from "@/settings";
 
 export class Loader {
   private constructor() {}
@@ -42,7 +41,7 @@ export class Loader {
 
       const _path: string[] = file.split("/").splice(0, fileLength - 1);
 
-      const url: string = `${SERVER_URL}/assets/${path
+      const url: string = `${settings.serverUrl}/assets/${path
         .join(..._path)
         .replace(/\\/g, "/")}/${name}.png`;
       const length = _path.length;

@@ -6,19 +6,19 @@ import { Communicate } from "@/classes/communicate";
 import { Cell } from "@/classes/game/cell";
 import { Indices } from "@/classes/utils/indices";
 import { state } from "@/data/state";
-import { MAP_SIZE, MAP_SEED, ROCK_SPAWN_CHANCE } from "@/settings";
+import { settings } from "@/settings";
 
 export class World {
   private static world: Cell[][] = [];
   // private static noise2D = createNoise2D();
-  private static scale = MAP_SIZE / 2;
-  private static noise2D = createNoise2D(alea(MAP_SEED));
-  private static mapSize = Math.floor(MAP_SIZE / 2);
+  private static scale = settings.mapSize / 2;
+  private static noise2D = createNoise2D(alea(settings.mapSeed));
+  private static mapSize = Math.floor(settings.mapSize / 2);
   private constructor() {}
 
   private static initNeighbor() {
-    for (let l = 0; l < MAP_SIZE; ++l) {
-      for (let k = 0; k < MAP_SIZE; ++k) {
+    for (let l = 0; l < settings.mapSize; ++l) {
+      for (let k = 0; k < settings.mapSize; ++k) {
         const cell: Cell = this.world[l][k];
         const { i, j } = cell.getIndices();
 
@@ -26,7 +26,7 @@ export class World {
           cell.addNeighbors(this.world[i - 1][j]);
         }
 
-        if (i < MAP_SIZE - 1) {
+        if (i < settings.mapSize - 1) {
           cell.addNeighbors(this.world[i + 1][j]);
         }
 
@@ -34,7 +34,7 @@ export class World {
           cell.addNeighbors(this.world[i][j - 1]);
         }
 
-        if (j < MAP_SIZE - 1) {
+        if (j < settings.mapSize - 1) {
           cell.addNeighbors(this.world[i][j + 1]);
         }
 
@@ -42,15 +42,15 @@ export class World {
           cell.addNeighbors(this.world[i - 1][j - 1]);
         }
 
-        if (i < MAP_SIZE - 1 && j < MAP_SIZE - 1) {
+        if (i < settings.mapSize - 1 && j < settings.mapSize - 1) {
           cell.addNeighbors(this.world[i + 1][j + 1]);
         }
 
-        if (i > 0 && j < MAP_SIZE - 1) {
+        if (i > 0 && j < settings.mapSize - 1) {
           cell.addNeighbors(this.world[i - 1][j + 1]);
         }
 
-        if (i < MAP_SIZE - 1 && j > 0) {
+        if (i < settings.mapSize - 1 && j > 0) {
           cell.addNeighbors(this.world[i + 1][j - 1]);
         }
       }
@@ -71,7 +71,7 @@ export class World {
           cell.setType("grass_flower");
         }
 
-        if (terrainNoise >= ROCK_SPAWN_CHANCE) {
+        if (terrainNoise >= settings.rockspawnChance) {
           cell.setType("grass_rock");
         }
 
@@ -90,9 +90,10 @@ export class World {
     for (let i = 0; i < this.mapSize; ++i) {
       for (let j = 0; j < this.mapSize; ++j) {
         const originalCell: Cell = this.world[i][j];
-        const xAxis: Cell = this.world[i][MAP_SIZE - j - 1];
-        const yAxis: Cell = this.world[MAP_SIZE - i - 1][j];
-        const xyAxis: Cell = this.world[MAP_SIZE - i - 1][MAP_SIZE - j - 1];
+        const xAxis: Cell = this.world[i][settings.mapSize - j - 1];
+        const yAxis: Cell = this.world[settings.mapSize - i - 1][j];
+        const xyAxis: Cell =
+          this.world[settings.mapSize - i - 1][settings.mapSize - j - 1];
 
         xAxis.setType(originalCell.getType());
         xAxis.setObstacleType(originalCell.getObstacleType());
@@ -111,9 +112,9 @@ export class World {
 
   public static createWorld(): Cell[][] {
     this.world = [];
-    for (let i = 0; i < MAP_SIZE; ++i) {
+    for (let i = 0; i < settings.mapSize; ++i) {
       this.world.push([]);
-      for (let j = 0; j < MAP_SIZE; ++j) {
+      for (let j = 0; j < settings.mapSize; ++j) {
         const cell = new Cell(new Indices(i, j));
         this.world[i].push(cell);
       }
