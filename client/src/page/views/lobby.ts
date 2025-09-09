@@ -1,6 +1,6 @@
-import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
 import { canvasWidth, canvasHeight } from "@/init";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Frame } from "@/page/components/frame";
 import { Text } from "@/page/components/text";
@@ -45,7 +45,7 @@ export class Lobby extends Page {
     this.playerLabel = new Text(
       new Position(canvasWidth / 2, titlePos.y + settings.margin + 55),
       new Dimension(0, -20),
-      state.player.name,
+      GameStateManager.getPlayerName(),
       false,
       settings.color.black
     );
@@ -95,15 +95,15 @@ export class Lobby extends Page {
 
   public update(): void {
     super.update();
-    if (this.playerLabel.getText() !== state.player.name) {
-      this.playerLabel.setText(state.player.name);
+    if (this.playerLabel.getText() !== GameStateManager.getPlayerName()) {
+      this.playerLabel.setText(GameStateManager.getPlayerName());
     }
 
-    if (state.player.host && this.buttons.length === 1) {
+    if (GameStateManager.isPlayerHost() && this.buttons.length === 1) {
       this.buttons.push(this.start);
     }
 
-    if (!state.player.host) {
+    if (!GameStateManager.isPlayerHost()) {
       this.buttons.splice(1, 1);
     }
   }
@@ -115,7 +115,7 @@ export class Lobby extends Page {
   private handleLeaveRoom = (): void => {
     ServerHandler.sendMessage("connect:disconnect", {});
     this.clearPage();
-    state.navigation.pageState = PageState.NewGame;
+    GameStateManager.setPageState(PageState.NewGame);
   };
 
   private clearPage(): void {

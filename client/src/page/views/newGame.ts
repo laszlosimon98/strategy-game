@@ -1,5 +1,5 @@
-import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Page } from "@/page/views/page";
 import { buttonPos } from "@/page/views/pos/buttonPos";
@@ -35,7 +35,7 @@ export class NewGame extends Page {
       settings.size.button,
       "name",
       "back",
-      () => (state.navigation.pageState = PageState.MainMenu)
+      () => GameStateManager.setPageState(PageState.MainMenu)
     );
 
     this.buttons.push(this.create);
@@ -45,14 +45,14 @@ export class NewGame extends Page {
 
   private handleCreate = () => {
     ServerHandler.sendMessage("connect:create", {
-      name: state.player.name,
+      name: GameStateManager.getPlayerName(),
     });
-    state.navigation.pageState = PageState.Lobby;
-    state.player.host = true;
+    GameStateManager.setPageState(PageState.Lobby);
+    GameStateManager.setHost(true);
   };
 
   private handleJoin = () => {
-    state.navigation.pageState = PageState.JoinGame;
-    state.player.host = false;
+    GameStateManager.setPageState(PageState.JoinGame);
+    GameStateManager.setHost(false);
   };
 }

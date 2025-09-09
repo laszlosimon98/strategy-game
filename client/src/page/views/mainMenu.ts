@@ -1,5 +1,5 @@
-import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Plate } from "@/page/components/plate";
 import { Page } from "@/page/views/page";
@@ -22,7 +22,7 @@ export class MainMenu extends Page {
       settings.size.button,
       "name",
       "newGame",
-      () => (state.navigation.pageState = PageState.NewGame)
+      () => GameStateManager.setPageState(PageState.NewGame)
     );
 
     this.description = new Button(
@@ -30,7 +30,7 @@ export class MainMenu extends Page {
       settings.size.button,
       "name",
       "description",
-      () => (state.navigation.pageState = PageState.Description)
+      () => GameStateManager.setPageState(PageState.Description)
     );
 
     this.statistic = new Button(
@@ -38,7 +38,7 @@ export class MainMenu extends Page {
       settings.size.button,
       "name",
       "statistic",
-      () => (state.navigation.pageState = PageState.Statistic)
+      () => GameStateManager.setPageState(PageState.Statistic)
     );
 
     this.login = new Button(
@@ -46,7 +46,7 @@ export class MainMenu extends Page {
       settings.size.button,
       "name",
       "login",
-      () => (state.navigation.pageState = PageState.Login)
+      () => GameStateManager.setPageState(PageState.Login)
     );
 
     this.registration = new Button(
@@ -54,7 +54,7 @@ export class MainMenu extends Page {
       settings.size.button,
       "name",
       "registration",
-      () => (state.navigation.pageState = PageState.Registration)
+      () => GameStateManager.setPageState(PageState.Registration)
     );
 
     this.namePlate = new Plate(
@@ -77,8 +77,8 @@ export class MainMenu extends Page {
   }
 
   public update(): void {
-    if (this.namePlate.getText() !== state.player.name) {
-      this.namePlate.setText(state.player.name);
+    if (this.namePlate.getText() !== GameStateManager.getPlayerName()) {
+      this.namePlate.setText(GameStateManager.getPlayerName());
     }
   }
 }

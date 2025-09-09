@@ -117,7 +117,7 @@ type Game = {
   };
 };
 
-export type State = Language &
+export type InitialStateType = Language &
   Images &
   NavigationType &
   ServerType &

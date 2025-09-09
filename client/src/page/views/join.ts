@@ -1,6 +1,6 @@
-import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
 import { canvasWidth } from "@/init";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Text } from "@/page/components/text";
 import { TextInput } from "@/page/components/textInput";
@@ -81,14 +81,14 @@ export class Join extends Page {
   private handleJoin = () => {
     ServerHandler.sendMessage("connect:join", {
       code: this.codeInput.getText(),
-      name: state.player.name,
+      name: GameStateManager.getPlayerName(),
     });
   };
 
   private handleLeave = () => {
     this.errorMessage.setText("");
     this.codeInput.setText("");
-    state.navigation.pageState = PageState.NewGame;
+    GameStateManager.setPageState(PageState.NewGame);
   };
 
   private handleError = async () => {
@@ -97,11 +97,11 @@ export class Join extends Page {
     );
 
     if (error) {
-      state.navigation.pageState = PageState.JoinGame;
+      GameStateManager.setPageState(PageState.JoinGame);
       this.errorMessage.setText(error);
       this.codeInput.setText("");
     } else {
-      state.navigation.pageState = PageState.Lobby;
+      GameStateManager.setPageState(PageState.Lobby);
       this.errorMessage.setText("");
       this.codeInput.setText("");
     }

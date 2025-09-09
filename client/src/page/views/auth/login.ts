@@ -1,4 +1,4 @@
-import { state } from "@/data/state";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Auth } from "@/page/views/auth/auth";
 
 export class Login extends Auth {
@@ -8,7 +8,7 @@ export class Login extends Auth {
 
   public handleAuth(): [boolean, string] {
     const { username } = this.getInputData();
-    state.player.name = username;
+    GameStateManager.setPlayerName(username);
     console.log(this.getInputData());
     return [false, ""];
   }

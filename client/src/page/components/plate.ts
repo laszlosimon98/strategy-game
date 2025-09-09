@@ -1,11 +1,11 @@
 import { data } from "@/languages/language";
-import { state } from "@/data/state";
 import { ctx } from "@/init";
 import { PageComponents } from "@/page/components/pageComponents";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export class Plate extends PageComponents {
   protected image: HTMLImageElement;
@@ -22,13 +22,13 @@ export class Plate extends PageComponents {
     this.image = new Image(dim.width, dim.height);
 
     if (type !== "buildings" && type !== "menu") {
-      this.image.src = state.images.ui[type + "plate"].url;
+      this.image.src = GameStateManager.getUIUrl(type + "plate");
     }
 
     this.text = new Text(
       pos,
       dim,
-      data[state.language][text],
+      data[GameStateManager.getLanguage()][text],
       false,
       settings.color.text
     );

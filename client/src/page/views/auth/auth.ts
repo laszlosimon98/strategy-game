@@ -1,5 +1,5 @@
-import { state } from "@/data/state";
 import { PageState } from "@/enums/pageState";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Text } from "@/page/components/text";
 import { TextInput } from "@/page/components/textInput";
@@ -28,7 +28,7 @@ export class Auth extends Page {
       settings.size.button,
       "name",
       "back",
-      () => (state.navigation.pageState = PageState.MainMenu)
+      () => GameStateManager.setPageState(PageState.MainMenu)
     );
 
     this.actionButton = new Button(
@@ -96,10 +96,10 @@ export class Auth extends Page {
     const [isError, error] = this.handleAuth();
 
     if (isError) {
-      state.navigation.pageState = PageState.Registration;
+      GameStateManager.setPageState(PageState.Registration);
       console.error(error);
     } else {
-      state.navigation.pageState = PageState.MainMenu;
+      GameStateManager.setPageState(PageState.MainMenu);
     }
   };
 

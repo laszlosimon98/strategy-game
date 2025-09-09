@@ -8,12 +8,12 @@ import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
-import type { EntityType, State } from "@/types/game.types";
+import type { EntityType, InitialStateType } from "@/types/game.types";
 
 export const initState: EntityType = {
   data: {
     id: "",
-    owner: ServerHandler.getId(),
+    owner: "asdf",
     url: "",
     static: "",
     indices: Indices.zero(),
@@ -22,7 +22,7 @@ export const initState: EntityType = {
   },
 };
 
-export const state: State = {
+export const state: InitialStateType = {
   language: "hu",
   images: {
     buildings: {},

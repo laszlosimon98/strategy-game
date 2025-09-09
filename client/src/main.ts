@@ -1,5 +1,5 @@
-import { state } from "@/data/state";
 import init from "@/init";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Program } from "@/program";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
@@ -7,8 +7,9 @@ import { settings } from "@/settings";
 const main = async () => {
   init();
 
-  state.images = await ServerHandler.receiveAsyncMessage("start:page");
-  console.log(state.images);
+  const images = await ServerHandler.receiveAsyncMessage("start:page");
+  GameStateManager.setImages(images);
+  console.log(GameStateManager.getImages());
 
   const program: Program = new Program();
 
