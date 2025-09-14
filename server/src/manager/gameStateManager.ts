@@ -37,6 +37,10 @@ export class GameStateManager {
     return playerColor;
   }
 
+  public static getState(): InitialStateType {
+    return this.state;
+  }
+
   public static getUnitProperties(): UnitsType {
     return this.unitProperties;
   }
@@ -131,6 +135,14 @@ export class GameStateManager {
 
   public static disconnectPlayer(room: string, socket: Socket): void {
     delete this.state[room].players[socket.id];
+  }
+
+  public static isGameRoomEmpty(room: string): boolean {
+    return Object.keys(this.state[room].players).length === 0;
+  }
+
+  public static deleteLobby(room: string) {
+    delete this.state[room];
   }
 
   public static startGame(room: string): void {

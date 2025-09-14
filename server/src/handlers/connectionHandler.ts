@@ -62,6 +62,12 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       GameStateManager.restoreColor(room, user.color);
       GameStateManager.playerleftMessage(io, socket, user.name);
       GameStateManager.disconnectPlayer(room, socket);
+
+      const isGameRoomEmpty: boolean = GameStateManager.isGameRoomEmpty(room);
+
+      if (isGameRoomEmpty) {
+        GameStateManager.deleteLobby(room);
+      }
     }
     socket.leave(room);
   };
