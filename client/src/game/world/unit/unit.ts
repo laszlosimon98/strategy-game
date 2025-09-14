@@ -48,7 +48,7 @@ export abstract class Unit extends Entity implements CallAble {
         static: GameStateManager.getImages(
           "colors",
           GameStateManager.getPlayerColor(entity.data.owner),
-          `${this.name}static`
+          this.name
         ).url,
       },
     };
@@ -154,10 +154,6 @@ export abstract class Unit extends Entity implements CallAble {
 
   public getPath(): Cell[] {
     return this.path;
-  }
-
-  public getName(): string {
-    return this.name;
   }
 
   public getDimension(): Dimension {

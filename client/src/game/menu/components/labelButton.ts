@@ -18,7 +18,8 @@ export class LabelButton extends Button {
     super(pos, dim, type, text);
     this.name = name;
 
-    const imageFrom: string = type === "buildings" ? "buildings" : "gamemenu";
+    const imageFrom: "buildings" | "gamemenu" =
+      type === "buildings" ? "buildings" : "gamemenu";
 
     if (imageFrom === "buildings") {
       this.setImage(GameStateManager.getImages(imageFrom, name).url);

@@ -1,5 +1,7 @@
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { ctx } from "@/init";
 import type { CallAble } from "@/interfaces/callAble";
+import { language, type Buildings, type Units } from "@/languages/language";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
@@ -82,11 +84,20 @@ export abstract class Entity implements CallAble {
     this.isHovered = hover;
   }
 
-  public getName(): string {
-    // if (this.entity.data.url) {
-    //   return getImageNameFromUrl(this.entity.data.url);
-    // }
-    return getImageNameFromUrl(this.entity.data.url);
+  public getBuildingName(): string {
+    const objectName: string =
+      language[GameStateManager.getLanguage()].buildings[
+        getImageNameFromUrl(this.entity.data.static) as unknown as Buildings
+      ];
+    return objectName;
+  }
+
+  public getUnitName(): string {
+    const objectName: string =
+      language[GameStateManager.getLanguage()].units[
+        getImageNameFromUrl(this.entity.data.static) as unknown as Units
+      ];
+    return objectName;
   }
 
   protected setImage(image: string): void {

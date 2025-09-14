@@ -1,4 +1,4 @@
-import { data } from "@/languages/language";
+import { language, type Buttons } from "@/languages/language";
 import { ctx } from "@/init";
 import { PageComponents } from "@/page/components/pageComponents";
 import { Dimension } from "@/utils/dimension";
@@ -28,7 +28,7 @@ export class Plate extends PageComponents {
     this.text = new Text(
       pos,
       dim,
-      data[GameStateManager.getLanguage()][text],
+      language[GameStateManager.getLanguage()].buttonTexts[text as Buttons],
       false,
       settings.color.text
     );

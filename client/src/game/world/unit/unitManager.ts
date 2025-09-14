@@ -49,7 +49,7 @@ export class UnitManager extends Manager<Unit> {
       mousePos,
       cameraScroll,
       "units"
-    ) as unknown as Soldier | undefined;
+    ) as unknown as Soldier;
   }
 
   public handleMiddleClick(

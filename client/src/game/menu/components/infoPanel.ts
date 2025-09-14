@@ -5,6 +5,8 @@ import { Button } from "@/page/components/button";
 import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
+import { Building } from "@/game/world/building/building";
+import { Unit } from "@/game/world/unit/unit";
 
 export class InfoPanel extends Section {
   private dim: Dimension;
@@ -25,17 +27,23 @@ export class InfoPanel extends Section {
     this.image = new Image();
   }
 
+  // FIXME: nem kell folyton lekérdeni az infoPanelData-t kell egy setter rá
   draw(): void {
     super.draw();
 
     const infoPanelData = GameStateManager.getInfoPanelData();
 
     if (infoPanelData) {
+      let name: string = "";
+      if (infoPanelData instanceof Building) {
+        name = infoPanelData.getBuildingName();
+      } else if (infoPanelData instanceof Unit) {
+        name = infoPanelData.getUnitName();
+      }
+
       ctx.fillText(
-        infoPanelData.getName(),
-        this.pos.x -
-          ctx.measureText(infoPanelData.getName()).width / 2 +
-          this.dim.width / 2,
+        name,
+        this.pos.x - ctx.measureText(name).width / 2 + this.dim.width / 2,
         this.pos.y + 75
       );
     }
@@ -48,7 +56,9 @@ export class InfoPanel extends Section {
       this.image.height
     );
 
-    this.deleteButton.draw();
+    if (infoPanelData instanceof Building) {
+      this.deleteButton.draw();
+    }
   }
 
   update(dt: number, mousePos: Position): void {
