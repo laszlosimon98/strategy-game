@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import alea from "alea";
 import { createNoise2D } from "simplex-noise";
 
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Cell } from "@/classes/game/cell";
 import { Indices } from "@/classes/utils/indices";
 import { settings } from "@/settings";
@@ -128,12 +128,12 @@ export class World {
   }
 
   public static getWorld(socket: Socket): Cell[][] {
-    const room = Communicate.getCurrentRoom(socket);
+    const room = ServerHandler.getCurrentRoom(socket);
     return GameStateManager.getWorld(room);
   }
 
   public static setWorld(world: Cell[][], socket: Socket): void {
-    const room = Communicate.getCurrentRoom(socket);
+    const room = ServerHandler.getCurrentRoom(socket);
     GameStateManager.setWorld(room, world);
   }
 }

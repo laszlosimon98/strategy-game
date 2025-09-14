@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Building } from "@/classes/game/building";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
@@ -73,7 +73,7 @@ export class Builder {
 
     building.setOwner(socket.id);
 
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     GameStateManager.createBuilding(room, socket, building);
 
     this.occupyCells(entity.data.indices, world, buildingName);
@@ -82,7 +82,7 @@ export class Builder {
   }
 
   public static destroy(indices: Indices, socket: Socket): boolean {
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = World.getWorld(socket);
     const i = indices.i;
     const j = indices.j;

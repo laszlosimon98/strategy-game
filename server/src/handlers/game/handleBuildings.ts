@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Builder } from "@/classes/game/builder";
 import { Building } from "@/classes/game/building";
 import { Indices } from "@/classes/utils/indices";
@@ -15,7 +15,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     const newBuilding: Building | undefined = Builder.build(entity, socket);
 
     if (newBuilding) {
-      Communicate.sendMessageToEveryOne(
+      ServerHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:build",
@@ -31,7 +31,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
 
     const isSuccessful: boolean = Builder.destroy(indices, socket);
     if (isSuccessful) {
-      Communicate.sendMessageToEveryOne(io, socket, "game:destroy", {
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
         id: socket.id,
         indices,
       });

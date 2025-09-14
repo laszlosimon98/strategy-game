@@ -1,4 +1,4 @@
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Building } from "@/classes/game/building";
 import { Cell } from "@/classes/game/cell";
 import { Unit } from "@/classes/game/unit";
@@ -52,7 +52,7 @@ export class GameStateManager {
     name: string
   ): void {
     const names = GameStateManager.getPlayersNameInRoom(room);
-    Communicate.sendMessageToEveryOne(io, socket, "connect:newPlayer", {
+    ServerHandler.sendMessageToEveryOne(io, socket, "connect:newPlayer", {
       players: names,
       message: `${name} csatlakozott a váróhoz!`,
     });
@@ -63,7 +63,7 @@ export class GameStateManager {
     socket: Socket,
     name: string
   ): void {
-    Communicate.sendMessageToEveryOne(io, socket, "connect:playerLeft", {
+    ServerHandler.sendMessageToEveryOne(io, socket, "connect:playerLeft", {
       name,
       message: `${name} elhagyta a várót!`,
     });

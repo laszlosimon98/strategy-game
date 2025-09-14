@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { settings } from "@/settings";
 import { GameStateManager } from "@/manager/gameStateManager";
 
@@ -13,13 +13,13 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
     socket.join(room);
 
-    Communicate.sendMessageToSender(socket, "connect:code", { code: room });
+    ServerHandler.sendMessageToSender(socket, "connect:code", { code: room });
     GameStateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const joinGame = ({ code: room, name }: { code: string; name: string }) => {
     if (!GameStateManager.isRoomExists(room, io)) {
-      Communicate.sendMessageToSender(
+      ServerHandler.sendMessageToSender(
         socket,
         "connect:error",
         "Rossz csatlakozási kód!"
@@ -28,7 +28,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     }
 
     if (GameStateManager.getRoomSize(room, io) >= settings.maxPlayer) {
-      Communicate.sendMessageToSender(
+      ServerHandler.sendMessageToSender(
         socket,
         "connect:error",
         "A váró megtelt!"
@@ -37,7 +37,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
     }
 
     if (GameStateManager.isGameStarted(room)) {
-      Communicate.sendMessageToSender(
+      ServerHandler.sendMessageToSender(
         socket,
         "connect:error",
         "Sikertelen csatlakozás. A játék elkezdődött!"
@@ -49,13 +49,13 @@ export const connectionHandler = (io: Server, socket: Socket) => {
 
     socket.join(room);
 
-    Communicate.sendMessageToSender(socket, "connect:error", "");
-    Communicate.sendMessageToSender(socket, "connect:code", { code: room });
+    ServerHandler.sendMessageToSender(socket, "connect:error", "");
+    ServerHandler.sendMessageToSender(socket, "connect:code", { code: room });
     GameStateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const disconnect = () => {
-    const room = Communicate.getCurrentRoom(socket);
+    const room = ServerHandler.getCurrentRoom(socket);
 
     if (room) {
       const user = GameStateManager.getPlayer(room, socket);

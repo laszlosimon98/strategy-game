@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Unit } from "@/classes/game/unit";
 import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
@@ -25,11 +25,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     entity.data.owner = socket.id;
     const unit = new Unit(entity, name);
 
-    const room = Communicate.getCurrentRoom(socket);
+    const room = ServerHandler.getCurrentRoom(socket);
 
     GameStateManager.createUnit(room, socket, unit);
 
-    Communicate.sendMessageToEveryOne(io, socket, "game:unitCreate", {
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:unitCreate", {
       entity: unit.getEntity(),
       properties: GameStateManager.getUnitProperties()[name],
     });
@@ -44,7 +44,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     next: Indices;
     goal: Indices;
   }) => {
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
     if (unit) {
@@ -57,13 +57,18 @@ export const handleUnits = (io: Server, socket: Socket) => {
           goal
         );
 
-        Communicate.sendMessageToEveryOne(io, socket, "game:pathFind", {
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:pathFind", {
           path: indices,
           entity,
         });
       } else {
         unit.setIndices(next);
-        Communicate.sendMessageToEveryOne(io, socket, "game:unitMoving", next);
+        ServerHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:unitMoving",
+          next
+        );
       }
     }
   };
@@ -77,25 +82,30 @@ export const handleUnits = (io: Server, socket: Socket) => {
     newPos: Position;
     direction: string;
   }): void => {
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
     if (unit) {
       unit.setPosition(newPos);
-      Communicate.sendMessageToEveryOne(io, socket, "game:unitUpdatePosition", {
-        entity: unit.getEntity(),
-        newPos: unit.getPosition(),
-        direction,
-      });
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:unitUpdatePosition",
+        {
+          entity: unit.getEntity(),
+          newPos: unit.getPosition(),
+          direction,
+        }
+      );
     }
   };
 
   const unitDestinationReached = (entity: EntityType) => {
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
     if (unit) {
-      Communicate.sendMessageToEveryOne(
+      ServerHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:unitDestinationReached",
@@ -105,7 +115,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const startAttack = (unit: EntityType): void => {
-    Communicate.sendMessageToEveryOne(
+    ServerHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:unitStartAttacking",
@@ -114,7 +124,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const stopAttack = (unit: EntityType): void => {
-    Communicate.sendMessageToEveryOne(
+    ServerHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:unitStopAttacking",
@@ -129,7 +139,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     unit: EntityType;
     opponent: EntityType;
   }): void => {
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     const _unit: Unit | undefined = GameStateManager.getUnit(room, unit);
     const _opponent: Unit | undefined = GameStateManager.getUnit(
       room,
@@ -140,12 +150,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
       _opponent.takeDamage(_unit.getDamage());
 
       if (_opponent.getHealth() > 0) {
-        Communicate.sendMessageToEveryOne(io, socket, "game:unitDealDamage", {
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:unitDealDamage", {
           entity: _opponent.getEntity(),
           health: _opponent.getHealth(),
         });
       } else {
-        Communicate.sendMessageToEveryOne(io, socket, "game:unitDies", {
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:unitDies", {
           unit: _unit.getEntity(),
           opponent: _opponent.getEntity(),
         });
@@ -156,7 +166,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const deleteUnit = (unit: Unit): void => {
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     GameStateManager.deleteUnit(room, unit);
   };
 

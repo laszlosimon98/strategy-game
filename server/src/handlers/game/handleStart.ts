@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
@@ -10,10 +10,10 @@ import { GameStateManager } from "@/manager/gameStateManager";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
-    const currentRoom: string = Communicate.getCurrentRoom(socket);
+    const currentRoom: string = ServerHandler.getCurrentRoom(socket);
 
     GameStateManager.startGame(currentRoom);
-    Communicate.sendMessageToEveryOne(io, socket, "game:starts", {});
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
     initPlayers(currentRoom);
     createWorld();
@@ -21,7 +21,7 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const initPlayers = (currentRoom: string) => {
-    Communicate.sendMessageToEveryOne(
+    ServerHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:initPlayers",
@@ -36,7 +36,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     const tiles = getTiles(world);
     const obstacles = getObstacles(world);
 
-    Communicate.sendMessageToEveryOne(io, socket, "game:createWorld", {
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:createWorld", {
       tiles,
       obstacles,
     });
@@ -49,7 +49,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       const i = Math.floor(Math.random() * settings.mapSize);
       const j = Math.floor(Math.random() * settings.mapSize);
       const pos = new Indices(i, j);
-      Communicate.sendPrivateMessage(io, id, "game:startPos", pos);
+      ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
     });
   };
 

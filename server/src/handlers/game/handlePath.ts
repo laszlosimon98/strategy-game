@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { Communicate } from "@/classes/communicate";
+import { ServerHandler } from "@/classes/serverHandler";
 import { Cell } from "@/classes/game/cell";
 import { Unit } from "@/classes/game/unit";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
@@ -20,7 +20,7 @@ export const handlePath = (io: Server, socket: Socket) => {
       return;
     }
 
-    const room: string = Communicate.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = GameStateManager.getWorld(room);
     const unit: Unit | undefined = GameStateManager.getUnit(room, entity);
 
@@ -31,7 +31,7 @@ export const handlePath = (io: Server, socket: Socket) => {
         goal
       );
 
-      Communicate.sendMessageToEveryOne(io, socket, "game:pathFind", {
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:pathFind", {
         path: indices,
         entity,
       });
