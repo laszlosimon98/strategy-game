@@ -5,7 +5,7 @@ import { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import type { CallAble } from "@/interfaces/callAble";
 import type { MouseClicker } from "@/interfaces/mouseClicker";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";

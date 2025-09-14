@@ -5,7 +5,7 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 
 export class Plate extends PageComponents {
   protected image: HTMLImageElement;

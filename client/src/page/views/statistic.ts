@@ -1,8 +1,7 @@
 import { PageState } from "@/enums/pageState";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Page } from "@/page/views/page";
-import { buttonPos } from "@/page/views/pos/buttonPos";
 import { settings } from "@/settings";
 
 export class Statistic extends Page {
@@ -12,7 +11,7 @@ export class Statistic extends Page {
     super(title);
 
     this.backButton = new Button(
-      buttonPos.default.back,
+      settings.pos.default.back,
       settings.size.button,
       "name",
       "newGame",

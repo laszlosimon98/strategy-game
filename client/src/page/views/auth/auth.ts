@@ -1,11 +1,9 @@
 import { PageState } from "@/enums/pageState";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Text } from "@/page/components/text";
 import { TextInput } from "@/page/components/textInput";
 import { Page } from "@/page/views/page";
-import { buttonPos } from "@/page/views/pos/buttonPos";
-import { inputPos } from "@/page/views/pos/inputPos";
 import { settings } from "@/settings";
 import type { AuthType } from "@/types/auth.types";
 import { Dimension } from "@/utils/dimension";
@@ -24,7 +22,7 @@ export class Auth extends Page {
     super(title);
 
     this.backButton = new Button(
-      buttonPos.default.back,
+      settings.pos.default.back,
       settings.size.button,
       "name",
       "back",
@@ -32,7 +30,7 @@ export class Auth extends Page {
     );
 
     this.actionButton = new Button(
-      buttonPos.default.next,
+      settings.pos.default.next,
       settings.size.button,
       "name",
       title,
@@ -40,7 +38,7 @@ export class Auth extends Page {
     );
 
     this.nameInput = new TextInput(
-      inputPos.auth.name,
+      settings.pos.auth.name,
       new Dimension(500, 40),
       "",
       settings.color.inputBackground,
@@ -48,7 +46,7 @@ export class Auth extends Page {
     );
 
     this.passwordInput = new TextInput(
-      inputPos.auth.password,
+      settings.pos.auth.password,
       new Dimension(500, 40),
       "",
       settings.color.inputBackground,
@@ -61,7 +59,7 @@ export class Auth extends Page {
     this.inputs.push(this.passwordInput);
 
     this.nameText = new Text(
-      inputPos.auth.name,
+      settings.pos.auth.name,
       new Dimension(0, -40),
       "Felhasználó név: ",
       false,
@@ -69,7 +67,7 @@ export class Auth extends Page {
     );
 
     this.passwordText = new Text(
-      inputPos.auth.password,
+      settings.pos.auth.password,
       new Dimension(0, -40),
       "Jelszó: ",
       false,

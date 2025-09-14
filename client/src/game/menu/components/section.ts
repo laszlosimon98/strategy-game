@@ -1,6 +1,6 @@
 import { SubMenuState } from "@/enums/gameMenuState";
 import { LabelButton } from "@/game/menu/components/labelButton";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Frame } from "@/page/components/frame";
 import { Dimension } from "@/utils/dimension";

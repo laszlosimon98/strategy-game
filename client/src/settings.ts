@@ -1,16 +1,25 @@
+import { canvasWidth, canvasHeight } from "@/init";
 import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
+
+const MARGIN: number = 75;
+const BUTTON_DIMENSION: Dimension = new Dimension(192, 60);
+const TITLE_DIMENSION: Dimension = new Dimension(288, 90);
+const MENUITEM_DIMENSION: Dimension = new Dimension(64, 64);
+const UNIT_DIMENSION: Dimension = new Dimension(64, 64);
+const HOUSEITEM_DIMENSION: Dimension = new Dimension(96, 96);
 
 export const settings = {
   fps: 60,
-  margin: 75,
+  margin: MARGIN,
   size: {
-    button: new Dimension(192, 60),
-    title: new Dimension(288, 90),
-    menuItem: new Dimension(64, 64),
-    unit: new Dimension(64, 64),
+    button: BUTTON_DIMENSION,
+    title: TITLE_DIMENSION,
+    menuItem: MENUITEM_DIMENSION,
+    unit: UNIT_DIMENSION,
     unitAsset: 64,
     item: 96,
-    houseItem: new Dimension(96, 96),
+    houseItem: HOUSEITEM_DIMENSION,
     cell: 48,
   },
   color: {
@@ -31,5 +40,63 @@ export const settings = {
   animation: {
     count: 8,
     speed: 8,
+  },
+  pos: {
+    mainMenu: {
+      newGame: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
+        canvasHeight / 2 - MARGIN
+      ),
+      description: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
+        canvasHeight / 2
+      ),
+      statistic: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
+        canvasHeight / 2 + MARGIN
+      ),
+      login: new Position(
+        canvasWidth - BUTTON_DIMENSION.width - MARGIN,
+        MARGIN / 2
+      ),
+      registration: new Position(
+        canvasWidth - BUTTON_DIMENSION.width - MARGIN,
+        BUTTON_DIMENSION.height / 2 + MARGIN
+      ),
+      namePlate: new Position(MARGIN, MARGIN),
+    },
+    newGame: {
+      back: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
+        canvasHeight / 2 - BUTTON_DIMENSION.height / 2 + MARGIN * 2
+      ),
+      create: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
+        canvasHeight / 2 - BUTTON_DIMENSION.height / 2 - MARGIN
+      ),
+      join: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
+        canvasHeight / 2 - BUTTON_DIMENSION.height / 2
+      ),
+    },
+    default: {
+      back: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2 - MARGIN * 3,
+        Math.max(canvasHeight - BUTTON_DIMENSION.height - MARGIN, 450)
+      ),
+      next: new Position(
+        canvasWidth / 2 - BUTTON_DIMENSION.width / 2 + MARGIN * 3,
+        Math.max(canvasHeight - BUTTON_DIMENSION.height - MARGIN, 450)
+      ),
+    },
+    auth: {
+      name: new Position(canvasWidth / 2 - 250, canvasHeight / 2 - MARGIN),
+      password: new Position(canvasWidth / 2 - 250, canvasHeight / 2 + 25),
+    },
+    code: new Position(canvasWidth / 2 - 500 / 2, canvasHeight / 2 + 20),
+    titlePos: new Position(
+      canvasWidth / 2 - TITLE_DIMENSION.width / 2,
+      canvasHeight / 15
+    ),
   },
 };

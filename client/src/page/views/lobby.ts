@@ -1,12 +1,10 @@
 import { PageState } from "@/enums/pageState";
 import { canvasWidth, canvasHeight } from "@/init";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Frame } from "@/page/components/frame";
 import { Text } from "@/page/components/text";
 import { Page } from "@/page/views/page";
-import { buttonPos } from "@/page/views/pos/buttonPos";
-import { titlePos } from "@/page/views/pos/titlePos";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
@@ -25,7 +23,7 @@ export class Lobby extends Page {
     super(title);
 
     this.start = new Button(
-      buttonPos.default.next,
+      settings.pos.default.next,
       settings.size.button,
       "name",
       "start",
@@ -33,7 +31,7 @@ export class Lobby extends Page {
     );
 
     this.backButton = new Button(
-      buttonPos.default.back,
+      settings.pos.default.back,
       settings.size.button,
       "name",
       "back",
@@ -43,7 +41,10 @@ export class Lobby extends Page {
     this.buttons.push(this.backButton);
 
     this.playerLabel = new Text(
-      new Position(canvasWidth / 2, titlePos.y + settings.margin + 55),
+      new Position(
+        canvasWidth / 2,
+        settings.pos.titlePos.y + settings.margin + 55
+      ),
       new Dimension(0, -20),
       GameStateManager.getPlayerName(),
       false,
@@ -53,8 +54,8 @@ export class Lobby extends Page {
 
     this.gameCode = new Text(
       new Position(
-        titlePos.x - settings.margin * 2,
-        titlePos.y + settings.margin + 80
+        settings.pos.titlePos.x - settings.margin * 2,
+        settings.pos.titlePos.y + settings.margin + 80
       ),
       new Dimension(0, -20),
       "Játék Kód:",
@@ -63,7 +64,10 @@ export class Lobby extends Page {
     );
 
     this.info = new Text(
-      new Position(canvasWidth / 2, titlePos.y + settings.margin + 115),
+      new Position(
+        canvasWidth / 2,
+        settings.pos.titlePos.y + settings.margin + 115
+      ),
       new Dimension(0, -20),
       "",
       false
@@ -72,8 +76,8 @@ export class Lobby extends Page {
 
     this.playersContainer = new Frame(
       new Position(
-        titlePos.x - settings.margin * 2,
-        titlePos.y + settings.margin + 125
+        settings.pos.titlePos.x - settings.margin * 2,
+        settings.pos.titlePos.y + settings.margin + 125
       ),
       new Dimension(580, Math.max(canvasHeight / 3, 200))
     );

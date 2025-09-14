@@ -1,9 +1,8 @@
 import { PageState } from "@/enums/pageState";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Plate } from "@/page/components/plate";
 import { Page } from "@/page/views/page";
-import { buttonPos } from "@/page/views/pos/buttonPos";
 import { settings } from "@/settings";
 
 export class MainMenu extends Page {
@@ -18,7 +17,7 @@ export class MainMenu extends Page {
     super(title);
 
     this.newGame = new Button(
-      buttonPos.mainMenu.newGame,
+      settings.pos.mainMenu.newGame,
       settings.size.button,
       "name",
       "newGame",
@@ -26,7 +25,7 @@ export class MainMenu extends Page {
     );
 
     this.description = new Button(
-      buttonPos.mainMenu.description,
+      settings.pos.mainMenu.description,
       settings.size.button,
       "name",
       "description",
@@ -34,7 +33,7 @@ export class MainMenu extends Page {
     );
 
     this.statistic = new Button(
-      buttonPos.mainMenu.statistic,
+      settings.pos.mainMenu.statistic,
       settings.size.button,
       "name",
       "statistic",
@@ -42,7 +41,7 @@ export class MainMenu extends Page {
     );
 
     this.login = new Button(
-      buttonPos.mainMenu.login,
+      settings.pos.mainMenu.login,
       settings.size.button,
       "name",
       "login",
@@ -50,7 +49,7 @@ export class MainMenu extends Page {
     );
 
     this.registration = new Button(
-      buttonPos.mainMenu.registration,
+      settings.pos.mainMenu.registration,
       settings.size.button,
       "name",
       "registration",
@@ -58,7 +57,7 @@ export class MainMenu extends Page {
     );
 
     this.namePlate = new Plate(
-      buttonPos.mainMenu.namePlate,
+      settings.pos.mainMenu.namePlate,
       settings.size.button,
       "name",
       "name"

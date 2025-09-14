@@ -18,7 +18,7 @@ import { Vector } from "@/utils/vector";
 import type { EntityType } from "@/types/game.types";
 import type { CallAble } from "@/interfaces/callAble";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 
 export abstract class Unit extends Entity implements CallAble {
   protected name: string;

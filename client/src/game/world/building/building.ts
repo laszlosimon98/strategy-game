@@ -2,7 +2,7 @@ import { Flag } from "@/game/world/building/flag";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import type { CallAble } from "@/interfaces/callAble";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
 import { UnitStates } from "@/enums/unitsState";
-import { Manager } from "@/game/world/manager/manager";
+import { Manager } from "@/game/world/manager";
 import { Cell } from "@/game/world/cell";
 import { unitRegister } from "@/game/world/unit/unitRegister";
 import { Soldier } from "@/game/world/unit/units/soldier";
@@ -17,7 +17,7 @@ import {
 } from "@/utils/utils";
 import { Unit } from "@/game/world/unit/unit";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;

@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 
 export class ServerHandler {
   private static socket: Socket;

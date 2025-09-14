@@ -3,7 +3,7 @@ import { MouseButtons } from "@/enums/mouse";
 import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { canvasHeight } from "@/init";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { PlayerGameType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";

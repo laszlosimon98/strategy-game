@@ -1,4 +1,4 @@
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Auth } from "@/page/views/auth/auth";
 
 export class Login extends Auth {

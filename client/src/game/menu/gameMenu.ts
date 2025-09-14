@@ -4,7 +4,7 @@ import { InfoPanel } from "@/game/menu/components/infoPanel";
 import { MainSection } from "@/game/menu/components/main/mainSection";
 import { Section } from "@/game/menu/components/section";
 import type { CallAble } from "@/interfaces/callAble";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";

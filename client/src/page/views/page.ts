@@ -1,7 +1,7 @@
 import { Button } from "@/page/components/button";
 import { Plate } from "@/page/components/plate";
 import { TextInput } from "@/page/components/textInput";
-import { titlePos } from "@/page/views/pos/titlePos";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -13,7 +13,10 @@ export abstract class Page {
   private plate: Plate;
 
   protected constructor(title: string) {
-    this.titlePos = new Position(titlePos.x, titlePos.y);
+    this.titlePos = new Position(
+      settings.pos.titlePos.x,
+      settings.pos.titlePos.y
+    );
 
     this.plate = new Plate(
       this.titlePos,

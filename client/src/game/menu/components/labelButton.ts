@@ -1,5 +1,5 @@
 import { GameState } from "@/enums/gameState";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";

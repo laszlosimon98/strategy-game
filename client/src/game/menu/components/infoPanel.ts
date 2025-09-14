@@ -1,6 +1,6 @@
 import { Section } from "@/game/menu/components/section";
 import { ctx } from "@/init";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";

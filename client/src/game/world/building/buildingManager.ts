@@ -5,13 +5,13 @@ import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
 import { buildingRegister } from "@/game/world/building/buildingRegister";
 import { FakeBuilding } from "@/game/world/building/fakeBuilding";
-import { Manager } from "@/game/world/manager/manager";
+import { Manager } from "@/game/world/manager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl, ySort } from "@/utils/utils";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;

@@ -1,13 +1,10 @@
 import { PageState } from "@/enums/pageState";
 import { canvasWidth } from "@/init";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Text } from "@/page/components/text";
 import { TextInput } from "@/page/components/textInput";
 import { Page } from "@/page/views/page";
-import { buttonPos } from "@/page/views/pos/buttonPos";
-import { inputPos } from "@/page/views/pos/inputPos";
-import { titlePos } from "@/page/views/pos/titlePos";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
@@ -24,7 +21,7 @@ export class Join extends Page {
     super(title);
 
     this.backButton = new Button(
-      buttonPos.default.back,
+      settings.pos.default.back,
       settings.size.button,
       "name",
       "back",
@@ -32,7 +29,7 @@ export class Join extends Page {
     );
 
     this.joinButton = new Button(
-      buttonPos.default.next,
+      settings.pos.default.next,
       settings.size.button,
       "name",
       "join",
@@ -40,7 +37,7 @@ export class Join extends Page {
     );
 
     this.codeInput = new TextInput(
-      inputPos.code,
+      settings.pos.code,
       new Dimension(500, 40),
       "",
       settings.color.inputBackground,
@@ -48,7 +45,7 @@ export class Join extends Page {
     );
 
     this.codeText = new Text(
-      inputPos.code,
+      settings.pos.code,
       new Dimension(0, -40),
       "Játék kód:",
       false,
@@ -60,7 +57,10 @@ export class Join extends Page {
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      new Position(canvasWidth / 2, titlePos.y + settings.margin * 2),
+      new Position(
+        canvasWidth / 2,
+        settings.pos.titlePos.y + settings.margin * 2
+      ),
       Dimension.zero(),
       "",
       false,

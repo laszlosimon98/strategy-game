@@ -3,7 +3,7 @@ import { BuildingManager } from "@/game/world/building/buildingManager";
 import { Cell } from "@/game/world/cell";
 import { UnitManager } from "@/game/world/unit/unitManager";
 import type { MouseClicker } from "@/interfaces/mouseClicker";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";

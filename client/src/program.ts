@@ -1,7 +1,7 @@
 import { PageState } from "@/enums/pageState";
 import { Game } from "@/game/game";
 import { ctx, canvasWidth, canvasHeight } from "@/init";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { TextInput } from "@/page/components/textInput";
 import { Login } from "@/page/views/auth/login";

@@ -5,7 +5,7 @@ import { ResourceSection } from "@/game/menu/components/building/buildingSection
 import { StorageSection } from "@/game/menu/components/building/buildingSections/storageSection";
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";

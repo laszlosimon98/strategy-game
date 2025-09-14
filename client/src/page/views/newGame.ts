@@ -1,8 +1,7 @@
 import { PageState } from "@/enums/pageState";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { Page } from "@/page/views/page";
-import { buttonPos } from "@/page/views/pos/buttonPos";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 
@@ -15,7 +14,7 @@ export class NewGame extends Page {
     super(title);
 
     this.create = new Button(
-      buttonPos.newGame.create,
+      settings.pos.newGame.create,
       settings.size.button,
       "name",
       "create",
@@ -23,7 +22,7 @@ export class NewGame extends Page {
     );
 
     this.join = new Button(
-      buttonPos.newGame.join,
+      settings.pos.newGame.join,
       settings.size.button,
       "name",
       "join",
@@ -31,7 +30,7 @@ export class NewGame extends Page {
     );
 
     this.backButton = new Button(
-      buttonPos.newGame.back,
+      settings.pos.newGame.back,
       settings.size.button,
       "name",
       "back",
