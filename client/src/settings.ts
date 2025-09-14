@@ -41,6 +41,10 @@ export const settings = {
     count: 8,
     speed: 8,
   },
+  gameMenu: {
+    pos: new Position(0, 100),
+    dim: new Dimension(250, 500),
+  },
   pos: {
     mainMenu: {
       newGame: new Position(

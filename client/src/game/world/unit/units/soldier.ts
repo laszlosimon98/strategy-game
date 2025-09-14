@@ -1,5 +1,6 @@
 import { UnitStates } from "@/enums/unitsState";
 import { Unit } from "@/game/world/unit/unit";
+import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { ctx } from "@/init";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
@@ -10,6 +11,7 @@ import { Timer } from "@/utils/timer";
 
 export class Soldier extends Unit {
   protected properties: SoldierPropertiesType;
+  private unitHealth: number;
 
   protected attackTimer: Timer;
   private rangeIndicator: RangeIndicator;
@@ -25,6 +27,7 @@ export class Soldier extends Unit {
   ) {
     super(entity, name);
     this.properties = properties;
+    this.unitHealth = this.properties.health;
 
     this.attackTimer = new Timer(1500);
     this.attackTimer.activate();
@@ -54,7 +57,7 @@ export class Soldier extends Unit {
     // this.visionIndicator.draw();
     super.draw();
 
-    if (this.properties.health < 100) {
+    if (this.properties.health < this.unitHealth || this.isHovered) {
       this.drawHealthBar();
     }
   }
@@ -113,20 +116,12 @@ export class Soldier extends Unit {
 
   private drawHealthBar(): void {
     ctx.save();
-    ctx.fillStyle = "#f00";
+    ctx.fillStyle = GameStateManager.getPlayerColor(this.entity.data.owner);
     ctx.fillRect(
-      this.renderPos.x + this.image.width / 2 - 25,
-      this.renderPos.y - 5,
-      50,
-      10
-    );
-
-    ctx.fillStyle = "#0f0";
-    ctx.fillRect(
-      this.renderPos.x + this.image.width / 2 - 25,
-      this.renderPos.y - 5,
+      this.renderPos.x + this.image.width / 2 - this.unitHealth / 4,
+      this.renderPos.y - 3,
       Math.max(0, this.properties.health / 2),
-      10
+      7
     );
     ctx.restore();
   }

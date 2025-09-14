@@ -5,6 +5,7 @@ import type { CallAble } from "@/interfaces/callAble";
 import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
+import { ServerHandler } from "@/server/serverHandler";
 
 export class Building extends Entity implements CallAble {
   private flagEntity: EntityType | undefined;
@@ -35,7 +36,7 @@ export class Building extends Entity implements CallAble {
 
     if (this.isHovered) {
       ctx.save();
-      ctx.strokeStyle = "#fff";
+      ctx.strokeStyle = GameStateManager.getPlayerColor(this.entity.data.owner);
       ctx.lineWidth = 2;
       ctx.strokeRect(
         this.renderPos.x,

@@ -2,13 +2,12 @@ import { GameState } from "@/enums/gameState";
 import { MouseButtons } from "@/enums/mouse";
 import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
-import { canvasHeight } from "@/init";
 import { GameStateManager } from "@/gameStateManager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { PlayerGameType } from "@/types/game.types";
-import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
+import { settings } from "@/settings";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -18,10 +17,7 @@ export class Game {
   private key: string;
 
   public constructor() {
-    this.gameMenu = new GameMenu(
-      new Position(0, (canvasHeight - 500) / 5),
-      new Dimension(250, 500)
-    );
+    this.gameMenu = new GameMenu(settings.gameMenu.pos, settings.gameMenu.dim);
 
     this.world = undefined;
     this.mousePos = Position.zero();
