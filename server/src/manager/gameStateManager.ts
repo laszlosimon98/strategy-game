@@ -209,7 +209,15 @@ export class GameStateManager {
   }
 
   public static getUnits(room: string, entity: EntityType): Unit[] {
-    return this.state[room].players[entity.data.owner].units;
+    return [...this.state[room].players[entity.data.owner].units];
+  }
+
+  public static setUnits(
+    room: string,
+    entity: EntityType,
+    units: Unit[]
+  ): void {
+    this.state[room].players[entity.data.owner].units = [...units];
   }
 
   public static getUnit(room: string, entity: EntityType): Unit | undefined {
@@ -217,5 +225,23 @@ export class GameStateManager {
     return units.find((unit) => unit.getEntity().data.id === entity.data.id);
   }
 
-  public static deleteUnit(room: string, socket: Socket, unit: Unit): void {}
+  public static getUnitIndex(room: string, entity: EntityType): number {
+    const units: Unit[] = this.getUnits(room, entity);
+    const indx: number = units.findIndex(
+      (unit) => unit.getEntity().data.id === entity.data.id
+    );
+    return indx;
+  }
+
+  public static deleteUnit(room: string, unit: Unit): void {
+    const entity: EntityType = unit.getEntity();
+
+    let units: Unit[] = this.getUnits(room, entity);
+    const unitIndx: number = this.getUnitIndex(room, entity);
+
+    if (unitIndx !== -1) {
+      units = [...units.splice(0, unitIndx), ...units.splice(unitIndx + 1)];
+      this.setUnits(room, entity, units);
+    }
+  }
 }

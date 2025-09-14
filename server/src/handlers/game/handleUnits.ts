@@ -149,11 +149,16 @@ export const handleUnits = (io: Server, socket: Socket) => {
           unit: _unit.getEntity(),
           opponent: _opponent.getEntity(),
         });
+        stopAttack(unit);
+        deleteUnit(_opponent);
       }
     }
   };
 
-  const deleteUnit = ({}): void => {};
+  const deleteUnit = (unit: Unit): void => {
+    const room: string = Communicate.getCurrentRoom(socket);
+    GameStateManager.deleteUnit(room, unit);
+  };
 
   socket.on("game:unitCreate", unitCreate);
 
