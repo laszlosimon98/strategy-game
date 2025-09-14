@@ -1,9 +1,9 @@
-import { state } from "@/data/state";
 import { Camera } from "@/game/camera/camera";
 import { BuildingManager } from "@/game/world/building/buildingManager";
 import { Cell } from "@/game/world/cell";
 import { UnitManager } from "@/game/world/unit/unitManager";
 import type { MouseClicker } from "@/interfaces/mouseClicker";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
@@ -28,7 +28,7 @@ export class World implements MouseClicker {
   }
 
   public init(): void {
-    console.log(state.game.players);
+    console.log(GameStateManager.getPlayers());
     ServerHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any }) => {
@@ -39,15 +39,18 @@ export class World implements MouseClicker {
               this.world[row].push(
                 new Cell(
                   new Indices(row, col),
-                  state.images.ground[tiles[row][col]].url,
-                  state.images.obstacles[obstacles[row][col]].url
+                  GameStateManager.getImages("ground", tiles[row][col]).url,
+                  GameStateManager.getImages(
+                    "obstacles",
+                    obstacles[row][col]
+                  ).url
                 )
               );
             } else {
               this.world[row].push(
                 new Cell(
                   new Indices(row, col),
-                  state.images.ground[tiles[row][col]].url
+                  GameStateManager.getImages("ground", tiles[row][col]).url
                 )
               );
             }
@@ -74,11 +77,11 @@ export class World implements MouseClicker {
     this.unitManager.draw();
     this.buildingManager.draw();
 
-    // this.world.forEach((tiles) => {
-    //   tiles.forEach((tile) => {
-    //     tile.drawObstacles();
-    //   });
-    // });
+    this.world.forEach((tiles) => {
+      tiles.forEach((tile) => {
+        tile.drawObstacles();
+      });
+    });
   }
 
   public update(dt: number, mousePos: Position, key: string): void {

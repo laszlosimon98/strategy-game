@@ -1,6 +1,7 @@
-import { state } from "@/data/state";
 import { GameState } from "@/enums/gameState";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
+import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -20,11 +21,18 @@ export class LabelButton extends Button {
     const imageFrom: string = type === "buildings" ? "buildings" : "gamemenu";
 
     if (imageFrom === "buildings") {
-      this.setImage(state.images[imageFrom][name].url);
+      this.setImage(GameStateManager.getImages(imageFrom, name).url);
     } else {
-      this.dim.width = state.images.ui[imageFrom][name].dimensions.width;
-      this.dim.height = state.images.ui[imageFrom][name].dimensions.height;
-      this.setImage(state.images.ui[imageFrom][name].url);
+      const dimensions: Dimension = GameStateManager.getImages(
+        "ui",
+        imageFrom,
+        name
+      ).dimensions;
+
+      this.dim.width = dimensions.width;
+      this.dim.height = dimensions.height;
+
+      this.setImage(GameStateManager.getImages("ui", imageFrom, name).url);
     }
 
     this.pos = new Position(pos.x + this.dim.width / 8 - 8, pos.y);
@@ -39,7 +47,11 @@ export class LabelButton extends Button {
   }
 
   selectBuilding(): void {
-    state.game.builder.data = state.images.buildings[this.name];
-    state.game.state = GameState.Build;
+    const selectedHouse: ImageItemType = GameStateManager.getImages(
+      "buildings",
+      this.name
+    );
+    GameStateManager.setBuilder(selectedHouse);
+    GameStateManager.setState(GameState.Build);
   }
 }

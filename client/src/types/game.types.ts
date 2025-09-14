@@ -8,7 +8,7 @@ import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
-type ColorsType =
+export type ColorsType =
   | "black"
   | "blue"
   | "brown"
@@ -18,20 +18,20 @@ type ColorsType =
   | "red"
   | "white";
 
-type ColorItemType =
-  | "archerattacking"
-  | "archeridle"
-  | "archerstatic"
-  | "archerwalking"
-  | "flag"
-  | "knightattacking"
-  | "knightidle"
-  | "knightstatic"
-  | "knightwalking";
+// type ColorItemType =
+//   | "archerattacking"
+//   | "archeridle"
+//   | "archerstatic"
+//   | "archerwalking"
+//   | "flag"
+//   | "knightattacking"
+//   | "knightidle"
+//   | "knightstatic"
+//   | "knightwalking";
 
-type ItemType = {
+export type ImageItemType = {
   url: string;
-  dimension: { width: number; height: number };
+  dimensions: { width: number; height: number };
 };
 
 export type EntityType = {

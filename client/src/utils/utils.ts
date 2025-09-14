@@ -1,8 +1,5 @@
-import { state } from "@/data/state";
 import { Entity } from "@/game/world/entity";
-import { Soldier } from "@/game/world/unit/units/soldier";
 import { settings } from "@/settings";
-import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
@@ -83,13 +80,6 @@ export const calculateDistance = (from: Position, to: Position): number => {
   const y = to.y - from.y;
   const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
   return distance;
-};
-
-export const findUnit = (entity: EntityType): Soldier => {
-  const { owner, id } = entity.data;
-  return state.game.players[owner].units.find(
-    (unit) => unit.getEntity().data.id === id
-  ) as Soldier;
 };
 
 export const removeElementFromArray = (arr: Entity[], element: Entity) => {

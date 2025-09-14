@@ -1,4 +1,3 @@
-import { state, initState } from "@/data/state";
 import { MainMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
@@ -6,6 +5,7 @@ import { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import type { CallAble } from "@/interfaces/callAble";
 import type { MouseClicker } from "@/interfaces/mouseClicker";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
@@ -30,8 +30,10 @@ export abstract class Manager<T> implements MouseClicker {
   protected abstract handleCommunication(): void;
 
   protected draw<T extends CallAble>(objectKey: string): void {
-    Object.keys(state.game.players).forEach((key) => {
-      const arr: T[] = state.game.players[key][objectKey] as unknown as T[];
+    Object.keys(GameStateManager.getPlayers()).forEach((key) => {
+      const arr: T[] = GameStateManager.getPlayers()[key][
+        objectKey
+      ] as unknown as T[];
       arr.forEach((object) => object.draw());
     });
   }
@@ -41,8 +43,10 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     objectKey: string
   ): void {
-    Object.keys(state.game.players).forEach((key) => {
-      const arr: T[] = state.game.players[key][objectKey] as unknown as T[];
+    Object.keys(GameStateManager.getPlayers()).forEach((key) => {
+      const arr: T[] = GameStateManager.getPlayers()[key][
+        objectKey
+      ] as unknown as T[];
       arr.forEach((object) => object.update(dt, cameraScroll));
     });
   }
@@ -65,7 +69,7 @@ export abstract class Manager<T> implements MouseClicker {
   protected initObject(): EntityType {
     return {
       data: {
-        ...initState.data,
+        ...GameStateManager.getInitData().data,
         owner: ServerHandler.getId(),
       },
     };
@@ -88,10 +92,10 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): void {
-    if (state.game.state !== GameState.Build) {
-      const objectArray: T[] = state.game.players[ServerHandler.getId()][
-        key
-      ] as unknown as T[];
+    if (GameStateManager.getState() !== GameState.Build) {
+      const objectArray: T[] = GameStateManager.getPlayers()[
+        ServerHandler.getId()
+      ][key] as unknown as T[];
 
       objectArray.forEach((object) => {
         object.setHover(isMouseIntersect(mousePos.sub(cameraScroll), object));
@@ -104,9 +108,9 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): T | undefined {
-    const objectArray: T[] = state.game.players[ServerHandler.getId()][
-      key
-    ] as unknown as T[];
+    const objectArray: T[] = GameStateManager.getPlayers()[
+      ServerHandler.getId()
+    ][key] as unknown as T[];
 
     const selectedObject = objectArray.find((object) => {
       if (isMouseIntersect(mousePos.sub(cameraScroll), object)) {
@@ -115,12 +119,12 @@ export abstract class Manager<T> implements MouseClicker {
     });
 
     if (selectedObject) {
-      state.infoPanel.data = selectedObject;
-      state.game.state = GameState.Selected;
-      state.navigation.prevMenuState = state.navigation.gameMenuState;
-      state.navigation.gameMenuState = MainMenuState.Info;
+      GameStateManager.setInfoPanelData(selectedObject);
+      GameStateManager.setGameState(GameState.Selected);
+      GameStateManager.setPrevMenuState(GameStateManager.getGameMenuState());
+      GameStateManager.setGameMenuState(MainMenuState.Info);
     } else {
-      state.game.state = GameState.Default;
+      GameStateManager.setGameState(GameState.Default);
     }
 
     return selectedObject;

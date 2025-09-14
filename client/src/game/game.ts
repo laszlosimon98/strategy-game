@@ -1,9 +1,9 @@
-import { state } from "@/data/state";
 import { GameState } from "@/enums/gameState";
 import { MouseButtons } from "@/enums/mouse";
 import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { canvasHeight } from "@/init";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { PlayerGameType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
@@ -36,21 +36,13 @@ export class Game {
     const players = await this.handleCommunication();
     this.initPlayers(players);
 
-    state.game.state = GameState.Default;
+    GameStateManager.setGameState(GameState.Default);
     this.world = new World();
     this.world.init();
   }
 
   private initPlayers(players: PlayerGameType): void {
-    Object.keys(players).forEach((id) => {
-      state.game.players[id] = {
-        name: players[id].name,
-        color: players[id].color,
-        buildings: [],
-        units: [],
-        movingUnits: [],
-      };
-    });
+    GameStateManager.initPlayers(players);
   }
 
   public draw(): void {

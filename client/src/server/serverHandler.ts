@@ -1,5 +1,5 @@
 import { io, Socket } from "socket.io-client";
-import { state } from "@/data/state";
+import { GameStateManager } from "@/manager/gameStateManager";
 
 export class ServerHandler {
   private static socket: Socket;
@@ -12,12 +12,12 @@ export class ServerHandler {
     }
 
     this.socket.once("connect_error", () => {
-      state.server.status = "offline";
+      GameStateManager.setServerStatus("offline");
       return;
     });
 
     this.socket.on("connect", () => {
-      state.server.status = "online";
+      GameStateManager.setServerStatus("online");
     });
 
     return this.socket;

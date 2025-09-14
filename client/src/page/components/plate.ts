@@ -22,7 +22,7 @@ export class Plate extends PageComponents {
     this.image = new Image(dim.width, dim.height);
 
     if (type !== "buildings" && type !== "menu") {
-      this.image.src = GameStateManager.getUIUrl(type + "plate");
+      this.image.src = GameStateManager.getImages("ui", `${type}plate`).url;
     }
 
     this.text = new Text(

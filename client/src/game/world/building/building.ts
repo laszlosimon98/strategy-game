@@ -1,8 +1,8 @@
-import { state } from "@/data/state";
 import { Flag } from "@/game/world/building/flag";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import type { CallAble } from "@/interfaces/callAble";
+import { GameStateManager } from "@/manager/gameStateManager";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 
@@ -16,8 +16,7 @@ export class Building extends Entity implements CallAble {
     if (hasFlag) {
       this.flagEntity = {
         data: {
-          ...state.images.colors[state.game.players[entity.data.owner].color]
-            .flag,
+          ...GameStateManager.getFlag(entity),
           indices: {
             ...entity.data.indices,
             i: entity.data.indices.i + 1,

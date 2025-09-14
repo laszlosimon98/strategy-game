@@ -1,6 +1,6 @@
-import { state } from "@/data/state";
 import { Section } from "@/game/menu/components/section";
 import { ctx } from "@/init";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { Button } from "@/page/components/button";
 import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";
@@ -27,11 +27,14 @@ export class InfoPanel extends Section {
 
   draw(): void {
     super.draw();
-    if (state.infoPanel.data) {
+
+    const infoPanelData = GameStateManager.getInfoPanelData();
+
+    if (infoPanelData) {
       ctx.fillText(
-        state.infoPanel.data.getName(),
+        infoPanelData.getName(),
         this.pos.x -
-          ctx.measureText(state.infoPanel.data.getName()).width / 2 +
+          ctx.measureText(infoPanelData.getName()).width / 2 +
           this.dim.width / 2,
         this.pos.y + 75
       );
@@ -51,22 +54,23 @@ export class InfoPanel extends Section {
   update(dt: number, mousePos: Position): void {
     this.deleteButton.update(dt, mousePos);
 
+    const infoPanelData = GameStateManager.getInfoPanelData();
+
     if (
-      state.infoPanel.data &&
-      ((state.infoPanel.data.getEntity().data.url.length &&
-        !this.image.src.length) ||
-        state.infoPanel.data?.getEntity().data.url !== this.image.src)
+      infoPanelData &&
+      ((infoPanelData.getEntity().data.url.length && !this.image.src.length) ||
+        infoPanelData?.getEntity().data.url !== this.image.src)
     ) {
-      this.image.src = state.infoPanel.data.getEntity().data.static;
+      this.image.src = infoPanelData.getEntity().data.static;
     }
   }
 
   public handleClick(mousePos: Position): void {
     if (this.deleteButton.isClicked(mousePos.x, mousePos.y)) {
-      state.navigation.gameMenuState = state.navigation.prevMenuState;
+      GameStateManager.setGameMenuState(GameStateManager.getPrevMenuState());
       ServerHandler.sendMessage(
         "game:destroy",
-        state.infoPanel.data?.getIndices()
+        GameStateManager.getInfoPanelData()?.getIndices()
       );
     }
   }

@@ -1,11 +1,11 @@
-import { state } from "@/data/state";
 import { SubMenuState } from "@/enums/gameMenuState";
-import { FoodSection } from "@/game/menu/components/building/components/foodSection";
-import { MilitarySection } from "@/game/menu/components/building/components/militarySection";
-import { ResourceSection } from "@/game/menu/components/building/components/resourceSection";
-import { StorageSection } from "@/game/menu/components/building/components/storageSection";
+import { FoodSection } from "@/game/menu/components/building/buildingSections/foodSection";
+import { MilitarySection } from "@/game/menu/components/building/buildingSections/militarySection";
+import { ResourceSection } from "@/game/menu/components/building/buildingSections/resourceSection";
+import { StorageSection } from "@/game/menu/components/building/buildingSections/storageSection";
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
+import { GameStateManager } from "@/manager/gameStateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -82,7 +82,7 @@ export class BuildingSection extends Section {
   public handleClick(mousePos: Position) {
     this.selectBuilding(
       mousePos,
-      this.subSections[state.navigation.subMenuState]?.getLabelButton()
+      this.subSections[GameStateManager.getSubMenuState()]?.getLabelButton()
     );
   }
 
