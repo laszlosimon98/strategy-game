@@ -1,42 +1,58 @@
 import { ctx } from "@/init";
-import { PageComponents } from "@/page/components/pageComponents";
 import { settings } from "@/settings";
-import { Dimension } from "@/utils/dimension";
+import type { Options } from "@/types/text.types";
 import { Position } from "@/utils/position";
 
-export class Text extends PageComponents {
+export class Text {
+  protected pos: Position;
   protected text: string;
   protected metrics: TextMetrics;
 
-  private isCentered: boolean;
   protected isSecret: boolean;
   private color: string;
 
-  public constructor(
-    pos: Position,
-    dim: Dimension,
-    text: string,
-    isSecret: boolean,
-    color?: string
-  ) {
-    super(pos, dim);
-
+  public constructor(pos: Position, text: string, options?: Options) {
+    this.pos = pos;
     this.text = text;
-    this.isSecret = isSecret;
+    this.isSecret = (options && options.isSecret) || false;
 
-    this.isCentered = false;
     this.metrics = ctx.measureText(this.text);
 
-    this.color = color ? color : settings.color.text;
+    this.color = options && options.color ? options.color : settings.color.text;
+
+    if (options && options.size) {
+      ctx.font = `${options.size}px sans-serif`;
+    }
   }
 
-  public setCenter(): void {
-    this.isCentered = true;
+  public setCenter(values: {
+    xFrom: number;
+    xTo: number;
+    yFrom: number;
+    yTo: number;
+  }): void {
+    const { xFrom, xTo, yFrom, yTo } = values;
+
+    this.pos.x = (xTo + xFrom) / 2 + xFrom / 2 - this.metrics.width / 2;
+    this.pos.y =
+      (yTo + yFrom) / 2 +
+      yFrom / 2 +
+      (this.metrics.actualBoundingBoxAscent -
+        this.metrics.actualBoundingBoxDescent) /
+        2;
+  }
+
+  public getPos(): Position {
+    return this.pos;
+  }
+
+  public setPos(pos: Position): void {
+    this.pos = pos;
   }
 
   public setText(text: string): void {
     this.text = text;
-    this.metrics = ctx.measureText(this.text);
+    this.metrics = ctx.measureText(text);
   }
 
   public getText(): string {
@@ -57,16 +73,8 @@ export class Text extends PageComponents {
             /\w+/g,
             new Array(this.text.length).fill("*").join("")
           ),
-
-      this.isCentered
-        ? this.pos.x + this.dim.width / 2 - this.metrics.width / 2
-        : this.pos.x + 5,
-
-      this.pos.y +
-        this.dim.height / 2 +
-        (this.metrics.actualBoundingBoxAscent -
-          this.metrics.actualBoundingBoxDescent) /
-          2
+      this.pos.x,
+      this.pos.y
     );
     ctx.restore();
   }

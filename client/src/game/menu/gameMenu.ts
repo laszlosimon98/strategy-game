@@ -3,9 +3,11 @@ import { BuildingSection } from "@/game/menu/components/building/buildingSection
 import { InfoPanel } from "@/game/menu/components/infoPanel";
 import { MainSection } from "@/game/menu/components/main/mainSection";
 import { Section } from "@/game/menu/components/section";
+import { StorageSection } from "@/game/menu/components/storage/storageSection";
 import type { CallAble } from "@/interfaces/callAble";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
+import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
@@ -21,28 +23,31 @@ export class GameMenu implements CallAble {
     this.pos = pos;
     this.dim = dim;
 
-    this.mainSection = new MainSection(pos, new Dimension(dim.width, 75));
+    this.mainSection = new MainSection(
+      pos,
+      new Dimension(dim.width, settings.offset.menuItem)
+    );
 
     this.frames = {
       [MainMenuState.Unselected]: new Section(
-        new Position(pos.x, pos.y + 74),
-        new Dimension(dim.width, dim.height - 75)
+        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.House]: new BuildingSection(
-        new Position(pos.x, pos.y + 74),
-        new Dimension(dim.width, dim.height - 75)
+        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
-      [MainMenuState.Storage]: new Section(
-        new Position(pos.x, pos.y + 74),
-        new Dimension(dim.width, dim.height - 75)
+      [MainMenuState.Storage]: new StorageSection(
+        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.Population]: new Section(
-        new Position(pos.x, pos.y + 74),
-        new Dimension(dim.width, dim.height - 75)
+        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.Info]: new InfoPanel(
-        new Position(pos.x, pos.y + 74),
-        new Dimension(dim.width, dim.height - 75)
+        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
     };
   }

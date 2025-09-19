@@ -65,7 +65,7 @@ export class UnitManager extends Manager<Unit> {
       data: {
         id: uuidv4(),
         owner: playerId,
-        url: StateManager.getImages("colors", color, `${name}idle`).url,
+        url: StateManager.getImages("units", color, `${name}idle`).url,
         indices,
         dimensions: settings.size.unit,
         position: this.pos,

@@ -46,7 +46,7 @@ export abstract class Unit extends Entity implements CallAble {
       data: {
         ...entity.data,
         static: StateManager.getImages(
-          "colors",
+          "units",
           StateManager.getPlayerColor(entity.data.owner),
           this.name
         ).url,
@@ -153,11 +153,8 @@ export abstract class Unit extends Entity implements CallAble {
     const entity: EntityType = {
       data: {
         ...this.entity.data,
-        url: StateManager.getImages(
-          "colors",
-          color,
-          `${this.name}${this.state}`
-        ).url,
+        url: StateManager.getImages("units", color, `${this.name}${this.state}`)
+          .url,
       },
     };
 

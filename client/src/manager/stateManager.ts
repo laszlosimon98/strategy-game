@@ -35,7 +35,7 @@ export class StateManager {
     images: {
       buildings: {},
       ui: {},
-      colors: {},
+      units: {},
       ground: {},
       obstacles: {},
     },
@@ -86,7 +86,7 @@ export class StateManager {
 
   // FIXME: any
   public static getFlag(entity: EntityType): any {
-    return this.state.images.colors[
+    return this.state.images.units[
       this.state.game.players[entity.data.owner].color
     ].flag;
   }

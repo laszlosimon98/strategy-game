@@ -63,7 +63,7 @@ type Images = {
     //     [item in ColorItemType]: ItemType;
     //   };
     // };
-    colors: any;
+    units: any;
     ground: any;
     ui: any;
     obstacles: any;

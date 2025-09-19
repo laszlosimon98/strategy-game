@@ -7,6 +7,7 @@ import { Page } from "@/page/views/page";
 import { settings } from "@/settings";
 import type { AuthType } from "@/types/auth.types";
 import { Dimension } from "@/utils/dimension";
+import { Position } from "@/utils/position";
 
 export class Auth extends Page {
   protected backButton: Button;
@@ -37,42 +38,42 @@ export class Auth extends Page {
       this.handleNext
     );
 
+    this.nameText = new Text(
+      new Position(settings.pos.auth.name.x, settings.pos.auth.name.y - 10),
+      "Felhasználó név: ",
+      {
+        color: settings.color.black,
+      }
+    );
+
     this.nameInput = new TextInput(
       settings.pos.auth.name,
-      new Dimension(500, 40),
-      "",
-      settings.color.inputBackground,
-      false
+      new Dimension(500, 40)
+    );
+
+    this.passwordText = new Text(
+      new Position(
+        settings.pos.auth.password.x,
+        settings.pos.auth.password.y - 10
+      ),
+      "Jelszó: ",
+      {
+        color: settings.color.black,
+      }
     );
 
     this.passwordInput = new TextInput(
       settings.pos.auth.password,
       new Dimension(500, 40),
-      "",
-      settings.color.inputBackground,
-      true
+      {
+        isSecret: true,
+      }
     );
 
     this.buttons.push(this.backButton);
     this.buttons.push(this.actionButton);
     this.inputs.push(this.nameInput);
     this.inputs.push(this.passwordInput);
-
-    this.nameText = new Text(
-      settings.pos.auth.name,
-      new Dimension(0, -40),
-      "Felhasználó név: ",
-      false,
-      settings.color.black
-    );
-
-    this.passwordText = new Text(
-      settings.pos.auth.password,
-      new Dimension(0, -40),
-      "Jelszó: ",
-      false,
-      settings.color.black
-    );
   }
 
   public draw(): void {

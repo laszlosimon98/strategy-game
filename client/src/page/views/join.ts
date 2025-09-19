@@ -36,37 +36,28 @@ export class Join extends Page {
       this.handleJoin
     );
 
-    this.codeInput = new TextInput(
-      settings.pos.code,
-      new Dimension(500, 40),
-      "",
-      settings.color.inputBackground,
-      false
-    );
+    this.codeText = new Text(Position.zero(), "Játék kód:", {
+      color: settings.color.black,
+    });
 
-    this.codeText = new Text(
-      settings.pos.code,
-      new Dimension(0, -40),
-      "Játék kód:",
-      false,
-      settings.color.black
-    );
+    this.codeText.setCenter({
+      xFrom: 0,
+      xTo: canvasWidth - 375,
+      yFrom: 425,
+      yTo: 0,
+    });
+
+    this.codeInput = new TextInput(settings.pos.code, new Dimension(500, 40));
 
     this.buttons.push(this.joinButton);
     this.buttons.push(this.backButton);
     this.inputs.push(this.codeInput);
 
     this.errorMessage = new Text(
-      new Position(
-        canvasWidth / 2,
-        settings.pos.titlePos.y + settings.margin * 2
-      ),
-      Dimension.zero(),
+      new Position(0, settings.pos.titlePos.y + settings.margin * 2),
       "",
-      false,
-      settings.color.error
+      { color: settings.color.error }
     );
-    this.errorMessage.setCenter();
 
     this.joinButton.handleError = this.handleError;
   }
@@ -87,7 +78,7 @@ export class Join extends Page {
 
   private handleLeave = () => {
     this.errorMessage.setText("");
-    this.codeInput.setText("");
+    this.codeInput.clearText();
     StateManager.setPageState(PageState.NewGame);
   };
 
@@ -99,11 +90,17 @@ export class Join extends Page {
     if (error) {
       StateManager.setPageState(PageState.JoinGame);
       this.errorMessage.setText(error);
-      this.codeInput.setText("");
+      this.errorMessage.setCenter({
+        xFrom: 0,
+        xTo: canvasWidth,
+        yFrom: settings.pos.titlePos.y + settings.margin + 100,
+        yTo: 0,
+      });
+      this.codeInput.clearText();
     } else {
       StateManager.setPageState(PageState.Lobby);
       this.errorMessage.setText("");
-      this.codeInput.setText("");
+      this.codeInput.clearText();
     }
   };
 }

@@ -41,38 +41,31 @@ export class Lobby extends Page {
     this.buttons.push(this.backButton);
 
     this.playerLabel = new Text(
-      new Position(
-        canvasWidth / 2,
-        settings.pos.titlePos.y + settings.margin + 55
-      ),
-      new Dimension(0, -20),
+      new Position(0, settings.pos.titlePos.y + settings.margin + 55),
       StateManager.getPlayerName(),
-      false,
-      settings.color.black
+      { color: settings.color.black }
     );
-    this.playerLabel.setCenter();
+
+    this.playerLabel.setCenter({
+      xFrom: 0,
+      xTo: canvasWidth,
+      yFrom: settings.pos.titlePos.y + settings.margin + 55,
+      yTo: 0,
+    });
 
     this.gameCode = new Text(
       new Position(
         settings.pos.titlePos.x - settings.margin * 2,
         settings.pos.titlePos.y + settings.margin + 80
       ),
-      new Dimension(0, -20),
       "Játék Kód:",
-      false,
-      settings.color.black
+      { color: settings.color.black }
     );
 
     this.info = new Text(
-      new Position(
-        canvasWidth / 2,
-        settings.pos.titlePos.y + settings.margin + 115
-      ),
-      new Dimension(0, -20),
-      "",
-      false
+      new Position(0, settings.pos.titlePos.y + settings.margin + 115),
+      ""
     );
-    this.info.setCenter();
 
     this.playersContainer = new Frame(
       new Position(
@@ -137,10 +130,8 @@ export class Lobby extends Page {
             settings.margin / 1.5 +
             (settings.margin / 1.5) * index
         ),
-        new Dimension(0, -40),
         player,
-        false,
-        settings.color.text
+        { color: settings.color.text }
       );
 
       return { [player]: text };
@@ -181,6 +172,12 @@ export class Lobby extends Page {
       ({ players, message }: { players: string[]; message: string }) => {
         this.info.setText(message);
         this.info.setColor(settings.color.info);
+        this.info.setCenter({
+          xFrom: 0,
+          xTo: canvasWidth,
+          yFrom: settings.pos.titlePos.y + settings.margin + 100,
+          yTo: 0,
+        });
 
         this.addNewPlayer(players);
       }

@@ -32,6 +32,7 @@ export const settings = {
   },
   offset: {
     item: 19,
+    menuItem: 75,
   },
   speed: {
     camera: 800,
@@ -97,7 +98,7 @@ export const settings = {
       name: new Position(canvasWidth / 2 - 250, canvasHeight / 2 - MARGIN),
       password: new Position(canvasWidth / 2 - 250, canvasHeight / 2 + 25),
     },
-    code: new Position(canvasWidth / 2 - 500 / 2, canvasHeight / 2 + 20),
+    code: new Position(canvasWidth / 2 - 500 / 2, canvasHeight / 2 - 20),
     titlePos: new Position(
       canvasWidth / 2 - TITLE_DIMENSION.width / 2,
       canvasHeight / 15

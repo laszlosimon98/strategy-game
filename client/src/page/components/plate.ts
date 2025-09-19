@@ -26,14 +26,17 @@ export class Plate extends PageComponents {
     }
 
     this.text = new Text(
-      pos,
-      dim,
+      new Position(pos.x, pos.y),
       language[StateManager.getLanguage()].buttonTexts[text as Buttons],
-      false,
-      settings.color.text
+      { color: settings.color.text }
     );
 
-    this.text.setCenter();
+    this.text.setCenter({
+      xFrom: pos.x,
+      xTo: dim.width,
+      yFrom: pos.y,
+      yTo: dim.height,
+    });
   }
 
   public draw(): void {
