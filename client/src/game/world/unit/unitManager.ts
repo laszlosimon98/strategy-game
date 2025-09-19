@@ -17,7 +17,7 @@ import {
 } from "@/utils/utils";
 import { Unit } from "@/game/world/unit/unit";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -26,7 +26,7 @@ export class UnitManager extends Manager<Unit> {
   public constructor() {
     super();
     this.selectedUnit = undefined;
-    this.keys = Object.keys(GameStateManager.getPlayers());
+    this.keys = Object.keys(StateManager.getPlayers());
   }
 
   public draw(): void {
@@ -58,14 +58,14 @@ export class UnitManager extends Manager<Unit> {
     cameraScroll: Position
   ): void {
     const playerId: string = ServerHandler.getId();
-    const color: string = GameStateManager.getPlayerColor(playerId);
+    const color: string = StateManager.getPlayerColor(playerId);
     const name = Math.random() < 0.5 ? "knight" : "archer";
 
     const unitEntity: EntityType = {
       data: {
         id: uuidv4(),
         owner: playerId,
-        url: GameStateManager.getImages("colors", color, `${name}idle`).url,
+        url: StateManager.getImages("colors", color, `${name}idle`).url,
         indices,
         dimensions: settings.size.unit,
         position: this.pos,
@@ -81,7 +81,7 @@ export class UnitManager extends Manager<Unit> {
       const entity: EntityType = this.selectedUnit.getEntity();
       const id: string = ServerHandler.getId();
 
-      GameStateManager.addUnitToMovingArray(id, this.selectedUnit);
+      StateManager.addUnitToMovingArray(id, this.selectedUnit);
       this.sendPathFindRequest(entity, indices);
     }
   }
@@ -92,15 +92,15 @@ export class UnitManager extends Manager<Unit> {
 
   public createUnit(entity: EntityType, unit: Unit): void {
     const id: string = entity.data.owner;
-    GameStateManager.createUnit(id, unit);
+    StateManager.createUnit(id, unit);
   }
 
   // FIXME: ezt optimalizálni kell
   private calculateAttack(): void {
-    GameStateManager.getSoldiers(ServerHandler.getId()).forEach((myUnit) => {
+    StateManager.getSoldiers(ServerHandler.getId()).forEach((myUnit) => {
       this.keys.forEach((otherId) => {
         if (ServerHandler.getId() !== otherId) {
-          GameStateManager.getSoldiers(otherId).forEach((otherUnit) => {
+          StateManager.getSoldiers(otherId).forEach((otherUnit) => {
             const distance = calculateDistance(
               isometricToCartesian(myUnit.getPosition()),
               isometricToCartesian(otherUnit.getPosition())
@@ -147,7 +147,7 @@ export class UnitManager extends Manager<Unit> {
   }
 
   private handleMove(dt: number): void {
-    GameStateManager.getMovingUnits(ServerHandler.getId()).forEach((unit) => {
+    StateManager.getMovingUnits(ServerHandler.getId()).forEach((unit) => {
       if (unit.getState() === UnitStates.Walking) {
         unit.move(dt);
       }
@@ -202,7 +202,7 @@ export class UnitManager extends Manager<Unit> {
           _path.push(this.world[i][j]);
         });
 
-        const unit = GameStateManager.findSoldier(entity);
+        const unit = StateManager.findSoldier(entity);
         unit.setPrevState(unit.getState());
         unit.setState(UnitStates.Walking);
         unit.setPath([..._path]);
@@ -212,7 +212,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStartAttacking",
       (entity: EntityType) => {
-        const _unit = GameStateManager.findSoldier(entity);
+        const _unit = StateManager.findSoldier(entity);
         _unit.setPrevState(_unit.getState());
         _unit.setState(UnitStates.Attacking);
       }
@@ -221,7 +221,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitStopAttacking",
       (entity: EntityType) => {
-        const _unit = GameStateManager.findSoldier(entity);
+        const _unit = StateManager.findSoldier(entity);
         _unit.setState(_unit.getPrevState());
         _unit.resetAnimation();
       }
@@ -238,7 +238,7 @@ export class UnitManager extends Manager<Unit> {
         newPos: Position;
         direction: string;
       }) => {
-        const unit = GameStateManager.findSoldier(entity);
+        const unit = StateManager.findSoldier(entity);
         unit.setPosition(new Position(newPos.x, newPos.y));
         unit.setFacing(direction);
       }
@@ -247,7 +247,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitDestinationReached",
       (entity: EntityType) => {
-        const unit = GameStateManager.findSoldier(entity);
+        const unit = StateManager.findSoldier(entity);
         unit.reset();
       }
     );
@@ -255,7 +255,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitDealDamage",
       ({ entity, health }: { entity: EntityType; health: number }) => {
-        const unit = GameStateManager.findSoldier(entity) as Soldier;
+        const unit = StateManager.findSoldier(entity) as Soldier;
 
         unit.setHealth(health);
       }
@@ -265,8 +265,8 @@ export class UnitManager extends Manager<Unit> {
       "game:unitDies",
       ({ unit, opponent }: { unit: EntityType; opponent: EntityType }) => {
         const { owner } = opponent.data;
-        const units = GameStateManager.getSoldiers(owner);
-        removeElementFromArray(units, GameStateManager.findSoldier(opponent));
+        const units = StateManager.getSoldiers(owner);
+        removeElementFromArray(units, StateManager.findSoldier(opponent));
 
         ServerHandler.sendMessage("game:unitStopAttacking", unit);
       }

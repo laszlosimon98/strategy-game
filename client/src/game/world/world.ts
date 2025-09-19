@@ -3,7 +3,7 @@ import { BuildingManager } from "@/game/world/building/buildingManager";
 import { Cell } from "@/game/world/cell";
 import { UnitManager } from "@/game/world/unit/unitManager";
 import type { MouseClicker } from "@/interfaces/mouseClicker";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
@@ -28,7 +28,7 @@ export class World implements MouseClicker {
   }
 
   public init(): void {
-    console.log(GameStateManager.getPlayers());
+    console.log(StateManager.getPlayers());
     ServerHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any }) => {
@@ -39,18 +39,15 @@ export class World implements MouseClicker {
               this.world[row].push(
                 new Cell(
                   new Indices(row, col),
-                  GameStateManager.getImages("ground", tiles[row][col]).url,
-                  GameStateManager.getImages(
-                    "obstacles",
-                    obstacles[row][col]
-                  ).url
+                  StateManager.getImages("ground", tiles[row][col]).url,
+                  StateManager.getImages("obstacles", obstacles[row][col]).url
                 )
               );
             } else {
               this.world[row].push(
                 new Cell(
                   new Indices(row, col),
-                  GameStateManager.getImages("ground", tiles[row][col]).url
+                  StateManager.getImages("ground", tiles[row][col]).url
                 )
               );
             }

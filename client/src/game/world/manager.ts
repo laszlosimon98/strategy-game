@@ -5,7 +5,7 @@ import { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import type { CallAble } from "@/interfaces/callAble";
 import type { MouseClicker } from "@/interfaces/mouseClicker";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
@@ -30,8 +30,8 @@ export abstract class Manager<T> implements MouseClicker {
   protected abstract handleCommunication(): void;
 
   protected draw<T extends CallAble>(objectKey: string): void {
-    Object.keys(GameStateManager.getPlayers()).forEach((key) => {
-      const arr: T[] = GameStateManager.getPlayers()[key][
+    Object.keys(StateManager.getPlayers()).forEach((key) => {
+      const arr: T[] = StateManager.getPlayers()[key][
         objectKey
       ] as unknown as T[];
       arr.forEach((object) => object.draw());
@@ -43,8 +43,8 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     objectKey: string
   ): void {
-    Object.keys(GameStateManager.getPlayers()).forEach((key) => {
-      const arr: T[] = GameStateManager.getPlayers()[key][
+    Object.keys(StateManager.getPlayers()).forEach((key) => {
+      const arr: T[] = StateManager.getPlayers()[key][
         objectKey
       ] as unknown as T[];
       arr.forEach((object) => object.update(dt, cameraScroll));
@@ -69,7 +69,7 @@ export abstract class Manager<T> implements MouseClicker {
   protected initObject(): EntityType {
     return {
       data: {
-        ...GameStateManager.getInitData().data,
+        ...StateManager.getInitData().data,
         owner: ServerHandler.getId(),
       },
     };
@@ -92,8 +92,8 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): void {
-    if (GameStateManager.getState() !== GameState.Build) {
-      const objectArray: T[] = GameStateManager.getPlayers()[
+    if (StateManager.getState() !== GameState.Build) {
+      const objectArray: T[] = StateManager.getPlayers()[
         ServerHandler.getId()
       ][key] as unknown as T[];
 
@@ -108,7 +108,7 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): T | undefined {
-    const objectArray: T[] = GameStateManager.getPlayers()[
+    const objectArray: T[] = StateManager.getPlayers()[
       ServerHandler.getId()
     ][key] as unknown as T[];
 
@@ -119,12 +119,12 @@ export abstract class Manager<T> implements MouseClicker {
     });
 
     if (selectedObject) {
-      GameStateManager.setInfoPanelData(selectedObject);
-      GameStateManager.setGameState(GameState.Selected);
-      GameStateManager.setPrevMenuState(GameStateManager.getGameMenuState());
-      GameStateManager.setGameMenuState(MainMenuState.Info);
+      StateManager.setInfoPanelData(selectedObject);
+      StateManager.setGameState(GameState.Selected);
+      StateManager.setPrevMenuState(StateManager.getGameMenuState());
+      StateManager.setGameMenuState(MainMenuState.Info);
     } else {
-      GameStateManager.setGameState(GameState.Default);
+      StateManager.setGameState(GameState.Default);
     }
 
     return selectedObject;

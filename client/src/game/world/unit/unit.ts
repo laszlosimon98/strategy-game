@@ -17,7 +17,7 @@ import { Vector } from "@/utils/vector";
 import type { EntityType } from "@/types/game.types";
 import type { CallAble } from "@/interfaces/callAble";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export abstract class Unit extends Entity implements CallAble {
   protected name: string;
@@ -45,9 +45,9 @@ export abstract class Unit extends Entity implements CallAble {
     this.entity = {
       data: {
         ...entity.data,
-        static: GameStateManager.getImages(
+        static: StateManager.getImages(
           "colors",
-          GameStateManager.getPlayerColor(entity.data.owner),
+          StateManager.getPlayerColor(entity.data.owner),
           this.name
         ).url,
       },
@@ -104,7 +104,7 @@ export abstract class Unit extends Entity implements CallAble {
 
     // if (this.isHovered) {
     //   ctx.save();
-    //   ctx.strokeStyle = GameStateManager.getPlayerColor(this.entity.data.owner);
+    //   ctx.strokeStyle = StateManager.getPlayerColor(this.entity.data.owner);
     //   ctx.lineWidth = 2;
     //   ctx.strokeRect(
     //     this.renderPos.x + this.image.width / 4,
@@ -148,12 +148,12 @@ export abstract class Unit extends Entity implements CallAble {
     this.state = newState;
 
     const owner: string = this.entity.data.owner;
-    const color: string = GameStateManager.getPlayerColor(owner);
+    const color: string = StateManager.getPlayerColor(owner);
 
     const entity: EntityType = {
       data: {
         ...this.entity.data,
-        url: GameStateManager.getImages(
+        url: StateManager.getImages(
           "colors",
           color,
           `${this.name}${this.state}`
@@ -238,10 +238,10 @@ export abstract class Unit extends Entity implements CallAble {
     this.path = [];
 
     const id: string = ServerHandler.getId();
-    const movingUnits = GameStateManager.getMovingUnits(id);
+    const movingUnits = StateManager.getMovingUnits(id);
     removeElementFromArray(
       movingUnits,
-      GameStateManager.findSoldier(this.getEntity())
+      StateManager.findSoldier(this.getEntity())
     );
   }
 
@@ -295,7 +295,7 @@ export abstract class Unit extends Entity implements CallAble {
         this.path.shift();
       }
       this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
-      ySort(GameStateManager.getSoldiers(ServerHandler.getId()));
+      ySort(StateManager.getSoldiers(ServerHandler.getId()));
     } else {
       this.sendDestinationReachedRequest(this.entity);
     }

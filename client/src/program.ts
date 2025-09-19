@@ -1,7 +1,7 @@
 import { PageState } from "@/enums/pageState";
 import { Game } from "@/game/game";
 import { ctx, canvasWidth, canvasHeight } from "@/init";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { TextInput } from "@/page/components/textInput";
 import { Login } from "@/page/views/auth/login";
@@ -41,7 +41,7 @@ export class Program {
       [PageState.JoinGame]: new Join("join"),
     };
 
-    this.buttons = this.pages[GameStateManager.getPageState()]?.getButtons();
+    this.buttons = this.pages[StateManager.getPageState()]?.getButtons();
 
     document.addEventListener("mousedown", (e: MouseEvent) =>
       this.handleMouseClick(e)
@@ -64,11 +64,11 @@ export class Program {
     );
 
     window.addEventListener("resize", () => {
-      this.pages[GameStateManager.getPageState()]?.resize();
+      this.pages[StateManager.getPageState()]?.resize();
     });
 
     ServerHandler.receiveMessage("game:starts", () => {
-      GameStateManager.setPageState(PageState.Game);
+      StateManager.setPageState(PageState.Game);
       this.game = new Game();
     });
   }
@@ -77,9 +77,9 @@ export class Program {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    if (GameStateManager.getPageState() !== PageState.Game) {
+    if (StateManager.getPageState() !== PageState.Game) {
       ctx.fillStyle = settings.color.background;
-      this.pages[GameStateManager.getPageState()]?.draw();
+      this.pages[StateManager.getPageState()]?.draw();
     } else {
       ctx.fillStyle = settings.color.black;
       this.game?.draw();
@@ -87,9 +87,9 @@ export class Program {
   }
 
   public update(dt: number): void {
-    if (GameStateManager.getPageState() !== PageState.Game) {
+    if (StateManager.getPageState() !== PageState.Game) {
       this.buttons?.map((btn) => btn.update(dt, this.mousePos));
-      this.pages[GameStateManager.getPageState()]?.update();
+      this.pages[StateManager.getPageState()]?.update();
     } else {
       this.game?.update(dt);
     }
@@ -105,7 +105,7 @@ export class Program {
   private handleMouseClick(e: MouseEvent) {
     const [x, y] = [e.clientX, e.clientY];
 
-    if (GameStateManager.getPageState() !== PageState.Game) {
+    if (StateManager.getPageState() !== PageState.Game) {
       this.buttons?.map(async (btn) => {
         if (btn.isClicked(x, y)) {
           btn.click();
@@ -151,10 +151,10 @@ export class Program {
   }
 
   private updateButtons(): void {
-    this.buttons = this.pages[GameStateManager.getPageState()]?.getButtons();
+    this.buttons = this.pages[StateManager.getPageState()]?.getButtons();
   }
 
   private updateInputs(): void {
-    this.inputs = this.pages[GameStateManager.getPageState()]?.getInputs();
+    this.inputs = this.pages[StateManager.getPageState()]?.getInputs();
   }
 }

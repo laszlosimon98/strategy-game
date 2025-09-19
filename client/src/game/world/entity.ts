@@ -1,4 +1,4 @@
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { ctx } from "@/init";
 import type { CallAble } from "@/interfaces/callAble";
 import { language, type Buildings, type Units } from "@/languages/language";
@@ -86,7 +86,7 @@ export abstract class Entity implements CallAble {
 
   public getBuildingName(): string {
     const objectName: string =
-      language[GameStateManager.getLanguage()].buildings[
+      language[StateManager.getLanguage()].buildings[
         getImageNameFromUrl(this.entity.data.static) as unknown as Buildings
       ];
     return objectName;
@@ -94,7 +94,7 @@ export abstract class Entity implements CallAble {
 
   public getUnitName(): string {
     const objectName: string =
-      language[GameStateManager.getLanguage()].units[
+      language[StateManager.getLanguage()].units[
         getImageNameFromUrl(this.entity.data.static) as unknown as Units
       ];
     return objectName;

@@ -11,7 +11,7 @@ import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl, ySort } from "@/utils/utils";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;
@@ -36,11 +36,11 @@ export class BuildingManager extends Manager<Building> {
     mousePos: Position,
     cameraScroll: Position
   ): void {
-    if (GameStateManager.getGameMenuState() === MainMenuState.Info) {
-      GameStateManager.setGameMenuState(GameStateManager.getPrevMenuState());
+    if (StateManager.getGameMenuState() === MainMenuState.Info) {
+      StateManager.setGameMenuState(StateManager.getPrevMenuState());
     }
 
-    switch (GameStateManager.getState()) {
+    switch (StateManager.getState()) {
       case GameState.Default: {
         this.selectObject(mousePos, cameraScroll, "buildings");
         break;
@@ -64,7 +64,7 @@ export class BuildingManager extends Manager<Building> {
   }
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
-    if (GameStateManager.getBuilder().data.url.length) {
+    if (StateManager.getBuilder().data.url.length) {
       this.setFakeHouse();
     }
     this.hoverObject(mousePos, cameraScroll, "buildings");
@@ -79,14 +79,14 @@ export class BuildingManager extends Manager<Building> {
     );
 
     this.setObjectPosition(newBuilding, entity.data.position);
-    GameStateManager.createBuilding(entity, newBuilding);
-    ySort(GameStateManager.getBuildings(entity.data.owner));
+    StateManager.createBuilding(entity, newBuilding);
+    ySort(StateManager.getBuildings(entity.data.owner));
   }
 
   private setFakeHouse(): void {
     const entity: EntityType = {
       data: {
-        ...GameStateManager.getBuilder().data,
+        ...StateManager.getBuilder().data,
         position: this.pos,
         owner: ServerHandler.getId(),
         id: uuidv4(),
@@ -98,7 +98,7 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private destroy(id: string, indices: Indices): void {
-    const buildings = GameStateManager.getBuildings(id);
+    const buildings = StateManager.getBuildings(id);
 
     for (let i = buildings.length - 1; i >= 0; --i) {
       const buildingIndices = buildings[i].getIndices();
@@ -110,15 +110,15 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private resetStates(): void {
-    GameStateManager.resetBuilder();
-    this.fakeHouse.setBuilding(GameStateManager.getInitData());
+    StateManager.resetBuilder();
+    this.fakeHouse.setBuilding(StateManager.getInitData());
   }
 
   private sendBuildRequest(indices: Indices): void {
-    if (GameStateManager.getBuilder().data.url.length) {
+    if (StateManager.getBuilder().data.url.length) {
       const entity: EntityType = {
         data: {
-          ...GameStateManager.getBuilder().data,
+          ...StateManager.getBuilder().data,
           indices,
           owner: ServerHandler.getId(),
           position: this.pos,

@@ -1,6 +1,6 @@
 import { Section } from "@/game/menu/components/section";
 import { ctx } from "@/init";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";
@@ -31,7 +31,7 @@ export class InfoPanel extends Section {
   draw(): void {
     super.draw();
 
-    const infoPanelData = GameStateManager.getInfoPanelData();
+    const infoPanelData = StateManager.getInfoPanelData();
 
     if (infoPanelData) {
       let name: string = "";
@@ -64,7 +64,7 @@ export class InfoPanel extends Section {
   update(dt: number, mousePos: Position): void {
     this.deleteButton.update(dt, mousePos);
 
-    const infoPanelData = GameStateManager.getInfoPanelData();
+    const infoPanelData = StateManager.getInfoPanelData();
 
     if (
       infoPanelData &&
@@ -77,10 +77,10 @@ export class InfoPanel extends Section {
 
   public handleClick(mousePos: Position): void {
     if (this.deleteButton.isClicked(mousePos.x, mousePos.y)) {
-      GameStateManager.setGameMenuState(GameStateManager.getPrevMenuState());
+      StateManager.setGameMenuState(StateManager.getPrevMenuState());
       ServerHandler.sendMessage(
         "game:destroy",
-        GameStateManager.getInfoPanelData()?.getIndices()
+        StateManager.getInfoPanelData()?.getIndices()
       );
     }
   }

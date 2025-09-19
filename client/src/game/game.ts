@@ -2,7 +2,7 @@ import { GameState } from "@/enums/gameState";
 import { MouseButtons } from "@/enums/mouse";
 import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { PlayerGameType } from "@/types/game.types";
 import { Position } from "@/utils/position";
@@ -32,13 +32,13 @@ export class Game {
     const players = await this.handleCommunication();
     this.initPlayers(players);
 
-    GameStateManager.setGameState(GameState.Default);
+    StateManager.setGameState(GameState.Default);
     this.world = new World();
     this.world.init();
   }
 
   private initPlayers(players: PlayerGameType): void {
-    GameStateManager.initPlayers(players);
+    StateManager.initPlayers(players);
   }
 
   public draw(): void {

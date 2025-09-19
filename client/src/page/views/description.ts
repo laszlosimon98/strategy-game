@@ -1,5 +1,5 @@
 import { PageState } from "@/enums/pageState";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Page } from "@/page/views/page";
 import { settings } from "@/settings";
@@ -15,7 +15,7 @@ export class Description extends Page {
       settings.size.button,
       "name",
       "back",
-      () => GameStateManager.setPageState(PageState.MainMenu)
+      () => StateManager.setPageState(PageState.MainMenu)
     );
 
     this.buttons.push(this.backButton);

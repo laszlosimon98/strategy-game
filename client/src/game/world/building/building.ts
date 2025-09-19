@@ -2,7 +2,7 @@ import { Flag } from "@/game/world/building/flag";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import type { CallAble } from "@/interfaces/callAble";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 
@@ -16,7 +16,7 @@ export class Building extends Entity implements CallAble {
     if (hasFlag) {
       this.flagEntity = {
         data: {
-          ...GameStateManager.getFlag(entity),
+          ...StateManager.getFlag(entity),
           indices: {
             ...entity.data.indices,
             i: entity.data.indices.i + 1,
@@ -35,7 +35,7 @@ export class Building extends Entity implements CallAble {
 
     if (this.isHovered) {
       ctx.save();
-      ctx.strokeStyle = GameStateManager.getPlayerColor(this.entity.data.owner);
+      ctx.strokeStyle = StateManager.getPlayerColor(this.entity.data.owner);
       ctx.lineWidth = 2;
       ctx.strokeRect(
         this.renderPos.x,

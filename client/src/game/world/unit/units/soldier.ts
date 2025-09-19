@@ -1,6 +1,6 @@
 import { UnitStates } from "@/enums/unitsState";
 import { Unit } from "@/game/world/unit/unit";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { ctx } from "@/init";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
@@ -100,7 +100,7 @@ export class Soldier extends Unit {
 
   private drawHealthBar(): void {
     ctx.save();
-    ctx.fillStyle = GameStateManager.getPlayerColor(this.entity.data.owner);
+    ctx.fillStyle = StateManager.getPlayerColor(this.entity.data.owner);
     ctx.fillRect(
       this.renderPos.x + this.image.width / 2 - this.unitHealth / 4,
       this.renderPos.y - 3,

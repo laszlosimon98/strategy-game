@@ -4,7 +4,7 @@ import { InfoPanel } from "@/game/menu/components/infoPanel";
 import { MainSection } from "@/game/menu/components/main/mainSection";
 import { Section } from "@/game/menu/components/section";
 import type { CallAble } from "@/interfaces/callAble";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -67,12 +67,12 @@ export class GameMenu implements CallAble {
 
   public draw(): void {
     this.mainSection.draw();
-    this.frames[GameStateManager.getGameMenuState()].draw();
+    this.frames[StateManager.getGameMenuState()].draw();
   }
 
   public update(dt: number, mousePos: Position): void {
     this.mainSection.update(dt, mousePos);
-    this.frames[GameStateManager.getGameMenuState()].update(dt, mousePos);
+    this.frames[StateManager.getGameMenuState()].update(dt, mousePos);
   }
 
   public handleClick(mousePos: Position): void {
@@ -80,10 +80,10 @@ export class GameMenu implements CallAble {
     this.updateImages(
       "Sub",
       mousePos,
-      this.frames[GameStateManager.getGameMenuState()].getButtons()
+      this.frames[StateManager.getGameMenuState()].getButtons()
     );
 
-    this.frames[GameStateManager.getGameMenuState()].handleClick(mousePos);
+    this.frames[StateManager.getGameMenuState()].handleClick(mousePos);
   }
 
   public updateImages(
@@ -100,14 +100,12 @@ export class GameMenu implements CallAble {
         this.resetButtonImage(buttons);
         const image: string = getImageNameFromUrl(button.getImage());
         const select = `${image}_selected`;
-        button.setImage(
-          GameStateManager.getImages("ui", "gamemenu", select).url
-        );
+        button.setImage(StateManager.getImages("ui", "gamemenu", select).url);
 
         if (type === "Main") {
-          GameStateManager.setGameMenuStateByIndex(index + 1);
+          StateManager.setGameMenuStateByIndex(index + 1);
         } else if (type === "Sub") {
-          GameStateManager.setSubMenuStateByIndex(index + 1);
+          StateManager.setSubMenuStateByIndex(index + 1);
         }
       }
     });
@@ -121,7 +119,7 @@ export class GameMenu implements CallAble {
         image = image.split("_")[0];
       }
 
-      button.setImage(GameStateManager.getImages("ui", "gamemenu", image).url);
+      button.setImage(StateManager.getImages("ui", "gamemenu", image).url);
     });
   }
 }

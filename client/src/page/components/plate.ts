@@ -5,7 +5,7 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export class Plate extends PageComponents {
   protected image: HTMLImageElement;
@@ -22,13 +22,13 @@ export class Plate extends PageComponents {
     this.image = new Image(dim.width, dim.height);
 
     if (type !== "buildings" && type !== "menu") {
-      this.image.src = GameStateManager.getImages("ui", `${type}plate`).url;
+      this.image.src = StateManager.getImages("ui", `${type}plate`).url;
     }
 
     this.text = new Text(
       pos,
       dim,
-      language[GameStateManager.getLanguage()].buttonTexts[text as Buttons],
+      language[StateManager.getLanguage()].buttonTexts[text as Buttons],
       false,
       settings.color.text
     );

@@ -1,5 +1,5 @@
 import { GameState } from "@/enums/gameState";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
@@ -22,9 +22,9 @@ export class LabelButton extends Button {
       type === "buildings" ? "buildings" : "gamemenu";
 
     if (imageFrom === "buildings") {
-      this.setImage(GameStateManager.getImages(imageFrom, name).url);
+      this.setImage(StateManager.getImages(imageFrom, name).url);
     } else {
-      const dimensions: Dimension = GameStateManager.getImages(
+      const dimensions: Dimension = StateManager.getImages(
         "ui",
         imageFrom,
         name
@@ -33,7 +33,7 @@ export class LabelButton extends Button {
       this.dim.width = dimensions.width;
       this.dim.height = dimensions.height;
 
-      this.setImage(GameStateManager.getImages("ui", imageFrom, name).url);
+      this.setImage(StateManager.getImages("ui", imageFrom, name).url);
     }
 
     this.pos = new Position(pos.x + this.dim.width / 8 - 8, pos.y);
@@ -48,11 +48,11 @@ export class LabelButton extends Button {
   }
 
   selectBuilding(): void {
-    const selectedHouse: ImageItemType = GameStateManager.getImages(
+    const selectedHouse: ImageItemType = StateManager.getImages(
       "buildings",
       this.name
     );
-    GameStateManager.setBuilder(selectedHouse);
-    GameStateManager.setState(GameState.Build);
+    StateManager.setBuilder(selectedHouse);
+    StateManager.setState(GameState.Build);
   }
 }

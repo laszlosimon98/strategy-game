@@ -5,7 +5,7 @@ import { ResourceSection } from "@/game/menu/components/building/buildingSection
 import { StorageSection } from "@/game/menu/components/building/buildingSections/storageSection";
 import { LabelButton } from "@/game/menu/components/labelButton";
 import { Section } from "@/game/menu/components/section";
-import { GameStateManager } from "@/gameStateManager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -82,7 +82,7 @@ export class BuildingSection extends Section {
   public handleClick(mousePos: Position) {
     this.selectBuilding(
       mousePos,
-      this.subSections[GameStateManager.getSubMenuState()]?.getLabelButton()
+      this.subSections[StateManager.getSubMenuState()]?.getLabelButton()
     );
   }
 
