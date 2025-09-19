@@ -193,6 +193,7 @@ export class GameStateManager {
         buildings: [],
         units: [],
         movingUnits: [],
+        storage: players[id].storage,
       };
     });
   }

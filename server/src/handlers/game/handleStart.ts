@@ -6,26 +6,36 @@ import { Indices } from "@/classes/utils/indices";
 import type { PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
 import type { TileType } from "@/types/world.types";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
     const currentRoom: string = ServerHandler.getCurrentRoom(socket);
 
-    GameStateManager.startGame(currentRoom);
+    StateManager.startGame(currentRoom);
     ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
+    // initStorage(currentRoom);
     initPlayers(currentRoom);
     createWorld();
     placePlayers(currentRoom);
   };
+
+  // const initStorage = (currentRoom: string) => {
+  //   ServerHandler.sendMessageToEveryOne(
+  //     io,
+  //     socket,
+  //     "game:initStorage",
+  //     StateManager.getStorage(currentRoom)
+  //   );
+  // };
 
   const initPlayers = (currentRoom: string) => {
     ServerHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:initPlayers",
-      GameStateManager.getPlayers(currentRoom)
+      StateManager.getPlayers(currentRoom)
     );
   };
 
@@ -43,7 +53,7 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const placePlayers = (currentRoom: string) => {
-    const players: PlayerType = GameStateManager.getPlayers(currentRoom);
+    const players: PlayerType = StateManager.getPlayers(currentRoom);
 
     Object.keys(players).forEach((id) => {
       const i = Math.floor(Math.random() * settings.mapSize);

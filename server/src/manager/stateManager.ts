@@ -11,8 +11,9 @@ import type {
 } from "@/types/state.types";
 import type { UnitsType } from "@/types/units.types";
 import { Server, Socket } from "socket.io";
+import { StorageManager } from "@/manager/storageManager";
 
-export class GameStateManager {
+export class StateManager {
   private static state: InitialStateType = {};
   private static unitProperties: UnitsType = {
     knight: {
@@ -51,7 +52,7 @@ export class GameStateManager {
     room: string,
     name: string
   ): void {
-    const names = GameStateManager.getPlayersNameInRoom(room);
+    const names = this.getPlayersNameInRoom(room);
     ServerHandler.sendMessageToEveryOne(io, socket, "connect:newPlayer", {
       players: names,
       message: `${name} csatlakozott a váróhoz!`,
@@ -130,6 +131,7 @@ export class GameStateManager {
       color: this.chooseColor(this.state[room].remainingColors),
       buildings: [],
       units: [],
+      storage: StorageManager.getInitStorage(),
     };
   }
 

@@ -4,6 +4,7 @@ import { Unit } from "@/classes/game/unit";
 import { Dimension } from "@/classes/utils/dimension";
 import { Indices } from "@/classes/utils/indices";
 import type { Position } from "@/types/position.types";
+import { StorageType } from "@/types/storage.types";
 
 export type ColorType =
   | "black"
@@ -32,6 +33,7 @@ export type PlayerType = {
     color: ColorType;
     buildings: Building[];
     units: Unit[];
+    storage: StorageType;
   };
 };
 

@@ -8,7 +8,7 @@ import { getImageNameFromUrl } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
 import type { EntityType } from "@/types/state.types";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export class Builder {
   private constructor() {}
@@ -74,7 +74,7 @@ export class Builder {
     building.setOwner(socket.id);
 
     const room: string = ServerHandler.getCurrentRoom(socket);
-    GameStateManager.createBuilding(room, socket, building);
+    StateManager.createBuilding(room, socket, building);
 
     this.occupyCells(entity.data.indices, world, buildingName);
 
@@ -88,7 +88,7 @@ export class Builder {
     const j = indices.j;
 
     if (world[i][j].cellHasObstacle()) {
-      const buildings: Building[] = GameStateManager.getBuildings(room, socket);
+      const buildings: Building[] = StateManager.getBuildings(room, socket);
 
       for (let index = buildings.length - 1; index >= 0; --index) {
         const building: Building = buildings[index];
@@ -104,7 +104,7 @@ export class Builder {
         }
 
         if (buildingIndices.i === i && buildingIndices.j === j) {
-          GameStateManager.destroyBuilding(room, socket, building);
+          StateManager.destroyBuilding(room, socket, building);
         }
       }
 

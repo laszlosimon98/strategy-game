@@ -2,23 +2,23 @@ import { Server, Socket } from "socket.io";
 
 import { ServerHandler } from "@/classes/serverHandler";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export const connectionHandler = (io: Server, socket: Socket) => {
   const createGame = ({ name }: { name: string }) => {
-    const room = GameStateManager.generateGameCode();
+    const room = StateManager.generateGameCode();
 
-    GameStateManager.initRoom(room);
-    GameStateManager.initPlayerInRoom(room, name, socket);
+    StateManager.initRoom(room);
+    StateManager.initPlayerInRoom(room, name, socket);
 
     socket.join(room);
 
     ServerHandler.sendMessageToSender(socket, "connect:code", { code: room });
-    GameStateManager.newPlayerMessage(io, socket, room, name);
+    StateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const joinGame = ({ code: room, name }: { code: string; name: string }) => {
-    if (!GameStateManager.isRoomExists(room, io)) {
+    if (!StateManager.isRoomExists(room, io)) {
       ServerHandler.sendMessageToSender(
         socket,
         "connect:error",
@@ -27,7 +27,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (GameStateManager.getRoomSize(room, io) >= settings.maxPlayer) {
+    if (StateManager.getRoomSize(room, io) >= settings.maxPlayer) {
       ServerHandler.sendMessageToSender(
         socket,
         "connect:error",
@@ -36,7 +36,7 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (GameStateManager.isGameStarted(room)) {
+    if (StateManager.isGameStarted(room)) {
       ServerHandler.sendMessageToSender(
         socket,
         "connect:error",
@@ -45,28 +45,28 @@ export const connectionHandler = (io: Server, socket: Socket) => {
       return;
     }
 
-    GameStateManager.initPlayerInRoom(room, name, socket);
+    StateManager.initPlayerInRoom(room, name, socket);
 
     socket.join(room);
 
     ServerHandler.sendMessageToSender(socket, "connect:error", "");
     ServerHandler.sendMessageToSender(socket, "connect:code", { code: room });
-    GameStateManager.newPlayerMessage(io, socket, room, name);
+    StateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const disconnect = () => {
     const room = ServerHandler.getCurrentRoom(socket);
 
     if (room) {
-      const user = GameStateManager.getPlayer(room, socket);
-      GameStateManager.restoreColor(room, user.color);
-      GameStateManager.playerleftMessage(io, socket, user.name);
-      GameStateManager.disconnectPlayer(room, socket);
+      const user = StateManager.getPlayer(room, socket);
+      StateManager.restoreColor(room, user.color);
+      StateManager.playerleftMessage(io, socket, user.name);
+      StateManager.disconnectPlayer(room, socket);
 
-      const isGameRoomEmpty: boolean = GameStateManager.isGameRoomEmpty(room);
+      const isGameRoomEmpty: boolean = StateManager.isGameRoomEmpty(room);
 
       if (isGameRoomEmpty) {
-        GameStateManager.deleteLobby(room);
+        StateManager.deleteLobby(room);
       }
     }
     socket.leave(room);

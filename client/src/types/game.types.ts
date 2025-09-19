@@ -4,6 +4,7 @@ import { PageState } from "@/enums/pageState";
 import { Building } from "@/game/world/building/building";
 import { Unit } from "@/game/world/unit/unit";
 import { Soldier } from "@/game/world/unit/units/soldier";
+import type { StorageType } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -99,12 +100,13 @@ type InfoType = {
 
 export type PlayerGameType = {
   [code: string]: {
-    [key: string]: string | ColorsType | Building[] | Unit[];
+    [key: string]: string | ColorsType | Building[] | Unit[] | StorageType;
     name: string;
     color: ColorsType;
     buildings: Building[];
     units: Soldier[];
     movingUnits: Unit[];
+    storage: StorageType;
   };
 };
 

@@ -6,7 +6,7 @@ import { ServerHandler } from "@/classes/serverHandler";
 import { Cell } from "@/classes/game/cell";
 import { Indices } from "@/classes/utils/indices";
 import { settings } from "@/settings";
-import { GameStateManager } from "@/manager/gameStateManager";
+import { StateManager } from "@/manager/stateManager";
 
 export class World {
   private static world: Cell[][] = [];
@@ -129,11 +129,11 @@ export class World {
 
   public static getWorld(socket: Socket): Cell[][] {
     const room = ServerHandler.getCurrentRoom(socket);
-    return GameStateManager.getWorld(room);
+    return StateManager.getWorld(room);
   }
 
   public static setWorld(world: Cell[][], socket: Socket): void {
     const room = ServerHandler.getCurrentRoom(socket);
-    GameStateManager.setWorld(room, world);
+    StateManager.setWorld(room, world);
   }
 }

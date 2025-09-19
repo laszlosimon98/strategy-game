@@ -85,22 +85,6 @@ export class Soldier extends Unit {
     this.attack();
   }
 
-  public setHealth(health: number): void {
-    this.properties.health = health;
-  }
-
-  public setOpponent(soldier: Soldier | undefined): void {
-    this.opponent = soldier;
-  }
-
-  public getOpponent(): Soldier | undefined {
-    return this.opponent;
-  }
-
-  public getRange(): number {
-    return this.rangeIndicator.getRange();
-  }
-
   private attack(): void {
     const opponent = this.getOpponent();
     if (this.getState() === UnitStates.Attacking && opponent) {
@@ -124,5 +108,21 @@ export class Soldier extends Unit {
       7
     );
     ctx.restore();
+  }
+
+  public setHealth(health: number): void {
+    this.properties.health = health;
+  }
+
+  public setOpponent(soldier: Soldier | undefined): void {
+    this.opponent = soldier;
+  }
+
+  public getOpponent(): Soldier | undefined {
+    return this.opponent;
+  }
+
+  public getRange(): number {
+    return this.rangeIndicator.getRange();
   }
 }

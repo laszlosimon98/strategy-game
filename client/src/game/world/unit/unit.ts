@@ -101,6 +101,19 @@ export abstract class Unit extends Entity implements CallAble {
       settings.size.unitAsset,
       settings.size.unitAsset
     );
+
+    // if (this.isHovered) {
+    //   ctx.save();
+    //   ctx.strokeStyle = GameStateManager.getPlayerColor(this.entity.data.owner);
+    //   ctx.lineWidth = 2;
+    //   ctx.strokeRect(
+    //     this.renderPos.x + this.image.width / 4,
+    //     this.renderPos.y,
+    //     this.image.width / 2,
+    //     this.image.height
+    //   );
+    //   ctx.restore();
+    // }
   }
 
   public update(dt: number, mousePos: Position): void {
