@@ -35,11 +35,29 @@ export type Buildings =
   | "storage"
   | "residence";
 
+export type Storage =
+  | "wood"
+  | "boards"
+  | "stone"
+  | "grain"
+  | "flour"
+  | "bread"
+  | "pig"
+  | "meat"
+  | "water"
+  | "coal"
+  | "iron_ore"
+  | "sword"
+  | "shield"
+  | "bow"
+  | "iron";
+
 type DataType = {
   [language in AvailableLanguages]: {
     buttonTexts: { [button in Buttons]: string };
     units: { [unit in Units]: string };
     buildings: { [building in Buildings]: string };
+    storage: { [storageItem in Storage]: string };
   };
 };
 

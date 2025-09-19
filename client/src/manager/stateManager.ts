@@ -12,6 +12,7 @@ import type {
   InitialStateType,
   PlayerGameType,
 } from "@/types/game.types";
+import type { StorageType } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -167,6 +168,15 @@ export class StateManager {
 
   public static setServerStatus(status: "online" | "offline"): void {
     this.state.server.status = status;
+  }
+
+  // ------------------- Storage -------------------
+  public static getStorage(id: string): StorageType | null {
+    const player = this.getPlayerById(id);
+    if (!player) {
+      return null;
+    }
+    return player.storage;
   }
 
   // ------------------- State -------------------

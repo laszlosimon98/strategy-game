@@ -28,7 +28,7 @@ export class InfoPanel extends Section {
   }
 
   // FIXME: nem kell folyton lekérdeni az infoPanelData-t kell egy setter rá
-  draw(): void {
+  public draw(): void {
     super.draw();
 
     const infoPanelData = StateManager.getInfoPanelData();
@@ -61,7 +61,7 @@ export class InfoPanel extends Section {
     }
   }
 
-  update(dt: number, mousePos: Position): void {
+  public update(dt: number, mousePos: Position): void {
     this.deleteButton.update(dt, mousePos);
 
     const infoPanelData = StateManager.getInfoPanelData();

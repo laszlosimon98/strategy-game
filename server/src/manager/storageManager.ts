@@ -3,28 +3,74 @@ import { StorageType } from "@/types/storage.types";
 export class StorageManager {
   private static initStorage: StorageType = {
     materials: {
-      wood: 0,
-      boards: 0,
-      stone: 0,
+      wood: {
+        name: "wood",
+        amount: 0,
+      },
+      boards: {
+        name: "boards",
+        amount: 0,
+      },
+      stone: {
+        name: "stone",
+        amount: 0,
+      },
     },
     foods: {
-      grain: 0,
-      flour: 0,
-      bread: 0,
-      pig: 0,
-      meat: 0,
-      water: 0,
+      grain: {
+        name: "grain",
+        amount: 0,
+      },
+      flour: {
+        name: "flour",
+        amount: 0,
+      },
+      bread: {
+        name: "bread",
+        amount: 0,
+      },
+      pig: {
+        name: "pig",
+        amount: 0,
+      },
+      meat: {
+        name: "meat",
+        amount: 0,
+      },
+      water: {
+        name: "water",
+        amount: 0,
+      },
     },
     ores: {
-      coal: 0,
-      iron: 0,
+      coal: {
+        name: "coal",
+        amount: 0,
+      },
+      iron_ore: {
+        name: "iron_ore",
+        amount: 0,
+      },
     },
     weapons: {
-      sword: 0,
-      shield: 0,
+      sword: {
+        name: "sword",
+        amount: 0,
+      },
+      shield: {
+        name: "shield",
+        amount: 0,
+      },
+      bow: {
+        name: "bow",
+        amount: 0,
+      },
     },
     metals: {
-      iron: 0,
+      iron: {
+        name: "iron",
+        amount: 0,
+      },
     },
   };
 

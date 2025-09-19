@@ -5,9 +5,34 @@ type Weapons = "sword" | "shield";
 type Metals = "iron";
 
 export type StorageType = {
-  materials: { [material in Materials]: number };
-  foods: { [food in Foods]: number };
-  ores: { [ores in Ores]: number };
-  weapons: { [weapons in Weapons]: number };
-  metals: { [metal in Metals]: number };
+  materials: {
+    [material in Materials]: {
+      name: material;
+      amount: number;
+    };
+  };
+  foods: {
+    [food in Foods]: {
+      name: food;
+      amount: number;
+    };
+  };
+  ores: {
+    [ore in Ores]: {
+      name: ore;
+      amount: number;
+    };
+  };
+  weapons: {
+    [weapon in Weapons]: {
+      name: weapon;
+      amount: number;
+    };
+  };
+  metals: {
+    [metal in Metals]: {
+      name: metal;
+      amount: number;
+    };
+  };
 };
