@@ -20,8 +20,8 @@ export class Text {
 
     this.color = options && options.color ? options.color : settings.color.text;
 
-    if (options && options.size) {
-      ctx.font = `${options.size}px sans-serif`;
+    if (options && options.fontSize) {
+      ctx.font = `${options.fontSize} sans-serif`;
     }
   }
 

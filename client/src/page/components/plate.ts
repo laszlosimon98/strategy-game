@@ -28,7 +28,9 @@ export class Plate extends PageComponents {
     this.text = new Text(
       new Position(pos.x, pos.y),
       language[StateManager.getLanguage()].buttonTexts[text as Buttons],
-      { color: settings.color.text }
+      {
+        color: settings.color.text,
+      }
     );
 
     this.text.setCenter({
@@ -53,15 +55,24 @@ export class Plate extends PageComponents {
 
   public update(dt: number, mousePos: Position): void {}
 
-  getText(): string {
+  public getText(): string {
     return this.text.getText();
   }
 
-  setText(text: string): void {
+  public setText(text: string): void {
     this.text.setText(text);
   }
 
-  setImage(image: string): void {
+  public setImage(image: string): void {
     this.image.src = image;
+  }
+
+  public setCenter(values: {
+    xFrom: number;
+    xTo: number;
+    yFrom: number;
+    yTo: number;
+  }) {
+    this.text.setCenter(values);
   }
 }

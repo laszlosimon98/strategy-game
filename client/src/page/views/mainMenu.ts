@@ -16,6 +16,29 @@ export class MainMenu extends Page {
   public constructor(title: string) {
     super(title);
 
+    this.namePlate = new Plate(
+      settings.pos.mainMenu.namePlate,
+      settings.size.button,
+      "name",
+      "name"
+    );
+
+    this.login = new Button(
+      settings.pos.mainMenu.login,
+      settings.size.button,
+      "name",
+      "login",
+      () => StateManager.setPageState(PageState.Login)
+    );
+
+    this.registration = new Button(
+      settings.pos.mainMenu.registration,
+      settings.size.button,
+      "name",
+      "registration",
+      () => StateManager.setPageState(PageState.Registration)
+    );
+
     this.newGame = new Button(
       settings.pos.mainMenu.newGame,
       settings.size.button,
@@ -40,29 +63,6 @@ export class MainMenu extends Page {
       () => StateManager.setPageState(PageState.Statistic)
     );
 
-    this.login = new Button(
-      settings.pos.mainMenu.login,
-      settings.size.button,
-      "name",
-      "login",
-      () => StateManager.setPageState(PageState.Login)
-    );
-
-    this.registration = new Button(
-      settings.pos.mainMenu.registration,
-      settings.size.button,
-      "name",
-      "registration",
-      () => StateManager.setPageState(PageState.Registration)
-    );
-
-    this.namePlate = new Plate(
-      settings.pos.mainMenu.namePlate,
-      settings.size.button,
-      "name",
-      "name"
-    );
-
     this.buttons.push(this.newGame);
     this.buttons.push(this.description);
     this.buttons.push(this.statistic);
@@ -78,6 +78,12 @@ export class MainMenu extends Page {
   public update(): void {
     if (this.namePlate.getText() !== StateManager.getPlayerName()) {
       this.namePlate.setText(StateManager.getPlayerName());
+      this.namePlate.setCenter({
+        xFrom: this.namePlate.getPos().x,
+        xTo: this.namePlate.getDimension().width,
+        yFrom: this.namePlate.getPos().y,
+        yTo: this.namePlate.getDimension().height,
+      });
     }
   }
 }

@@ -12,7 +12,7 @@ export class StorageSection extends Section {
       new Position(10, 10),
       "asdfaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       {
-        size: 100,
+        fontSize: "14px",
       }
     );
     console.log(this.t);

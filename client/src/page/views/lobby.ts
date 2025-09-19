@@ -56,21 +56,18 @@ export class Lobby extends Page {
     this.gameCode = new Text(
       new Position(
         settings.pos.titlePos.x - settings.margin * 2,
-        settings.pos.titlePos.y + settings.margin + 80
+        settings.pos.titlePos.y + settings.margin + 100
       ),
       "Játék Kód:",
       { color: settings.color.black }
     );
 
-    this.info = new Text(
-      new Position(0, settings.pos.titlePos.y + settings.margin + 115),
-      ""
-    );
+    this.info = new Text(new Position(0, 0), "");
 
     this.playersContainer = new Frame(
       new Position(
         settings.pos.titlePos.x - settings.margin * 2,
-        settings.pos.titlePos.y + settings.margin + 125
+        settings.pos.titlePos.y + settings.margin + 150
       ),
       new Dimension(580, Math.max(canvasHeight / 3, 200))
     );
@@ -175,7 +172,7 @@ export class Lobby extends Page {
         this.info.setCenter({
           xFrom: 0,
           xTo: canvasWidth,
-          yFrom: settings.pos.titlePos.y + settings.margin + 100,
+          yFrom: settings.pos.titlePos.y + settings.margin + 125,
           yTo: 0,
         });
 
