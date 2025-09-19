@@ -1,4 +1,5 @@
 import { GameState } from "@/enums/gameState";
+import { language, type UI } from "@/languages/language";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import type { ImageItemType } from "@/types/game.types";
@@ -41,6 +42,13 @@ export class LabelButton extends Button {
 
   draw(): void {
     super.draw();
+
+    if (this.isHovered) {
+      console.log(
+        this.name,
+        language[StateManager.getLanguage()].ui[this.name as UI]
+      );
+    }
   }
 
   update(dt: number, mousePos: Position): void {

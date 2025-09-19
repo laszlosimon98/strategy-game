@@ -52,12 +52,21 @@ export type Storage =
   | "bow"
   | "iron";
 
+export type UI =
+  | Buildings
+  | "house"
+  | "population"
+  | "resource"
+  | "food"
+  | "military";
+
 type DataType = {
   [language in AvailableLanguages]: {
     buttonTexts: { [button in Buttons]: string };
     units: { [unit in Units]: string };
     buildings: { [building in Buildings]: string };
     storage: { [storageItem in Storage]: string };
+    ui: { [uiItem in UI]: string };
   };
 };
 
