@@ -73,7 +73,7 @@ export class Loader {
     Object.keys(routes).forEach((key) => {
       const arr: string[] = [
         "buildings",
-        "colors",
+        "units",
         "ground",
         "menu",
         "ui",
