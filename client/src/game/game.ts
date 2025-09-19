@@ -8,6 +8,7 @@ import type { PlayerGameType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
+import { MainMenuState } from "@/enums/gameMenuState";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -60,6 +61,7 @@ export class Game {
           this.gameMenu.handleClick(this.mousePos);
         } else {
           this.world?.handleLeftClick();
+          this.gameMenu.updateInfoPanel();
         }
         break;
       case MouseButtons.Right:

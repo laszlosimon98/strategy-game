@@ -70,6 +70,10 @@ export class GameMenu implements CallAble {
     return this.dim;
   }
 
+  public updateInfoPanel(): void {
+    this.frames[MainMenuState.Info].updateInfoPanel();
+  }
+
   public draw(): void {
     this.mainSection.draw();
     this.frames[StateManager.getGameMenuState()].draw();

@@ -7,11 +7,15 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Building } from "@/game/world/building/building";
 import { Unit } from "@/game/world/unit/unit";
+import { Text } from "@/page/components/text";
+import { settings } from "@/settings";
 
 export class InfoPanel extends Section {
   private dim: Dimension;
   private deleteButton: Button;
   private image: HTMLImageElement;
+  private displayName: Text;
+  private infoPanelData: Unit | Building | undefined;
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
@@ -24,29 +28,24 @@ export class InfoPanel extends Section {
       "empty"
     );
 
+    this.displayName = new Text(
+      new Position(
+        this.pos.x - ctx.measureText("").width / 2 + this.dim.width / 2,
+        this.pos.y + 75
+      ),
+      ""
+    );
+
     this.image = new Image();
   }
 
-  // FIXME: nem kell folyton lekérdeni az infoPanelData-t kell egy setter rá
+  public updateInfoPanel(): void {
+    this.infoPanelData = StateManager.getInfoPanelData();
+  }
+
   public draw(): void {
     super.draw();
-
-    const infoPanelData = StateManager.getInfoPanelData();
-
-    if (infoPanelData) {
-      let name: string = "";
-      if (infoPanelData instanceof Building) {
-        name = infoPanelData.getBuildingName();
-      } else if (infoPanelData instanceof Unit) {
-        name = infoPanelData.getUnitName();
-      }
-
-      ctx.fillText(
-        name,
-        this.pos.x - ctx.measureText(name).width / 2 + this.dim.width / 2,
-        this.pos.y + 75
-      );
-    }
+    this.displayName.draw();
 
     ctx.drawImage(
       this.image,
@@ -56,7 +55,7 @@ export class InfoPanel extends Section {
       this.image.height
     );
 
-    if (infoPanelData instanceof Building) {
+    if (this.infoPanelData instanceof Building) {
       this.deleteButton.draw();
     }
   }
@@ -64,14 +63,27 @@ export class InfoPanel extends Section {
   public update(dt: number, mousePos: Position): void {
     this.deleteButton.update(dt, mousePos);
 
-    const infoPanelData = StateManager.getInfoPanelData();
+    if (this.infoPanelData) {
+      if (this.infoPanelData instanceof Building) {
+        this.displayName.setText(this.infoPanelData.getBuildingName());
+      } else if (this.infoPanelData instanceof Unit) {
+        this.displayName.setText(this.infoPanelData.getUnitName());
+      }
 
-    if (
-      infoPanelData &&
-      ((infoPanelData.getEntity().data.url.length && !this.image.src.length) ||
-        infoPanelData?.getEntity().data.url !== this.image.src)
-    ) {
-      this.image.src = infoPanelData.getEntity().data.static;
+      if (
+        (this.infoPanelData.getEntity().data.url.length &&
+          !this.image.src.length) ||
+        this.infoPanelData?.getEntity().data.url !== this.image.src
+      ) {
+        this.image.src = this.infoPanelData.getEntity().data.static;
+      }
+
+      this.displayName.setCenter({
+        xFrom: 0,
+        xTo: settings.gameMenu.dim.width,
+        yFrom: settings.gameMenu.pos.y,
+        yTo: settings.gameMenu.dim.height / 2,
+      });
     }
   }
 

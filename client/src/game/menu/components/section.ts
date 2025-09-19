@@ -35,6 +35,8 @@ export class Section {
     this.labelbuttons.forEach((btn) => btn.update(dt, mousePos));
   }
 
+  public updateInfoPanel(): void {}
+
   public getButtons(): Button[] {
     return this.buttons;
   }
