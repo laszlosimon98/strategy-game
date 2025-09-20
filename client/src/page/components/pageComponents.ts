@@ -14,12 +14,6 @@ export abstract class PageComponents {
 
   public update(dt: number, mousePos: Position): void {}
 
-  public isClicked(mouseX: number, mouseY: number) {
-    const x = mouseX >= this.pos.x && mouseX <= this.pos.x + this.dim.width;
-    const y = mouseY >= this.pos.y && mouseY <= this.pos.y + this.dim.height;
-    return x && y;
-  }
-
   public getPos(): Position {
     return this.pos;
   }

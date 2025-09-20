@@ -1,16 +1,19 @@
 import { Section } from "@/game/menu/sections/section";
-import { ctx } from "@/init";
-import { language } from "@/languages/language";
+import { StorageItem } from "@/game/menu/sections/storage/storageItem";
 import { StateManager } from "@/manager/stateManager";
-import { Text } from "@/page/components/text";
 import { ServerHandler } from "@/server/serverHandler";
+import type {
+  AllItemType,
+  GroupType,
+  StorageType,
+} from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
 export class StorageSection extends Section {
-  private t: Text | null = null;
-  private t2: Text | null = null;
   private playerId: string;
+  private storage: StorageType | null = null;
+  private items: StorageItem[] = [];
 
   constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
@@ -20,41 +23,50 @@ export class StorageSection extends Section {
   }
 
   private initializeStorage(): void {
-    const storage = StateManager.getStorage(this.playerId);
+    this.storage = StateManager.getStorage(this.playerId);
 
-    if (storage) {
-      this.t = new Text(
-        new Position(20, 200),
-        language[StateManager.getLanguage()].storage[
-          storage.materials.wood.name
-        ],
-        {
-          fontSize: "14px",
-        }
-      );
-      this.t2 = new Text(
-        new Position(ctx.measureText(this.t.getText()).width, 225), // ez nem jó
-        storage.materials.wood.amount.toString(),
-        {
-          fontSize: "14px",
-        }
-      );
+    if (this.storage) {
+      this.createItem(new Position(20, 200), "materials", "wood");
+      this.createItem(new Position(55, 200), "materials", "boards");
+      this.createItem(new Position(120, 200), "materials", "stone");
+
+      this.createItem(new Position(10, 270), "foods", "grain");
+      this.createItem(new Position(80, 270), "foods", "flour");
+      this.createItem(new Position(130, 270), "foods", "pig");
+      this.createItem(new Position(190, 270), "foods", "water");
+      this.createItem(new Position(10, 340), "foods", "bread");
+      this.createItem(new Position(80, 340), "foods", "meat");
+
+      this.createItem(new Position(10, 410), "ores", "coal");
+      this.createItem(new Position(60, 410), "ores", "iron_ore");
+
+      this.createItem(new Position(10, 490), "metals", "iron");
+
+      this.createItem(new Position(10, 560), "weapons", "sword");
+      this.createItem(new Position(70, 560), "weapons", "shield");
+      this.createItem(new Position(140, 560), "weapons", "bow");
     }
+  }
+
+  private createItem(pos: Position, path: GroupType, item: AllItemType): void {
+    if (!this.storage) return;
+
+    this.items.push(
+      new StorageItem(pos, Dimension.zero(), path, item, this.storage)
+    );
   }
 
   public draw(): void {
     super.draw();
-
-    if (this.t && this.t2) {
-      this.t.draw();
-      this.t2.draw();
+    if (this.storage) {
+      this.items.forEach((item) => item.draw());
     }
   }
 
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
-    if (!this.t || !this.t2) {
+    if (!this.storage) {
       this.initializeStorage();
     }
   }

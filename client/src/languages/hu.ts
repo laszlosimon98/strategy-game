@@ -38,7 +38,7 @@ export const hu = {
     wood: "Fa",
     boards: "Deszka",
     stone: "Kő",
-    grain: "Búza",
+    grain: "Gabona",
     flour: "Liszt",
     bread: "Kenyér",
     pig: "Disznó",

@@ -68,8 +68,6 @@ export class LabelButton extends Button {
       this.tooltip.setHouseName(
         language[StateManager.getLanguage()].ui[this.name as UI]
       );
-      // console.log(this.pos, this.dim);
-      // console.log(language[StateManager.getLanguage()].ui[this.name as UI]);
     }
   }
 

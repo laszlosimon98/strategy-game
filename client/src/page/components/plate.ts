@@ -1,13 +1,13 @@
 import { language, type Buttons } from "@/languages/language";
 import { ctx } from "@/init";
-import { PageComponents } from "@/page/components/pageComponents";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
+import { ClickablePageComponents } from "@/page/components/clickablePageComponent";
 
-export class Plate extends PageComponents {
+export class Plate extends ClickablePageComponents {
   protected image: HTMLImageElement;
   private text: Text;
 
