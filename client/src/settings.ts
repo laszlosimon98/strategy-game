@@ -8,6 +8,7 @@ const TITLE_DIMENSION: Dimension = new Dimension(288, 90);
 const MENUITEM_DIMENSION: Dimension = new Dimension(64, 64);
 const UNIT_DIMENSION: Dimension = new Dimension(64, 64);
 const HOUSEITEM_DIMENSION: Dimension = new Dimension(96, 96);
+const TOOLTIP_DIMENDION: Dimension = new Dimension(120, 100);
 
 export const settings = {
   fps: 60,
@@ -17,18 +18,20 @@ export const settings = {
     title: TITLE_DIMENSION,
     menuItem: MENUITEM_DIMENSION,
     unit: UNIT_DIMENSION,
+    houseItem: HOUSEITEM_DIMENSION,
+    tooltip: TOOLTIP_DIMENDION,
     unitAsset: 64,
     item: 96,
-    houseItem: HOUSEITEM_DIMENSION,
     cell: 48,
   },
   color: {
     background: "#F1C585",
-    text: "#F1C585",
+    text: "#EFBF04",
     black: "#000",
     error: "#b80606",
     info: "#1f6e02",
-    inputBackground: "#90460C",
+    brown: "#90460C",
+    lightBrown: "#B85A0F",
   },
   offset: {
     item: 19,

@@ -22,7 +22,7 @@ export class TextInput {
 
   public draw(): void {
     ctx.save();
-    ctx.fillStyle = settings.color.inputBackground;
+    ctx.fillStyle = settings.color.brown;
     ctx.fillRect(this.pos.x, this.pos.y, this.dim.width, this.dim.height);
 
     ctx.fillStyle = settings.color.text;

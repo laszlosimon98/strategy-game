@@ -1,4 +1,4 @@
-import { Section } from "@/game/menu/components/section";
+import { Section } from "@/game/menu/sections/section";
 import { ctx } from "@/init";
 import { language } from "@/languages/language";
 import { StateManager } from "@/manager/stateManager";

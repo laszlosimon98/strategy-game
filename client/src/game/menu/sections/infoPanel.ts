@@ -1,4 +1,4 @@
-import { Section } from "@/game/menu/components/section";
+import { Section } from "@/game/menu/sections/section";
 import { ctx } from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
@@ -14,7 +14,7 @@ export class InfoPanel extends Section {
   private dim: Dimension;
   private deleteButton: Button;
   private image: HTMLImageElement;
-  private displayName: Text;
+  private displaySelectedObjectName: Text;
   private infoPanelData: Unit | Building | undefined;
 
   public constructor(pos: Position, dim: Dimension) {
@@ -28,12 +28,12 @@ export class InfoPanel extends Section {
       "empty"
     );
 
-    this.displayName = new Text(
-      new Position(
-        this.pos.x - ctx.measureText("").width / 2 + this.dim.width / 2,
-        this.pos.y + 75
-      ),
-      ""
+    this.displaySelectedObjectName = new Text(
+      new Position(this.pos.x + this.dim.width / 2, this.pos.y + 75),
+      "",
+      {
+        fontSize: "32px",
+      }
     );
 
     this.image = new Image();
@@ -45,7 +45,7 @@ export class InfoPanel extends Section {
 
   public draw(): void {
     super.draw();
-    this.displayName.draw();
+    this.displaySelectedObjectName.draw();
 
     ctx.drawImage(
       this.image,
@@ -65,9 +65,13 @@ export class InfoPanel extends Section {
 
     if (this.infoPanelData) {
       if (this.infoPanelData instanceof Building) {
-        this.displayName.setText(this.infoPanelData.getBuildingName());
+        this.displaySelectedObjectName.setText(
+          this.infoPanelData.getBuildingName()
+        );
       } else if (this.infoPanelData instanceof Unit) {
-        this.displayName.setText(this.infoPanelData.getUnitName());
+        this.displaySelectedObjectName.setText(
+          this.infoPanelData.getUnitName()
+        );
       }
 
       if (
@@ -78,7 +82,7 @@ export class InfoPanel extends Section {
         this.image.src = this.infoPanelData.getEntity().data.static;
       }
 
-      this.displayName.setCenter({
+      this.displaySelectedObjectName.setCenter({
         xFrom: 0,
         xTo: settings.gameMenu.dim.width,
         yFrom: settings.gameMenu.pos.y,

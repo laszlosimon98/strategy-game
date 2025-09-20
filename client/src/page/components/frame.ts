@@ -17,7 +17,7 @@ export class Frame extends PageComponents {
 
     ctx.save();
 
-    ctx.fillStyle = settings.color.inputBackground;
+    ctx.fillStyle = settings.color.brown;
     ctx.fillRect(this.pos.x, this.pos.y, this.dim.width, this.dim.height);
 
     this.buttons.forEach((btn) => btn.draw());

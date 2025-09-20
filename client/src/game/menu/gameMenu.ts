@@ -1,9 +1,9 @@
 import { MainMenuState } from "@/enums/gameMenuState";
-import { BuildingSection } from "@/game/menu/components/building/buildingSection";
-import { InfoPanel } from "@/game/menu/components/infoPanel";
-import { MainSection } from "@/game/menu/components/main/mainSection";
-import { Section } from "@/game/menu/components/section";
-import { StorageSection } from "@/game/menu/components/storage/storageSection";
+import { BuildingSection } from "@/game/menu/sections/building/buildingSection";
+import { InfoPanel } from "@/game/menu/sections/infoPanel";
+import { MainSection } from "@/game/menu/sections/main/mainSection";
+import { Section } from "@/game/menu/sections/section";
+import { StorageSection } from "@/game/menu/sections/storage/storageSection";
 import type { CallAble } from "@/interfaces/callAble";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
@@ -77,6 +77,10 @@ export class GameMenu implements CallAble {
   public draw(): void {
     this.mainSection.draw();
     this.frames[StateManager.getGameMenuState()].draw();
+  }
+
+  public drawTooltips(): void {
+    this.frames[StateManager.getGameMenuState()].drawTooltips();
   }
 
   public update(dt: number, mousePos: Position): void {

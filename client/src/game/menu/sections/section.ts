@@ -1,5 +1,5 @@
 import { SubMenuState } from "@/enums/gameMenuState";
-import { LabelButton } from "@/game/menu/components/labelButton";
+import { LabelButton } from "@/game/menu/sections/labelButton";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Frame } from "@/page/components/frame";
@@ -25,6 +25,11 @@ export class Section {
 
     this.buttons.forEach((btn) => btn.draw());
     this.labelbuttons.forEach((btn) => btn.draw());
+  }
+
+  public drawTooltips(): void {
+    this.subSections[StateManager.getSubMenuState()]?.drawTooltips();
+    this.labelbuttons.forEach((btn) => btn.drawTooltip());
   }
 
   public update(dt: number, mousePos: Position): void {

@@ -1,5 +1,5 @@
-import { LabelButton } from "@/game/menu/components/labelButton";
-import { Section } from "@/game/menu/components/section";
+import { LabelButton } from "@/game/menu/sections/labelButton";
+import { Section } from "@/game/menu/sections/section";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";

@@ -1,43 +1,43 @@
-import { LabelButton } from "@/game/menu/components/labelButton";
-import { Section } from "@/game/menu/components/section";
+import { LabelButton } from "@/game/menu/sections/labelButton";
+import { Section } from "@/game/menu/sections/section";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
-export class FoodSection extends Section {
-  private farm: LabelButton;
-  private mill: LabelButton;
-  private bakery: LabelButton;
-  private well: LabelButton;
+export class ResourceSection extends Section {
+  private woodCutter: LabelButton;
+  private stoneCutter: LabelButton;
+  private sawMill: LabelButton;
+  private forester: LabelButton;
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
 
-    this.farm = new LabelButton(
+    this.woodCutter = new LabelButton(
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
-      "farm"
+      "woodcutter"
     );
 
-    this.mill = new LabelButton(
+    this.sawMill = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
-      "mill"
+      "sawmill"
     );
 
-    this.bakery = new LabelButton(
+    this.stoneCutter = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
-      "bakery"
+      "stonecutter"
     );
 
-    this.well = new LabelButton(
+    this.forester = new LabelButton(
       new Position(
         pos.x + settings.size.item + settings.offset.item,
         pos.y + settings.size.item
@@ -45,13 +45,13 @@ export class FoodSection extends Section {
       new Dimension(settings.size.item, settings.size.item),
       "buildings",
       "empty",
-      "well"
+      "forester"
     );
 
-    this.labelbuttons.push(this.farm);
-    this.labelbuttons.push(this.mill);
-    this.labelbuttons.push(this.bakery);
-    this.labelbuttons.push(this.well);
+    this.labelbuttons.push(this.woodCutter);
+    this.labelbuttons.push(this.sawMill);
+    this.labelbuttons.push(this.stoneCutter);
+    this.labelbuttons.push(this.forester);
   }
 
   draw(): void {

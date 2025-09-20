@@ -1,10 +1,10 @@
 import { SubMenuState } from "@/enums/gameMenuState";
-import { FoodSection } from "@/game/menu/components/building/buildingSections/foodSection";
-import { MilitarySection } from "@/game/menu/components/building/buildingSections/militarySection";
-import { ResourceSection } from "@/game/menu/components/building/buildingSections/resourceSection";
-import { StorageSection } from "@/game/menu/components/building/buildingSections/storageSection";
-import { LabelButton } from "@/game/menu/components/labelButton";
-import { Section } from "@/game/menu/components/section";
+import { FoodSection } from "@/game/menu/sections/building/buildingSections/foodSection";
+import { MilitarySection } from "@/game/menu/sections/building/buildingSections/militarySection";
+import { ResourceSection } from "@/game/menu/sections/building/buildingSections/resourceSection";
+import { StorageSection } from "@/game/menu/sections/building/buildingSections/storageSection";
+import { LabelButton } from "@/game/menu/sections/labelButton";
+import { Section } from "@/game/menu/sections/section";
 import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";

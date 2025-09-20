@@ -35,8 +35,4 @@ export abstract class PageComponents {
   public setDimension(dim: Dimension): void {
     this.dim = dim;
   }
-
-  // public resize(): void {
-  //   this.pos.resize();
-  // }
 }

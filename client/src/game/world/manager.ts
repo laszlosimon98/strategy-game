@@ -93,9 +93,9 @@ export abstract class Manager<T> implements MouseClicker {
     key: string
   ): void {
     if (StateManager.getState() !== GameState.Build) {
-      const objectArray: T[] = StateManager.getPlayers()[
-        ServerHandler.getId()
-      ][key] as unknown as T[];
+      const objectArray: T[] = StateManager.getPlayers()[ServerHandler.getId()][
+        key
+      ] as unknown as T[];
 
       objectArray.forEach((object) => {
         object.setHover(isMouseIntersect(mousePos.sub(cameraScroll), object));
@@ -108,9 +108,9 @@ export abstract class Manager<T> implements MouseClicker {
     cameraScroll: Position,
     key: string
   ): T | undefined {
-    const objectArray: T[] = StateManager.getPlayers()[
-      ServerHandler.getId()
-    ][key] as unknown as T[];
+    const objectArray: T[] = StateManager.getPlayers()[ServerHandler.getId()][
+      key
+    ] as unknown as T[];
 
     const selectedObject = objectArray.find((object) => {
       if (isMouseIntersect(mousePos.sub(cameraScroll), object)) {

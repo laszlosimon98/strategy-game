@@ -45,6 +45,8 @@ export class Game {
   public draw(): void {
     this.world?.draw();
     this.gameMenu.draw();
+
+    this.gameMenu.drawTooltips();
   }
 
   public update(dt: number) {

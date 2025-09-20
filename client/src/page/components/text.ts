@@ -10,19 +10,20 @@ export class Text {
 
   protected isSecret: boolean;
   private color: string;
+  private fontSize?: string;
 
   public constructor(pos: Position, text: string, options?: Options) {
     this.pos = pos;
     this.text = text;
     this.isSecret = (options && options.isSecret) || false;
 
-    this.metrics = ctx.measureText(this.text);
-
     this.color = options && options.color ? options.color : settings.color.text;
+    this.fontSize = options?.fontSize;
 
-    if (options && options.fontSize) {
-      ctx.font = `${options.fontSize} sans-serif`;
+    if (this.fontSize) {
+      ctx.font = `${this.fontSize} sans-serif`;
     }
+    this.metrics = ctx.measureText(this.text);
   }
 
   public setCenter(values: {
@@ -52,6 +53,11 @@ export class Text {
 
   public setText(text: string): void {
     this.text = text;
+
+    if (this.fontSize) {
+      ctx.font = `${this.fontSize} sans-serif`;
+    }
+
     this.metrics = ctx.measureText(text);
   }
 
@@ -65,6 +71,11 @@ export class Text {
 
   public draw(): void {
     ctx.save();
+
+    if (this.fontSize) {
+      ctx.font = `${this.fontSize} sans-serif`;
+    }
+
     ctx.fillStyle = this.color;
     ctx.fillText(
       !this.isSecret
