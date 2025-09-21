@@ -6,27 +6,17 @@ import { settings } from "@/settings";
 import type {
   ColorType,
   EntityType,
-  InitialStateType,
+  StateType,
   PlayerType,
 } from "@/types/state.types";
 import type { UnitsType } from "@/types/units.types";
 import { Server, Socket } from "socket.io";
 import { StorageManager } from "@/manager/storageManager";
+import { BuildingManager } from "@/manager/buildingManager";
+import { UnitManager } from "@/manager/unitManager";
 
 export class StateManager {
-  private static state: InitialStateType = {};
-  private static unitProperties: UnitsType = {
-    knight: {
-      damage: 13,
-      health: 100,
-      range: 1,
-    },
-    archer: {
-      damage: 9,
-      health: 75,
-      range: 5,
-    },
-  };
+  private static state: StateType = {};
 
   private constructor() {}
 
@@ -38,12 +28,12 @@ export class StateManager {
     return playerColor;
   }
 
-  public static getState(): InitialStateType {
+  public static getState(): StateType {
     return this.state;
   }
 
   public static getUnitProperties(): UnitsType {
-    return this.unitProperties;
+    return UnitManager.getUnitProperties();
   }
 
   public static newPlayerMessage(
@@ -159,16 +149,18 @@ export class StateManager {
     this.state[room].world = world;
   }
 
+  // ------------------- Building -------------------
+
   public static createBuilding(
     room: string,
     socket: Socket,
     building: Building
-  ) {
-    this.state[room].players[socket.id].buildings.push(building);
+  ): void {
+    BuildingManager.createBuilding(room, socket, this.state, building);
   }
 
   public static getBuildings(room: string, socket: Socket): Building[] {
-    return [...this.state[room].players[socket.id].buildings];
+    return BuildingManager.getBuildings(room, socket, this.state);
   }
 
   public static getBuilding(
@@ -176,42 +168,25 @@ export class StateManager {
     socket: Socket,
     building: Building
   ): Building | undefined {
-    const buildings: Building[] = this.getBuildings(room, socket);
-    return buildings.find(
-      (b) => b.getEntity().data.id === building.getEntity().data.id
-    );
+    return BuildingManager.getBuilding(room, socket, this.state, building);
   }
 
   public static destroyBuilding(
     room: string,
     socket: Socket,
     building: Building
-  ) {
-    const buildingToDemolish: Building | undefined = this.getBuilding(
-      room,
-      socket,
-      building
-    );
-
-    if (!buildingToDemolish) return;
-
-    const buildingIndex: number = this.state[room].players[
-      socket.id
-    ].buildings.findIndex(
-      (b) => b.getEntity().data.id === buildingToDemolish.getEntity().data.id
-    );
-
-    if (buildingIndex === -1) return;
-
-    this.state[room].players[socket.id].buildings.splice(buildingIndex, 1);
+  ): void {
+    BuildingManager.destroyBuilding(room, socket, this.state, building);
   }
 
+  // ------------------- Units -------------------
+
   public static createUnit(room: string, socket: Socket, unit: Unit): void {
-    this.state[room].players[socket.id].units.push(unit);
+    UnitManager.createUnit(room, socket, this.state, unit);
   }
 
   public static getUnits(room: string, entity: EntityType): Unit[] {
-    return [...this.state[room].players[entity.data.owner].units];
+    return UnitManager.getUnits(room, this.state, entity);
   }
 
   public static setUnits(
@@ -219,31 +194,18 @@ export class StateManager {
     entity: EntityType,
     units: Unit[]
   ): void {
-    this.state[room].players[entity.data.owner].units = [...units];
+    UnitManager.setUnits(room, this.state, entity, units);
   }
 
   public static getUnit(room: string, entity: EntityType): Unit | undefined {
-    const units: Unit[] = this.getUnits(room, entity);
-    return units.find((unit) => unit.getEntity().data.id === entity.data.id);
+    return UnitManager.getUnit(room, this.state, entity);
   }
 
   public static getUnitIndex(room: string, entity: EntityType): number {
-    const units: Unit[] = this.getUnits(room, entity);
-    const indx: number = units.findIndex(
-      (unit) => unit.getEntity().data.id === entity.data.id
-    );
-    return indx;
+    return UnitManager.getUnitIndex(room, this.state, entity);
   }
 
   public static deleteUnit(room: string, unit: Unit): void {
-    const entity: EntityType = unit.getEntity();
-
-    let units: Unit[] = this.getUnits(room, entity);
-    const unitIndx: number = this.getUnitIndex(room, entity);
-
-    if (unitIndx !== -1) {
-      units = [...units.splice(0, unitIndx), ...units.splice(unitIndx + 1)];
-      this.setUnits(room, entity, units);
-    }
+    UnitManager.deleteUnit(room, this.state, unit);
   }
 }

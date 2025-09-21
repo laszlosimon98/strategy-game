@@ -44,6 +44,6 @@ export type TeamType = {
   remainingColors: ColorType[];
 };
 
-export type InitialStateType = {
+export type StateType = {
   [code: string]: TeamType;
 };
