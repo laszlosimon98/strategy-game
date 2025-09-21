@@ -1,10 +1,10 @@
 import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/classes/serverHandler";
-import { Builder } from "@/classes/game/builder";
 import { Building } from "@/classes/game/building";
 import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
 import type { EntityType } from "@/types/state.types";
+import { StateManager } from "@/manager/stateManager";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const build = (entity: EntityType): void => {
@@ -12,7 +12,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const newBuilding: Building | undefined = Builder.build(entity, socket);
+    const newBuilding: Building | undefined = StateManager.createBuilding(
+      socket,
+      entity
+    );
 
     if (newBuilding) {
       ServerHandler.sendMessageToEveryOne(
@@ -29,7 +32,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const isSuccessful: boolean = Builder.destroy(indices, socket);
+    const isSuccessful: boolean = StateManager.destroyBuilding(socket, indices);
     if (isSuccessful) {
       ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
         id: socket.id,

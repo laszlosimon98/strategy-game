@@ -14,6 +14,7 @@ import { Server, Socket } from "socket.io";
 import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
+import { Indices } from "@/classes/utils/indices";
 
 export class StateManager {
   private static state: StateType = {};
@@ -152,11 +153,10 @@ export class StateManager {
   // ------------------- Building -------------------
 
   public static createBuilding(
-    room: string,
     socket: Socket,
-    building: Building
-  ): void {
-    BuildingManager.createBuilding(room, socket, this.state, building);
+    entity: EntityType
+  ): Building | undefined {
+    return BuildingManager.build(socket, this.state, entity);
   }
 
   public static getBuildings(room: string, socket: Socket): Building[] {
@@ -171,12 +171,8 @@ export class StateManager {
     return BuildingManager.getBuilding(room, socket, this.state, building);
   }
 
-  public static destroyBuilding(
-    room: string,
-    socket: Socket,
-    building: Building
-  ): void {
-    BuildingManager.destroyBuilding(room, socket, this.state, building);
+  public static destroyBuilding(socket: Socket, indices: Indices): boolean {
+    return BuildingManager.destroy(socket, indices, this.state);
   }
 
   // ------------------- Units -------------------
