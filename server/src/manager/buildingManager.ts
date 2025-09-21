@@ -12,21 +12,21 @@ import { Socket } from "socket.io";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
-    bakery: { wood: 2, stone: 2 },
-    barracks: { wood: 2, stone: 1 },
-    farm: { wood: 3, stone: 3 },
-    forester: { wood: 2, stone: 0 },
-    guardhouse: { wood: 2, stone: 3 },
-    ironsmelter: { wood: 2, stone: 2 },
-    mill: { wood: 2, stone: 2 },
-    residence: { wood: 0, stone: 0 },
-    sawmill: { wood: 2, stone: 2 },
-    stonecutter: { wood: 2, stone: 0 },
-    storage: { wood: 2, stone: 2 },
-    toolsmith: { wood: 2, stone: 2 },
-    weaponsmith: { wood: 2, stone: 2 },
-    well: { wood: 2, stone: 0 },
-    woodcutter: { wood: 2, stone: 0 },
+    bakery: { boards: 2, stone: 2 },
+    barracks: { boards: 2, stone: 1 },
+    farm: { boards: 3, stone: 3 },
+    forester: { boards: 2, stone: 0 },
+    guardhouse: { boards: 2, stone: 3 },
+    ironsmelter: { boards: 2, stone: 2 },
+    mill: { boards: 2, stone: 2 },
+    residence: { boards: 3, stone: 1 },
+    sawmill: { boards: 2, stone: 2 },
+    stonecutter: { boards: 2, stone: 0 },
+    storage: { boards: 2, stone: 2 },
+    toolsmith: { boards: 2, stone: 2 },
+    weaponsmith: { boards: 2, stone: 2 },
+    well: { boards: 2, stone: 0 },
+    woodcutter: { boards: 2, stone: 0 },
   };
 
   private constructor() {}

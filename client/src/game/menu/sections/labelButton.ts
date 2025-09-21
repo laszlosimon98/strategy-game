@@ -1,3 +1,4 @@
+import { MainMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { Tooltip } from "@/game/menu/tooltip";
 import { language, type UI } from "@/languages/language";
@@ -68,6 +69,7 @@ export class LabelButton extends Button {
       this.tooltip.setHouseName(
         language[StateManager.getLanguage()].ui[this.name as UI]
       );
+      this.tooltip.setHousePrices(this.getImage());
     }
   }
 

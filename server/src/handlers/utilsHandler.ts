@@ -16,6 +16,6 @@ export const utilsHandler = async (io: Server, socket: Socket, images: any) => {
     );
   };
 
-  page();
-  prices();
+  socket.on("start:page", page);
+  socket.on("start:prices", prices);
 };

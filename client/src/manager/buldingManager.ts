@@ -5,21 +5,21 @@ import type { EntityType, ImageItemType, StateType } from "@/types/game.types";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
-    bakery: { wood: 0, stone: 0 },
-    barracks: { wood: 0, stone: 0 },
-    farm: { wood: 0, stone: 0 },
-    forester: { wood: 0, stone: 0 },
-    guardhouse: { wood: 0, stone: 0 },
-    ironsmelter: { wood: 0, stone: 0 },
-    mill: { wood: 0, stone: 0 },
-    residence: { wood: 0, stone: 0 },
-    sawmill: { wood: 0, stone: 0 },
-    stonecutter: { wood: 0, stone: 0 },
-    storage: { wood: 0, stone: 0 },
-    toolsmith: { wood: 0, stone: 0 },
-    weaponsmith: { wood: 0, stone: 0 },
-    well: { wood: 0, stone: 0 },
-    woodcutter: { wood: 0, stone: 0 },
+    bakery: { boards: 0, stone: 0 },
+    barracks: { boards: 0, stone: 0 },
+    farm: { boards: 0, stone: 0 },
+    forester: { boards: 0, stone: 0 },
+    guardhouse: { boards: 0, stone: 0 },
+    ironsmelter: { boards: 0, stone: 0 },
+    mill: { boards: 0, stone: 0 },
+    residence: { boards: 0, stone: 0 },
+    sawmill: { boards: 0, stone: 0 },
+    stonecutter: { boards: 0, stone: 0 },
+    storage: { boards: 0, stone: 0 },
+    toolsmith: { boards: 0, stone: 0 },
+    weaponsmith: { boards: 0, stone: 0 },
+    well: { boards: 0, stone: 0 },
+    woodcutter: { boards: 0, stone: 0 },
   };
   private constructor() {}
 

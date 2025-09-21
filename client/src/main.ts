@@ -4,20 +4,28 @@ import { Program } from "@/program";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 
-const main = async () => {
-  init();
-
+const initImages = async () => {
+  ServerHandler.sendMessage("start:page", {});
   const images = await ServerHandler.receiveAsyncMessage("start:page");
+  StateManager.setImages(images);
+  console.log(StateManager.getImages());
+};
+
+const initBuildingPrices = async () => {
+  ServerHandler.sendMessage("start:prices", {});
   const buildingPrices = await ServerHandler.receiveAsyncMessage(
     "start:prices"
   );
-  console.log(images);
-  console.log(buildingPrices);
 
-  StateManager.setImages(images);
   StateManager.setBuildingPrices(buildingPrices);
-  console.log(StateManager.getImages());
   console.log(StateManager.getBuildingPrices());
+};
+
+const main = async () => {
+  init();
+
+  await initImages();
+  await initBuildingPrices();
 
   const program: Program = new Program();
 

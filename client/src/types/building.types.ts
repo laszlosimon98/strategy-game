@@ -15,8 +15,8 @@ type Buildings =
   | "well"
   | "woodcutter";
 
-type Price = {
-  wood: number;
+export type Price = {
+  boards: number;
   stone: number;
 };
 

@@ -16,7 +16,7 @@ type Buildings =
   | "woodcutter";
 
 type Price = {
-  wood: number;
+  boards: number;
   stone: number;
 };
 
