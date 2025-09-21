@@ -6,10 +6,28 @@ import { Indices } from "@/classes/utils/indices";
 import { getImageNameFromUrl } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
 import { settings } from "@/settings";
+import { BuildingPrices } from "@/types/building.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 
 export class BuildingManager {
+  private static buildingPrices: BuildingPrices = {
+    bakery: { wood: 2, stone: 2 },
+    barracks: { wood: 2, stone: 1 },
+    farm: { wood: 3, stone: 3 },
+    forester: { wood: 2, stone: 0 },
+    guardhouse: { wood: 2, stone: 3 },
+    ironsmelter: { wood: 2, stone: 2 },
+    mill: { wood: 2, stone: 2 },
+    residence: { wood: 0, stone: 0 },
+    sawmill: { wood: 2, stone: 2 },
+    stonecutter: { wood: 2, stone: 0 },
+    storage: { wood: 2, stone: 2 },
+    toolsmith: { wood: 2, stone: 2 },
+    weaponsmith: { wood: 2, stone: 2 },
+    well: { wood: 2, stone: 0 },
+    woodcutter: { wood: 2, stone: 0 },
+  };
   private constructor() {}
 
   private static isPossibleToBuild = (
@@ -89,6 +107,10 @@ export class BuildingManager {
     if (buildingIndex === -1) return;
 
     state[room].players[socket.id].buildings.splice(buildingIndex, 1);
+  }
+
+  public static getBuildingPrices(): BuildingPrices {
+    return this.buildingPrices;
   }
 
   public static build(

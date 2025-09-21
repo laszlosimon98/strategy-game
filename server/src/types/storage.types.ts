@@ -1,38 +1,28 @@
 type Materials = "wood" | "boards" | "stone";
-type Foods = "grain" | "flour" | "bread" | "pig" | "meat" | "water";
+type Foods = "grain" | "flour" | "bread" | "water";
 type Ores = "coal" | "iron_ore";
 type Weapons = "sword" | "shield" | "bow";
 type Metals = "iron";
 
+type StorageItemType<T> = {
+  name: T;
+  amount: number;
+};
+
 export type StorageType = {
   materials: {
-    [material in Materials]: {
-      name: material;
-      amount: number;
-    };
+    [material in Materials]: StorageItemType<material>;
   };
   foods: {
-    [food in Foods]: {
-      name: food;
-      amount: number;
-    };
+    [food in Foods]: StorageItemType<food>;
   };
   ores: {
-    [ore in Ores]: {
-      name: ore;
-      amount: number;
-    };
+    [ore in Ores]: StorageItemType<ore>;
   };
   weapons: {
-    [weapon in Weapons]: {
-      name: weapon;
-      amount: number;
-    };
+    [weapon in Weapons]: StorageItemType<weapon>;
   };
   metals: {
-    [metal in Metals]: {
-      name: metal;
-      amount: number;
-    };
+    [metal in Metals]: StorageItemType<metal>;
   };
 };
