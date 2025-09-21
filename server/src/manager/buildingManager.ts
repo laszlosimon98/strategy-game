@@ -28,6 +28,7 @@ export class BuildingManager {
     well: { wood: 2, stone: 0 },
     woodcutter: { wood: 2, stone: 0 },
   };
+
   private constructor() {}
 
   private static isPossibleToBuild = (

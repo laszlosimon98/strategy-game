@@ -4,7 +4,7 @@ import { Server, Socket } from "socket.io";
 import path from "path";
 
 import { Loader } from "@/classes/imageLoader";
-import { imageHandler } from "@/handlers/imageHandler";
+import { utilsHandler } from "@/handlers/utilsHandler";
 import { handleBuildings } from "@/handlers/game/handleBuildings";
 import { handlePath } from "@/handlers/game/handlePath";
 import { handleStart } from "@/handlers/game/handleStart";
@@ -40,7 +40,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 };
 
 const onConnecton = async (socket: Socket) => {
-  await imageHandler(io, socket, images);
+  await utilsHandler(io, socket, images);
   connectionHandler(io, socket);
   gameHandler(io, socket);
 };

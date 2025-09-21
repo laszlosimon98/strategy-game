@@ -15,6 +15,7 @@ import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/classes/utils/indices";
+import { BuildingPrices } from "@/types/building.types";
 
 export class StateManager {
   private static state: StateType = {};
@@ -173,6 +174,10 @@ export class StateManager {
 
   public static destroyBuilding(socket: Socket, indices: Indices): boolean {
     return BuildingManager.destroy(socket, indices, this.state);
+  }
+
+  public static getBuidingPrices(): BuildingPrices {
+    return BuildingManager.getBuildingPrices();
   }
 
   // ------------------- Units -------------------

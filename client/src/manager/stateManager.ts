@@ -70,24 +70,6 @@ export class StateManager {
     },
   };
 
-  private static buildingPrices: BuildingPrices = {
-    bakery: { wood: 0, stone: 0 },
-    barracks: { wood: 0, stone: 0 },
-    farm: { wood: 0, stone: 0 },
-    forester: { wood: 0, stone: 0 },
-    guardhouse: { wood: 0, stone: 0 },
-    ironsmelter: { wood: 0, stone: 0 },
-    mill: { wood: 0, stone: 0 },
-    residence: { wood: 0, stone: 0 },
-    sawmill: { wood: 0, stone: 0 },
-    stonecutter: { wood: 0, stone: 0 },
-    storage: { wood: 0, stone: 0 },
-    toolsmith: { wood: 0, stone: 0 },
-    weaponsmith: { wood: 0, stone: 0 },
-    well: { wood: 0, stone: 0 },
-    woodcutter: { wood: 0, stone: 0 },
-  };
-
   private constructor() {}
 
   public static getInitData(): EntityType {
@@ -253,6 +235,14 @@ export class StateManager {
 
   public static createBuilding(entity: EntityType, building: Building): void {
     BuildingManager.createBuilding(this.state, entity, building);
+  }
+
+  public static getBuildingPrices(): BuildingPrices {
+    return BuildingManager.getBuildingPrices();
+  }
+
+  public static setBuildingPrices(prices: BuildingPrices): void {
+    BuildingManager.setBuildingPrices(prices);
   }
 
   // ------------------- Unit -------------------

@@ -8,8 +8,16 @@ const main = async () => {
   init();
 
   const images = await ServerHandler.receiveAsyncMessage("start:page");
+  const buildingPrices = await ServerHandler.receiveAsyncMessage(
+    "start:prices"
+  );
+  console.log(images);
+  console.log(buildingPrices);
+
   StateManager.setImages(images);
+  StateManager.setBuildingPrices(buildingPrices);
   console.log(StateManager.getImages());
+  console.log(StateManager.getBuildingPrices());
 
   const program: Program = new Program();
 
