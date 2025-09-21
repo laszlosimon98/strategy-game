@@ -2,14 +2,18 @@ import { MainMenuState, SubMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { PageState } from "@/enums/pageState";
 import type { Building } from "@/game/world/building/building";
-import type { Unit } from "@/game/world/unit/unit";
+import { Unit } from "@/game/world/unit/unit";
 import type { Soldier } from "@/game/world/unit/units/soldier";
+import { BuildingManager } from "@/manager/buldingManager";
+import { PlayerManager } from "@/manager/playerManager";
+import { UnitManager } from "@/manager/unitManager";
 import { ServerHandler } from "@/server/serverHandler";
+import type { BuildingPrices } from "@/types/building.types";
 import type {
   ColorsType,
   EntityType,
   ImageItemType,
-  InitialStateType,
+  StateType,
   PlayerGameType,
 } from "@/types/game.types";
 import type { StorageType } from "@/types/storage.types";
@@ -31,7 +35,7 @@ export class StateManager {
     },
   };
 
-  private static state: InitialStateType = {
+  private static state: StateType = {
     language: "hu",
     images: {
       buildings: {},
@@ -64,6 +68,24 @@ export class StateManager {
         data: { ...this.initEntity.data },
       },
     },
+  };
+
+  private static buildingPrices: BuildingPrices = {
+    bakery: { wood: 0, stone: 0 },
+    barracks: { wood: 0, stone: 0 },
+    farm: { wood: 0, stone: 0 },
+    forester: { wood: 0, stone: 0 },
+    guardhouse: { wood: 0, stone: 0 },
+    ironsmelter: { wood: 0, stone: 0 },
+    mill: { wood: 0, stone: 0 },
+    residence: { wood: 0, stone: 0 },
+    sawmill: { wood: 0, stone: 0 },
+    stonecutter: { wood: 0, stone: 0 },
+    storage: { wood: 0, stone: 0 },
+    toolsmith: { wood: 0, stone: 0 },
+    weaponsmith: { wood: 0, stone: 0 },
+    well: { wood: 0, stone: 0 },
+    woodcutter: { wood: 0, stone: 0 },
   };
 
   private constructor() {}
@@ -196,80 +218,61 @@ export class StateManager {
   // ------------------- Players -------------------
 
   public static initPlayers(players: PlayerGameType): void {
-    Object.keys(players).forEach((id) => {
-      this.state.game.players[id] = {
-        name: players[id].name,
-        color: players[id].color,
-        buildings: [],
-        units: [],
-        movingUnits: [],
-        storage: players[id].storage,
-      };
-    });
+    PlayerManager.initPlayers(this.state, players);
   }
 
   public static getPlayers(): PlayerGameType {
-    return this.state.game.players;
+    return PlayerManager.getPlayers(this.state);
   }
 
   public static getPlayerById(id: string): PlayerGameType[""] {
-    return this.state.game.players[id];
+    return PlayerManager.getPlayerById(this.state, id);
   }
 
   public static getPlayerColor(id: string): ColorsType {
-    return this.getPlayerById(id).color;
+    return PlayerManager.getPlayerColor(this.state, id);
   }
 
   // ------------------- Builder -------------------
 
   public static resetBuilder(): void {
-    this.state.game.builder.data = { ...this.initEntity.data };
+    BuildingManager.resetBuilder(this.state, this.initEntity);
   }
 
-  public static setBuilder(image: ImageItemType) {
-    this.state.game.builder.data = {
-      ...this.state.game.builder.data,
-      ...image,
-    };
+  public static setBuilder(image: ImageItemType): void {
+    BuildingManager.setBuilder(this.state, image);
   }
 
   public static getBuilder(): EntityType {
-    return this.state.game.builder;
+    return BuildingManager.getBuilder(this.state);
   }
 
   public static getBuildings(id: string): Building[] {
-    return this.getPlayerById(id).buildings;
+    return BuildingManager.getBuildings(this.state, id);
   }
 
   public static createBuilding(entity: EntityType, building: Building): void {
-    const id: string = entity.data.owner;
-    const buildingsReference: Building[] = this.getBuildings(id);
-    buildingsReference.push(building);
+    BuildingManager.createBuilding(this.state, entity, building);
   }
 
   // ------------------- Unit -------------------
   public static createUnit(id: string, unit: Unit): void {
-    const unitsReference: Unit[] = this.getPlayerById(id).units;
-    unitsReference.push(unit);
+    UnitManager.createUnit(this.state, id, unit);
   }
 
   public static addUnitToMovingArray(id: string, unit: Unit): void {
-    const movingUnitsReference: Unit[] = this.getPlayerById(id).movingUnits;
-    movingUnitsReference.push(unit);
+    UnitManager.addUnitToMovingArray(this.state, id, unit);
   }
 
   public static getMovingUnits(id: string): Unit[] {
-    return this.getPlayerById(id).movingUnits;
+    return UnitManager.getMovingUnits(this.state, id);
   }
 
   public static getSoldiers(id: string): Soldier[] {
-    return this.getPlayerById(id).units;
+    return UnitManager.getSoldiers(this.state, id);
   }
 
   public static findSoldier(entity: EntityType): Soldier {
-    const { owner, id } = entity.data;
-    const units: Soldier[] = this.getSoldiers(owner);
-
-    return units.find((unit) => unit.getEntity().data.id === id) as Soldier;
+    return UnitManager.findSoldier(this.state, entity);
   }
 }

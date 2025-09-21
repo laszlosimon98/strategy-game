@@ -1,5 +1,5 @@
 type Materials = "wood" | "boards" | "stone";
-type Foods = "grain" | "flour" | "bread" | "pig" | "meat" | "water";
+type Foods = "grain" | "flour" | "bread" | "water";
 type Ores = "coal" | "iron_ore";
 type Weapons = "sword" | "shield" | "bow";
 type Metals = "iron";

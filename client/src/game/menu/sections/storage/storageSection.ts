@@ -32,19 +32,17 @@ export class StorageSection extends Section {
 
       this.createItem(new Position(10, 270), "foods", "grain");
       this.createItem(new Position(80, 270), "foods", "flour");
-      this.createItem(new Position(130, 270), "foods", "pig");
-      this.createItem(new Position(190, 270), "foods", "water");
-      this.createItem(new Position(10, 340), "foods", "bread");
-      this.createItem(new Position(80, 340), "foods", "meat");
+      this.createItem(new Position(130, 270), "foods", "bread");
+      this.createItem(new Position(200, 270), "foods", "water");
 
-      this.createItem(new Position(10, 410), "ores", "coal");
-      this.createItem(new Position(60, 410), "ores", "iron_ore");
+      this.createItem(new Position(10, 340), "ores", "coal");
+      this.createItem(new Position(60, 340), "ores", "iron_ore");
 
-      this.createItem(new Position(10, 490), "metals", "iron");
+      this.createItem(new Position(10, 410), "metals", "iron");
 
-      this.createItem(new Position(10, 560), "weapons", "sword");
-      this.createItem(new Position(70, 560), "weapons", "shield");
-      this.createItem(new Position(140, 560), "weapons", "bow");
+      this.createItem(new Position(10, 490), "weapons", "sword");
+      this.createItem(new Position(70, 490), "weapons", "shield");
+      this.createItem(new Position(140, 490), "weapons", "bow");
     }
   }
 
