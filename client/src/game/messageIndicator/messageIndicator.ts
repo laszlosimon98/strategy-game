@@ -10,7 +10,7 @@ export class MessageIndicator extends Frame {
   private visibilityTimer: Timer;
 
   constructor(pos: Position, dim: Dimension) {
-    super(pos, dim);
+    super(pos, dim, 0.85);
 
     this.text = new Text(new Position(this.pos.x, this.pos.y), "");
     this.visibilityTimer = new Timer(settings.timer.visibilityInMs);

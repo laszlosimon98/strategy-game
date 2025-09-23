@@ -30,23 +30,38 @@ export class GameMenu implements CallAble {
 
     this.frames = {
       [MainMenuState.Unselected]: new Section(
-        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Position(
+          pos.x,
+          pos.y + settings.offset.menuItem + settings.offset.menuMargin
+        ),
         new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.House]: new BuildingSection(
-        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Position(
+          pos.x,
+          pos.y + settings.offset.menuItem + settings.offset.menuMargin
+        ),
         new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.Storage]: new StorageSection(
-        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Position(
+          pos.x,
+          pos.y + settings.offset.menuItem + settings.offset.menuMargin
+        ),
         new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.Population]: new Section(
-        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Position(
+          pos.x,
+          pos.y + settings.offset.menuItem + settings.offset.menuMargin
+        ),
         new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
       [MainMenuState.Info]: new InfoPanel(
-        new Position(pos.x, pos.y + settings.offset.menuItem),
+        new Position(
+          pos.x,
+          pos.y + settings.offset.menuItem + settings.offset.menuMargin
+        ),
         new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
     };

@@ -7,9 +7,11 @@ import { Position } from "@/utils/position";
 
 export class Frame extends PageComponents {
   protected buttons: Button[] = [];
+  private alpha: number;
 
-  public constructor(pos: Position, dim: Dimension) {
+  public constructor(pos: Position, dim: Dimension, alpha: number = 1) {
     super(pos, dim);
+    this.alpha = alpha;
   }
 
   public draw(): void {
@@ -17,13 +19,11 @@ export class Frame extends PageComponents {
 
     ctx.save();
 
-    // Árnyék
     ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
     ctx.shadowBlur = 10;
     ctx.shadowOffsetX = 3;
     ctx.shadowOffsetY = 3;
 
-    // Kerekített téglalap
     const radius = 8;
     const x = this.pos.x;
     const y = this.pos.y;
@@ -42,17 +42,8 @@ export class Frame extends PageComponents {
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
 
-    // Gradient háttér
-    const gradient = ctx.createLinearGradient(x, y, x, y + height);
-    gradient.addColorStop(0, settings.color.brown);
-    gradient.addColorStop(1, "#8B4513"); // Sötétebb barna
-    ctx.fillStyle = gradient;
+    ctx.fillStyle = this.hexToRgba(settings.color.brown, this.alpha);
     ctx.fill();
-
-    // Szegély
-    ctx.strokeStyle = "#654321";
-    ctx.lineWidth = 2;
-    ctx.stroke();
 
     this.buttons.forEach((btn) => btn.draw());
 
@@ -61,5 +52,12 @@ export class Frame extends PageComponents {
 
   public getButtons(): Button[] {
     return this.buttons;
+  }
+
+  private hexToRgba(hex: string, alpha: number): string {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 }

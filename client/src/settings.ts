@@ -36,6 +36,7 @@ export const settings = {
     lightBrown: "#B85A0F",
   },
   offset: {
+    menuMargin: 7.5,
     item: 19,
     menuItem: 75,
   },
