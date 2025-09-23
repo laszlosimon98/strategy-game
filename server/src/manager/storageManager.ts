@@ -5,27 +5,27 @@ import { Socket } from "socket.io";
 export class StorageManager {
   private static initStorage: StorageType = {
     materials: {
-      wood: { name: "wood", amount: Math.floor(Math.random() * 50) },
+      wood: { name: "wood", amount: 8 },
       boards: { name: "boards", amount: 12 },
       stone: { name: "stone", amount: 12 },
     },
     foods: {
-      grain: { name: "grain", amount: Math.floor(Math.random() * 50) },
-      flour: { name: "flour", amount: Math.floor(Math.random() * 50) },
-      bread: { name: "bread", amount: Math.floor(Math.random() * 50) },
-      water: { name: "water", amount: Math.floor(Math.random() * 50) },
+      grain: { name: "grain", amount: 8 },
+      flour: { name: "flour", amount: 4 },
+      bread: { name: "bread", amount: 4 },
+      water: { name: "water", amount: 6 },
     },
     ores: {
-      coal: { name: "coal", amount: Math.floor(Math.random() * 50) },
-      iron_ore: { name: "iron_ore", amount: Math.floor(Math.random() * 50) },
+      coal: { name: "coal", amount: 10 },
+      iron_ore: { name: "iron_ore", amount: 5 },
     },
     weapons: {
-      sword: { name: "sword", amount: Math.floor(Math.random() * 50) },
-      shield: { name: "shield", amount: Math.floor(Math.random() * 50) },
-      bow: { name: "bow", amount: Math.floor(Math.random() * 50) },
+      sword: { name: "sword", amount: 2 },
+      shield: { name: "shield", amount: 2 },
+      bow: { name: "bow", amount: 3 },
     },
     metals: {
-      iron: { name: "iron", amount: Math.floor(Math.random() * 50) },
+      iron: { name: "iron", amount: 5 },
     },
   };
 
