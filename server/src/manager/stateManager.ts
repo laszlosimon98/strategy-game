@@ -212,7 +212,17 @@ export class StateManager {
     UnitManager.deleteUnit(room, this.state, unit);
   }
 
-  public static getStorage(room: string): StorageType {
-    return StorageManager.getCurrentStorage();
+  // ------------------- Storage -------------------
+
+  public static getStorage(socket: Socket, room: string): StorageType {
+    return StorageManager.getCurrentStorage(socket, room, this.state);
+  }
+
+  public static updateStorage(
+    socket: Socket,
+    room: string,
+    newStorageValues: StorageType
+  ): void {
+    StorageManager.updateStorage(socket, room, this.state, newStorageValues);
   }
 }

@@ -4,11 +4,14 @@ import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
-import type { PlayerGameType } from "@/types/game.types";
+import type {
+  ErrorMessageResponse,
+  PlayerGameType,
+  StorageResponse,
+} from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
-import { MainMenuState } from "@/enums/gameMenuState";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -24,13 +27,13 @@ export class Game {
     this.mousePos = Position.zero();
     this.key = "";
 
-    this.handleCommunication();
-
     this.init();
+
+    this.handleCommunication();
   }
 
   private async init(): Promise<void> {
-    const players = await this.handleCommunication();
+    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
     this.initPlayers(players);
 
     StateManager.setGameState(GameState.Default);
@@ -83,10 +86,19 @@ export class Game {
     this.key = key;
   }
 
-  public resize(): void {}
+  private async handleCommunication(): Promise<void> {
+    ServerHandler.receiveMessage(
+      "game:error",
+      ({ message }: ErrorMessageResponse) => {
+        console.warn(message);
+      }
+    );
 
-  private async handleCommunication(): Promise<any> {
-    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
-    return players;
+    ServerHandler.receiveMessage(
+      "game:storageUpdate",
+      ({ storage }: StorageResponse) => {
+        StateManager.updateStorage(ServerHandler.getId(), storage);
+      }
+    );
   }
 }

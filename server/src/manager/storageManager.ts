@@ -1,11 +1,13 @@
+import { StateType } from "@/types/state.types";
 import { StorageType } from "@/types/storage.types";
+import { Socket } from "socket.io";
 
 export class StorageManager {
   private static initStorage: StorageType = {
     materials: {
       wood: { name: "wood", amount: Math.floor(Math.random() * 50) },
-      boards: { name: "boards", amount: Math.floor(Math.random() * 50) },
-      stone: { name: "stone", amount: Math.floor(Math.random() * 50) },
+      boards: { name: "boards", amount: 12 },
+      stone: { name: "stone", amount: 12 },
     },
     foods: {
       grain: { name: "grain", amount: Math.floor(Math.random() * 50) },
@@ -27,14 +29,26 @@ export class StorageManager {
     },
   };
 
-  private static storage: StorageType = this.initStorage;
   private constructor() {}
 
   public static getInitStorage(): StorageType {
     return this.initStorage;
   }
 
-  public static getCurrentStorage(): StorageType {
-    return this.storage;
+  public static getCurrentStorage(
+    socket: Socket,
+    room: string,
+    state: StateType
+  ): StorageType {
+    return state[room].players[socket.id].storage;
+  }
+
+  public static updateStorage(
+    socket: Socket,
+    room: string,
+    state: StateType,
+    newStorageValues: StorageType
+  ): void {
+    state[room].players[socket.id].storage = { ...newStorageValues };
   }
 }

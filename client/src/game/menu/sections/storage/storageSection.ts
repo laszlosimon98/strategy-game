@@ -23,6 +23,7 @@ export class StorageSection extends Section {
   }
 
   private initializeStorage(): void {
+    this.items = [];
     this.storage = StateManager.getStorage(this.playerId);
 
     if (this.storage) {
@@ -64,8 +65,6 @@ export class StorageSection extends Section {
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
-    if (!this.storage) {
-      this.initializeStorage();
-    }
+    this.initializeStorage();
   }
 }

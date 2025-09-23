@@ -114,16 +114,22 @@ export class BuildingManager {
   }
 
   private static hasMaterialsToBuild(
+    socket: Socket,
     room: string,
     buildingName: Buildings
   ): boolean {
-    const currentStorageState: StorageType = StateManager.getStorage(room);
+    const currentStorageState: StorageType = StateManager.getStorage(
+      socket,
+      room
+    );
     const { boards, stone } = this.buildingPrices[buildingName as Buildings];
 
     const { boards: storageBoards, stone: storageStone } =
       currentStorageState.materials;
 
-    return storageBoards.amount - boards > 0 && storageStone.amount - stone > 0;
+    return (
+      storageBoards.amount - boards >= 0 && storageStone.amount - stone >= 0
+    );
   }
 
   public static getBuildingPrices(): BuildingPrices {
@@ -144,14 +150,12 @@ export class BuildingManager {
     const buildingName = getImageNameFromUrl(entity.data.url);
     const room: string = ServerHandler.getCurrentRoom(socket);
 
-    if (this.hasMaterialsToBuild(room, buildingName as Buildings)) {
+    if (this.hasMaterialsToBuild(socket, room, buildingName as Buildings)) {
       const world: Cell[][] = World.getWorld(socket);
       const building: Building = new Building(entity);
 
       building.setOwner(socket.id);
-
       this.createBuilding(room, socket, state, building);
-
       this.occupyCells(entity.data.indices, world, buildingName);
 
       return building;

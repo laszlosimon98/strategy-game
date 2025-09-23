@@ -6,6 +6,7 @@ import { Unit } from "@/game/world/unit/unit";
 import type { Soldier } from "@/game/world/unit/units/soldier";
 import { BuildingManager } from "@/manager/buldingManager";
 import { PlayerManager } from "@/manager/playerManager";
+import { StorageManager } from "@/manager/storageManager";
 import { UnitManager } from "@/manager/unitManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { BuildingPrices } from "@/types/building.types";
@@ -23,6 +24,7 @@ import { Position } from "@/utils/position";
 import { faker } from "@faker-js/faker/locale/hu";
 
 export class StateManager {
+  private static id: string = ServerHandler.getId();
   private static initEntity: EntityType = {
     data: {
       id: "",
@@ -177,10 +179,13 @@ export class StateManager {
   // ------------------- Storage -------------------
   public static getStorage(id: string): StorageType | null {
     const player = this.getPlayerById(id);
-    if (!player) {
-      return null;
-    }
-    return player.storage;
+    return StorageManager.getStorage(player);
+  }
+
+  public static updateStorage(id: string, newStorageValues: StorageType): void {
+    const player = this.getPlayerById(id);
+
+    StorageManager.updateStorage(player, newStorageValues);
   }
 
   // ------------------- State -------------------
