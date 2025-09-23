@@ -9,6 +9,7 @@ const MENUITEM_DIMENSION: Dimension = new Dimension(64, 64);
 const UNIT_DIMENSION: Dimension = new Dimension(64, 64);
 const HOUSEITEM_DIMENSION: Dimension = new Dimension(96, 96);
 const TOOLTIP_DIMENDION: Dimension = new Dimension(120, 100);
+const MESSAGE_INDICATOR: Dimension = new Dimension(500, 50);
 
 export const settings = {
   fps: 60,
@@ -20,6 +21,7 @@ export const settings = {
     unit: UNIT_DIMENSION,
     houseItem: HOUSEITEM_DIMENSION,
     tooltip: TOOLTIP_DIMENDION,
+    messageIndicator: MESSAGE_INDICATOR,
     unitAsset: 64,
     item: 96,
     cell: 48,
@@ -106,5 +108,8 @@ export const settings = {
       canvasWidth / 2 - TITLE_DIMENSION.width / 2,
       canvasHeight / 15
     ),
+  },
+  timer: {
+    visibilityInMs: 3000,
   },
 };

@@ -13,6 +13,7 @@ export class MilitarySection extends Section {
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
+    this.drawFrame = false;
 
     this.ironSmelter = new LabelButton(
       new Position(pos.x, pos.y),

@@ -12,6 +12,7 @@ export class FoodSection extends Section {
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
+    this.drawFrame = false;
 
     this.farm = new LabelButton(
       new Position(pos.x, pos.y),

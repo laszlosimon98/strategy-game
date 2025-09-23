@@ -1,7 +1,7 @@
 import { ctx } from "@/init";
 import { language, type Buildings } from "@/languages/language";
 import { StateManager } from "@/manager/stateManager";
-import { PageComponents } from "@/page/components/pageComponents";
+import { Frame } from "@/page/components/frame";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
 import type { Price } from "@/types/building.types";
@@ -9,7 +9,7 @@ import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
 
-export class Tooltip extends PageComponents {
+export class Tooltip extends Frame {
   private triangleSize: number = 12;
 
   private topLeft: Position;
@@ -47,20 +47,6 @@ export class Tooltip extends PageComponents {
       this.pos.x + this.dim.width / 2,
       this.pos.y + this.dim.height - 1 + this.triangleSize * 1.5
     );
-
-    this.boardsText.setCenter({
-      xFrom: this.pos.x,
-      xTo: this.dim.width,
-      yFrom: this.pos.y + 32,
-      yTo: 0,
-    });
-
-    this.stoneText.setCenter({
-      xFrom: this.pos.x,
-      xTo: this.dim.width,
-      yFrom: this.pos.y + 48,
-      yTo: 0,
-    });
   }
 
   public draw(): void {
@@ -68,7 +54,6 @@ export class Tooltip extends PageComponents {
 
     ctx.save();
     ctx.fillStyle = settings.color.lightBrown;
-    ctx.fillRect(this.pos.x, this.pos.y, this.dim.width, this.dim.height);
 
     ctx.beginPath();
     ctx.moveTo(this.topLeft.x, this.topLeft.y);
@@ -121,14 +106,14 @@ export class Tooltip extends PageComponents {
       this.boardsText.setCenter({
         xFrom: this.pos.x,
         xTo: this.dim.width,
-        yFrom: this.pos.y + 32,
+        yFrom: this.pos.y + 48,
         yTo: 0,
       });
 
       this.stoneText.setCenter({
         xFrom: this.pos.x,
         xTo: this.dim.width,
-        yFrom: this.pos.y + 48,
+        yFrom: this.pos.y + 72,
         yTo: 0,
       });
     }

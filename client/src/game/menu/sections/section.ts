@@ -13,6 +13,7 @@ export class Section {
   protected pos: Position;
   protected buttons: Button[] = [];
   protected labelbuttons: LabelButton[] = [];
+  protected drawFrame: boolean = true;
 
   public constructor(pos: Position, dim: Dimension) {
     this.pos = pos;
@@ -20,8 +21,10 @@ export class Section {
   }
 
   public draw(): void {
-    this.section.draw();
-    this.subSections[StateManager.getSubMenuState()]?.draw();
+    if (this.drawFrame) {
+      this.section.draw();
+      this.subSections[StateManager.getSubMenuState()]?.draw();
+    }
 
     this.buttons.forEach((btn) => btn.draw());
     this.labelbuttons.forEach((btn) => btn.draw());

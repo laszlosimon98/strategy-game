@@ -10,6 +10,7 @@ export class StorageSection extends Section {
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
+    this.drawFrame = false;
 
     this.storage = new LabelButton(
       new Position(pos.x, pos.y),

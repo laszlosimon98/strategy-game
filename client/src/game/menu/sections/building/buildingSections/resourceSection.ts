@@ -12,6 +12,7 @@ export class ResourceSection extends Section {
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
+    this.drawFrame = false;
 
     this.woodCutter = new LabelButton(
       new Position(pos.x, pos.y),

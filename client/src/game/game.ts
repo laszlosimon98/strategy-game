@@ -4,14 +4,12 @@ import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
-import type {
-  ErrorMessageResponse,
-  PlayerGameType,
-  StorageResponse,
-} from "@/types/game.types";
+import type { ErrorMessageResponse, PlayerGameType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
+import { MessageIndicator } from "@/game/messageIndicator/messageIndicator";
+import { canvasWidth } from "@/init";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -20,8 +18,17 @@ export class Game {
   private mousePos: Position;
   private key: string;
 
+  private messageIndicator: MessageIndicator;
+
   public constructor() {
     this.gameMenu = new GameMenu(settings.gameMenu.pos, settings.gameMenu.dim);
+    this.messageIndicator = new MessageIndicator(
+      new Position(
+        canvasWidth / 2 - settings.size.messageIndicator.width / 2,
+        100
+      ),
+      settings.size.messageIndicator
+    );
 
     this.world = undefined;
     this.mousePos = Position.zero();
@@ -50,11 +57,13 @@ export class Game {
     this.gameMenu.draw();
 
     this.gameMenu.drawTooltips();
+    this.messageIndicator.draw();
   }
 
   public update(dt: number) {
     this.gameMenu.update(dt, this.mousePos);
     this.world?.update(dt, this.mousePos, this.key);
+    this.messageIndicator.update(dt, this.mousePos);
   }
 
   public handleClick(e: MouseEvent) {
@@ -90,7 +99,7 @@ export class Game {
     ServerHandler.receiveMessage(
       "game:error",
       ({ message }: ErrorMessageResponse) => {
-        console.warn(message);
+        this.messageIndicator.setText(message);
       }
     );
   }
