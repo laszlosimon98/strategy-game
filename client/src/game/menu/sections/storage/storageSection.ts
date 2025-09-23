@@ -2,6 +2,7 @@ import { Section } from "@/game/menu/sections/section";
 import { StorageItem } from "@/game/menu/sections/storage/storageItem";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
+import type { StorageResponse } from "@/types/game.types";
 import type {
   AllItemType,
   GroupType,
@@ -20,10 +21,10 @@ export class StorageSection extends Section {
     this.playerId = ServerHandler.getId();
 
     this.initializeStorage();
+    this.handleCommunication();
   }
 
   private initializeStorage(): void {
-    this.items = [];
     this.storage = StateManager.getStorage(this.playerId);
 
     if (this.storage) {
@@ -65,6 +66,23 @@ export class StorageSection extends Section {
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
+    if (!this.storage) {
+      this.initializeStorage();
+    }
+  }
+
+  private updateStorageUI() {
+    this.items = [];
     this.initializeStorage();
+  }
+
+  private handleCommunication() {
+    ServerHandler.receiveMessage(
+      "game:storageUpdate",
+      ({ storage }: StorageResponse) => {
+        StateManager.updateStorage(ServerHandler.getId(), storage);
+        this.updateStorageUI();
+      }
+    );
   }
 }

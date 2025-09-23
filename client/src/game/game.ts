@@ -93,12 +93,5 @@ export class Game {
         console.warn(message);
       }
     );
-
-    ServerHandler.receiveMessage(
-      "game:storageUpdate",
-      ({ storage }: StorageResponse) => {
-        StateManager.updateStorage(ServerHandler.getId(), storage);
-      }
-    );
   }
 }

@@ -24,7 +24,6 @@ import { Position } from "@/utils/position";
 import { faker } from "@faker-js/faker/locale/hu";
 
 export class StateManager {
-  private static id: string = ServerHandler.getId();
   private static initEntity: EntityType = {
     data: {
       id: "",
