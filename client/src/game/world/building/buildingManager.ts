@@ -136,6 +136,13 @@ export class BuildingManager extends Manager<Building> {
     });
 
     ServerHandler.receiveMessage(
+      "game:error",
+      ({ message }: { message: string }) => {
+        console.error("Baj van az építésnél: ", message);
+      }
+    );
+
+    ServerHandler.receiveMessage(
       "game:destroy",
       ({ id, indices }: { id: string; indices: Indices }) => {
         this.destroy(id, indices);

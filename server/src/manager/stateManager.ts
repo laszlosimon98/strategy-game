@@ -16,6 +16,8 @@ import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/classes/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
+import { StorageType } from "@/types/storage.types";
+import { ErrorMessage } from "@/types/setting.types";
 
 export class StateManager {
   private static state: StateType = {};
@@ -156,7 +158,7 @@ export class StateManager {
   public static createBuilding(
     socket: Socket,
     entity: EntityType
-  ): Building | undefined {
+  ): Building | ErrorMessage {
     return BuildingManager.build(socket, this.state, entity);
   }
 
@@ -208,5 +210,9 @@ export class StateManager {
 
   public static deleteUnit(room: string, unit: Unit): void {
     UnitManager.deleteUnit(room, this.state, unit);
+  }
+
+  public static getStorage(room: string): StorageType {
+    return StorageManager.getCurrentStorage();
   }
 }

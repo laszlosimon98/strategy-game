@@ -1,4 +1,4 @@
-type Buildings =
+export type Buildings =
   | "bakery"
   | "barracks"
   | "farm"

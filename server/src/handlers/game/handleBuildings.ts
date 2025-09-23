@@ -5,6 +5,7 @@ import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
+import { ErrorMessage } from "@/types/setting.types";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const build = (entity: EntityType): void => {
@@ -12,18 +13,20 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const newBuilding: Building | undefined = StateManager.createBuilding(
+    const response: Building | ErrorMessage = StateManager.createBuilding(
       socket,
       entity
     );
 
-    if (newBuilding) {
+    if (response instanceof Building) {
       ServerHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:build",
-        newBuilding.getEntity()
+        response.getEntity()
       );
+    } else {
+      ServerHandler.sendMessageToSender(socket, "game:error", response);
     }
   };
 

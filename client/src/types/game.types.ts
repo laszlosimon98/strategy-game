@@ -126,3 +126,7 @@ export type StateType = Language &
   PlayerType &
   InfoType &
   Game;
+
+export type ErrorMessage = {
+  message: string;
+};

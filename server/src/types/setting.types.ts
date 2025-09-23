@@ -10,3 +10,7 @@ export type Settings = {
   treespawnChance: number;
   rockspawnChance: number;
 };
+
+export type ErrorMessage = {
+  message: string;
+};

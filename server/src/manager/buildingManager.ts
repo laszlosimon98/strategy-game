@@ -5,9 +5,12 @@ import { ServerHandler } from "@/classes/serverHandler";
 import { Indices } from "@/classes/utils/indices";
 import { getImageNameFromUrl } from "@/classes/utils/utils";
 import { Validator } from "@/classes/validator";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
-import { BuildingPrices } from "@/types/building.types";
+import { BuildingPrices, Buildings } from "@/types/building.types";
+import { ErrorMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
+import { StorageType } from "@/types/storage.types";
 import { Socket } from "socket.io";
 
 export class BuildingManager {
@@ -110,6 +113,19 @@ export class BuildingManager {
     state[room].players[socket.id].buildings.splice(buildingIndex, 1);
   }
 
+  private static hasMaterialsToBuild(
+    room: string,
+    buildingName: Buildings
+  ): boolean {
+    const currentStorageState: StorageType = StateManager.getStorage(room);
+    const { boards, stone } = this.buildingPrices[buildingName as Buildings];
+
+    const { boards: storageBoards, stone: storageStone } =
+      currentStorageState.materials;
+
+    return storageBoards.amount - boards > 0 && storageStone.amount - stone > 0;
+  }
+
   public static getBuildingPrices(): BuildingPrices {
     return this.buildingPrices;
   }
@@ -118,25 +134,30 @@ export class BuildingManager {
     socket: Socket,
     state: StateType,
     entity: EntityType
-  ): Building | undefined {
+  ): Building | ErrorMessage {
     const { i, j } = entity.data.indices;
 
     if (!this.isPossibleToBuild(i, j, socket)) {
-      return;
+      return { message: "A kiválaszott helyre nem lehet építeni!" };
     }
 
-    const world: Cell[][] = World.getWorld(socket);
-    const building: Building = new Building(entity);
     const buildingName = getImageNameFromUrl(entity.data.url);
-
-    building.setOwner(socket.id);
-
     const room: string = ServerHandler.getCurrentRoom(socket);
-    this.createBuilding(room, socket, state, building);
 
-    this.occupyCells(entity.data.indices, world, buildingName);
+    if (this.hasMaterialsToBuild(room, buildingName as Buildings)) {
+      const world: Cell[][] = World.getWorld(socket);
+      const building: Building = new Building(entity);
 
-    return building;
+      building.setOwner(socket.id);
+
+      this.createBuilding(room, socket, state, building);
+
+      this.occupyCells(entity.data.indices, world, buildingName);
+
+      return building;
+    } else {
+      return { message: "Nincs elég nyersanyag az építéshez!" };
+    }
   }
 
   public static destroy(
