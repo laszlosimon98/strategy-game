@@ -1,6 +1,6 @@
 import { StateManager } from "@/manager/stateManager";
 import { ctx } from "@/init";
-import type { CallAble } from "@/interfaces/callAble";
+import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { language, type Buildings, type Units } from "@/languages/language";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
@@ -8,7 +8,7 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
 
-export abstract class Entity implements CallAble {
+export abstract class Entity implements RendererInterface {
   protected image: HTMLImageElement;
   protected renderPos: Position;
 

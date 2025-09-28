@@ -15,11 +15,11 @@ import {
 import { Vector } from "@/utils/vector";
 
 import type { EntityType } from "@/types/game.types";
-import type { CallAble } from "@/interfaces/callAble";
+import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 
-export abstract class Unit extends Entity implements CallAble {
+export abstract class Unit extends Entity implements RendererInterface {
   protected name: string;
 
   private path: Cell[];

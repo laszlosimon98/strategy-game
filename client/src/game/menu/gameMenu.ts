@@ -4,7 +4,7 @@ import { InfoPanel } from "@/game/menu/sections/infoPanel";
 import { MainSection } from "@/game/menu/sections/main/mainSection";
 import { Section } from "@/game/menu/sections/section";
 import { StorageSection } from "@/game/menu/sections/storage/storageSection";
-import type { CallAble } from "@/interfaces/callAble";
+import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { settings } from "@/settings";
@@ -12,7 +12,7 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
 
-export class GameMenu implements CallAble {
+export class GameMenu implements RendererInterface {
   private mainSection: MainSection;
   private frames: Record<MainMenuState, Section>;
 

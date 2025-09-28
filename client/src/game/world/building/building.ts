@@ -1,12 +1,12 @@
 import { Flag } from "@/game/world/building/flag";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
-import type { CallAble } from "@/interfaces/callAble";
+import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { StateManager } from "@/manager/stateManager";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 
-export class Building extends Entity implements CallAble {
+export class Building extends Entity implements RendererInterface {
   private flagEntity: EntityType | undefined;
   private flag: Flag | undefined;
 

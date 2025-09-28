@@ -1,10 +1,10 @@
 import { Entity } from "@/game/world/entity";
-import type { CallAble } from "@/interfaces/callAble";
+import type { RendererInterface } from "@/interfaces/rendererInterface";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
-export class Flag extends Entity implements CallAble {
+export class Flag extends Entity implements RendererInterface {
   constructor(entity: EntityType) {
     super(entity);
   }

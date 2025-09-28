@@ -3,8 +3,8 @@ import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
 import { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
-import type { CallAble } from "@/interfaces/callAble";
-import type { MouseClicker } from "@/interfaces/mouseClicker";
+import type { RendererInterface } from "@/interfaces/rendererInterface";
+import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
@@ -12,7 +12,7 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 
-export abstract class Manager<T> implements MouseClicker {
+export abstract class Manager<T> implements MouseHandlerInterface {
   protected pos: Position;
   protected world: Cell[][];
 
@@ -29,7 +29,7 @@ export abstract class Manager<T> implements MouseClicker {
 
   protected abstract handleCommunication(): void;
 
-  protected draw<T extends CallAble>(objectKey: string): void {
+  protected draw<T extends RendererInterface>(objectKey: string): void {
     Object.keys(StateManager.getPlayers()).forEach((key) => {
       const arr: T[] = StateManager.getPlayers()[key][
         objectKey
@@ -38,7 +38,7 @@ export abstract class Manager<T> implements MouseClicker {
     });
   }
 
-  protected update<T extends CallAble>(
+  protected update<T extends RendererInterface>(
     dt: number,
     cameraScroll: Position,
     objectKey: string
@@ -75,7 +75,7 @@ export abstract class Manager<T> implements MouseClicker {
     };
   }
 
-  protected setObjectPosition<T extends CallAble>(
+  protected setObjectPosition<T extends RendererInterface>(
     object: T,
     objectPos: Position
   ): void {
@@ -87,7 +87,7 @@ export abstract class Manager<T> implements MouseClicker {
     object.setPosition(newObjectPos);
   }
 
-  protected hoverObject<T extends CallAble>(
+  protected hoverObject<T extends RendererInterface>(
     mousePos: Position,
     cameraScroll: Position,
     key: string

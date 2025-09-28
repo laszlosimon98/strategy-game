@@ -2,7 +2,7 @@ import { Camera } from "@/game/camera/camera";
 import { BuildingManager } from "@/game/world/building/buildingManager";
 import { Cell } from "@/game/world/cell";
 import { UnitManager } from "@/game/world/unit/unitManager";
-import type { MouseClicker } from "@/interfaces/mouseClicker";
+import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { TileType } from "@/types/world.types";
@@ -10,7 +10,7 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { convertIsometricCoordsToCartesianCoords } from "@/utils/utils";
 
-export class World implements MouseClicker {
+export class World implements MouseHandlerInterface {
   private mousePos: Position;
   private world: Cell[][];
   private camera: Camera;
