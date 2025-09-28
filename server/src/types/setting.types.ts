@@ -10,6 +10,7 @@ export type Settings = {
   mapSize: number;
   treespawnChance: number;
   rockspawnChance: number;
+  cellSize: number;
   startPositions: Indices[];
 };
 

@@ -10,6 +10,7 @@ const UNIT_DIMENSION: Dimension = new Dimension(64, 64);
 const HOUSEITEM_DIMENSION: Dimension = new Dimension(96, 96);
 const TOOLTIP_DIMENDION: Dimension = new Dimension(120, 100);
 const MESSAGE_INDICATOR: Dimension = new Dimension(500, 50);
+const CELL_SIZE: number = 48;
 
 export const settings = {
   fps: 60,
@@ -24,7 +25,7 @@ export const settings = {
     messageIndicator: MESSAGE_INDICATOR,
     unitAsset: 64,
     item: 96,
-    cell: 48,
+    cell: CELL_SIZE,
   },
   color: {
     background: "#F1C585",

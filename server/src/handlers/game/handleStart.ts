@@ -1,12 +1,17 @@
+import { v4 as uuidv4 } from "uuid";
+import { join } from "path";
 import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/classes/serverHandler";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { Indices } from "@/classes/utils/indices";
-import type { PlayerType } from "@/types/state.types";
+import type { EntityType, PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
 import type { TileType } from "@/types/world.types";
 import { StateManager } from "@/manager/stateManager";
+import { Building } from "@/classes/game/building";
+import { ErrorMessage } from "@/types/setting.types";
+import { Position } from "@/types/utils.types";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
@@ -17,7 +22,7 @@ export const handleStart = (io: Server, socket: Socket) => {
 
     initPlayers(currentRoom);
     createWorld();
-    placePlayers(currentRoom);
+    initPlayersStartPosition(currentRoom);
   };
 
   const initPlayers = (currentRoom: string) => {
@@ -42,7 +47,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     });
   };
 
-  const placePlayers = (currentRoom: string) => {
+  const initPlayersStartPosition = (currentRoom: string): void => {
     const players: PlayerType = StateManager.getPlayers(currentRoom);
     const startPositions: Indices[] = [...settings.startPositions];
 
@@ -50,7 +55,57 @@ export const handleStart = (io: Server, socket: Socket) => {
       const idx: number = Math.floor(Math.random() * startPositions.length);
       const pos = startPositions.splice(idx, 1)[0];
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
+
+      placeTower(pos);
     });
+  };
+
+  const placeTower = (indices: Indices): void => {
+    const entity: EntityType = {
+      data: {
+        id: uuidv4(),
+        owner: socket.id,
+        url: `${settings.serverUrl}/assets/buildings/guardhouse.png`,
+        indices,
+        dimensions: {
+          width: 128,
+          height: 128,
+        },
+        position: calculateInitTowerPosition(indices),
+      },
+    };
+
+    const response: Building | ErrorMessage = StateManager.createBuilding(
+      socket,
+      entity
+    );
+
+    if (response instanceof Building) {
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:build",
+        response.getEntity()
+      );
+    } else {
+      ServerHandler.sendMessageToSender(socket, "game:error", response);
+    }
+  };
+
+  const calculateInitTowerPosition = (indices: Indices): Position => {
+    const { i, j } = indices;
+
+    const normalPos: Position = {
+      x: i * settings.cellSize + settings.cellSize,
+      y: j * settings.cellSize + settings.cellSize,
+    };
+
+    const isometricPos: Position = {
+      x: normalPos.x - normalPos.y,
+      y: (normalPos.x + normalPos.y) / 2,
+    };
+
+    return isometricPos;
   };
 
   const getTiles = (world: Cell[][]): TileType[][] => {
