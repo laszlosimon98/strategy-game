@@ -15,20 +15,10 @@ export const handleStart = (io: Server, socket: Socket) => {
     StateManager.startGame(currentRoom);
     ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
-    // initStorage(currentRoom);
     initPlayers(currentRoom);
     createWorld();
     placePlayers(currentRoom);
   };
-
-  // const initStorage = (currentRoom: string) => {
-  //   ServerHandler.sendMessageToEveryOne(
-  //     io,
-  //     socket,
-  //     "game:initStorage",
-  //     StateManager.getStorage(currentRoom)
-  //   );
-  // };
 
   const initPlayers = (currentRoom: string) => {
     ServerHandler.sendMessageToEveryOne(
@@ -54,11 +44,11 @@ export const handleStart = (io: Server, socket: Socket) => {
 
   const placePlayers = (currentRoom: string) => {
     const players: PlayerType = StateManager.getPlayers(currentRoom);
+    const startPositions: Indices[] = [...settings.startPositions];
 
     Object.keys(players).forEach((id) => {
-      const i = Math.floor(Math.random() * settings.mapSize);
-      const j = Math.floor(Math.random() * settings.mapSize);
-      const pos = new Indices(i, j);
+      const idx: number = Math.floor(Math.random() * startPositions.length);
+      const pos = startPositions.splice(idx, 1)[0];
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
     });
   };

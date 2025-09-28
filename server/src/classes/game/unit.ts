@@ -1,6 +1,6 @@
 import { Indices } from "@/classes/utils/indices";
 import { StateManager } from "@/manager/stateManager";
-import type { Position } from "@/types/position.types";
+import type { Position } from "@/types/utils.types";
 import type { EntityType } from "@/types/state.types";
 import type { PropertyType } from "@/types/units.types";
 

@@ -1,4 +1,5 @@
 import type { ColorType } from "@/types/state.types";
+import { Indices } from "@/classes/utils/indices";
 
 export type Settings = {
   colors: ColorType[];
@@ -9,6 +10,7 @@ export type Settings = {
   mapSize: number;
   treespawnChance: number;
   rockspawnChance: number;
+  startPositions: Indices[];
 };
 
 export type ErrorMessage = {

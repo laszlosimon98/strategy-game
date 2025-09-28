@@ -7,7 +7,7 @@ import type { EntityType } from "@/types/state.types";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
-import type { Position } from "@/types/position.types";
+import type { Position } from "@/types/utils.types";
 import { StateManager } from "@/manager/stateManager";
 
 export const handleUnits = (io: Server, socket: Socket) => {
