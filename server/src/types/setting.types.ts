@@ -14,6 +14,6 @@ export type Settings = {
   startPositions: Indices[];
 };
 
-export type ErrorMessage = {
+export type ReturnMessage = {
   message: string;
 };

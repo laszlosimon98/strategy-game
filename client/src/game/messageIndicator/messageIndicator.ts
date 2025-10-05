@@ -12,7 +12,9 @@ export class MessageIndicator extends Frame {
   constructor(pos: Position, dim: Dimension) {
     super(pos, dim, 0.85);
 
-    this.text = new Text(new Position(this.pos.x, this.pos.y), "");
+    this.text = new Text(new Position(this.pos.x, this.pos.y), "", {
+      fontSize: "16px",
+    });
     this.visibilityTimer = new Timer(settings.timer.visibilityInMs);
   }
 

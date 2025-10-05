@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import { join } from "path";
 import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/classes/serverHandler";
 import { Cell } from "@/classes/game/cell";
@@ -10,7 +9,7 @@ import { settings } from "@/settings";
 import type { TileType } from "@/types/world.types";
 import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/classes/game/building";
-import { ErrorMessage } from "@/types/setting.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { Position } from "@/types/utils.types";
 
 export const handleStart = (io: Server, socket: Socket) => {
@@ -56,16 +55,18 @@ export const handleStart = (io: Server, socket: Socket) => {
       const pos = startPositions.splice(idx, 1)[0];
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
-      placeTower(pos);
+      console.log("ID: ", id);
+      placeTower(id, pos);
     });
   };
 
-  const placeTower = (indices: Indices): void => {
+  const placeTower = (playerId: string, indices: Indices): void => {
     const entity: EntityType = {
       data: {
         id: uuidv4(),
-        owner: socket.id,
+        owner: playerId,
         url: `${settings.serverUrl}/assets/buildings/guardhouse.png`,
+        static: "",
         indices,
         dimensions: {
           width: 128,
@@ -75,12 +76,13 @@ export const handleStart = (io: Server, socket: Socket) => {
       },
     };
 
-    const response: Building | ErrorMessage = StateManager.createBuilding(
+    const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
       entity
     );
 
     if (response instanceof Building) {
+      console.log("Response: ", response.getEntity());
       ServerHandler.sendMessageToEveryOne(
         io,
         socket,

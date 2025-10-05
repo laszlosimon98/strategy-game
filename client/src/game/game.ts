@@ -4,7 +4,7 @@ import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
-import type { ErrorMessageResponse, PlayerGameType } from "@/types/game.types";
+import type { MessageResponse, PlayerGameType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
@@ -97,8 +97,8 @@ export class Game {
 
   private async handleCommunication(): Promise<void> {
     ServerHandler.receiveMessage(
-      "game:error",
-      ({ message }: ErrorMessageResponse) => {
+      "game:info",
+      ({ message }: MessageResponse) => {
         this.messageIndicator.setText(message);
       }
     );

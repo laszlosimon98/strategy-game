@@ -5,7 +5,7 @@ import { Indices } from "@/classes/utils/indices";
 import { Validator } from "@/classes/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
-import { ErrorMessage } from "@/types/setting.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
 import { getImageNameFromUrl } from "@/classes/utils/utils";
@@ -55,7 +55,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
     console.log(entity);
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const response: Building | ErrorMessage = StateManager.createBuilding(
+    const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
       entity
     );
@@ -79,7 +79,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         storage: newStorageValues,
       });
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:error", response);
+      ServerHandler.sendMessageToSender(socket, "game:info", response);
     }
   };
 
@@ -88,13 +88,20 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const isSuccessful: boolean = StateManager.destroyBuilding(socket, indices);
-    if (isSuccessful) {
+    const {
+      status,
+      message,
+    }: { status: "completed" | "failed" } & ReturnMessage =
+      StateManager.destroyBuilding(socket, indices);
+
+    if (status === "completed") {
       ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
         id: socket.id,
         indices,
       });
     }
+
+    ServerHandler.sendMessageToSender(socket, "game:info", { message });
   };
 
   socket.on("game:build", build);

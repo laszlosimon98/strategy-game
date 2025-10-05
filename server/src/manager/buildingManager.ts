@@ -8,7 +8,7 @@ import { Validator } from "@/classes/validator";
 import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { BuildingPrices, Buildings } from "@/types/building.types";
-import { ErrorMessage } from "@/types/setting.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { StorageType } from "@/types/storage.types";
 import { Socket } from "socket.io";
@@ -84,7 +84,9 @@ export class BuildingManager {
     state: StateType,
     building: Building
   ): void {
-    state[room].players[socket.id].buildings.push(building);
+    state[room].players[building.getEntity().data.owner].buildings.push(
+      building
+    );
   }
 
   private static destroyBuilding(
@@ -140,7 +142,7 @@ export class BuildingManager {
     socket: Socket,
     state: StateType,
     entity: EntityType
-  ): Building | ErrorMessage {
+  ): Building | ReturnMessage {
     const { i, j } = entity.data.indices;
 
     if (!this.isPossibleToBuild(i, j, socket)) {
@@ -154,7 +156,7 @@ export class BuildingManager {
       const world: Cell[][] = World.getWorld(socket);
       const building: Building = new Building(entity);
 
-      building.setOwner(socket.id);
+      building.setOwner(entity.data.owner);
       this.createBuilding(room, socket, state, building);
       this.occupyCells(entity.data.indices, world, buildingName);
 
@@ -168,7 +170,8 @@ export class BuildingManager {
     socket: Socket,
     indices: Indices,
     state: StateType
-  ): boolean {
+  ): { status: "completed" | "failed" } & ReturnMessage {
+    console.log("Törlés...");
     const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = World.getWorld(socket);
     const i = indices.i;
@@ -176,30 +179,42 @@ export class BuildingManager {
 
     if (world[i][j].cellHasObstacle()) {
       const buildings: Building[] = this.getBuildings(room, socket, state);
+      console.log("buildings: ", buildings);
+      console.log(`socket id: ${socket.id}`);
 
       for (let index = buildings.length - 1; index >= 0; --index) {
         const building: Building = buildings[index];
         const buildingIndices: Indices = building.getEntity().data.indices;
 
-        if (
-          !Validator.canDemolishBuilding(
-            socket,
-            building.getEntity().data.owner
-          )
-        ) {
-          return false;
-        }
-
         if (buildingIndices.i === i && buildingIndices.j === j) {
+          console.log("Building: ", building.getEntity().data);
+          if (
+            !Validator.canDemolishBuilding(
+              socket,
+              building.getEntity().data.owner
+            )
+          ) {
+            return {
+              status: "failed",
+              message: "Sikertelen épület elbontás!",
+            };
+          }
+
           this.destroyBuilding(room, socket, state, building);
         }
       }
 
       this.restoreCells(indices, world);
 
-      return true;
+      return {
+        status: "completed",
+        message: "Épület sikeresen elbontva!",
+      };
     }
-    return false;
+    return {
+      status: "failed",
+      message: "Sikertelen épület elbontás!",
+    };
   }
 
   public static getBuildings(
