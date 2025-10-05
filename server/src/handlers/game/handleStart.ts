@@ -55,7 +55,6 @@ export const handleStart = (io: Server, socket: Socket) => {
       const pos = startPositions.splice(idx, 1)[0];
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
-      console.log("ID: ", id);
       placeTower(id, pos);
     });
   };
@@ -82,7 +81,6 @@ export const handleStart = (io: Server, socket: Socket) => {
     );
 
     if (response instanceof Building) {
-      console.log("Response: ", response.getEntity());
       ServerHandler.sendMessageToEveryOne(
         io,
         socket,

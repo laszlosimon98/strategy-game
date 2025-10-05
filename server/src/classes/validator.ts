@@ -16,7 +16,6 @@ export class Validator {
   }
 
   public static canDemolishBuilding(socket: Socket, owner: string): boolean {
-    console.log(`Socket Id: ${socket.id}, Owner: ${owner}`);
     return socket.id === owner;
   }
 }

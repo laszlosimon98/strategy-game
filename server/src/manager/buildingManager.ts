@@ -171,7 +171,6 @@ export class BuildingManager {
     indices: Indices,
     state: StateType
   ): { status: "completed" | "failed" } & ReturnMessage {
-    console.log("Törlés...");
     const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = World.getWorld(socket);
     const i = indices.i;
@@ -179,15 +178,12 @@ export class BuildingManager {
 
     if (world[i][j].cellHasObstacle()) {
       const buildings: Building[] = this.getBuildings(room, socket, state);
-      console.log("buildings: ", buildings);
-      console.log(`socket id: ${socket.id}`);
 
       for (let index = buildings.length - 1; index >= 0; --index) {
         const building: Building = buildings[index];
         const buildingIndices: Indices = building.getEntity().data.indices;
 
         if (buildingIndices.i === i && buildingIndices.j === j) {
-          console.log("Building: ", building.getEntity().data);
           if (
             !Validator.canDemolishBuilding(
               socket,
