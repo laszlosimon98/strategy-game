@@ -45,7 +45,7 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.entity = {
       data: {
         ...entity.data,
-        static: StateManager.getStaticImage(entity.data.owner, this.name),
+        static: StateManager.getStaticImage(entity.data.owner, this.name).url,
       },
     };
     this.dimension = new Dimension(

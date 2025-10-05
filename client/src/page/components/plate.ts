@@ -23,8 +23,6 @@ export class Plate extends ClickablePageComponents {
     this.image = new Image(dim.width, dim.height);
     this.image.src = imageProps.url;
 
-    console.log(this.image);
-
     this.text = new Text(
       new Position(pos.x, pos.y),
       language[StateManager.getLanguage()].buttonTexts[text as Buttons],

@@ -97,8 +97,8 @@ export class StateManager {
     ].flag;
   }
 
-  public static getStaticImage(owner: string, name: string): string {
-    return this.getImages("units", this.getPlayerColor(owner), name).url;
+  public static getStaticImage(owner: string, name: string): ImageItemType {
+    return this.getImages("units", this.getPlayerColor(owner), name);
   }
 
   // ------------------- Navigation -------------------

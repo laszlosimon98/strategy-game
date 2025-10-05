@@ -9,6 +9,8 @@ import { Building } from "@/game/world/building/building";
 import { Unit } from "@/game/world/unit/unit";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
+import { LabelButton } from "@/game/menu/sections/labelButton";
+import { Barracks } from "@/game/world/building/buildings/military/barracks";
 
 export class InfoPanel extends Section {
   private dim: Dimension;
@@ -39,26 +41,31 @@ export class InfoPanel extends Section {
     this.image = new Image();
   }
 
-  // private drawBarracksExtras() {
-  //   const id: string = ServerHandler.getId();
-  //   const archerImage = StateManager.getStaticImage(id, "archer");
-  //   const knightImage = StateManager.getStaticImage(id, "knight");
+  private drawBarracksExtras() {
+    const id: string = ServerHandler.getId();
+    const knightImage = StateManager.getStaticImage(id, "knight");
+    const archerImage = StateManager.getStaticImage(id, "archer");
 
-  //   const archerButton: LabelButton = new LabelButton(
-  //     new Position(50, 500),
-  //     new Dimension(64, 64),
-  //     'menu',
-  //     "",
-  //     Unit
-  //   )
-  // }
+    const knightButton: LabelButton = new LabelButton(
+      new Position(25, 475),
+      new Dimension(96, 96),
+      knightImage,
+      "empty"
+    );
+
+    const archerButton: LabelButton = new LabelButton(
+      new Position(125, 475),
+      new Dimension(96, 96),
+      archerImage,
+      "empty"
+    );
+
+    knightButton.draw();
+    archerButton.draw();
+  }
 
   public updateInfoPanel(): void {
     this.infoPanelData = StateManager.getInfoPanelData();
-
-    // if (this.infoPanelData instanceof Barracks) {
-    //   this.drawBarracksExtras();
-    // }
   }
 
   public draw(): void {
@@ -75,6 +82,9 @@ export class InfoPanel extends Section {
 
     if (this.infoPanelData instanceof Building) {
       this.deleteButton.draw();
+      if (this.infoPanelData instanceof Barracks) {
+        this.drawBarracksExtras();
+      }
     }
   }
 
