@@ -1,5 +1,6 @@
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -17,25 +18,22 @@ export class FoodSection extends Section {
     this.farm = new LabelButton(
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "farm"
+      StateManager.getImages("buildings", "farm"),
+      "empty"
     );
 
     this.mill = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "mill"
+      StateManager.getImages("buildings", "mill"),
+      "empty"
     );
 
     this.bakery = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "bakery"
+      StateManager.getImages("buildings", "bakery"),
+      "empty"
     );
 
     this.well = new LabelButton(
@@ -44,9 +42,8 @@ export class FoodSection extends Section {
         pos.y + settings.size.item
       ),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "well"
+      StateManager.getImages("buildings", "well"),
+      "empty"
     );
 
     this.labelbuttons.push(this.farm);

@@ -1,5 +1,6 @@
 import { ctx } from "@/init";
 import { Plate } from "@/page/components/plate";
+import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
@@ -10,11 +11,11 @@ export class Button extends Plate {
   public constructor(
     pos: Position,
     dim: Dimension,
-    type: "name" | "title" | "buildings" | "menu",
+    imageProps: ImageItemType,
     text: string,
     ...fn: Function[]
   ) {
-    super(pos, dim, type, text);
+    super(pos, dim, imageProps, text);
     this.func = fn;
 
     this.isHovered = false;

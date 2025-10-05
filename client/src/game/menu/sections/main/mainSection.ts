@@ -1,5 +1,6 @@
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -15,9 +16,8 @@ export class MainSection extends Section {
           pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "house"
+        StateManager.getImages("ui", "gamemenu", "house"),
+        "empty"
       ),
       new LabelButton(
         new Position(
@@ -25,9 +25,8 @@ export class MainSection extends Section {
           pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "storage"
+        StateManager.getImages("ui", "gamemenu", "storage"),
+        "empty"
       ),
       new LabelButton(
         new Position(
@@ -35,9 +34,8 @@ export class MainSection extends Section {
           pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "population"
+        StateManager.getImages("ui", "gamemenu", "population"),
+        "empty"
       )
     );
   }

@@ -42,9 +42,8 @@ export class BuildingSection extends Section {
           pos.y + 5
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "resource"
+        StateManager.getImages("ui", "gamemenu", "resource"),
+        "empty"
       ),
       new LabelButton(
         new Position(
@@ -52,9 +51,8 @@ export class BuildingSection extends Section {
           pos.y + 5
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "food"
+        StateManager.getImages("ui", "gamemenu", "food"),
+        "empty"
       ),
       new LabelButton(
         new Position(
@@ -62,9 +60,8 @@ export class BuildingSection extends Section {
           pos.y + 5
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "military"
+        StateManager.getImages("ui", "gamemenu", "military"),
+        "empty"
       ),
       new LabelButton(
         new Position(
@@ -72,9 +69,8 @@ export class BuildingSection extends Section {
           pos.y + 5
         ),
         settings.size.menuItem,
-        "menu",
-        "empty",
-        "house"
+        StateManager.getImages("ui", "gamemenu", "house"),
+        "empty"
       )
     );
   }

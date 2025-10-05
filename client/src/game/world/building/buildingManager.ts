@@ -132,7 +132,6 @@ export class BuildingManager extends Manager<Building> {
 
   protected handleCommunication(): void {
     ServerHandler.receiveMessage("game:build", (newBuilding: EntityType) => {
-      console.log(newBuilding);
       this.build(newBuilding);
     });
 

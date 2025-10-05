@@ -6,6 +6,7 @@ import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 import { ClickablePageComponents } from "@/page/components/clickablePageComponent";
+import type { ImageItemType } from "@/types/game.types";
 
 export class Plate extends ClickablePageComponents {
   protected image: HTMLImageElement;
@@ -14,16 +15,15 @@ export class Plate extends ClickablePageComponents {
   public constructor(
     pos: Position,
     dim: Dimension,
-    type: "name" | "title" | "buildings" | "menu",
+    imageProps: ImageItemType,
     text: string
   ) {
     super(pos, dim);
 
     this.image = new Image(dim.width, dim.height);
+    this.image.src = imageProps.url;
 
-    if (type !== "buildings" && type !== "menu") {
-      this.image.src = StateManager.getImages("ui", `${type}plate`).url;
-    }
+    console.log(this.image);
 
     this.text = new Text(
       new Position(pos.x, pos.y),

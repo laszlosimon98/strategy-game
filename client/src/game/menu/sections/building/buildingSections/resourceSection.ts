@@ -1,5 +1,6 @@
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -17,25 +18,22 @@ export class ResourceSection extends Section {
     this.woodCutter = new LabelButton(
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "woodcutter"
+      StateManager.getImages("buildings", "woodcutter"),
+      "empty"
     );
 
     this.sawMill = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "sawmill"
+      StateManager.getImages("buildings", "sawmill"),
+      "empty"
     );
 
     this.stoneCutter = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "stonecutter"
+      StateManager.getImages("buildings", "stonecutter"),
+      "empty"
     );
 
     this.forester = new LabelButton(
@@ -44,9 +42,8 @@ export class ResourceSection extends Section {
         pos.y + settings.size.item
       ),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "forester"
+      StateManager.getImages("buildings", "forester"),
+      "empty"
     );
 
     this.labelbuttons.push(this.woodCutter);

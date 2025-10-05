@@ -1,4 +1,3 @@
-import { MainMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { Tooltip } from "@/game/menu/tooltip";
 import { language, type UI } from "@/languages/language";
@@ -8,6 +7,7 @@ import { settings } from "@/settings";
 import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
+import { getImageNameFromUrl } from "@/utils/utils";
 
 export class LabelButton extends Button {
   private name: string;
@@ -16,30 +16,12 @@ export class LabelButton extends Button {
   constructor(
     pos: Position,
     dim: Dimension,
-    type: "name" | "title" | "buildings" | "menu",
-    text: string,
-    name: string
+    imageProps: ImageItemType,
+    text: string
   ) {
-    super(pos, dim, type, text);
-    this.name = name;
-
-    const imageFrom: "buildings" | "gamemenu" =
-      type === "buildings" ? "buildings" : "gamemenu";
-
-    if (imageFrom === "buildings") {
-      this.setImage(StateManager.getImages(imageFrom, name).url);
-    } else {
-      const dimensions: Dimension = StateManager.getImages(
-        "ui",
-        imageFrom,
-        name
-      ).dimensions;
-
-      this.dim.width = dimensions.width;
-      this.dim.height = dimensions.height;
-
-      this.setImage(StateManager.getImages("ui", imageFrom, name).url);
-    }
+    super(pos, dim, imageProps, text);
+    this.name = getImageNameFromUrl(imageProps.url);
+    this.setImage(imageProps.url);
 
     this.pos = new Position(pos.x + this.dim.width / 8 - 8, pos.y);
 

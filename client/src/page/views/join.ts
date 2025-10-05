@@ -23,7 +23,7 @@ export class Join extends Page {
     this.backButton = new Button(
       settings.pos.default.back,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "back",
       this.handleLeave
     );
@@ -31,7 +31,7 @@ export class Join extends Page {
     this.joinButton = new Button(
       settings.pos.default.next,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "join",
       this.handleJoin
     );

@@ -25,7 +25,7 @@ export class Auth extends Page {
     this.backButton = new Button(
       settings.pos.default.back,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "back",
       () => StateManager.setPageState(PageState.MainMenu)
     );
@@ -33,7 +33,7 @@ export class Auth extends Page {
     this.actionButton = new Button(
       settings.pos.default.next,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       title,
       this.handleNext
     );

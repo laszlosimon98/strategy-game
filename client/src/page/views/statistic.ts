@@ -13,7 +13,7 @@ export class Statistic extends Page {
     this.backButton = new Button(
       settings.pos.default.back,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "newGame",
       () => StateManager.setPageState(PageState.MainMenu)
     );

@@ -97,6 +97,10 @@ export class StateManager {
     ].flag;
   }
 
+  public static getStaticImage(owner: string, name: string): string {
+    return this.getImages("units", this.getPlayerColor(owner), name).url;
+  }
+
   // ------------------- Navigation -------------------
 
   public static getPageState(): PageState {
@@ -176,6 +180,7 @@ export class StateManager {
   }
 
   // ------------------- Storage -------------------
+
   public static getStorage(id: string): StorageType | null {
     const player = this.getPlayerById(id);
     return StorageManager.getStorage(player);
@@ -250,6 +255,7 @@ export class StateManager {
   }
 
   // ------------------- Unit -------------------
+
   public static createUnit(id: string, unit: Unit): void {
     UnitManager.createUnit(this.state, id, unit);
   }

@@ -24,7 +24,7 @@ export class InfoPanel extends Section {
     this.deleteButton = new Button(
       new Position(pos.x + dim.width - 30, pos.y + 55),
       new Dimension(25, 25),
-      "name",
+      StateManager.getImages("ui", "plate"),
       "empty"
     );
 
@@ -39,8 +39,26 @@ export class InfoPanel extends Section {
     this.image = new Image();
   }
 
+  // private drawBarracksExtras() {
+  //   const id: string = ServerHandler.getId();
+  //   const archerImage = StateManager.getStaticImage(id, "archer");
+  //   const knightImage = StateManager.getStaticImage(id, "knight");
+
+  //   const archerButton: LabelButton = new LabelButton(
+  //     new Position(50, 500),
+  //     new Dimension(64, 64),
+  //     'menu',
+  //     "",
+  //     Unit
+  //   )
+  // }
+
   public updateInfoPanel(): void {
     this.infoPanelData = StateManager.getInfoPanelData();
+
+    // if (this.infoPanelData instanceof Barracks) {
+    //   this.drawBarracksExtras();
+    // }
   }
 
   public draw(): void {

@@ -16,7 +16,7 @@ export class NewGame extends Page {
     this.create = new Button(
       settings.pos.newGame.create,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "create",
       this.handleCreate
     );
@@ -24,7 +24,7 @@ export class NewGame extends Page {
     this.join = new Button(
       settings.pos.newGame.join,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "join",
       this.handleJoin
     );
@@ -32,7 +32,7 @@ export class NewGame extends Page {
     this.backButton = new Button(
       settings.pos.newGame.back,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "back",
       () => StateManager.setPageState(PageState.MainMenu)
     );

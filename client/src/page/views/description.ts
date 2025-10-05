@@ -13,7 +13,7 @@ export class Description extends Page {
     this.backButton = new Button(
       settings.pos.default.back,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "back",
       () => StateManager.setPageState(PageState.MainMenu)
     );

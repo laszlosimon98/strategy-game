@@ -19,14 +19,14 @@ export class MainMenu extends Page {
     this.namePlate = new Plate(
       settings.pos.mainMenu.namePlate,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "name"
     );
 
     this.login = new Button(
       settings.pos.mainMenu.login,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "login",
       () => StateManager.setPageState(PageState.Login)
     );
@@ -34,7 +34,7 @@ export class MainMenu extends Page {
     this.registration = new Button(
       settings.pos.mainMenu.registration,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "registration",
       () => StateManager.setPageState(PageState.Registration)
     );
@@ -42,7 +42,7 @@ export class MainMenu extends Page {
     this.newGame = new Button(
       settings.pos.mainMenu.newGame,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "newGame",
       () => StateManager.setPageState(PageState.NewGame)
     );
@@ -50,7 +50,7 @@ export class MainMenu extends Page {
     this.description = new Button(
       settings.pos.mainMenu.description,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "description",
       () => StateManager.setPageState(PageState.Description)
     );
@@ -58,7 +58,7 @@ export class MainMenu extends Page {
     this.statistic = new Button(
       settings.pos.mainMenu.statistic,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "statistic",
       () => StateManager.setPageState(PageState.Statistic)
     );

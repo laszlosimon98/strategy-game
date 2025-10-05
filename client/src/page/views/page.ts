@@ -1,3 +1,4 @@
+import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Plate } from "@/page/components/plate";
 import { TextInput } from "@/page/components/textInput";
@@ -21,7 +22,7 @@ export abstract class Page {
     this.plate = new Plate(
       this.titlePos,
       new Dimension(288, 90),
-      "title",
+      StateManager.getImages("ui", "plate"),
       title
     );
 

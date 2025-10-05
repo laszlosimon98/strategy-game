@@ -1,5 +1,6 @@
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -18,25 +19,22 @@ export class MilitarySection extends Section {
     this.ironSmelter = new LabelButton(
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "ironsmelter"
+      StateManager.getImages("buildings", "ironsmelter"),
+      "empty"
     );
 
     this.weaponSmith = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "weaponsmith"
+      StateManager.getImages("buildings", "weaponsmith"),
+      "empty"
     );
 
     this.toolSmith = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "toolsmith"
+      StateManager.getImages("buildings", "toolsmith"),
+      "empty"
     );
 
     this.barracks = new LabelButton(
@@ -45,9 +43,8 @@ export class MilitarySection extends Section {
         pos.y + settings.size.item
       ),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "barracks"
+      StateManager.getImages("buildings", "barracks"),
+      "empty"
     );
 
     this.guardHouse = new LabelButton(
@@ -56,9 +53,8 @@ export class MilitarySection extends Section {
         pos.y + settings.size.item * 2 + settings.offset.item
       ),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "guardhouse"
+      StateManager.getImages("buildings", "guardhouse"),
+      "empty"
     );
 
     this.labelbuttons.push(this.ironSmelter);

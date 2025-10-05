@@ -25,7 +25,7 @@ export class Lobby extends Page {
     this.start = new Button(
       settings.pos.default.next,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "start",
       this.handleStart
     );
@@ -33,7 +33,7 @@ export class Lobby extends Page {
     this.backButton = new Button(
       settings.pos.default.back,
       settings.size.button,
-      "name",
+      StateManager.getImages("ui", "plate"),
       "back",
       this.handleLeaveRoom
     );

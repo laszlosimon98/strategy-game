@@ -1,5 +1,6 @@
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
+import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -15,17 +16,15 @@ export class StorageSection extends Section {
     this.storage = new LabelButton(
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "storage"
+      StateManager.getImages("buildings", "storage"),
+      "empty"
     );
 
     this.residence = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
-      "buildings",
-      "empty",
-      "residence"
+      StateManager.getImages("buildings", "residence"),
+      "empty"
     );
 
     this.labelbuttons.push(this.storage);
