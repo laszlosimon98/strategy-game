@@ -28,23 +28,75 @@ export class StorageSection extends Section {
     this.storage = StateManager.getStorage(this.playerId);
 
     if (this.storage) {
-      this.createItem(new Position(20, 200), "materials", "wood");
-      this.createItem(new Position(55, 200), "materials", "boards");
-      this.createItem(new Position(120, 200), "materials", "stone");
+      this.createItem(
+        new Position(this.pos.x + 20, this.pos.y + 25),
+        "materials",
+        "wood"
+      );
+      this.createItem(
+        new Position(this.pos.x + 55, this.pos.y + 25),
+        "materials",
+        "boards"
+      );
+      this.createItem(
+        new Position(this.pos.x + 120, this.pos.y + 25),
+        "materials",
+        "stone"
+      );
 
-      this.createItem(new Position(10, 270), "foods", "grain");
-      this.createItem(new Position(80, 270), "foods", "flour");
-      this.createItem(new Position(130, 270), "foods", "bread");
-      this.createItem(new Position(200, 270), "foods", "water");
+      this.createItem(
+        new Position(this.pos.x + 10, this.pos.y + 100),
+        "foods",
+        "grain"
+      );
+      this.createItem(
+        new Position(this.pos.x + 80, this.pos.y + 100),
+        "foods",
+        "flour"
+      );
+      this.createItem(
+        new Position(this.pos.x + 130, this.pos.y + 100),
+        "foods",
+        "bread"
+      );
+      this.createItem(
+        new Position(this.pos.x + 200, this.pos.y + 100),
+        "foods",
+        "water"
+      );
 
-      this.createItem(new Position(10, 340), "ores", "coal");
-      this.createItem(new Position(60, 340), "ores", "iron_ore");
+      this.createItem(
+        new Position(this.pos.x + 10, this.pos.y + 175),
+        "ores",
+        "coal"
+      );
+      this.createItem(
+        new Position(this.pos.x + 60, this.pos.y + 175),
+        "ores",
+        "iron_ore"
+      );
 
-      this.createItem(new Position(10, 410), "metals", "iron");
+      this.createItem(
+        new Position(this.pos.x + 10, this.pos.y + 250),
+        "metals",
+        "iron"
+      );
 
-      this.createItem(new Position(10, 490), "weapons", "sword");
-      this.createItem(new Position(70, 490), "weapons", "shield");
-      this.createItem(new Position(140, 490), "weapons", "bow");
+      this.createItem(
+        new Position(this.pos.x + 10, this.pos.y + 325),
+        "weapons",
+        "sword"
+      );
+      this.createItem(
+        new Position(this.pos.x + 70, this.pos.y + 325),
+        "weapons",
+        "shield"
+      );
+      this.createItem(
+        new Position(this.pos.x + 140, this.pos.y + 325),
+        "weapons",
+        "bow"
+      );
     }
   }
 

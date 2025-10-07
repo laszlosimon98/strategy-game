@@ -24,7 +24,7 @@ export class GameMenu implements RendererInterface {
     this.dim = dim;
 
     this.mainSection = new MainSection(
-      pos,
+      new Position(pos.x, pos.y),
       new Dimension(dim.width, settings.offset.menuItem)
     );
 

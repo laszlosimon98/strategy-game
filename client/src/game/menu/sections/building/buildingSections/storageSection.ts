@@ -17,14 +17,24 @@ export class StorageSection extends Section {
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "storage"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.residence = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "residence"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.labelbuttons.push(this.storage);

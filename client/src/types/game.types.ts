@@ -134,3 +134,9 @@ export type MessageResponse = {
 export type StorageResponse = {
   storage: StorageType;
 };
+
+export type LabelButtonOptions = {
+  hasTooltip: boolean;
+  type: "house" | "unit";
+  hasPrice: boolean;
+};

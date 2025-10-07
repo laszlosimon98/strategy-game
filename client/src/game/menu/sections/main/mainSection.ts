@@ -12,30 +12,45 @@ export class MainSection extends Section {
     this.buttons.push(
       new LabelButton(
         new Position(
-          dim.width / 6 - settings.size.menuItem.width / 2,
+          pos.x + dim.width / 6 - settings.size.menuItem.width / 2,
           pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
         settings.size.menuItem,
         StateManager.getImages("ui", "gamemenu", "house"),
-        "empty"
+        "empty",
+        {
+          hasTooltip: true,
+          hasPrice: false,
+          type: "house",
+        }
       ),
       new LabelButton(
         new Position(
-          dim.width / 2 - settings.size.menuItem.width / 2,
+          pos.x + dim.width / 2 - settings.size.menuItem.width / 2,
           pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
         settings.size.menuItem,
         StateManager.getImages("ui", "gamemenu", "storage"),
-        "empty"
+        "empty",
+        {
+          hasTooltip: true,
+          hasPrice: false,
+          type: "house",
+        }
       ),
       new LabelButton(
         new Position(
-          (dim.width * 5) / 6 - settings.size.menuItem.width / 2,
+          pos.x + (dim.width * 5) / 6 - settings.size.menuItem.width / 2,
           pos.y - settings.size.menuItem.height / 2 + dim.height / 2
         ),
         settings.size.menuItem,
         StateManager.getImages("ui", "gamemenu", "population"),
-        "empty"
+        "empty",
+        {
+          hasTooltip: true,
+          hasPrice: false,
+          type: "house",
+        }
       )
     );
   }

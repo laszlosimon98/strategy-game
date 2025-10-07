@@ -9,8 +9,8 @@ import { Building } from "@/game/world/building/building";
 import { Unit } from "@/game/world/unit/unit";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
-import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Barracks } from "@/game/world/building/buildings/military/barracks";
+import { BarracksPanel } from "@/game/menu/sections/panels/barracksPanel";
 
 export class InfoPanel extends Section {
   private dim: Dimension;
@@ -18,6 +18,8 @@ export class InfoPanel extends Section {
   private image: HTMLImageElement;
   private displaySelectedObjectName: Text;
   private infoPanelData: Unit | Building | undefined;
+
+  private barracksPanel: BarracksPanel;
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
@@ -39,29 +41,7 @@ export class InfoPanel extends Section {
     );
 
     this.image = new Image();
-  }
-
-  private drawBarracksExtras() {
-    const id: string = ServerHandler.getId();
-    const knightImage = StateManager.getStaticImage(id, "knight");
-    const archerImage = StateManager.getStaticImage(id, "archer");
-
-    const knightButton: LabelButton = new LabelButton(
-      new Position(25, 475),
-      new Dimension(96, 96),
-      knightImage,
-      "empty"
-    );
-
-    const archerButton: LabelButton = new LabelButton(
-      new Position(125, 475),
-      new Dimension(96, 96),
-      archerImage,
-      "empty"
-    );
-
-    knightButton.draw();
-    archerButton.draw();
+    this.barracksPanel = new BarracksPanel();
   }
 
   public updateInfoPanel(): void {
@@ -83,7 +63,7 @@ export class InfoPanel extends Section {
     if (this.infoPanelData instanceof Building) {
       this.deleteButton.draw();
       if (this.infoPanelData instanceof Barracks) {
-        this.drawBarracksExtras();
+        this.barracksPanel.draw();
       }
     }
   }
@@ -96,6 +76,10 @@ export class InfoPanel extends Section {
         this.displaySelectedObjectName.setText(
           this.infoPanelData.getBuildingName()
         );
+
+        if (this.infoPanelData instanceof Barracks) {
+          this.barracksPanel.update(dt, mousePos);
+        }
       } else if (this.infoPanelData instanceof Unit) {
         this.displaySelectedObjectName.setText(
           this.infoPanelData.getUnitName()

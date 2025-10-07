@@ -20,21 +20,36 @@ export class MilitarySection extends Section {
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "ironsmelter"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.weaponSmith = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "weaponsmith"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.toolSmith = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "toolsmith"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.barracks = new LabelButton(
@@ -44,7 +59,12 @@ export class MilitarySection extends Section {
       ),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "barracks"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.guardHouse = new LabelButton(
@@ -54,7 +74,12 @@ export class MilitarySection extends Section {
       ),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "guardhouse"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.labelbuttons.push(this.ironSmelter);

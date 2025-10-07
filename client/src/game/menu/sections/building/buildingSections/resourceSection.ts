@@ -19,21 +19,36 @@ export class ResourceSection extends Section {
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "woodcutter"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.sawMill = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "sawmill"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.stoneCutter = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "stonecutter"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.forester = new LabelButton(
@@ -43,7 +58,12 @@ export class ResourceSection extends Section {
       ),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "forester"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.labelbuttons.push(this.woodCutter);

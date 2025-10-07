@@ -50,7 +50,7 @@ export const settings = {
     speed: 8,
   },
   gameMenu: {
-    pos: new Position(0, 100),
+    pos: new Position(20, 80),
     dim: new Dimension(250, 500),
   },
   pos: {

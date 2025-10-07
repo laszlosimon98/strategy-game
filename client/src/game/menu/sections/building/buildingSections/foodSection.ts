@@ -19,21 +19,36 @@ export class FoodSection extends Section {
       new Position(pos.x, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "farm"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.mill = new LabelButton(
       new Position(pos.x + settings.size.item + settings.offset.item, pos.y),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "mill"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.bakery = new LabelButton(
       new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "bakery"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.well = new LabelButton(
@@ -43,7 +58,12 @@ export class FoodSection extends Section {
       ),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "well"),
-      "empty"
+      "empty",
+      {
+        hasTooltip: true,
+        hasPrice: true,
+        type: "house",
+      }
     );
 
     this.labelbuttons.push(this.farm);
