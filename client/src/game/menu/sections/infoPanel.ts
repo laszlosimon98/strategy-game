@@ -41,7 +41,7 @@ export class InfoPanel extends Section {
     );
 
     this.image = new Image();
-    this.barracksPanel = new BarracksPanel();
+    this.barracksPanel = new BarracksPanel(pos, dim);
   }
 
   public updateInfoPanel(): void {
@@ -111,5 +111,7 @@ export class InfoPanel extends Section {
         StateManager.getInfoPanelData()?.getIndices()
       );
     }
+
+    this.barracksPanel.handleClick(mousePos);
   }
 }

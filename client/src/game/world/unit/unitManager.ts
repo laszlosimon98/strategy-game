@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 import { UnitStates } from "@/enums/unitsState";
 import { Manager } from "@/game/world/manager";
 import { Cell } from "@/game/world/cell";
@@ -16,7 +14,6 @@ import {
   removeElementFromArray,
 } from "@/utils/utils";
 import { Unit } from "@/game/world/unit/unit";
-import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 
 export class UnitManager extends Manager<Unit> {
@@ -56,25 +53,7 @@ export class UnitManager extends Manager<Unit> {
     indices: Indices,
     mousePos: Position,
     cameraScroll: Position
-  ): void {
-    const playerId: string = ServerHandler.getId();
-    const color: string = StateManager.getPlayerColor(playerId);
-    const name = Math.random() < 0.5 ? "knight" : "archer";
-
-    const unitEntity: EntityType = {
-      data: {
-        id: uuidv4(),
-        owner: playerId,
-        url: StateManager.getImages("units", color, `${name}idle`).url,
-        indices,
-        dimensions: settings.size.unit,
-        position: this.pos,
-        static: "",
-      },
-    };
-
-    this.sendUnitCreateRequest(unitEntity, name);
-  }
+  ): void {}
 
   public handleRightClick(indices: Indices): void {
     if (this.selectedUnit) {
@@ -152,10 +131,6 @@ export class UnitManager extends Manager<Unit> {
         unit.move(dt);
       }
     });
-  }
-
-  private sendUnitCreateRequest(entity: EntityType, name: string): void {
-    ServerHandler.sendMessage("game:unitCreate", { entity, name });
   }
 
   private sendPathFindRequest(entity: EntityType, goal: Indices): void {

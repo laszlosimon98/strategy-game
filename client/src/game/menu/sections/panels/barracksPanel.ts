@@ -1,14 +1,27 @@
+import { v4 as uuidv4 } from "uuid";
+
 import { LabelButton } from "@/game/menu/sections/labelButton";
+import { Section } from "@/game/menu/sections/section";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
+import { settings } from "@/settings";
+import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
+import { Indices } from "@/utils/indices";
+import { Barracks } from "@/game/world/building/buildings/military/barracks";
+import {
+  calculatePositionFromIndices,
+  cartesianToIsometric,
+  isometricToCartesian,
+} from "@/utils/utils";
 
-export class BarracksPanel {
+export class BarracksPanel extends Section {
   private barracksButtons: LabelButton[] = [];
   private isPlayerInitialized: boolean = false;
 
-  constructor() {
+  constructor(pos: Position, dim: Dimension) {
+    super(pos, dim);
     this.initButtons();
   }
 
@@ -21,7 +34,7 @@ export class BarracksPanel {
 
       this.barracksButtons.push(
         new LabelButton(
-          new Position(25, 475),
+          new Position(this.pos.x + 25, this.pos.y + 300),
           new Dimension(96, 96),
           StateManager.getStaticImage(playerId, "knight"),
           "empty",
@@ -35,7 +48,7 @@ export class BarracksPanel {
 
       this.barracksButtons.push(
         new LabelButton(
-          new Position(125, 475),
+          new Position(this.pos.x + 125, this.pos.y + 300),
           new Dimension(96, 96),
           StateManager.getStaticImage(playerId, "archer"),
           "empty",
@@ -61,5 +74,45 @@ export class BarracksPanel {
     } else {
       this.barracksButtons.forEach((btn) => btn.update(dt, mousePos));
     }
+  }
+
+  public handleClick(mousePos: Position): void {
+    this.barracksButtons.forEach((btn) => {
+      if (btn.isClicked(mousePos.x, mousePos.y)) {
+        this.createUnit(btn);
+      }
+    });
+  }
+
+  // FIXME: Amint elmentem a cellákat is a state-be, akkor onnan le tudom kérdeni a pos-t
+  private createUnit(btn: LabelButton): void {
+    const playerId: string = ServerHandler.getId();
+    const color: string = StateManager.getPlayerColor(playerId);
+    const data = StateManager.getInfoPanelData();
+    const name = btn.getName();
+
+    if (data && data instanceof Barracks) {
+      const indices = data.getIndices();
+
+      const unitEntity: EntityType = {
+        data: {
+          id: uuidv4(),
+          owner: playerId,
+          url: StateManager.getImages("units", color, `${name}idle`).url,
+          indices: new Indices(indices.i + 1, indices.j),
+          dimensions: settings.size.unit,
+          position: calculatePositionFromIndices(
+            new Indices(indices.i + 1, indices.j)
+          ),
+          static: "",
+        },
+      };
+
+      this.sendUnitCreateRequest(unitEntity, name);
+    }
+  }
+
+  private sendUnitCreateRequest(entity: EntityType, name: string): void {
+    ServerHandler.sendMessage("game:unitCreate", { entity, name });
   }
 }

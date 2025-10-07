@@ -75,6 +75,19 @@ export const isometricToCartesian = (iso: Position): Position => {
   return new Position(x, y);
 };
 
+export const calculatePositionFromIndices = (indices: Indices): Position => {
+  const { i, j } = indices;
+
+  const normalPos: Position = new Position(i * 48 + 48, j * 48 + 48);
+
+  const isometricPos: Position = new Position(
+    normalPos.x - normalPos.y,
+    (normalPos.x + normalPos.y) / 2
+  );
+
+  return isometricPos;
+};
+
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;
   const y = to.y - from.y;
