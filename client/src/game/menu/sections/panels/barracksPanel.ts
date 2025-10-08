@@ -10,11 +10,7 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Indices } from "@/utils/indices";
 import { Barracks } from "@/game/world/building/buildings/military/barracks";
-import {
-  calculatePositionFromIndices,
-  cartesianToIsometric,
-  isometricToCartesian,
-} from "@/utils/utils";
+import { calculatePositionFromIndices } from "@/utils/utils";
 
 export class BarracksPanel extends Section {
   private barracksButtons: LabelButton[] = [];
@@ -39,7 +35,7 @@ export class BarracksPanel extends Section {
           StateManager.getStaticImage(playerId, "knight"),
           "empty",
           {
-            hasTooltip: false,
+            hasTooltip: true,
             hasPrice: true,
             type: "unit",
           }
@@ -53,7 +49,7 @@ export class BarracksPanel extends Section {
           StateManager.getStaticImage(playerId, "archer"),
           "empty",
           {
-            hasTooltip: false,
+            hasTooltip: true,
             hasPrice: true,
             type: "unit",
           }

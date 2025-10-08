@@ -16,22 +16,22 @@ export class Tooltip extends Frame {
   private topRight: Position;
   private bottom: Position;
 
-  private houseNameText: Text;
-  private boardsText: Text;
-  private stoneText: Text;
+  private name: Text;
+  private needsA: Text;
+  private needsB: Text;
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
 
-    this.houseNameText = new Text(new Position(this.pos.x, this.pos.y), "", {
+    this.name = new Text(new Position(this.pos.x, this.pos.y), "", {
       fontSize: "16px",
     });
 
-    this.boardsText = new Text(new Position(this.pos.x, this.pos.y), "", {
+    this.needsA = new Text(new Position(this.pos.x, this.pos.y), "", {
       fontSize: "16px",
     });
 
-    this.stoneText = new Text(new Position(this.pos.x, this.pos.y), "", {
+    this.needsB = new Text(new Position(this.pos.x, this.pos.y), "", {
       fontSize: "16px",
     });
 
@@ -65,19 +65,19 @@ export class Tooltip extends Frame {
 
     ctx.restore();
 
-    this.houseNameText.draw();
-    this.boardsText.draw();
-    this.stoneText.draw();
+    this.name.draw();
+    this.needsA.draw();
+    this.needsB.draw();
   }
 
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
   }
 
-  public setHouseName(text: string): void {
-    this.houseNameText.setText(text);
+  public setName(text: string): void {
+    this.name.setText(text);
 
-    this.houseNameText.setCenter({
+    this.name.setCenter({
       xFrom: this.pos.x,
       xTo: this.dim.width,
       yFrom: this.pos.y + 16,
@@ -85,8 +85,7 @@ export class Tooltip extends Frame {
     });
   }
 
-  public setHousePrices(image: string) {
-    const houseName: string = getImageNameFromUrl(image);
+  public setHousePrices(houseName: string): void {
     const prices: Price | undefined =
       StateManager.getBuildingPrices()[houseName as Buildings];
 
@@ -97,25 +96,48 @@ export class Tooltip extends Frame {
       const stoneAmount: number =
         StateManager.getBuildingPrices()[houseName as Buildings].stone;
 
-      const boardsText = language[StateManager.getLanguage()].storage.boards;
-      const stoneText = language[StateManager.getLanguage()].storage.stone;
+      const boardsText: string =
+        language[StateManager.getLanguage()].storage.boards;
+      const stoneText: string =
+        language[StateManager.getLanguage()].storage.stone;
 
-      this.boardsText.setText(`${boardsAmount} x ${boardsText}`);
-      this.stoneText.setText(`${stoneAmount} x ${stoneText}`);
+      this.needsA.setText(`${boardsAmount} x ${boardsText}`);
+      this.needsB.setText(`${stoneAmount} x ${stoneText}`);
 
-      this.boardsText.setCenter({
-        xFrom: this.pos.x,
-        xTo: this.dim.width,
-        yFrom: this.pos.y + 48,
-        yTo: 0,
-      });
-
-      this.stoneText.setCenter({
-        xFrom: this.pos.x,
-        xTo: this.dim.width,
-        yFrom: this.pos.y + 72,
-        yTo: 0,
-      });
+      this.setTextsCenter();
     }
+  }
+
+  public setUnitPrices(unitName: string): void {
+    const swordText: string =
+      language[StateManager.getLanguage()].storage.sword;
+    const shieldText: string =
+      language[StateManager.getLanguage()].storage.shield;
+    const bowText: string = language[StateManager.getLanguage()].storage.bow;
+
+    if (unitName === "archer") {
+      this.needsA.setText(`1 x ${bowText}`);
+    } else if (unitName === "knight") {
+      this.needsA.setText(`1 x ${swordText}`);
+      this.needsB.setText(`1 x ${shieldText}`);
+    }
+
+    this.setTextsCenter();
+  }
+
+  private setTextsCenter(): void {
+    this.needsA.setCenter({
+      xFrom: this.pos.x,
+      xTo: this.dim.width,
+      yFrom: this.pos.y + 48,
+      yTo: 0,
+    });
+
+    this.needsB.setCenter({
+      xFrom: this.pos.x,
+      xTo: this.dim.width,
+      yFrom: this.pos.y + 72,
+      yTo: 0,
+    });
   }
 }

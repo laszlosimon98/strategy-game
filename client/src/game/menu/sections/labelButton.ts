@@ -1,5 +1,5 @@
 import { Tooltip } from "@/game/menu/tooltip";
-import { language, type UI } from "@/languages/language";
+import { language, type UI, type Units } from "@/languages/language";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { settings } from "@/settings";
@@ -62,12 +62,18 @@ export class LabelButton extends Button {
       this.tooltip.update(dt, mousePos);
 
       if (this.options.type === "house") {
-        this.tooltip.setHouseName(
+        this.tooltip.setName(
           language[StateManager.getLanguage()].ui[this.name as UI]
         );
-
         if (this.options.hasPrice) {
-          this.tooltip.setHousePrices(this.getImage());
+          this.tooltip.setHousePrices(this.name);
+        }
+      } else if (this.options.type === "unit") {
+        this.tooltip.setName(
+          language[StateManager.getLanguage()].units[this.name as Units]
+        );
+        if (this.options.hasPrice) {
+          this.tooltip.setUnitPrices(this.name);
         }
       }
     }
