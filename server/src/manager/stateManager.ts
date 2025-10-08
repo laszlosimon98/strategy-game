@@ -16,7 +16,11 @@ import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/classes/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
-import { StorageType } from "@/types/storage.types";
+import {
+  CombinedTypes,
+  StorageType,
+  StorageTypes,
+} from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
 
 export class StateManager {
@@ -187,8 +191,13 @@ export class StateManager {
 
   // ------------------- Units -------------------
 
-  public static createUnit(room: string, socket: Socket, unit: Unit): void {
-    UnitManager.createUnit(room, socket, this.state, unit);
+  public static createUnit(
+    socket: Socket,
+    room: string,
+    entity: EntityType,
+    name: "knight" | "archer"
+  ): Unit | ReturnMessage {
+    return UnitManager.createUnit(socket, room, this.state, entity, name);
   }
 
   public static getUnits(room: string, entity: EntityType): Unit[] {
@@ -221,11 +230,37 @@ export class StateManager {
     return StorageManager.getCurrentStorage(socket, room, this.state);
   }
 
-  public static updateStorage(
+  public static hasMaterial(
     socket: Socket,
     room: string,
-    newStorageValues: StorageType
-  ): void {
-    StorageManager.updateStorage(socket, room, this.state, newStorageValues);
+    type: StorageTypes,
+    name: CombinedTypes,
+    amount: number
+  ): boolean {
+    return StorageManager.hasMaterial(
+      socket,
+      room,
+      this.state,
+      type,
+      name,
+      amount
+    );
+  }
+
+  public static updateStorageItem(
+    socket: Socket,
+    room: string,
+    type: StorageTypes,
+    name: CombinedTypes,
+    amount: number
+  ) {
+    StorageManager.updateStorageItem(
+      socket,
+      room,
+      this.state,
+      type,
+      name,
+      amount
+    );
   }
 }

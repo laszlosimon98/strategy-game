@@ -1,5 +1,10 @@
 import { StateType } from "@/types/state.types";
-import { StorageType } from "@/types/storage.types";
+import {
+  CombinedTypes,
+  StorageItemType,
+  StorageType,
+  StorageTypes,
+} from "@/types/storage.types";
 import { Socket } from "socket.io";
 
 export class StorageManager {
@@ -31,6 +36,15 @@ export class StorageManager {
 
   private constructor() {}
 
+  private static updateStorage(
+    socket: Socket,
+    room: string,
+    state: StateType,
+    newStorageValues: StorageType
+  ): void {
+    state[room].players[socket.id].storage = { ...newStorageValues };
+  }
+
   public static getInitStorage(): StorageType {
     return this.initStorage;
   }
@@ -43,12 +57,65 @@ export class StorageManager {
     return state[room].players[socket.id].storage;
   }
 
-  public static updateStorage(
+  public static hasMaterial(
     socket: Socket,
     room: string,
     state: StateType,
-    newStorageValues: StorageType
+    type: StorageTypes,
+    name: CombinedTypes,
+    amount: number
+  ): boolean {
+    const currentStorage: StorageType = this.getCurrentStorage(
+      socket,
+      room,
+      state
+    );
+
+    const storageCategory = currentStorage[type];
+    const item = (storageCategory as any)[name];
+
+    if (!item) {
+      return false;
+    }
+
+    return item.amount - amount >= 0;
+  }
+
+  public static updateStorageItem(
+    socket: Socket,
+    room: string,
+    state: StateType,
+    type: StorageTypes,
+    name: string,
+    amount: number
   ): void {
-    state[room].players[socket.id].storage = { ...newStorageValues };
+    const currentStorage: StorageType = this.getCurrentStorage(
+      socket,
+      room,
+      state
+    );
+
+    const storageCategory = currentStorage[type];
+    const currentItem = (storageCategory as any)[name];
+
+    if (!currentItem) {
+      return;
+    }
+
+    const materialAmount: number = currentItem.amount;
+    const newValue: number = materialAmount - amount;
+
+    const newStorage: StorageType = {
+      ...currentStorage,
+      [type]: {
+        ...currentStorage[type],
+        [name]: {
+          ...currentItem,
+          amount: newValue,
+        },
+      },
+    } as StorageType;
+
+    this.updateStorage(socket, room, state, newStorage);
   }
 }

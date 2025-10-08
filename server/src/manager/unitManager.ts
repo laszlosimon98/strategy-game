@@ -1,4 +1,7 @@
 import { Unit } from "@/classes/game/unit";
+import { ServerHandler } from "@/classes/serverHandler";
+import { StateManager } from "@/manager/stateManager";
+import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { UnitsType } from "@/types/units.types";
 import { Socket } from "socket.io";
@@ -19,17 +22,60 @@ export class UnitManager {
 
   private constructor() {}
 
+  private static hasWeapons(
+    socket: Socket,
+    room: string,
+    name: "knight" | "archer"
+  ): boolean {
+    const hasPlayerEnoughSword: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "weapons",
+      "sword",
+      1
+    );
+    const hasPlayerEnoughShield: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "weapons",
+      "shield",
+      1
+    );
+    const hasPlayerEnoughBow: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "weapons",
+      "bow",
+      1
+    );
+
+    if (name === "knight") {
+      return hasPlayerEnoughShield && hasPlayerEnoughSword;
+    } else {
+      return hasPlayerEnoughBow;
+    }
+  }
+
   public static getUnitProperties(): UnitsType {
     return this.unitProperties;
   }
 
   public static createUnit(
-    room: string,
     socket: Socket,
+    room: string,
     state: StateType,
-    unit: Unit
-  ): void {
-    state[room].players[socket.id].units.push(unit);
+    entity: EntityType,
+    name: "knight" | "archer"
+  ): Unit | ReturnMessage {
+    if (this.hasWeapons(socket, room, name)) {
+      const unit = new Unit(entity, name);
+      const room: string = ServerHandler.getCurrentRoom(socket);
+      state[room].players[socket.id].units.push(unit);
+
+      return unit;
+    } else {
+      return { message: "Nincs elegendő fegyver raktáron!" };
+    }
   }
 
   public static getUnits(

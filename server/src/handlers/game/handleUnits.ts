@@ -9,30 +9,58 @@ import { World } from "@/classes/game/world";
 import { PathFinder } from "@/classes/pathFind/pathFinder";
 import type { Position } from "@/types/utils.types";
 import { StateManager } from "@/manager/stateManager";
+import { ReturnMessage } from "@/types/setting.types";
+import { StorageType } from "@/types/storage.types";
 
 export const handleUnits = (io: Server, socket: Socket) => {
+  const calculateNewStorageValues = (
+    room: string,
+    name: "knight" | "archer"
+  ): void => {
+    if (name === "knight") {
+      StateManager.updateStorageItem(socket, room, "weapons", "sword", 1);
+      StateManager.updateStorageItem(socket, room, "weapons", "shield", 1);
+    } else {
+      StateManager.updateStorageItem(socket, room, "weapons", "bow", 1);
+    }
+  };
+
   const unitCreate = ({
     entity,
     name,
   }: {
     entity: EntityType;
-    name: string;
+    name: "knight" | "archer";
   }): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
 
     entity.data.owner = socket.id;
-    const unit = new Unit(entity, name);
-
     const room = ServerHandler.getCurrentRoom(socket);
 
-    StateManager.createUnit(room, socket, unit);
+    const response: Unit | ReturnMessage = StateManager.createUnit(
+      socket,
+      room,
+      entity,
+      name
+    );
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:unitCreate", {
-      entity: unit.getEntity(),
-      properties: StateManager.getUnitProperties()[name],
-    });
+    if (response instanceof Unit) {
+      calculateNewStorageValues(room, name);
+      const storage: StorageType = StateManager.getStorage(socket, room);
+
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:unitCreate", {
+        entity: response.getEntity(),
+        properties: StateManager.getUnitProperties()[name],
+      });
+
+      ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
+        storage,
+      });
+    } else {
+      ServerHandler.sendMessageToSender(socket, "game:info", response);
+    }
   };
 
   const unitMoving = ({

@@ -14,39 +14,29 @@ export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (
     room: string,
     building: Building
-  ): StorageType => {
-    const currentStorageState: StorageType = StateManager.getStorage(
-      socket,
-      room
-    );
-
+  ): void => {
     const buildingName: string = getImageNameFromUrl(
       building.getEntity().data.url
     );
 
-    const { boards, stone } =
+    const { boards: boardsAmount, stone: stoneAmount } =
       StateManager.getBuidingPrices()[buildingName as Buildings];
 
-    const { boards: storageBoards, stone: storageStone } =
-      currentStorageState.materials;
+    StateManager.updateStorageItem(
+      socket,
+      room,
+      "materials",
+      "boards",
+      boardsAmount
+    );
 
-    const newBoardsValue: number = storageBoards.amount - boards;
-    const newStoneValue: number = storageStone.amount - stone;
-
-    return {
-      ...currentStorageState,
-      materials: {
-        ...currentStorageState.materials,
-        boards: {
-          ...currentStorageState.materials.boards,
-          amount: newBoardsValue,
-        },
-        stone: {
-          ...currentStorageState.materials.stone,
-          amount: newStoneValue,
-        },
-      },
-    };
+    StateManager.updateStorageItem(
+      socket,
+      room,
+      "materials",
+      "stone",
+      stoneAmount
+    );
   };
 
   const build = (entity: EntityType): void => {
@@ -60,12 +50,9 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     );
 
     if (response instanceof Building) {
-      const newStorageValues: StorageType = calculateNewStorageValues(
-        room,
-        response
-      );
+      calculateNewStorageValues(room, response);
 
-      StateManager.updateStorage(socket, room, newStorageValues);
+      const storage: StorageType = StateManager.getStorage(socket, room);
 
       ServerHandler.sendMessageToEveryOne(
         io,
@@ -75,7 +62,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       );
 
       ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
-        storage: newStorageValues,
+        storage,
       });
     } else {
       ServerHandler.sendMessageToSender(socket, "game:info", response);

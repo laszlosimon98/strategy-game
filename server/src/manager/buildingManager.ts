@@ -120,18 +120,24 @@ export class BuildingManager {
     room: string,
     buildingName: Buildings
   ): boolean {
-    const currentStorageState: StorageType = StateManager.getStorage(
-      socket,
-      room
-    );
     const { boards, stone } = this.buildingPrices[buildingName as Buildings];
 
-    const { boards: storageBoards, stone: storageStone } =
-      currentStorageState.materials;
-
-    return (
-      storageBoards.amount - boards >= 0 && storageStone.amount - stone >= 0
+    const hasPlayerEnoughBoards: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "materials",
+      "boards",
+      boards
     );
+    const hasPlayerEnoughStone: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "materials",
+      "stone",
+      stone
+    );
+
+    return hasPlayerEnoughBoards && hasPlayerEnoughStone;
   }
 
   public static getBuildingPrices(): BuildingPrices {
