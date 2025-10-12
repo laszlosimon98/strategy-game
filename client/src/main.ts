@@ -25,7 +25,14 @@ const initBuildingPrices = async () => {
   console.log(StateManager.getBuildingPrices());
 };
 
-const loop = (currentTime: number, program: Program) => {
+init();
+
+await initImages();
+await initBuildingPrices();
+
+const program: Program = new Program();
+
+const loop = (currentTime: number) => {
   const delta = currentTime - lastFrameTime;
 
   if (delta >= frameDuration) {
@@ -36,34 +43,25 @@ const loop = (currentTime: number, program: Program) => {
     program.draw();
   }
 
-  rafId = requestAnimationFrame(() => loop(performance.now(), program));
+  rafId = requestAnimationFrame(loop);
 };
 
 const stop = () => {
   if (rafId !== null) {
     cancelAnimationFrame(rafId);
     rafId = null;
+
+    program.destory();
   }
 };
 
 const main = async () => {
-  init();
-
-  await initImages();
-  await initBuildingPrices();
-
-  const program: Program = new Program();
-
   if (rafId === null) {
     lastFrameTime = performance.now();
-    rafId = requestAnimationFrame(() => loop(performance.now(), program));
+    rafId = requestAnimationFrame(loop);
   }
-
-  loop(performance.now(), program);
 };
 
-window.addEventListener("beforeunload", () => {
-  stop();
-});
+window.addEventListener("unload", stop);
 
-await main();
+main();
