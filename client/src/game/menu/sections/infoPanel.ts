@@ -6,24 +6,24 @@ import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Building } from "@/game/world/building/building";
-import { Unit } from "@/game/world/unit/unit";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
 import { Barracks } from "@/game/world/building/buildings/military/barracks";
 import { BarracksPanel } from "@/game/menu/sections/panels/barracksPanel";
+import { Soldier } from "@/game/world/unit/units/soldier";
+import { SoldierPanel } from "@/game/menu/sections/panels/soldierPanel";
 
 export class InfoPanel extends Section {
-  private dim: Dimension;
   private deleteButton: Button;
   private image: HTMLImageElement;
   private displaySelectedObjectName: Text;
-  private infoPanelData: Unit | Building | undefined;
+  private infoPanelData: Soldier | Building | undefined;
 
   private barracksPanel: BarracksPanel;
+  private soldierPanel: SoldierPanel;
 
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
-    this.dim = dim;
 
     this.deleteButton = new Button(
       new Position(pos.x + dim.width - 30, pos.y + 55),
@@ -42,10 +42,12 @@ export class InfoPanel extends Section {
 
     this.image = new Image();
     this.barracksPanel = new BarracksPanel(pos, dim);
+    this.soldierPanel = new SoldierPanel(pos, dim);
   }
 
   public updateInfoPanel(): void {
     this.infoPanelData = StateManager.getInfoPanelData();
+    this.soldierPanel.updateInfoPanel();
   }
 
   public draw(): void {
@@ -65,6 +67,8 @@ export class InfoPanel extends Section {
       if (this.infoPanelData instanceof Barracks) {
         this.barracksPanel.draw();
       }
+    } else if (this.infoPanelData instanceof Soldier) {
+      this.soldierPanel.draw();
     }
   }
 
@@ -80,10 +84,11 @@ export class InfoPanel extends Section {
         if (this.infoPanelData instanceof Barracks) {
           this.barracksPanel.update(dt, mousePos);
         }
-      } else if (this.infoPanelData instanceof Unit) {
+      } else if (this.infoPanelData instanceof Soldier) {
         this.displaySelectedObjectName.setText(
           this.infoPanelData.getUnitName()
         );
+        this.soldierPanel.update();
       }
 
       if (
@@ -95,7 +100,7 @@ export class InfoPanel extends Section {
       }
 
       this.displaySelectedObjectName.setCenter({
-        xFrom: 0,
+        xFrom: this.pos.x,
         xTo: settings.gameMenu.dim.width,
         yFrom: settings.gameMenu.pos.y,
         yTo: settings.gameMenu.dim.height / 2,

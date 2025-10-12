@@ -159,11 +159,11 @@ export class StateManager {
 
   // ------------------- InfoPanel -------------------
 
-  public static getInfoPanelData(): Building | Unit | undefined {
+  public static getInfoPanelData(): Building | Soldier | undefined {
     return this.state.infoPanel.data;
   }
 
-  public static setInfoPanelData(data: Building | Unit): void {
+  public static setInfoPanelData(data: Building | Soldier): void {
     this.state.infoPanel.data = data;
   }
 

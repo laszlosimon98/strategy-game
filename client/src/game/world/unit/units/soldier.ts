@@ -125,4 +125,12 @@ export class Soldier extends Unit {
   public getRange(): number {
     return this.rangeIndicator.getRange();
   }
+
+  public getHealth(): number {
+    return this.properties.health;
+  }
+
+  public getCurrentHealth(): number {
+    return this.unitHealth;
+  }
 }

@@ -11,12 +11,14 @@ export class Section {
   protected subSections: Partial<Record<SubMenuState, Section>> = {};
 
   protected pos: Position;
+  protected dim: Dimension;
   protected buttons: Button[] = [];
   protected labelbuttons: LabelButton[] = [];
   protected drawFrame: boolean = true;
 
   public constructor(pos: Position, dim: Dimension) {
     this.pos = pos;
+    this.dim = dim;
     this.section = new Frame(pos, dim);
   }
 
