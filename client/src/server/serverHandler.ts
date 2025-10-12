@@ -42,4 +42,8 @@ export class ServerHandler {
   public static receiveMessage(event: string, callback: Function): void {
     this.getInstance().on(event, (data: any) => callback(data));
   }
+
+  public static closeConnection(): void {
+    this.socket.close();
+  }
 }

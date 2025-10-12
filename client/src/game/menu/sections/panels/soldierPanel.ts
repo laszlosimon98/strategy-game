@@ -15,7 +15,6 @@ export class SoldierPanel extends Section {
 
   constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
-    console.log(this.infoPanelData);
 
     this.currentHealthText = new Text(new Position(pos.x, pos.y), "", {
       fontSize: "20px",

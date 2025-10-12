@@ -29,7 +29,7 @@ export class Soldier extends Unit {
     this.properties = properties;
     this.unitHealth = this.properties.health;
 
-    this.attackTimer = new Timer(1500);
+    this.attackTimer = new Timer(1500, () => this.attack());
     this.attackTimer.activate();
 
     this.rangeIndicator = new RangeIndicator(
@@ -81,20 +81,18 @@ export class Soldier extends Unit {
     //     this.renderPos.y + settings.size.unit.height - settings.size.unit.height / 4
     //   )
     // );
-
-    this.attack();
   }
 
   private attack(): void {
     const opponent = this.getOpponent();
+    console.log("opponent: ", opponent);
     if (this.getState() === UnitStates.Attacking && opponent) {
-      if (!this.attackTimer.isTimerActive()) {
-        ServerHandler.sendMessage("game:unitDealDamage", {
-          unit: this.getEntity(),
-          opponent: opponent.getEntity(),
-        });
-        this.attackTimer.activate();
-      }
+      ServerHandler.sendMessage("game:unitDealDamage", {
+        unit: this.getEntity(),
+        opponent: opponent.getEntity(),
+      });
+      console.log("attack");
+      this.attackTimer.activate();
     }
   }
 

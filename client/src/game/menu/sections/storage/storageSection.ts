@@ -4,8 +4,8 @@ import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { StorageResponse } from "@/types/game.types";
 import type {
-  AllItemType,
-  GroupType,
+  CombinedTypes,
+  StorageTypes,
   StorageType,
 } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
@@ -100,7 +100,11 @@ export class StorageSection extends Section {
     }
   }
 
-  private createItem(pos: Position, path: GroupType, item: AllItemType): void {
+  private createItem(
+    pos: Position,
+    path: StorageTypes,
+    item: CombinedTypes
+  ): void {
     if (!this.storage) return;
 
     this.items.push(
@@ -132,7 +136,7 @@ export class StorageSection extends Section {
     ServerHandler.receiveMessage(
       "game:storageUpdate",
       ({ storage }: StorageResponse) => {
-        StateManager.updateStorage(ServerHandler.getId(), storage);
+        StateManager.updateStorage(this.playerId, storage);
         this.updateStorageUI();
       }
     );

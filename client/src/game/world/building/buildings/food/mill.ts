@@ -8,6 +8,12 @@ export class Mill extends Building implements BuildingActionInterface {
   }
 
   public action(): void {
-    console.log("woodcutter");
+    console.warn("Malom: Liszt kész");
+    super.action();
+  }
+
+  public cooldown(): void {
+    console.error("Malom: Pihenő vége");
+    super.cooldown();
   }
 }

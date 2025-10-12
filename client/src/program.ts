@@ -22,7 +22,7 @@ export class Program {
   private buttons?: Button[];
   private inputs?: TextInput[];
 
-  private game: Game | undefined;
+  private game: Game | undefined | null;
   private mousePos: Position;
   private key: string;
 
@@ -93,6 +93,35 @@ export class Program {
     } else {
       this.game?.update(dt);
     }
+  }
+
+  public destory(): void {
+    document.removeEventListener("mousedown", (e: MouseEvent) =>
+      this.handleMouseClick(e)
+    );
+
+    document.removeEventListener("mousemove", (e: MouseEvent) =>
+      this.handleMouseMove(e)
+    );
+
+    document.removeEventListener("keydown", (e: KeyboardEvent) =>
+      this.handleKeyDown(e)
+    );
+
+    document.removeEventListener("keyup", () => {
+      this.handleKeyUp();
+    });
+
+    document.removeEventListener("contextmenu", (e: MouseEvent) =>
+      e.preventDefault()
+    );
+
+    window.removeEventListener("resize", () => {
+      this.pages[StateManager.getPageState()]?.resize();
+    });
+
+    ServerHandler.closeConnection();
+    this.game = null;
   }
 
   public createNewpageElement(state: PageState, page: Page): void {

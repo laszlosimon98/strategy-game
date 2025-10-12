@@ -4,8 +4,13 @@ type Ores = "coal" | "iron_ore";
 type Weapons = "sword" | "shield" | "bow";
 type Metals = "iron";
 
-export type AllItemType = Materials | Foods | Ores | Weapons | Metals;
-export type GroupType = "materials" | "foods" | "ores" | "weapons" | "metals";
+export type CombinedTypes = Materials | Foods | Ores | Weapons | Metals;
+export type StorageTypes =
+  | "materials"
+  | "foods"
+  | "ores"
+  | "weapons"
+  | "metals";
 
 export type StorageItemType<T> = {
   name: T;

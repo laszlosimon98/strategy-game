@@ -101,6 +101,10 @@ export class BarracksPanel extends Section {
             new Indices(indices.i + 1, indices.j)
           ),
           static: "",
+          attackTimer: 0,
+          cooldownTimer: 0,
+          healingTimer: 0,
+          productionTime: 0,
         },
       };
 

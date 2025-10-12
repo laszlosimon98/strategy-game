@@ -103,7 +103,7 @@ export class StorageManager {
     }
 
     const materialAmount: number = currentItem.amount;
-    const newValue: number = materialAmount - amount;
+    const newValue: number = materialAmount + amount;
 
     const newStorage: StorageType = {
       ...currentStorage,

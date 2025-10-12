@@ -8,6 +8,6 @@ export class GuardHouse extends Building implements BuildingActionInterface {
   }
 
   public action(): void {
-    console.log("woodcutter");
+    // console.log("woodcutter");
   }
 }

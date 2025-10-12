@@ -27,7 +27,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       room,
       "materials",
       "boards",
-      boardsAmount
+      -boardsAmount
     );
 
     StateManager.updateStorageItem(
@@ -35,7 +35,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       room,
       "materials",
       "stone",
-      stoneAmount
+      -stoneAmount
     );
   };
 

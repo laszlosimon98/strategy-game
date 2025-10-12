@@ -55,10 +55,10 @@ export abstract class Manager<T> implements MouseHandlerInterface {
     this.world = world;
   }
 
-  protected creator<K extends T>(
-    Creator: new (...args: any[]) => K,
+  protected creator<T>(
+    Creator: new (...args: any[]) => T,
     ...args: ConstructorParameters<typeof Creator>
-  ): K {
+  ): T {
     return new Creator(...args);
   }
 

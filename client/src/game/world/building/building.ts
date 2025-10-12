@@ -5,13 +5,21 @@ import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { StateManager } from "@/manager/stateManager";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
+import { Timer } from "@/utils/timer";
 
 export class Building extends Entity implements RendererInterface {
   private flagEntity: EntityType | undefined;
   private flag: Flag | undefined;
+  private productionTimer: Timer;
+  private cooldownTimer: Timer;
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
+
+    this.productionTimer = new Timer(5000, () => this.action());
+    this.cooldownTimer = new Timer(3000, () => this.cooldown());
+
+    this.cooldownTimer.activate();
 
     if (hasFlag) {
       this.flagEntity = {
@@ -51,6 +59,14 @@ export class Building extends Entity implements RendererInterface {
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll);
     this.flag?.update(dt, cameraScroll);
+
+    if (this.productionTimer.isTimerActive()) {
+      this.productionTimer.update();
+    }
+
+    if (this.cooldownTimer.isTimerActive()) {
+      this.cooldownTimer.update();
+    }
   }
 
   public setPosition(pos: Position): void {
@@ -74,5 +90,13 @@ export class Building extends Entity implements RendererInterface {
   public setBuilding(building: EntityType) {
     this.entity.data = { ...building.data };
     this.image.src = this.entity.data.url;
+  }
+
+  public action(): void {
+    this.cooldownTimer.activate();
+  }
+
+  public cooldown(): void {
+    this.productionTimer.activate();
   }
 }

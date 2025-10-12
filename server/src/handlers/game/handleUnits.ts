@@ -18,10 +18,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
     name: "knight" | "archer"
   ): void => {
     if (name === "knight") {
-      StateManager.updateStorageItem(socket, room, "weapons", "sword", 1);
-      StateManager.updateStorageItem(socket, room, "weapons", "shield", 1);
+      StateManager.updateStorageItem(socket, room, "weapons", "sword", -1);
+      StateManager.updateStorageItem(socket, room, "weapons", "shield", -1);
     } else {
-      StateManager.updateStorageItem(socket, room, "weapons", "bow", 1);
+      StateManager.updateStorageItem(socket, room, "weapons", "bow", -1);
     }
   };
 

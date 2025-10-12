@@ -74,7 +74,8 @@ export class BuildingManager extends Manager<Building> {
     const name = getImageNameFromUrl(entity.data.url);
 
     const newBuilding: Building = this.creator<Building>(
-      buildingRegister[name],
+      // buildingRegister[name],
+      Building,
       entity
     );
 

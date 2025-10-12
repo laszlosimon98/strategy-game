@@ -17,7 +17,11 @@ import type {
   StateType,
   PlayerGameType,
 } from "@/types/game.types";
-import type { StorageType } from "@/types/storage.types";
+import type {
+  CombinedTypes,
+  StorageType,
+  StorageTypes,
+} from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -33,6 +37,10 @@ export class StateManager {
       indices: Indices.zero(),
       dimensions: Dimension.zero(),
       position: Position.zero(),
+      attackTimer: 0,
+      cooldownTimer: 0,
+      healingTimer: 0,
+      productionTime: 0,
     },
   };
 
@@ -190,6 +198,17 @@ export class StateManager {
     const player = this.getPlayerById(id);
 
     StorageManager.updateStorage(player, newStorageValues);
+  }
+
+  // TODO: törölni, itt nem kell ilyen, minden a szerverről jön
+  public static updateStorageItem(
+    id: string,
+    type: StorageTypes,
+    name: CombinedTypes,
+    amount: number
+  ) {
+    const player = this.getPlayerById(id);
+    StorageManager.updateStorageItem(player, type, name, amount);
   }
 
   // ------------------- State -------------------

@@ -4,8 +4,8 @@ import { StateManager } from "@/manager/stateManager";
 import { PageComponents } from "@/page/components/pageComponents";
 import { Text } from "@/page/components/text";
 import type {
-  AllItemType,
-  GroupType,
+  CombinedTypes,
+  StorageTypes,
   StorageItemType,
   StorageType,
 } from "@/types/storage.types";
@@ -21,8 +21,8 @@ export class StorageItem extends PageComponents {
   public constructor(
     pos: Position,
     dim: Dimension,
-    path: GroupType,
-    item: AllItemType,
+    path: StorageTypes,
+    item: CombinedTypes,
     storage: StorageType
   ) {
     super(pos, dim);
@@ -33,7 +33,7 @@ export class StorageItem extends PageComponents {
     const getStorageItem = () => {
       const group = storage[path] as any;
       if (group && group[item]) {
-        return group[item] as StorageItemType<AllItemType>;
+        return group[item] as StorageItemType<CombinedTypes>;
       }
     };
 
