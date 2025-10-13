@@ -10,7 +10,6 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Indices } from "@/utils/indices";
 import { calculatePositionFromIndices } from "@/utils/utils";
-import { Barracks } from "@/game/world/building/buildings/military/barracks";
 
 export class BarracksPanel extends Section {
   private barracksButtons: LabelButton[] = [];

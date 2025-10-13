@@ -11,7 +11,6 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { ySort } from "@/utils/utils";
 import { StateManager } from "@/manager/stateManager";
-import { buildingRegister } from "@/game/world/building/buildingRegister";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;
@@ -71,11 +70,7 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private build(entity: EntityType): void {
-    const newBuilding: Building = this.creator<Building>(
-      // buildingRegister[entity.data.name],
-      Building,
-      entity
-    );
+    const newBuilding: Building = this.creator<Building>(Building, entity);
 
     this.setObjectPosition(newBuilding, entity.data.position);
     StateManager.createBuilding(entity, newBuilding);
