@@ -4,10 +4,6 @@ import { Program } from "@/program";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 
-let rafId: number | null = null;
-let lastFrameTime: number = performance.now();
-const frameDuration = 1000 / settings.fps;
-
 const initImages = async () => {
   ServerHandler.sendMessage("start:page", {});
   const images = await ServerHandler.receiveAsyncMessage("start:page");
@@ -25,43 +21,31 @@ const initBuildingPrices = async () => {
   console.log(StateManager.getBuildingPrices());
 };
 
-init();
+const main = async () => {
+  init();
 
-await initImages();
-await initBuildingPrices();
+  await initImages();
+  await initBuildingPrices();
 
-const program: Program = new Program();
+  const program: Program = new Program();
 
-const loop = (currentTime: number) => {
-  const delta = currentTime - lastFrameTime;
+  const perfectFrameTime: number = 1000;
+  let lastFrameTime: number = performance.now();
 
-  if (delta >= frameDuration) {
-    const dt = delta / 1000;
+  const next = (currentTime = performance.now()) => {
+    const dt: number = (currentTime - lastFrameTime) / perfectFrameTime;
     lastFrameTime = currentTime;
 
-    program.update(dt);
     program.draw();
-  }
+    program.update(dt);
 
-  rafId = requestAnimationFrame(loop);
+    setTimeout(
+      () => requestAnimationFrame(next),
+      perfectFrameTime / settings.fps
+    );
+  };
+
+  next();
 };
 
-const stop = () => {
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
-
-    program.destory();
-  }
-};
-
-const main = async () => {
-  if (rafId === null) {
-    lastFrameTime = performance.now();
-    rafId = requestAnimationFrame(loop);
-  }
-};
-
-window.addEventListener("unload", stop);
-
-main();
+await main();
