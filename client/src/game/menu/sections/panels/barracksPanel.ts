@@ -9,8 +9,8 @@ import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Indices } from "@/utils/indices";
-import { Barracks } from "@/game/world/building/buildings/military/barracks";
 import { calculatePositionFromIndices } from "@/utils/utils";
+import { Barracks } from "@/game/world/building/buildings/military/barracks";
 
 export class BarracksPanel extends Section {
   private barracksButtons: LabelButton[] = [];
@@ -87,7 +87,7 @@ export class BarracksPanel extends Section {
     const data = StateManager.getInfoPanelData();
     const name = btn.getName();
 
-    if (data && data instanceof Barracks) {
+    if (data && data.getEntity().data.name === "barracks") {
       const indices = data.getIndices();
 
       const unitEntity: EntityType = {
@@ -102,14 +102,19 @@ export class BarracksPanel extends Section {
           ),
           static: "",
           name,
+          attackTimer: 0,
+          cooldownTimer: 0,
+          healingTimer: 0,
+          productionTime: 0,
+          isProductionBuilding: false,
         },
       };
 
-      this.sendUnitCreateRequest(unitEntity, name);
+      this.sendUnitCreateRequest(unitEntity);
     }
   }
 
-  private sendUnitCreateRequest(entity: EntityType, name: string): void {
-    ServerHandler.sendMessage("game:unitCreate", { entity, name });
+  private sendUnitCreateRequest(entity: EntityType): void {
+    ServerHandler.sendMessage("game:unitCreate", { entity });
   }
 }

@@ -1,7 +1,6 @@
 import { UnitStates } from "@/enums/unitsState";
 import { Manager } from "@/game/world/manager";
 import { Cell } from "@/game/world/cell";
-import { unitRegister } from "@/game/world/unit/unitRegister";
 import { Soldier } from "@/game/world/unit/units/soldier";
 import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType, SoldierPropertiesType } from "@/types/game.types";
@@ -15,6 +14,7 @@ import {
 } from "@/utils/utils";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
+import { unitRegister } from "@/game/world/unit/unitRegister";
 
 export class UnitManager extends Manager<Unit> {
   private selectedUnit: Unit | undefined;
@@ -155,7 +155,7 @@ export class UnitManager extends Manager<Unit> {
           : "archer";
 
         const unit: Soldier = this.creator<Soldier>(
-          Soldier,
+          unitRegister[name],
           entity,
           name,
           properties

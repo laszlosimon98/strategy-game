@@ -25,19 +25,14 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  const unitCreate = ({
-    entity,
-    name,
-  }: {
-    entity: EntityType;
-    name: "knight" | "archer";
-  }): void => {
+  const unitCreate = ({ entity }: { entity: EntityType }): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
 
     entity.data.owner = socket.id;
     const room = ServerHandler.getCurrentRoom(socket);
+    const name: "knight" | "archer" = entity.data.name as "knight" | "archer";
 
     const response: Unit | ReturnMessage = StateManager.createUnit(
       socket,

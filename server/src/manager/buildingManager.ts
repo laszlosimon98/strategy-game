@@ -8,6 +8,7 @@ import { Validator } from "@/classes/validator";
 import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { BuildingPrices, Buildings } from "@/types/building.types";
+import { ProductionAction } from "@/types/production.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { StorageType } from "@/types/storage.types";
@@ -142,6 +143,17 @@ export class BuildingManager {
     return hasPlayerEnoughBoards && hasPlayerEnoughStone;
   }
 
+  private static setProduction(entity: EntityType) {
+    const { cooldown, production }: ProductionAction =
+      StateManager.getProductionTimes(entity.data.name as Buildings);
+    entity.data.cooldownTimer = cooldown;
+    entity.data.productionTime = production;
+
+    if (cooldown > 0 && production > 0) {
+      entity.data.isProductionBuilding = true;
+    }
+  }
+
   public static getBuildingPrices(): BuildingPrices {
     return this.buildingPrices;
   }
@@ -167,6 +179,7 @@ export class BuildingManager {
       building.setOwner(entity.data.owner);
       this.createBuilding(room, socket, state, building);
       this.occupyCells(entity.data.indices, world, buildingName);
+      this.setProduction(entity);
 
       return building;
     } else {

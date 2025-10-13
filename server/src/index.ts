@@ -10,6 +10,7 @@ import { handlePath } from "@/handlers/game/handlePath";
 import { handleStart } from "@/handlers/game/handleStart";
 import { handleUnits } from "@/handlers/game/handleUnits";
 import { connectionHandler } from "@/handlers/connectionHandler";
+import { handleProduction } from "@/handlers/game/handleProduction";
 
 const PORT = 3000;
 
@@ -37,6 +38,7 @@ const gameHandler = (io: Server, socket: Socket) => {
   handlePath(io, socket);
   handleBuildings(io, socket);
   handleUnits(io, socket);
+  handleProduction(io, socket);
 };
 
 const onConnecton = async (socket: Socket) => {

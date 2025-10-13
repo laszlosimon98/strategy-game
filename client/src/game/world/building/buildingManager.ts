@@ -9,8 +9,9 @@ import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { getImageNameFromUrl, ySort } from "@/utils/utils";
+import { ySort } from "@/utils/utils";
 import { StateManager } from "@/manager/stateManager";
+import { buildingRegister } from "@/game/world/building/buildingRegister";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;
@@ -70,7 +71,11 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private build(entity: EntityType): void {
-    const newBuilding: Building = this.creator<Building>(Building, entity);
+    const newBuilding: Building = this.creator<Building>(
+      // buildingRegister[entity.data.name],
+      Building,
+      entity
+    );
 
     this.setObjectPosition(newBuilding, entity.data.position);
     StateManager.createBuilding(entity, newBuilding);
@@ -125,8 +130,8 @@ export class BuildingManager extends Manager<Building> {
   }
 
   protected handleCommunication(): void {
-    ServerHandler.receiveMessage("game:build", (newBuilding: EntityType) => {
-      this.build(newBuilding);
+    ServerHandler.receiveMessage("game:build", (entity: EntityType) => {
+      this.build(entity);
     });
 
     ServerHandler.receiveMessage(

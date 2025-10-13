@@ -73,4 +73,7 @@ export const en = {
     food: "Food",
     military: "Military",
   },
+  utils: {
+    hitPoints: "Hitpoints",
+  },
 };

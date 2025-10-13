@@ -15,13 +15,15 @@ import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/classes/utils/indices";
-import { BuildingPrices } from "@/types/building.types";
+import { BuildingPrices, Buildings } from "@/types/building.types";
 import {
   CombinedTypes,
   StorageType,
   StorageTypes,
 } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
+import { ProductionAction } from "@/types/production.types";
+import { ProductionManager } from "@/manager/productionManager";
 
 export class StateManager {
   private static state: StateType = {};
@@ -262,5 +264,10 @@ export class StateManager {
       name,
       amount
     );
+  }
+
+  // ------------------- Production -------------------
+  public static getProductionTimes(buildingName: Buildings): ProductionAction {
+    return ProductionManager.getBuildingProductionTime(buildingName);
   }
 }

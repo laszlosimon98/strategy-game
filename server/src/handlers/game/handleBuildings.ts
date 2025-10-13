@@ -43,8 +43,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
-
-    console.log(entity);
     const room: string = ServerHandler.getCurrentRoom(socket);
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,

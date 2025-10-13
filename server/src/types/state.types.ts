@@ -26,6 +26,11 @@ export type EntityType = {
     indices: Indices;
     dimensions: Dimension;
     position: Position;
+    productionTime: number;
+    cooldownTimer: number;
+    attackTimer: number;
+    healingTimer: number;
+    isProductionBuilding: boolean;
   };
 };
 

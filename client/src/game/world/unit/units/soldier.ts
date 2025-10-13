@@ -85,13 +85,11 @@ export class Soldier extends Unit {
 
   private attack(): void {
     const opponent = this.getOpponent();
-    console.log("opponent: ", opponent);
     if (this.getState() === UnitStates.Attacking && opponent) {
       ServerHandler.sendMessage("game:unitDealDamage", {
         unit: this.getEntity(),
         opponent: opponent.getEntity(),
       });
-      console.log("attack");
       this.attackTimer.activate();
     }
   }

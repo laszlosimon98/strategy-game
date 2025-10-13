@@ -1,6 +1,7 @@
 import { Section } from "@/game/menu/sections/section";
 import type { Building } from "@/game/world/building/building";
 import { Soldier } from "@/game/world/unit/units/soldier";
+import { language, type Utils } from "@/languages/language";
 import { StateManager } from "@/manager/stateManager";
 import { Text } from "@/page/components/text";
 import type { Dimension } from "@/utils/dimension";
@@ -29,9 +30,13 @@ export class SoldierPanel extends Section {
     });
 
     // FIXME: le kell forditani
-    this.healthText = new Text(new Position(pos.x, pos.y), "Életerő:", {
-      fontSize: "20px",
-    });
+    this.healthText = new Text(
+      new Position(pos.x, pos.y),
+      language[StateManager.getLanguage()].utils["hitPoints" as Utils],
+      {
+        fontSize: "20px",
+      }
+    );
   }
 
   public draw(): void {

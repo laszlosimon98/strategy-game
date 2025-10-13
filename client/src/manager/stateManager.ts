@@ -38,6 +38,11 @@ export class StateManager {
       indices: Indices.zero(),
       dimensions: Dimension.zero(),
       position: Position.zero(),
+      attackTimer: 0,
+      cooldownTimer: 0,
+      healingTimer: 0,
+      productionTime: 0,
+      isProductionBuilding: false,
     },
   };
 

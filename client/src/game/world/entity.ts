@@ -84,7 +84,7 @@ export abstract class Entity implements RendererInterface {
     this.isHovered = hover;
   }
 
-  public getBuildingName(): string {
+  public getDisplayName(): string {
     const objectName: string =
       language[StateManager.getLanguage()].buildings[
         getImageNameFromUrl(this.entity.data.static) as unknown as Buildings

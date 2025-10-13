@@ -3,6 +3,7 @@ import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { StateManager } from "@/manager/stateManager";
+import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
@@ -10,16 +11,24 @@ import { Timer } from "@/utils/timer";
 export class Building extends Entity implements RendererInterface {
   private flagEntity: EntityType | undefined;
   private flag: Flag | undefined;
-  private productionTimer: Timer;
-  private cooldownTimer: Timer;
+
+  private productionTimer: Timer | null = null;
+  private cooldownTimer: Timer | null = null;
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
 
-    this.productionTimer = new Timer(5000, () => this.action());
-    this.cooldownTimer = new Timer(3000, () => this.cooldown());
+    if (entity.data.isProductionBuilding) {
+      this.productionTimer = new Timer(entity.data.productionTime, () =>
+        this.action()
+      );
 
-    this.cooldownTimer.activate();
+      this.cooldownTimer = new Timer(entity.data.cooldownTimer, () =>
+        this.cooldown()
+      );
+
+      this.cooldownTimer.activate();
+    }
 
     if (hasFlag) {
       this.flagEntity = {
@@ -60,11 +69,11 @@ export class Building extends Entity implements RendererInterface {
     super.update(dt, cameraScroll);
     this.flag?.update(dt, cameraScroll);
 
-    if (this.productionTimer.isTimerActive()) {
+    if (this.productionTimer?.isTimerActive()) {
       this.productionTimer.update();
     }
 
-    if (this.cooldownTimer.isTimerActive()) {
+    if (this.cooldownTimer?.isTimerActive()) {
       this.cooldownTimer.update();
     }
   }
@@ -93,10 +102,13 @@ export class Building extends Entity implements RendererInterface {
   }
 
   public action(): void {
-    this.cooldownTimer.activate();
+    if (this.entity.data.isProductionBuilding) {
+      ServerHandler.sendMessage("game:production", { entity: this.entity });
+      this.cooldownTimer?.activate();
+    }
   }
 
   public cooldown(): void {
-    this.productionTimer.activate();
+    this.productionTimer?.activate();
   }
 }

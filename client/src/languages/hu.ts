@@ -73,4 +73,7 @@ export const hu = {
     food: "Élelem",
     military: "Haderő",
   },
+  utils: {
+    hitPoints: "Életerő",
+  },
 };

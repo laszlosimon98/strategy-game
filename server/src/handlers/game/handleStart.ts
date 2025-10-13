@@ -73,6 +73,11 @@ export const handleStart = (io: Server, socket: Socket) => {
         },
         position: calculateInitTowerPosition(indices),
         name: "guardhouse",
+        productionTime: 0,
+        cooldownTimer: 0,
+        attackTimer: 0,
+        healingTimer: 0,
+        isProductionBuilding: false,
       },
     };
 

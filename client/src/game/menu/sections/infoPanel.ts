@@ -77,7 +77,7 @@ export class InfoPanel extends Section {
     if (this.infoPanelData) {
       if (this.infoPanelData instanceof Building) {
         this.displaySelectedObjectName.setText(
-          this.infoPanelData.getBuildingName()
+          this.infoPanelData.getDisplayName()
         );
 
         if (this.infoPanelData.getEntity().data.name === "barracks") {

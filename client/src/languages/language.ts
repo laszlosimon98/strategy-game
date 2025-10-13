@@ -60,6 +60,8 @@ export type UI =
   | "food"
   | "military";
 
+export type Utils = "hitPoints";
+
 type DataType = {
   [language in AvailableLanguages]: {
     buttonTexts: { [button in Buttons]: string };
@@ -67,6 +69,7 @@ type DataType = {
     buildings: { [building in Buildings]: string };
     storage: { [storageItem in Storage]: string };
     ui: { [uiItem in UI]: string };
+    utils: { [util in Utils]: string };
   };
 };
 
