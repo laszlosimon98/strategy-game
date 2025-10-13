@@ -2,6 +2,7 @@ import type { Building } from "@/game/world/building/building";
 import { PlayerManager } from "@/manager/playerManager";
 import type { BuildingPrices } from "@/types/building.types";
 import type { EntityType, ImageItemType, StateType } from "@/types/game.types";
+import { getImageNameFromUrl } from "@/utils/utils";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
@@ -31,6 +32,7 @@ export class BuildingManager {
     state.game.builder.data = {
       ...state.game.builder.data,
       ...image,
+      name: getImageNameFromUrl(image.url),
     };
   }
 

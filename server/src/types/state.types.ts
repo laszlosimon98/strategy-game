@@ -22,6 +22,7 @@ export type EntityType = {
     owner: string;
     url: string;
     static: string;
+    name: string;
     indices: Indices;
     dimensions: Dimension;
     position: Position;

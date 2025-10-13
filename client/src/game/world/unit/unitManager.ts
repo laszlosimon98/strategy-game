@@ -155,7 +155,7 @@ export class UnitManager extends Manager<Unit> {
           : "archer";
 
         const unit: Soldier = this.creator<Soldier>(
-          unitRegister[name],
+          Soldier,
           entity,
           name,
           properties

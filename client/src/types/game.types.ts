@@ -41,13 +41,14 @@ export type EntityType = {
     owner: string;
     url: string;
     static: string;
+    name: string;
     indices: Indices;
     dimensions: Dimension;
     position: Position;
-    productionTime: number;
-    cooldownTimer: number;
-    attackTimer: number;
-    healingTimer: number;
+    // productionTime: number;
+    // cooldownTimer: number;
+    // attackTimer: number;
+    // healingTimer: number;
   };
 };
 

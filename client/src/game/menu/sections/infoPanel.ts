@@ -8,7 +8,6 @@ import { Position } from "@/utils/position";
 import { Building } from "@/game/world/building/building";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
-import { Barracks } from "@/game/world/building/buildings/military/barracks";
 import { BarracksPanel } from "@/game/menu/sections/panels/barracksPanel";
 import { Soldier } from "@/game/world/unit/units/soldier";
 import { SoldierPanel } from "@/game/menu/sections/panels/soldierPanel";
@@ -64,7 +63,7 @@ export class InfoPanel extends Section {
 
     if (this.infoPanelData instanceof Building) {
       this.deleteButton.draw();
-      if (this.infoPanelData instanceof Barracks) {
+      if (this.infoPanelData.getEntity().data.name === "barracks") {
         this.barracksPanel.draw();
       }
     } else if (this.infoPanelData instanceof Soldier) {
@@ -81,7 +80,7 @@ export class InfoPanel extends Section {
           this.infoPanelData.getBuildingName()
         );
 
-        if (this.infoPanelData instanceof Barracks) {
+        if (this.infoPanelData.getEntity().data.name === "barracks") {
           this.barracksPanel.update(dt, mousePos);
         }
       } else if (this.infoPanelData instanceof Soldier) {

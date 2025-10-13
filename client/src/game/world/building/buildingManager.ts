@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from "uuid";
 import { MainMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
-import { buildingRegister } from "@/game/world/building/buildingRegister";
 import { FakeBuilding } from "@/game/world/building/fakeBuilding";
 import { Manager } from "@/game/world/manager";
 import { ServerHandler } from "@/server/serverHandler";
@@ -71,13 +70,7 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private build(entity: EntityType): void {
-    const name = getImageNameFromUrl(entity.data.url);
-
-    const newBuilding: Building = this.creator<Building>(
-      // buildingRegister[name],
-      Building,
-      entity
-    );
+    const newBuilding: Building = this.creator<Building>(Building, entity);
 
     this.setObjectPosition(newBuilding, entity.data.position);
     StateManager.createBuilding(entity, newBuilding);

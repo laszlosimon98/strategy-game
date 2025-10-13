@@ -72,6 +72,7 @@ export const handleStart = (io: Server, socket: Socket) => {
           height: 128,
         },
         position: calculateInitTowerPosition(indices),
+        name: "guardhouse",
       },
     };
 

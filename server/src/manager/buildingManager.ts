@@ -50,13 +50,14 @@ export class BuildingManager {
     const i = indices.i;
     const j = indices.j;
 
+    world[i][j].setObstacleType(buildingName);
+
     for (let l = 0; l < 2; ++l) {
       for (let k = 0; k < 2; ++k) {
         if (l === 1 && l === k) continue;
         if (i + l < settings.mapSize && j + k < settings.mapSize) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(true);
-          cell.setObstacleType(buildingName);
         }
       }
     }
@@ -66,13 +67,14 @@ export class BuildingManager {
     const i = indices.i;
     const j = indices.j;
 
+    world[i][j].setObstacleType(null);
+
     for (let l = 0; l < 2; ++l) {
       for (let k = 0; k < 2; ++k) {
         if (l === 1 && l === k) continue;
         if (i + l < settings.mapSize && j + k < settings.mapSize) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(false);
-          cell.setObstacleType(null);
         }
       }
     }
