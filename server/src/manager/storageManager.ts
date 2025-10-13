@@ -118,4 +118,27 @@ export class StorageManager {
 
     this.updateStorage(socket, room, state, newStorage);
   }
+
+  public static getStorageItem(
+    socket: Socket,
+    room: string,
+    state: StateType,
+    type: StorageTypes,
+    name: string
+  ) {
+    const currentStorage: StorageType = this.getCurrentStorage(
+      socket,
+      room,
+      state
+    );
+
+    const storageCategory = currentStorage[type];
+    const currentItem = (storageCategory as any)[name];
+
+    if (!currentItem) {
+      return;
+    }
+
+    return currentItem;
+  }
 }

@@ -1,8 +1,13 @@
 import { Buildings } from "@/types/building.types";
-import { ProductionAction, ProductionTimes } from "@/types/production.types";
+import {
+  ProductionAction,
+  ProductionTimes,
+  Requirement,
+  Requirements,
+} from "@/types/production.types";
 
 export class ProductionManager {
-  public static productionTimes: ProductionTimes = {
+  private static productionTimes: ProductionTimes = {
     bakery: { cooldown: 7000, production: 9000 },
     barracks: { cooldown: 0, production: 0 },
     farm: { cooldown: 6000, production: 8000 },
@@ -19,11 +24,46 @@ export class ProductionManager {
     well: { cooldown: 5000, production: 7000 },
     woodcutter: { cooldown: 6000, production: 7500 },
   };
+
+  private static requirements: Requirements = {
+    bakery: {
+      primary: { type: "foods", name: "flour" },
+      secondary: { type: "foods", name: "water" },
+    },
+    barracks: null,
+    farm: null,
+    forester: null,
+    guardhouse: null,
+    ironsmelter: {
+      primary: { type: "ores", name: "coal" },
+      secondary: { type: "ores", name: "iron_ore" },
+    },
+    mill: { primary: { type: "foods", name: "grain" } },
+    residence: null,
+    sawmill: { primary: { type: "materials", name: "boards" } },
+    stonecutter: null,
+    storage: null,
+    toolsmith: {
+      primary: { type: "ores", name: "coal" },
+      secondary: { type: "metals", name: "iron" },
+    },
+    weaponsmith: {
+      primary: { type: "ores", name: "coal" },
+      secondary: { type: "metals", name: "iron" },
+    },
+    well: null,
+    woodcutter: null,
+  };
+
   private constructor() {}
 
   public static getBuildingProductionTime(
     buildingName: Buildings
   ): ProductionAction {
     return this.productionTimes[buildingName];
+  }
+
+  public static getBuildingRequirements(buildingName: Buildings): Requirement {
+    return this.requirements[buildingName];
   }
 }
