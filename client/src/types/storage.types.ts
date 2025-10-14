@@ -4,8 +4,8 @@ type Ores = "coal" | "iron_ore";
 type Weapons = "sword" | "shield" | "bow";
 type Metals = "iron";
 
-export type CombinedTypes = Materials | Foods | Ores | Weapons | Metals;
-export type StorageTypes =
+export type CombinedType = Materials | Foods | Ores | Weapons | Metals;
+export type CategoryType =
   | "materials"
   | "foods"
   | "ores"

@@ -1,6 +1,5 @@
-import { StateManager } from "@/manager/stateManager";
-import type { PlayerGameType, StateType } from "@/types/game.types";
-import type { StorageType, StorageTypes } from "@/types/storage.types";
+import type { PlayerGameType } from "@/types/game.types";
+import type { StorageType, CategoryType } from "@/types/storage.types";
 
 export class StorageManager {
   private constructor() {}
@@ -21,7 +20,7 @@ export class StorageManager {
 
   public static updateStorageItem(
     player: PlayerGameType[""],
-    type: StorageTypes,
+    type: CategoryType,
     name: string,
     amount: number
   ): void {

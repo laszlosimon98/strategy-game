@@ -4,8 +4,8 @@ import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { StorageResponse } from "@/types/game.types";
 import type {
-  CombinedTypes,
-  StorageTypes,
+  CombinedType,
+  CategoryType,
   StorageType,
 } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
@@ -102,8 +102,8 @@ export class StorageSection extends Section {
 
   private createItem(
     pos: Position,
-    path: StorageTypes,
-    item: CombinedTypes
+    path: CategoryType,
+    item: CombinedType
   ): void {
     if (!this.storage) return;
 

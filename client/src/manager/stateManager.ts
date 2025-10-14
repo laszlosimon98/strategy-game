@@ -18,9 +18,9 @@ import type {
   PlayerGameType,
 } from "@/types/game.types";
 import type {
-  CombinedTypes,
+  CombinedType,
   StorageType,
-  StorageTypes,
+  CategoryType,
 } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
@@ -205,8 +205,8 @@ export class StateManager {
   // TODO: törölni, itt nem kell ilyen, minden a szerverről jön
   public static updateStorageItem(
     id: string,
-    type: StorageTypes,
-    name: CombinedTypes,
+    type: CategoryType,
+    name: CombinedType,
     amount: number
   ) {
     const player = this.getPlayerById(id);
