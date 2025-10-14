@@ -12,6 +12,8 @@ export type StorageTypes =
   | "weapons"
   | "metals";
 
+export type ProductionItem = CombinedTypes;
+
 export type StorageItemType<T> = {
   name: T;
   amount: number;

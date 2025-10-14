@@ -1,4 +1,5 @@
 import { Building } from "@/classes/game/building";
+import { buildingRegister } from "@/classes/game/buildingRegister";
 import { Cell } from "@/classes/game/cell";
 import { World } from "@/classes/game/world";
 import { ServerHandler } from "@/classes/serverHandler";
@@ -143,15 +144,20 @@ export class BuildingManager {
     return hasPlayerEnoughBoards && hasPlayerEnoughStone;
   }
 
-  private static setProduction(entity: EntityType) {
-    const { cooldown, production }: ProductionAction =
-      StateManager.getProductionTimes(entity.data.name as Buildings);
-    entity.data.cooldownTimer = cooldown;
-    entity.data.productionTime = production;
+  private static setProduction(entity: EntityType, building: Building) {
+    entity.data.cooldownTimer = building.getCooldown();
+    entity.data.productionTime = building.getProductionTime();
 
-    if (cooldown > 0 && production > 0) {
+    if (building.isProductionBuilding()) {
       entity.data.isProductionBuilding = true;
     }
+  }
+
+  private static creator<T>(
+    Creator: new (...args: any[]) => T,
+    ...args: ConstructorParameters<typeof Creator>
+  ): T {
+    return new Creator(...args);
   }
 
   public static getBuildingPrices(): BuildingPrices {
@@ -174,12 +180,15 @@ export class BuildingManager {
 
     if (this.hasMaterialsToBuild(socket, room, buildingName as Buildings)) {
       const world: Cell[][] = World.getWorld(socket);
-      const building: Building = new Building(entity);
+      const building: Building = this.creator<Building>(
+        buildingRegister[entity.data.name],
+        entity
+      );
 
       building.setOwner(entity.data.owner);
       this.createBuilding(room, socket, state, building);
       this.occupyCells(entity.data.indices, world, buildingName);
-      this.setProduction(entity);
+      this.setProduction(entity, building);
 
       return building;
     } else {

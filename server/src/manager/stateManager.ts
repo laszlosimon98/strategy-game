@@ -18,13 +18,11 @@ import { Indices } from "@/classes/utils/indices";
 import { BuildingPrices, Buildings } from "@/types/building.types";
 import {
   CombinedTypes,
-  StorageItemType,
   StorageType,
   StorageTypes,
 } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { ProductionAction, Requirement } from "@/types/production.types";
-import { ProductionManager } from "@/manager/productionManager";
 
 export class StateManager {
   private static state: StateType = {};
@@ -274,14 +272,5 @@ export class StateManager {
       name,
       amount
     );
-  }
-
-  // ------------------- Production -------------------
-  public static getProductionTimes(buildingName: Buildings): ProductionAction {
-    return ProductionManager.getBuildingProductionTime(buildingName);
-  }
-
-  public static getBuildingRequirements(buildingName: Buildings): Requirement {
-    return ProductionManager.getBuildingRequirements(buildingName);
   }
 }

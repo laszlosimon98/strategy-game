@@ -50,6 +50,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     );
 
     if (response instanceof Building) {
+      console.log(response);
+      console.log(response.getRequirements());
       calculateNewStorageValues(room, response);
 
       const storage: StorageType = StateManager.getStorage(socket, room);
