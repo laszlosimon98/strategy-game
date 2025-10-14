@@ -33,13 +33,13 @@ export class WeaponSmith extends Building {
 
   public getProductionItem(): ProductionItem | null {
     if (this.production === null) return null;
+    this.counter++;
     const currentItem: ProductionItem = this.production.getProductionItem();
     const nextItem: ProductionItem = this.productionList[
       this.counter % 3
     ] as ProductionItem;
 
     this.production.setProductionItem(nextItem);
-    this.counter++;
     return currentItem;
   }
 }

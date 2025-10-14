@@ -1,6 +1,7 @@
 import { Building } from "@/classes/game/building";
 import { ServerHandler } from "@/classes/serverHandler";
 import { StateManager } from "@/manager/stateManager";
+import { Requirement } from "@/types/production.types";
 import { EntityType } from "@/types/state.types";
 import {
   CategoryType,
@@ -10,36 +11,71 @@ import {
 import { Server, Socket } from "socket.io";
 
 export const handleProduction = (io: Server, socket: Socket) => {
-  // const hasRequirements = (entity: EntityType): boolean => {
-  //   return (
-  //     StateManager.getBuildingRequirements(entity.data.name as Buildings) !==
-  //     null
-  //   );
-  // };
-  // const checkRequirements = (
-  //   requirements: Requirement,
-  //   room: string
-  // ): boolean => {
-  //   if (!requirements) return false;
-  //   const primaryItem = StateManager.getStorageItem(
-  //     socket,
-  //     room,
-  //     requirements.primary.type,
-  //     requirements.primary.name
-  //   );
-  //   let secondaryItem;
-  //   if (requirements.secondary) {
-  //     secondaryItem = StateManager.getStorageItem(
-  //       socket,
-  //       room,
-  //       requirements.secondary.type,
-  //       requirements.secondary.name
-  //     );
-  //   }
-  //   return primaryItem.amount > 0 && secondaryItem
-  //     ? secondaryItem.amount > 0
-  //     : true;
-  // };
+  const hasRequiredMaterials = (
+    room: string,
+    requirements: Requirement
+  ): boolean => {
+    if (!requirements) return false;
+
+    const primaryItem = StateManager.getStorageItem(
+      socket,
+      room,
+      requirements.primary.type,
+      requirements.primary.name
+    );
+
+    if (primaryItem.amount <= 0) return false;
+
+    let secondaryItem;
+
+    if (requirements.secondary) {
+      secondaryItem = StateManager.getStorageItem(
+        socket,
+        room,
+        requirements.secondary.type,
+        requirements.secondary.name
+      );
+
+      if (secondaryItem.amount <= 0) return false;
+    }
+
+    return true;
+  };
+
+  const produceItem = (room: string, building: Building): void => {
+    const category: CategoryType | null = building.getCategory();
+    const item: ProductionItem | null = building.getProductionItem();
+
+    if (!category || !item) return;
+
+    StateManager.updateStorageItem(socket, room, category, item, 1);
+  };
+
+  const updateMaterialsForProduction = (
+    socket: Socket,
+    room: string,
+    requirements: Requirement
+  ): void => {
+    if (!requirements) return;
+    StateManager.updateStorageItem(
+      socket,
+      room,
+      requirements?.primary.type,
+      requirements?.primary.name,
+      -1
+    );
+
+    if (requirements.secondary) {
+      StateManager.updateStorageItem(
+        socket,
+        room,
+        requirements?.secondary.type,
+        requirements?.secondary.name,
+        -1
+      );
+    }
+  };
+
   const handleProductionRequest = ({ entity }: { entity: EntityType }) => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     const building: Building | undefined = StateManager.getBuildingByEntity(
@@ -50,34 +86,22 @@ export const handleProduction = (io: Server, socket: Socket) => {
 
     if (!building) return;
 
-    if (building.hasRequirements() !== null) {
-      const category: CategoryType | null = building.getCategory();
-      const item: ProductionItem | null = building.getProductionItem();
+    console.log(building.getEntity().data.name);
 
-      if (!category || !item) return;
-
-      StateManager.updateStorageItem(socket, room, category, item, 1);
+    if (!building.hasRequirements()) {
+      produceItem(room, building);
+    } else {
+      const requirements: Requirement = building.getRequirements();
+      if (hasRequiredMaterials(room, requirements)) {
+        updateMaterialsForProduction(socket, room, requirements);
+        produceItem(room, building);
+      }
     }
 
     const storage: StorageType = StateManager.getStorage(socket, room);
     ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
       storage,
     });
-
-    // if (!hasRequirements(entity)) {
-    //   StateManager.updateStorageItem(socket, room, "foods", "grain", 1);
-    //   const storage: StorageType = StateManager.getStorage(socket, room);
-    //   ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
-    //     storage,
-    //   });
-    // } else {
-    //   const requirements = StateManager.getBuildingRequirements(
-    //     entity.data.name as Buildings
-    //   ) as Requirement;
-    //   if (checkRequirements(requirements, room)) {
-    //     // update storage
-    //   }
-    // }
   };
   socket.on("game:production", handleProductionRequest);
 };
