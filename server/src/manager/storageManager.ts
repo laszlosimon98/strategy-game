@@ -1,10 +1,5 @@
 import { StateType } from "@/types/state.types";
-import {
-  CombinedTypes,
-  StorageItemType,
-  StorageType,
-  StorageTypes,
-} from "@/types/storage.types";
+import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { Socket } from "socket.io";
 
 export class StorageManager {
@@ -61,8 +56,8 @@ export class StorageManager {
     socket: Socket,
     room: string,
     state: StateType,
-    type: StorageTypes,
-    name: CombinedTypes,
+    type: CategoryType,
+    name: CombinedType,
     amount: number
   ): boolean {
     const currentStorage: StorageType = this.getCurrentStorage(
@@ -85,7 +80,7 @@ export class StorageManager {
     socket: Socket,
     room: string,
     state: StateType,
-    type: StorageTypes,
+    type: CategoryType,
     name: string,
     amount: number
   ): void {
@@ -123,7 +118,7 @@ export class StorageManager {
     socket: Socket,
     room: string,
     state: StateType,
-    type: StorageTypes,
+    type: CategoryType,
     name: string
   ) {
     const currentStorage: StorageType = this.getCurrentStorage(

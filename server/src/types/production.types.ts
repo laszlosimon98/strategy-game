@@ -1,5 +1,5 @@
 import { Buildings } from "@/types/building.types";
-import { CombinedTypes, StorageTypes } from "@/types/storage.types";
+import { CombinedType, CategoryType } from "@/types/storage.types";
 
 export type ProductionAction = {
   cooldown: number;
@@ -12,12 +12,12 @@ export type ProductionTimes = {
 
 export type Requirement = null | {
   primary: {
-    type: StorageTypes;
-    name: CombinedTypes;
+    type: CategoryType;
+    name: CombinedType;
   };
   secondary?: {
-    type: StorageTypes;
-    name: CombinedTypes;
+    type: CategoryType;
+    name: CombinedType;
   };
 };
 

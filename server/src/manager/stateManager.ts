@@ -15,14 +15,9 @@ import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/classes/utils/indices";
-import { BuildingPrices, Buildings } from "@/types/building.types";
-import {
-  CombinedTypes,
-  StorageType,
-  StorageTypes,
-} from "@/types/storage.types";
+import { BuildingPrices } from "@/types/building.types";
+import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
-import { ProductionAction, Requirement } from "@/types/production.types";
 
 export class StateManager {
   private static state: StateType = {};
@@ -179,6 +174,19 @@ export class StateManager {
     return BuildingManager.getBuilding(room, socket, this.state, building);
   }
 
+  public static getBuildingByEntity(
+    room: string,
+    socket: Socket,
+    entity: EntityType
+  ): Building | undefined {
+    return BuildingManager.getBuildingByEntity(
+      room,
+      socket,
+      this.state,
+      entity
+    );
+  }
+
   public static destroyBuilding(
     socket: Socket,
     indices: Indices
@@ -234,7 +242,7 @@ export class StateManager {
   public static getStorageItem(
     socket: Socket,
     room: string,
-    type: StorageTypes,
+    type: CategoryType,
     name: string
   ) {
     return StorageManager.getStorageItem(socket, room, this.state, type, name);
@@ -243,8 +251,8 @@ export class StateManager {
   public static hasMaterial(
     socket: Socket,
     room: string,
-    type: StorageTypes,
-    name: CombinedTypes,
+    type: CategoryType,
+    name: CombinedType,
     amount: number
   ): boolean {
     return StorageManager.hasMaterial(
@@ -260,8 +268,8 @@ export class StateManager {
   public static updateStorageItem(
     socket: Socket,
     room: string,
-    type: StorageTypes,
-    name: CombinedTypes,
+    type: CategoryType,
+    name: CombinedType,
     amount: number
   ) {
     StorageManager.updateStorageItem(

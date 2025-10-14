@@ -2,7 +2,7 @@ import { Production } from "@/classes/game/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
 import { Requirement } from "@/types/production.types";
 import type { EntityType } from "@/types/state.types";
-import { StorageTypes, ProductionItem } from "@/types/storage.types";
+import { CategoryType, ProductionItem } from "@/types/storage.types";
 
 export class Building implements ProductionBuildingInterface {
   private entity: EntityType;
@@ -38,9 +38,9 @@ export class Building implements ProductionBuildingInterface {
     return this.getRequirements() !== null;
   }
 
-  public getItemType(): StorageTypes | null {
+  public getCategory(): CategoryType | null {
     if (this.production === null) return null;
-    return this.production.getItemType();
+    return this.production.getCategory();
   }
 
   public getProductionItem(): ProductionItem | null {

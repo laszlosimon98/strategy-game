@@ -262,4 +262,14 @@ export class BuildingManager {
       (b) => b.getEntity().data.id === building.getEntity().data.id
     );
   }
+
+  public static getBuildingByEntity(
+    room: string,
+    socket: Socket,
+    state: StateType,
+    entity: EntityType
+  ): Building | undefined {
+    const buildings: Building[] = this.getBuildings(room, socket, state);
+    return buildings.find((b) => b.getEntity().data.id === entity.data.id);
+  }
 }

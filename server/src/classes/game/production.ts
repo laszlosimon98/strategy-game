@@ -1,21 +1,21 @@
-import { ProductionItem, StorageTypes } from "@/types/storage.types";
+import { ProductionItem, CategoryType } from "@/types/storage.types";
 
 export class Production {
   private productionTime: number;
   private cooldownTime: number;
-  private itemType: StorageTypes;
+  private category: CategoryType;
   private productionItem: ProductionItem;
 
   public constructor(
     productionTime: number,
     cooldownTime: number,
-    itemType: StorageTypes,
+    category: CategoryType,
     productionItem: ProductionItem
   ) {
     this.productionTime = productionTime;
     this.cooldownTime = cooldownTime;
 
-    this.itemType = itemType;
+    this.category = category;
     this.productionItem = productionItem;
   }
 
@@ -27,8 +27,8 @@ export class Production {
     return this.cooldownTime;
   }
 
-  public getItemType(): StorageTypes {
-    return this.itemType;
+  public getCategory(): CategoryType {
+    return this.category;
   }
 
   public getProductionItem(): ProductionItem {
