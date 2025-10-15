@@ -1,8 +1,8 @@
-import { Building } from "@/classes/game/building";
-import { Cell } from "@/classes/game/cell";
-import { Unit } from "@/classes/game/unit";
-import { Dimension } from "@/classes/utils/dimension";
-import { Indices } from "@/classes/utils/indices";
+import { Building } from "@/game/building";
+import { Cell } from "@/game/cell";
+import { Unit } from "@/game/unit";
+import { Dimension } from "@/utils/dimension";
+import { Indices } from "@/utils/indices";
 import type { Position } from "@/types/utils.types";
 import { StorageType } from "@/types/storage.types";
 

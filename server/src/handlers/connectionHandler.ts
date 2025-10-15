@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 
-import { ServerHandler } from "@/classes/serverHandler";
+import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 

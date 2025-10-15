@@ -1,4 +1,4 @@
-import { Production } from "@/classes/game/production";
+import { Production } from "@/game/production";
 import { Requirement } from "@/types/production.types";
 import { ProductionItem } from "@/types/storage.types";
 

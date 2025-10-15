@@ -1,7 +1,7 @@
-import { ServerHandler } from "@/classes/serverHandler";
-import { Building } from "@/classes/game/building";
-import { Cell } from "@/classes/game/cell";
-import { Unit } from "@/classes/game/unit";
+import { ServerHandler } from "@/server/serverHandler";
+import { Building } from "@/game/building";
+import { Cell } from "@/game/cell";
+import { Unit } from "@/game/unit";
 import { settings } from "@/settings";
 import type {
   ColorType,
@@ -14,7 +14,7 @@ import { Server, Socket } from "socket.io";
 import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
-import { Indices } from "@/classes/utils/indices";
+import { Indices } from "@/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";

@@ -1,10 +1,10 @@
 import { Server, Socket } from "socket.io";
-import { ServerHandler } from "@/classes/serverHandler";
-import { Cell } from "@/classes/game/cell";
-import { Unit } from "@/classes/game/unit";
-import { PathFinder } from "@/classes/pathFind/pathFinder";
-import { Indices } from "@/classes/utils/indices";
-import { Validator } from "@/classes/validator";
+import { ServerHandler } from "@/server/serverHandler";
+import { Cell } from "@/game/cell";
+import { Unit } from "@/game/unit";
+import { PathFinder } from "@/pathFind/pathFinder";
+import { Indices } from "@/utils/indices";
+import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
 

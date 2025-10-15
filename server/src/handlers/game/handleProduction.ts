@@ -1,5 +1,5 @@
-import { Building } from "@/classes/game/building";
-import { ServerHandler } from "@/classes/serverHandler";
+import { Building } from "@/game/building";
+import { ServerHandler } from "@/server/serverHandler";
 import { StateManager } from "@/manager/stateManager";
 import { Requirement } from "@/types/production.types";
 import { EntityType } from "@/types/state.types";

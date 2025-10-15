@@ -3,7 +3,7 @@ import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import path from "path";
 
-import { Loader } from "@/classes/imageLoader";
+import { Loader } from "@/utils/imageLoader";
 import { utilsHandler } from "@/handlers/utilsHandler";
 import { handleBuildings } from "@/handlers/game/handleBuildings";
 import { handlePath } from "@/handlers/game/handlePath";

@@ -1,5 +1,5 @@
 import type { ColorType } from "@/types/state.types";
-import { Indices } from "@/classes/utils/indices";
+import { Indices } from "@/utils/indices";
 
 export type Settings = {
   colors: ColorType[];

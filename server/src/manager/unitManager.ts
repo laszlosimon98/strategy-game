@@ -1,5 +1,5 @@
-import { Unit } from "@/classes/game/unit";
-import { ServerHandler } from "@/classes/serverHandler";
+import { Unit } from "@/game/unit";
+import { ServerHandler } from "@/server/serverHandler";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";

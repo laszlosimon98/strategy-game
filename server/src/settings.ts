@@ -1,4 +1,4 @@
-import { Indices } from "@/classes/utils/indices";
+import { Indices } from "@/utils/indices";
 import type { Settings } from "@/types/setting.types";
 
 const MAP_SIZE: number = 80;

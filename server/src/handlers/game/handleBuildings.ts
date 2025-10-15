@@ -1,14 +1,14 @@
 import { Server, Socket } from "socket.io";
-import { ServerHandler } from "@/classes/serverHandler";
-import { Building } from "@/classes/game/building";
-import { Indices } from "@/classes/utils/indices";
-import { Validator } from "@/classes/validator";
+import { ServerHandler } from "@/server/serverHandler";
+import { Building } from "@/game/building";
+import { Indices } from "@/utils/indices";
+import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
-import { getImageNameFromUrl } from "@/classes/utils/utils";
+import { getImageNameFromUrl } from "@/utils/utils";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (

@@ -1,17 +1,18 @@
-import { Building } from "@/classes/game/building";
-import { buildingRegister } from "@/classes/game/buildingRegister";
-import { Cell } from "@/classes/game/cell";
-import { World } from "@/classes/game/world";
-import { ServerHandler } from "@/classes/serverHandler";
-import { Indices } from "@/classes/utils/indices";
-import { getImageNameFromUrl } from "@/classes/utils/utils";
-import { Validator } from "@/classes/validator";
+import { Building } from "@/game/building";
+import { buildingRegister } from "@/game/buildingRegister";
+import { Cell } from "@/game/cell";
+import { World } from "@/game/world";
+import { ServerHandler } from "@/server/serverHandler";
+import { Indices } from "@/utils/indices";
+import { getImageNameFromUrl } from "@/utils/utils";
+import { Validator } from "@/utils/validator";
 import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { BuildingPrices, Buildings } from "@/types/building.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
+import { CellTypeEnum } from "@/enums/cellTypeEnum";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
@@ -50,7 +51,7 @@ export class BuildingManager {
     const i = indices.i;
     const j = indices.j;
 
-    world[i][j].setObstacleType(buildingName);
+    world[i][j].setObstacleType(CellTypeEnum.House);
 
     for (let l = -1; l <= 1; ++l) {
       for (let k = -1; k <= 1; ++k) {
@@ -66,7 +67,7 @@ export class BuildingManager {
     const i = indices.i;
     const j = indices.j;
 
-    world[i][j].setObstacleType(null);
+    world[i][j].setObstacleType(CellTypeEnum.Empty);
 
     for (let l = -1; l <= 1; ++l) {
       for (let k = -1; k <= 1; ++k) {
