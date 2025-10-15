@@ -9,6 +9,7 @@ import {
   StorageType,
 } from "@/types/storage.types";
 import { Server, Socket } from "socket.io";
+import { ReturnMessage } from "@/types/setting.types";
 
 export const handleProduction = (io: Server, socket: Socket) => {
   const hasRequiredMaterials = (
@@ -44,9 +45,15 @@ export const handleProduction = (io: Server, socket: Socket) => {
 
   const produceItem = (room: string, building: Building): void => {
     const category: CategoryType | null = building.getCategory();
-    const item: ProductionItem | null = building.getProductionItem();
+    const item: ProductionItem | null | ReturnMessage = building.produce(
+      io,
+      socket,
+      room
+    );
 
     if (!category || !item) return;
+
+    if (typeof item === "object" && "message" in item) return;
 
     StateManager.updateStorageItem(socket, room, category, item, 1);
   };
@@ -85,8 +92,6 @@ export const handleProduction = (io: Server, socket: Socket) => {
     );
 
     if (!building) return;
-
-    console.log(building.getEntity().data.name);
 
     if (!building.hasRequirements()) {
       produceItem(room, building);

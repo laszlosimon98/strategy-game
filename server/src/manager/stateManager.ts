@@ -18,6 +18,8 @@ import { Indices } from "@/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
+import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { calculateDistanceByIndices } from "@/utils/utils";
 
 export class StateManager {
   private static state: StateType = {};
@@ -151,6 +153,52 @@ export class StateManager {
 
   public static setWorld(room: string, world: Cell[][]): void {
     this.state[room].world = world;
+  }
+
+  public static getClosestCell(objIndices: Indices, cell: Cell[]): Cell | null {
+    if (cell.length === 0) return null;
+
+    let closestCell = cell[0];
+    for (let i = 1; i < cell.length; ++i) {
+      if (
+        calculateDistanceByIndices(cell[i].getIndices(), objIndices) <
+        calculateDistanceByIndices(closestCell.getIndices(), objIndices)
+      ) {
+        closestCell = cell[i];
+      }
+    }
+
+    return closestCell;
+  }
+
+  public static getWorldInRange(
+    room: string,
+    indices: Indices,
+    range: number,
+    obstacle?: CellTypeEnum
+  ): Cell[] {
+    const result: Cell[] = [];
+
+    const world: Cell[][] = this.getWorld(room);
+    const { i, j } = indices;
+
+    for (let l = -range; l <= range; ++l) {
+      for (let k = -range; k <= range; ++k) {
+        if (i + l < settings.mapSize && j + k < settings.mapSize) {
+          const cell: Cell = world[i + l][j + k];
+
+          if (obstacle) {
+            if (cell.getObstacleType() === obstacle) {
+              result.push(cell);
+            }
+          } else {
+            result.push(cell);
+          }
+        }
+      }
+    }
+
+    return result;
   }
 
   // ------------------- Building -------------------

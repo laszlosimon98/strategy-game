@@ -43,13 +43,8 @@ export class BuildingManager {
     return World.getWorld(socket)[xPos][yPos].isBuildAble();
   };
 
-  private static occupyCells(
-    indices: Indices,
-    world: Cell[][],
-    buildingName: string
-  ) {
-    const i = indices.i;
-    const j = indices.j;
+  private static occupyCells(indices: Indices, world: Cell[][]) {
+    const { i, j } = indices;
 
     world[i][j].setObstacleType(CellTypeEnum.House);
 
@@ -64,8 +59,7 @@ export class BuildingManager {
   }
 
   private static restoreCells(indices: Indices, world: Cell[][]) {
-    const i = indices.i;
-    const j = indices.j;
+    const { i, j } = indices;
 
     world[i][j].setObstacleType(CellTypeEnum.Empty);
 
@@ -184,7 +178,7 @@ export class BuildingManager {
 
       building.setOwner(entity.data.owner);
       this.createBuilding(room, socket, state, building);
-      this.occupyCells(entity.data.indices, world, buildingName);
+      this.occupyCells(entity.data.indices, world);
       this.setProduction(entity, building);
 
       return building;

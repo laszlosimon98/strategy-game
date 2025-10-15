@@ -25,6 +25,8 @@ export class World implements MouseHandlerInterface {
 
     this.buildingManager = new BuildingManager();
     this.unitManager = new UnitManager();
+
+    this.handleCommunication();
   }
 
   public init(): void {
@@ -168,5 +170,13 @@ export class World implements MouseHandlerInterface {
 
   public getCameraScroll(): Position {
     return this.camera.getScroll();
+  }
+
+  private handleCommunication(): void {
+    ServerHandler.receiveMessage("game:updateCell", (data: any) => {
+      const { indices, obstacle } = data;
+      const { i, j } = indices;
+      this.world[i][j].setObstacleImage(obstacle);
+    });
   }
 }

@@ -1,9 +1,20 @@
 import type { Position } from "@/types/utils.types";
+import { Indices } from "@/utils/indices";
 
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;
   const y = to.y - from.y;
   const distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  return distance;
+};
+
+export const calculateDistanceByIndices = (
+  from: Indices,
+  to: Indices
+): number => {
+  const i = to.i - from.i;
+  const j = to.j - from.j;
+  const distance = Math.sqrt(Math.pow(i, 2) + Math.pow(j, 2));
   return distance;
 };
 

@@ -1,15 +1,22 @@
+import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { Cell } from "@/game/cell";
 import { Production } from "@/game/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
 import { Requirement } from "@/types/production.types";
+import { ReturnMessage } from "@/types/setting.types";
 import type { EntityType } from "@/types/state.types";
 import { CategoryType, ProductionItem } from "@/types/storage.types";
+import { Server, Socket } from "socket.io";
 
 export class Building implements ProductionBuildingInterface {
-  private entity: EntityType;
-  production: Production | null = null;
+  protected entity: EntityType;
+  protected production: Production | null;
+  protected range: number;
 
   public constructor(entity: EntityType) {
     this.entity = entity;
+    this.production = null;
+    this.range = 0;
   }
 
   public getEntity(): EntityType {
@@ -43,7 +50,11 @@ export class Building implements ProductionBuildingInterface {
     return this.production.getCategory();
   }
 
-  public getProductionItem(): ProductionItem | null {
+  public produce(
+    io: Server,
+    socket: Socket,
+    room: string
+  ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
     return this.production.getProductionItem();
   }
@@ -51,4 +62,11 @@ export class Building implements ProductionBuildingInterface {
   public isProductionBuilding(): boolean {
     return this.production !== null;
   }
+
+  protected sendMessage(
+    io: Server,
+    socket: Socket,
+    closestCell: Cell,
+    obstacleType: CellTypeEnum
+  ): void {}
 }

@@ -1,12 +1,16 @@
-import { Production } from "@/game/production";
 import { Requirement } from "@/types/production.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { ProductionItem } from "@/types/storage.types";
+import { Server, Socket } from "socket.io";
 
 export interface ProductionBuildingInterface {
-  readonly production: Production | null;
   getCooldown: () => number | null;
   getProductionTime: () => number | null;
   getRequirements: () => Requirement | null;
-  getProductionItem: () => ProductionItem | null;
+  produce: (
+    io: Server,
+    socket: Socket,
+    room: string
+  ) => ProductionItem | null | ReturnMessage;
   hasRequirements: () => boolean;
 }

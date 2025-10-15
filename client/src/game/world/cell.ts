@@ -16,7 +16,7 @@ export class Cell {
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
-  private obstacleImage: HTMLImageElement | undefined;
+  private obstacleImage: HTMLImageElement | null = null;
 
   public constructor(indices: Indices, type: string, obstacle?: string) {
     this.indices = indices;
@@ -87,6 +87,16 @@ export class Cell {
 
   public setImage(image: string): void {
     this.image.src = image;
+  }
+
+  public setObstacleImage(image: string | null): void {
+    if (image === null) {
+      this.obstacleImage = null;
+      return;
+    }
+
+    this.obstacleImage = new Image();
+    this.obstacleImage.src = image;
   }
 
   public getCameraPos(): Position {
