@@ -52,9 +52,8 @@ export class BuildingManager {
 
     world[i][j].setObstacleType(buildingName);
 
-    for (let l = 0; l < 2; ++l) {
-      for (let k = 0; k < 2; ++k) {
-        if (l === 1 && l === k) continue;
+    for (let l = -1; l <= 1; ++l) {
+      for (let k = -1; k <= 1; ++k) {
         if (i + l < settings.mapSize && j + k < settings.mapSize) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(true);
@@ -69,9 +68,8 @@ export class BuildingManager {
 
     world[i][j].setObstacleType(null);
 
-    for (let l = 0; l < 2; ++l) {
-      for (let k = 0; k < 2; ++k) {
-        if (l === 1 && l === k) continue;
+    for (let l = -1; l <= 1; ++l) {
+      for (let k = -1; k <= 1; ++k) {
         if (i + l < settings.mapSize && j + k < settings.mapSize) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(false);

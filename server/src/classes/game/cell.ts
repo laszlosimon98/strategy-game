@@ -110,11 +110,11 @@ export class Cell {
   }
 
   public isWalkAble(): boolean {
-    return !this.hasObstacle;
+    return this.obstacleType === null;
   }
 
   public isBuildAble(): boolean {
-    return this.type === "grass" && this.isWalkAble();
+    return this.type === "grass" && !this.hasObstacle;
   }
 
   public equals(other: Cell) {
