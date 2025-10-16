@@ -43,44 +43,6 @@ export class World {
         }
       }
     }
-    // for (let l = 0; l < settings.mapSize; ++l) {
-    //   for (let k = 0; k < settings.mapSize; ++k) {
-    //     const cell: Cell = this.world[l][k];
-    //     const { i, j } = cell.getIndices();
-
-    //     if (i > 0) {
-    //       cell.addNeighbors(this.world[i - 1][j]);
-    //     }
-
-    //     if (i < settings.mapSize - 1) {
-    //       cell.addNeighbors(this.world[i + 1][j]);
-    //     }
-
-    //     if (j > 0) {
-    //       cell.addNeighbors(this.world[i][j - 1]);
-    //     }
-
-    //     if (j < settings.mapSize - 1) {
-    //       cell.addNeighbors(this.world[i][j + 1]);
-    //     }
-
-    //     if (i > 0 && j > 0) {
-    //       cell.addNeighbors(this.world[i - 1][j - 1]);
-    //     }
-
-    //     if (i < settings.mapSize - 1 && j < settings.mapSize - 1) {
-    //       cell.addNeighbors(this.world[i + 1][j + 1]);
-    //     }
-
-    //     if (i > 0 && j < settings.mapSize - 1) {
-    //       cell.addNeighbors(this.world[i - 1][j + 1]);
-    //     }
-
-    //     if (i < settings.mapSize - 1 && j > 0) {
-    //       cell.addNeighbors(this.world[i + 1][j - 1]);
-    //     }
-    //   }
-    // }
   }
 
   private static populateWorld() {
