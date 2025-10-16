@@ -61,7 +61,7 @@ export class Woodcutter extends Building {
   protected sendMessage(io: Server, socket: Socket, closestCell: Cell): void {
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
       indices: closestCell.getIndices(),
-      obstacle: null,
+      obstacle: CellTypeEnum.Empty,
     });
   }
 }

@@ -1,4 +1,5 @@
 import { Camera } from "@/game/camera/camera";
+import { CellTypeEnum } from "@/game/enums/cellTypeEnum";
 import { BuildingManager } from "@/game/world/building/buildingManager";
 import { Cell } from "@/game/world/cell";
 import { UnitManager } from "@/game/world/unit/unitManager";
@@ -31,33 +32,26 @@ export class World implements MouseHandlerInterface {
 
   public init(): void {
     console.log(StateManager.getPlayers());
+
     ServerHandler.receiveMessage(
       "game:createWorld",
-      ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any }) => {
-        for (let row = 0; row < tiles.length; ++row) {
-          this.world.push([]);
-          for (let col = 0; col < tiles[row].length; ++col) {
-            if (obstacles[row][col]) {
-              this.world[row].push(
-                new Cell(
-                  new Indices(row, col),
-                  StateManager.getImages("ground", tiles[row][col]).url,
-                  StateManager.getImages("obstacles", obstacles[row][col]).url
-                )
-              );
-            } else {
-              this.world[row].push(
-                new Cell(
-                  new Indices(row, col),
-                  StateManager.getImages("ground", tiles[row][col]).url
-                )
-              );
-            }
-          }
-        }
+      ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any[][] }) => {
+        this.world = tiles.map((row, i) =>
+          row.map((tile, j) => {
+            const groundImg = StateManager.getImages("ground", tile).url;
+            const obstacle = obstacles[i][j];
+            const obstacleImg =
+              obstacle && obstacle !== CellTypeEnum.Empty
+                ? StateManager.getImages("obstacles", obstacle).url
+                : undefined;
+
+            return new Cell(new Indices(i, j), groundImg, obstacleImg);
+          })
+        );
 
         ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-          this.camera.setScroll(this.world[pos.i][pos.j].getCameraPos());
+          const cell = this.world[pos.i]?.[pos.j];
+          if (cell) this.camera.setScroll(cell.getCameraPos());
         });
 
         this.unitManager.setWorld(this.world);
@@ -173,10 +167,18 @@ export class World implements MouseHandlerInterface {
   }
 
   private handleCommunication(): void {
-    ServerHandler.receiveMessage("game:updateCell", (data: any) => {
-      const { indices, obstacle } = data;
-      const { i, j } = indices;
-      this.world[i][j].setObstacleImage(obstacle);
-    });
+    ServerHandler.receiveMessage(
+      "game:updateCell",
+      ({ indices, obstacle }: { indices: Indices; obstacle: CellTypeEnum }) => {
+        const { i, j } = indices;
+        if (obstacle === CellTypeEnum.Empty) {
+          this.world[i][j].setObstacleImage(CellTypeEnum.Empty);
+        } else {
+          this.world[i][j].setObstacleImage(
+            StateManager.getImages("obstacles", obstacle).url
+          );
+        }
+      }
+    );
   }
 }

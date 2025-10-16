@@ -1,3 +1,4 @@
+import { CellTypeEnum } from "@/game/enums/cellTypeEnum";
 import { canvasWidth, canvasHeight, ctx } from "@/init";
 import { settings } from "@/settings";
 import { Indices } from "@/utils/indices";
@@ -89,8 +90,8 @@ export class Cell {
     this.image.src = image;
   }
 
-  public setObstacleImage(image: string | null): void {
-    if (image === null) {
+  public setObstacleImage(image: string): void {
+    if (image === CellTypeEnum.Empty) {
       this.obstacleImage = null;
       return;
     }
