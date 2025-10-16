@@ -18,44 +18,69 @@ export class World {
   private constructor() {}
 
   private static initNeighbor() {
-    for (let l = 0; l < settings.mapSize; ++l) {
-      for (let k = 0; k < settings.mapSize; ++k) {
-        const cell: Cell = this.world[l][k];
-        const { i, j } = cell.getIndices();
+    const size = settings.mapSize;
+    const dirs = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+      [-1, -1],
+      [1, 1],
+      [-1, 1],
+      [1, -1],
+    ];
 
-        if (i > 0) {
-          cell.addNeighbors(this.world[i - 1][j]);
-        }
+    for (let i = 0; i < size; ++i) {
+      for (let j = 0; j < size; ++j) {
+        const cell = this.world[i][j];
+        for (const [di, dj] of dirs) {
+          const ni = i + di;
+          const nj = j + dj;
 
-        if (i < settings.mapSize - 1) {
-          cell.addNeighbors(this.world[i + 1][j]);
-        }
-
-        if (j > 0) {
-          cell.addNeighbors(this.world[i][j - 1]);
-        }
-
-        if (j < settings.mapSize - 1) {
-          cell.addNeighbors(this.world[i][j + 1]);
-        }
-
-        if (i > 0 && j > 0) {
-          cell.addNeighbors(this.world[i - 1][j - 1]);
-        }
-
-        if (i < settings.mapSize - 1 && j < settings.mapSize - 1) {
-          cell.addNeighbors(this.world[i + 1][j + 1]);
-        }
-
-        if (i > 0 && j < settings.mapSize - 1) {
-          cell.addNeighbors(this.world[i - 1][j + 1]);
-        }
-
-        if (i < settings.mapSize - 1 && j > 0) {
-          cell.addNeighbors(this.world[i + 1][j - 1]);
+          if (ni >= 0 && ni < size && nj >= 0 && nj < size) {
+            cell.addNeighbors(this.world[ni][nj]);
+          }
         }
       }
     }
+    // for (let l = 0; l < settings.mapSize; ++l) {
+    //   for (let k = 0; k < settings.mapSize; ++k) {
+    //     const cell: Cell = this.world[l][k];
+    //     const { i, j } = cell.getIndices();
+
+    //     if (i > 0) {
+    //       cell.addNeighbors(this.world[i - 1][j]);
+    //     }
+
+    //     if (i < settings.mapSize - 1) {
+    //       cell.addNeighbors(this.world[i + 1][j]);
+    //     }
+
+    //     if (j > 0) {
+    //       cell.addNeighbors(this.world[i][j - 1]);
+    //     }
+
+    //     if (j < settings.mapSize - 1) {
+    //       cell.addNeighbors(this.world[i][j + 1]);
+    //     }
+
+    //     if (i > 0 && j > 0) {
+    //       cell.addNeighbors(this.world[i - 1][j - 1]);
+    //     }
+
+    //     if (i < settings.mapSize - 1 && j < settings.mapSize - 1) {
+    //       cell.addNeighbors(this.world[i + 1][j + 1]);
+    //     }
+
+    //     if (i > 0 && j < settings.mapSize - 1) {
+    //       cell.addNeighbors(this.world[i - 1][j + 1]);
+    //     }
+
+    //     if (i < settings.mapSize - 1 && j > 0) {
+    //       cell.addNeighbors(this.world[i + 1][j - 1]);
+    //     }
+    //   }
+    // }
   }
 
   private static populateWorld() {
