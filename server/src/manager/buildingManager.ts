@@ -51,10 +51,10 @@ export class BuildingManager {
 
     for (let l = -1; l <= 1; ++l) {
       for (let k = -1; k <= 1; ++k) {
-        const li = i + l;
+        const il = i + l;
         const jk = j + k;
 
-        if (li >= 0 && li < size && jk >= 0 && jk < size) {
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(true);
         }
@@ -70,10 +70,10 @@ export class BuildingManager {
 
     for (let l = -1; l <= 1; ++l) {
       for (let k = -1; k <= 1; ++k) {
-        const li = i + l;
+        const il = i + l;
         const jk = j + k;
 
-        if (li >= 0 && li < size && jk >= 0 && jk < size) {
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(false);
         }

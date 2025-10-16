@@ -50,7 +50,7 @@ export class World implements MouseHandlerInterface {
         );
 
         ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-          const cell = this.world[pos.i]?.[pos.j];
+          const cell = this.world[pos.i][pos.j];
           if (cell) this.camera.setScroll(cell.getCameraPos());
         });
 
