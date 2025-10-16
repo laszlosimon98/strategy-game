@@ -47,10 +47,14 @@ export class BuildingManager {
     const { i, j } = indices;
 
     world[i][j].setObstacleType(CellTypeEnum.House);
+    const size: number = settings.mapSize;
 
     for (let l = -1; l <= 1; ++l) {
       for (let k = -1; k <= 1; ++k) {
-        if (i + l < settings.mapSize && j + k < settings.mapSize) {
+        const li = i + l;
+        const jk = j + k;
+
+        if (li >= 0 && li < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(true);
         }
@@ -62,10 +66,14 @@ export class BuildingManager {
     const { i, j } = indices;
 
     world[i][j].setObstacleType(CellTypeEnum.Empty);
+    const size: number = settings.mapSize;
 
     for (let l = -1; l <= 1; ++l) {
       for (let k = -1; k <= 1; ++k) {
-        if (i + l < settings.mapSize && j + k < settings.mapSize) {
+        const li = i + l;
+        const jk = j + k;
+
+        if (li >= 0 && li < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
           cell.setObstacle(false);
         }

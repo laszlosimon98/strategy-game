@@ -181,10 +181,14 @@ export class StateManager {
 
     const world: Cell[][] = this.getWorld(room);
     const { i, j } = indices;
+    const size: number = settings.mapSize;
 
     for (let l = -range; l <= range; ++l) {
       for (let k = -range; k <= range; ++k) {
-        if (i + l < settings.mapSize && j + k < settings.mapSize) {
+        const li = i + l;
+        const jk = j + k;
+
+        if (li >= 0 && li < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
 
           if (obstacle) {

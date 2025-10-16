@@ -25,6 +25,7 @@ export class Woodcutter extends Building {
     if (this.handleCellObstacleChange(io, socket, room)) {
       return this.production.getProductionItem();
     } else {
+      console.log("Elfogyott a fa");
       return {
         message: "Nem található fa a közelben",
       };
