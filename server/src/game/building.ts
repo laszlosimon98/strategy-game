@@ -2,6 +2,8 @@ import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Cell } from "@/game/cell";
 import { Production } from "@/game/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
+import { StateManager } from "@/manager/stateManager";
+import { ServerHandler } from "@/server/serverHandler";
 import { Requirement } from "@/types/production.types";
 import { ReturnMessage } from "@/types/setting.types";
 import type { EntityType } from "@/types/state.types";
@@ -63,10 +65,34 @@ export class Building implements ProductionBuildingInterface {
     return this.production !== null;
   }
 
+  protected handleCellObstacleChange(
+    room: string,
+    findType: CellTypeEnum
+  ): Cell | null {
+    const cells: Cell[] = StateManager.getWorldInRange(
+      room,
+      this.entity.data.indices,
+      this.range,
+      findType
+    );
+
+    const closestCell: Cell | null = StateManager.getClosestCell(
+      this.entity.data.indices,
+      cells
+    );
+
+    return closestCell;
+  }
+
   protected sendMessage(
     io: Server,
     socket: Socket,
     closestCell: Cell,
-    obstacleType: CellTypeEnum
-  ): void {}
+    sendType: CellTypeEnum
+  ): void {
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
+      indices: closestCell.getIndices(),
+      obstacle: sendType,
+    });
+  }
 }

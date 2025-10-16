@@ -2,8 +2,6 @@ import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
 import { Production } from "@/game/production";
-import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";
@@ -21,40 +19,16 @@ export class Forester extends Building {
     socket: Socket,
     room: string
   ): ProductionItem | null | ReturnMessage {
-    this.handleCellObstacleChange(io, socket, room);
-    return null;
-  }
-
-  private handleCellObstacleChange(
-    io: Server,
-    socket: Socket,
-    room: string
-  ): boolean {
-    const cells: Cell[] = StateManager.getWorldInRange(
+    const closestCell: Cell | null = this.handleCellObstacleChange(
       room,
-      this.entity.data.indices,
-      this.range,
       CellTypeEnum.Empty
     );
 
-    const closestCell: Cell | null = StateManager.getClosestCell(
-      this.entity.data.indices,
-      cells
-    );
-
-    if (closestCell === null) {
-      return false;
+    if (closestCell) {
+      closestCell.setObstacleType(CellTypeEnum.Tree);
+      this.sendMessage(io, socket, closestCell, CellTypeEnum.Tree);
     }
 
-    closestCell.setObstacleType(CellTypeEnum.Tree);
-    this.sendMessage(io, socket, closestCell);
-    return true;
-  }
-
-  protected sendMessage(io: Server, socket: Socket, closestCell: Cell): void {
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
-      indices: closestCell.getIndices(),
-      obstacle: CellTypeEnum.Tree,
-    });
+    return null;
   }
 }

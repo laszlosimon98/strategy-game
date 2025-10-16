@@ -2,8 +2,6 @@ import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
 import { Production } from "@/game/production";
-import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";
@@ -22,46 +20,20 @@ export class Woodcutter extends Building {
     room: string
   ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
-    if (this.handleCellObstacleChange(io, socket, room)) {
-      return this.production.getProductionItem();
-    } else {
-      console.log("Elfogyott a fa");
-      return {
-        message: "Nem található fa a közelben",
-      };
-    }
-  }
 
-  private handleCellObstacleChange(
-    io: Server,
-    socket: Socket,
-    room: string
-  ): boolean {
-    const cells: Cell[] = StateManager.getWorldInRange(
+    const closestCell: Cell | null = this.handleCellObstacleChange(
       room,
-      this.entity.data.indices,
-      this.range,
       CellTypeEnum.Tree
     );
 
-    const closestCell: Cell | null = StateManager.getClosestCell(
-      this.entity.data.indices,
-      cells
-    );
-
-    if (closestCell === null) {
-      return false;
+    if (closestCell) {
+      closestCell.setObstacleType(CellTypeEnum.Empty);
+      this.sendMessage(io, socket, closestCell, CellTypeEnum.Empty);
+      return this.production.getProductionItem();
     }
 
-    closestCell.setObstacleType(CellTypeEnum.Empty);
-    this.sendMessage(io, socket, closestCell);
-    return true;
-  }
-
-  protected sendMessage(io: Server, socket: Socket, closestCell: Cell): void {
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
-      indices: closestCell.getIndices(),
-      obstacle: CellTypeEnum.Empty,
-    });
+    return {
+      message: "Nem található fa a közelben",
+    };
   }
 }
