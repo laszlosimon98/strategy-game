@@ -8,6 +8,8 @@ import { Indices } from "@/utils/indices";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { Tree } from "@/game/produceable/tree";
+import { Stone } from "@/game/produceable/stone";
 
 export class World {
   private static world: Cell[][] = [];
@@ -66,9 +68,11 @@ export class World {
         if (treeNoise >= 50 || treeNoise <= -50) {
           cell.setObstacle(true);
           cell.setObstacleType(CellTypeEnum.Tree);
+          cell.setInstance(new Tree());
         } else if (stoneNoise >= 60 || stoneNoise <= -80) {
           cell.setObstacle(true);
           cell.setObstacleType(CellTypeEnum.Stone);
+          cell.setInstance(new Stone());
         }
       }
     }
@@ -83,19 +87,18 @@ export class World {
         const xyAxis: Cell =
           this.world[settings.mapSize - i - 1][settings.mapSize - j - 1];
 
-        xAxis.setType(originalCell.getType());
-        xAxis.setObstacleType(originalCell.getObstacleType());
-        xAxis.setObstacle(originalCell.cellHasObstacle());
-
-        yAxis.setType(originalCell.getType());
-        yAxis.setObstacleType(originalCell.getObstacleType());
-        yAxis.setObstacle(originalCell.cellHasObstacle());
-
-        xyAxis.setType(originalCell.getType());
-        xyAxis.setObstacleType(originalCell.getObstacleType());
-        xyAxis.setObstacle(originalCell.cellHasObstacle());
+        this.mirrorCell(originalCell, xAxis);
+        this.mirrorCell(originalCell, yAxis);
+        this.mirrorCell(originalCell, xyAxis);
       }
     }
+  }
+
+  private static mirrorCell(originalCell: Cell, mirroredCell: Cell) {
+    mirroredCell.setType(originalCell.getType());
+    mirroredCell.setObstacleType(originalCell.getObstacleType());
+    mirroredCell.setObstacle(originalCell.cellHasObstacle());
+    mirroredCell.setInstance(originalCell.getInstance());
   }
 
   public static createWorld(): Cell[][] {

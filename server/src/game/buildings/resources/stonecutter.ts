@@ -1,21 +1,21 @@
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
+import { Stone } from "@/game/produceable/stone";
 import { Production } from "@/game/production";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";
+import { Instance } from "@/types/world.types";
 import { Server, Socket } from "socket.io";
 
 export class Stonecutter extends Building {
-  private miningAmount: number;
   public constructor(building: EntityType) {
     super(building);
     this.production = new Production(7000, 8000, "materials", "stone");
     this.range = 3;
-    this.miningAmount = 4;
   }
 
   public produce(
@@ -30,14 +30,20 @@ export class Stonecutter extends Building {
       CellTypeEnum.Stone
     );
 
-    if (closestCell && this.miningAmount > 1) {
-      this.miningAmount--;
+    if (!closestCell) return null;
+    const cellInstance: Instance = closestCell.getInstance();
+    if (!cellInstance || (cellInstance && !(cellInstance instanceof Stone)))
+      return null;
+
+    if (closestCell && cellInstance.getAmount() > 1) {
+      cellInstance.decrease();
       return this.production.getProductionItem();
     }
 
-    if (closestCell && this.miningAmount <= 1) {
-      this.miningAmount = 3;
+    if (closestCell && cellInstance.getAmount() <= 1) {
       closestCell.setObstacleType(CellTypeEnum.Empty);
+      closestCell.setObstacle(false);
+      closestCell.setInstance(null);
       this.sendMessage(io, socket, closestCell, CellTypeEnum.Empty);
       return this.production.getProductionItem();
     }

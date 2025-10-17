@@ -1,5 +1,5 @@
 import { Indices } from "@/utils/indices";
-import type { TileType } from "@/types/world.types";
+import type { Instance, TileType } from "@/types/world.types";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 
 export class Cell {
@@ -18,9 +18,12 @@ export class Cell {
   private hasObstacle: boolean;
   private obstacleType: CellTypeEnum;
 
+  private instance: Instance;
+
   public constructor(indices: Indices) {
     this.indices = indices;
     this.obstacleType = CellTypeEnum.Empty;
+    this.instance = null;
 
     this.g = 0;
     this.h = 0;
@@ -109,6 +112,14 @@ export class Cell {
 
   public getNeighbors(): Cell[] {
     return this.neighbors;
+  }
+
+  public getInstance(): Instance {
+    return this.instance;
+  }
+
+  public setInstance(instance: Instance): void {
+    this.instance = instance;
   }
 
   public isWalkAble(): boolean {
