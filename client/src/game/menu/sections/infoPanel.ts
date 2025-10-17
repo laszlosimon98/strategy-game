@@ -16,7 +16,7 @@ export class InfoPanel extends Section {
   private deleteButton: Button;
   private image: HTMLImageElement;
   private displaySelectedObjectName: Text;
-  private infoPanelData: Soldier | Building | undefined;
+  private infoPanelData: Soldier | Building | null = null;
 
   private barracksPanel: BarracksPanel;
   private soldierPanel: SoldierPanel;

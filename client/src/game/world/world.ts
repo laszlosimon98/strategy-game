@@ -1,3 +1,4 @@
+import { MainMenuState } from "@/enums/gameMenuState";
 import { Camera } from "@/game/camera/camera";
 import { CellTypeEnum } from "@/game/enums/cellTypeEnum";
 import { BuildingManager } from "@/game/world/building/buildingManager";
@@ -94,6 +95,8 @@ export class World implements MouseHandlerInterface {
       new Position(this.mousePos.x, this.mousePos.y),
       this.getCameraScroll()
     );
+
+    StateManager.setInfoPanelData(null);
 
     if (this.isActionInsideOfTheMap(indices)) {
       this.buildingManager.handleLeftClick(

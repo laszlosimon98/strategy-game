@@ -12,7 +12,7 @@ export class SoldierPanel extends Section {
   private defaultHealthText: Text;
   private separatorText: Text;
   private healthText: Text;
-  private infoPanelData: Soldier | Building | undefined;
+  private infoPanelData: Soldier | Building | null = null;
 
   constructor(pos: Position, dim: Dimension) {
     super(pos, dim);

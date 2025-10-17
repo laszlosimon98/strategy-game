@@ -69,7 +69,7 @@ export class StateManager {
       host: false,
     },
     infoPanel: {
-      data: undefined,
+      data: null,
     },
     game: {
       worldSize: 15, // Ennek majd a szerverről kell jönnie
@@ -169,11 +169,11 @@ export class StateManager {
 
   // ------------------- InfoPanel -------------------
 
-  public static getInfoPanelData(): Building | Soldier | undefined {
+  public static getInfoPanelData(): Building | Soldier | null {
     return this.state.infoPanel.data;
   }
 
-  public static setInfoPanelData(data: Building | Soldier): void {
+  public static setInfoPanelData(data: Building | Soldier | null): void {
     this.state.infoPanel.data = data;
   }
 

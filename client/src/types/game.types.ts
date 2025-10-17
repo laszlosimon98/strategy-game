@@ -100,7 +100,7 @@ type PlayerType = {
 
 type InfoType = {
   infoPanel: {
-    data: Building | Soldier | undefined;
+    data: Building | Soldier | null;
   };
 };
 

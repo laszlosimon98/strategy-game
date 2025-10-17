@@ -16,8 +16,6 @@ export class Soldier extends Unit {
   protected attackTimer: Timer;
   private rangeIndicator: RangeIndicator;
 
-  // private visionIndicator: RangeIndicator;
-
   private opponent: Soldier | undefined;
 
   constructor(
@@ -41,20 +39,15 @@ export class Soldier extends Unit {
       ),
       this.properties.range
     );
-
-    // this.visionIndicator = new RangeIndicator(
-    //   new Position(
-    //     this.renderPos.x + settings.size.unit.width / 2,
-    //     this.renderPos.y + settings.size.unit.height - settings.size.unit.height / 4
-    //   ),
-    //   Math.max(this.properties.range, 5),
-    //   state.game.players[this.entity.data.owner].color
-    // );
   }
 
   public draw(): void {
-    this.rangeIndicator.draw();
-    // this.visionIndicator.draw();
+    if (
+      StateManager.getInfoPanelData()?.getEntity().data.id ===
+      this.entity.data.id
+    ) {
+      this.rangeIndicator.draw();
+    }
     super.draw();
 
     if (this.properties.health < this.unitHealth || this.isHovered) {
@@ -74,13 +67,6 @@ export class Soldier extends Unit {
           settings.size.unit.height / 4
       )
     );
-
-    // this.visionIndicator.update(
-    //   new Position(
-    //     this.renderPos.x + settings.size.unit.width / 2,
-    //     this.renderPos.y + settings.size.unit.height - settings.size.unit.height / 4
-    //   )
-    // );
   }
 
   private attack(): void {
