@@ -65,17 +65,10 @@ export class World implements MouseHandlerInterface {
     this.world.forEach((tiles) => {
       tiles.forEach((tile) => {
         tile.draw();
-        tile.drawObstacles();
       });
     });
     this.unitManager.draw();
     this.buildingManager.draw();
-
-    this.world.forEach((tiles) => {
-      tiles.forEach((tile) => {
-        tile.drawObstacles();
-      });
-    });
   }
 
   public update(dt: number, mousePos: Position, key: string): void {

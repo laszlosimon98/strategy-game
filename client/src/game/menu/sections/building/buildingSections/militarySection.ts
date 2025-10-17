@@ -8,7 +8,6 @@ import { Position } from "@/utils/position";
 export class MilitarySection extends Section {
   private ironSmelter: LabelButton;
   private weaponSmith: LabelButton;
-  private toolSmith: LabelButton;
   private barracks: LabelButton;
   private guardHouse: LabelButton;
 
@@ -40,23 +39,8 @@ export class MilitarySection extends Section {
       }
     );
 
-    this.toolSmith = new LabelButton(
-      new Position(pos.x, pos.y + settings.size.item),
-      new Dimension(settings.size.item, settings.size.item),
-      StateManager.getImages("buildings", "toolsmith"),
-      "empty",
-      {
-        hasTooltip: true,
-        hasPrice: true,
-        type: "house",
-      }
-    );
-
     this.barracks = new LabelButton(
-      new Position(
-        pos.x + settings.size.item + settings.offset.item,
-        pos.y + settings.size.item
-      ),
+      new Position(pos.x, pos.y + settings.size.item),
       new Dimension(settings.size.item, settings.size.item),
       StateManager.getImages("buildings", "barracks"),
       "empty",
@@ -84,7 +68,6 @@ export class MilitarySection extends Section {
 
     this.labelbuttons.push(this.ironSmelter);
     this.labelbuttons.push(this.weaponSmith);
-    this.labelbuttons.push(this.toolSmith);
     this.labelbuttons.push(this.barracks);
     this.labelbuttons.push(this.guardHouse);
   }
