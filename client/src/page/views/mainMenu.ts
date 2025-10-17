@@ -7,7 +7,7 @@ import { settings } from "@/settings";
 
 export class MainMenu extends Page {
   private newGame: Button;
-  private description: Button;
+  // private description: Button;
   private statistic: Button;
   private login: Button;
   private registration: Button;
@@ -47,13 +47,13 @@ export class MainMenu extends Page {
       () => StateManager.setPageState(PageState.NewGame)
     );
 
-    this.description = new Button(
-      settings.pos.mainMenu.description,
-      settings.size.button,
-      StateManager.getImages("ui", "plate"),
-      "description",
-      () => StateManager.setPageState(PageState.Description)
-    );
+    // this.description = new Button(
+    //   settings.pos.mainMenu.description,
+    //   settings.size.button,
+    //   StateManager.getImages("ui", "plate"),
+    //   "description",
+    //   () => StateManager.setPageState(PageState.Description)
+    // );
 
     this.statistic = new Button(
       settings.pos.mainMenu.statistic,
@@ -64,7 +64,7 @@ export class MainMenu extends Page {
     );
 
     this.buttons.push(this.newGame);
-    this.buttons.push(this.description);
+    // this.buttons.push(this.description);
     this.buttons.push(this.statistic);
     this.buttons.push(this.login);
     this.buttons.push(this.registration);
