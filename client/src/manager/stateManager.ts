@@ -275,6 +275,10 @@ export class StateManager {
     BuildingManager.setBuildingPrices(prices);
   }
 
+  public static destroyBuilding(entity: EntityType): void {
+    BuildingManager.destroyBuilding(entity, this.state);
+  }
+
   // ------------------- Unit -------------------
 
   public static createUnit(id: string, unit: Unit): void {
@@ -295,5 +299,9 @@ export class StateManager {
 
   public static findSoldier(entity: EntityType): Soldier {
     return UnitManager.findSoldier(this.state, entity);
+  }
+
+  public static unitDies(entity: EntityType): void {
+    UnitManager.unitDies(this.state, entity);
   }
 }

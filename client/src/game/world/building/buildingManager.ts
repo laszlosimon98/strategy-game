@@ -91,16 +91,17 @@ export class BuildingManager extends Manager<Building> {
     this.setObjectPosition(this.fakeHouse, this.pos);
   }
 
-  private destroy(id: string, indices: Indices): void {
-    const buildings = StateManager.getBuildings(id);
+  private destroy(id: string, entity: EntityType): void {
+    StateManager.destroyBuilding(entity);
+    // const buildings = StateManager.getBuildings(id);
 
-    for (let i = buildings.length - 1; i >= 0; --i) {
-      const buildingIndices = buildings[i].getIndices();
+    // for (let i = buildings.length - 1; i >= 0; --i) {
+    //   const buildingIndices = buildings[i].getIndices();
 
-      if (buildingIndices.i === indices.i && buildingIndices.j === indices.j) {
-        buildings.splice(i, 1);
-      }
-    }
+    //   if (buildingIndices.i === indices.i && buildingIndices.j === indices.j) {
+    //     buildings.splice(i, 1);
+    //   }
+    // }
   }
 
   private resetStates(): void {
@@ -131,8 +132,8 @@ export class BuildingManager extends Manager<Building> {
 
     ServerHandler.receiveMessage(
       "game:destroy",
-      ({ id, indices }: { id: string; indices: Indices }) => {
-        this.destroy(id, indices);
+      ({ id, entity }: { id: string; entity: EntityType }) => {
+        this.destroy(id, entity);
       }
     );
   }

@@ -10,7 +10,7 @@ import { ServerHandler } from "@/server/serverHandler";
 import type { TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { convertIsometricCoordsToCartesianCoords } from "@/utils/utils";
+import { convertIsometricCoordsToCartesianCoords, ySort } from "@/utils/utils";
 
 export class World implements MouseHandlerInterface {
   private mousePos: Position;

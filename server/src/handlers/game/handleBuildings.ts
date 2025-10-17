@@ -69,7 +69,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
-  const destroy = (indices: Indices): void => {
+  const destroy = (entity: EntityType): void => {
+    const indices: Indices = entity.data.indices;
     if (!Validator.validateIndices(indices)) {
       return;
     }
@@ -83,7 +84,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     if (status === "completed") {
       ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
         id: socket.id,
-        indices,
+        entity,
       });
     }
 

@@ -37,4 +37,11 @@ export class UnitManager {
 
     return units.find((unit) => unit.getEntity().data.id === id) as Soldier;
   }
+
+  public static unitDies(state: StateType, entity: EntityType): void {
+    state.game.players[entity.data.owner].units = this.getSoldiers(
+      state,
+      entity.data.owner
+    ).filter((unit) => unit.getEntity().data.id !== entity.data.id);
+  }
 }

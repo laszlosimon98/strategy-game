@@ -1,5 +1,6 @@
 import type { Building } from "@/game/world/building/building";
 import { PlayerManager } from "@/manager/playerManager";
+import { ServerHandler } from "@/server/serverHandler";
 import type { BuildingPrices } from "@/types/building.types";
 import type { EntityType, ImageItemType, StateType } from "@/types/game.types";
 import { getImageNameFromUrl } from "@/utils/utils";
@@ -63,5 +64,13 @@ export class BuildingManager {
 
   public static getBuildingPrices(): BuildingPrices {
     return this.buildingPrices;
+  }
+
+  public static destroyBuilding(entity: EntityType, state: StateType): void {
+    const id: string = ServerHandler.getId();
+
+    state.game.players[id].buildings = this.getBuildings(state, id).filter(
+      (building) => building.getEntity().data.id !== entity.data.id
+    );
   }
 }

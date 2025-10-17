@@ -112,7 +112,7 @@ export class InfoPanel extends Section {
       StateManager.setGameMenuState(StateManager.getPrevMenuState());
       ServerHandler.sendMessage(
         "game:destroy",
-        StateManager.getInfoPanelData()?.getIndices()
+        StateManager.getInfoPanelData()?.getEntity()
       );
     }
 

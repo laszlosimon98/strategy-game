@@ -10,7 +10,6 @@ import {
   calculateDistance,
   isometricToCartesian,
   getImageNameFromUrl,
-  removeElementFromArray,
 } from "@/utils/utils";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
@@ -239,10 +238,7 @@ export class UnitManager extends Manager<Unit> {
     ServerHandler.receiveMessage(
       "game:unitDies",
       ({ unit, opponent }: { unit: EntityType; opponent: EntityType }) => {
-        const { owner } = opponent.data;
-        const units = StateManager.getSoldiers(owner);
-        removeElementFromArray(units, StateManager.findSoldier(opponent));
-
+        StateManager.unitDies(opponent);
         ServerHandler.sendMessage("game:unitStopAttacking", unit);
       }
     );
