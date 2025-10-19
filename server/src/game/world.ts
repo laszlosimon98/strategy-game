@@ -179,13 +179,18 @@ export class World {
     const updatedCells: Territory[] = [];
 
     this.updateCell(socket, building, range, (cell: Cell) => {
-      cell.setOwner(owner);
-      cell.setTowerInfluence(true);
+      if (
+        !cell.getOwner() ||
+        cell.getOwner() === building.getEntity().data.owner
+      ) {
+        cell.setOwner(owner);
+        cell.setTowerInfluence(true);
 
-      updatedCells.push({
-        indices: cell.getIndices(),
-        owner,
-      });
+        updatedCells.push({
+          indices: cell.getIndices(),
+          owner,
+        });
+      }
     });
 
     return updatedCells;
