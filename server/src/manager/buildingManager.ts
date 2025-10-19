@@ -170,7 +170,10 @@ export class BuildingManager {
   ): Building | ReturnMessage {
     const { i, j } = entity.data.indices;
 
-    if (!this.isPossibleToBuild(i, j, socket)) {
+    if (
+      !this.isPossibleToBuild(i, j, socket) ||
+      !World.isCellInTerritory(socket, entity)
+    ) {
       return { message: "A kiválaszott helyre nem lehet építeni!" };
     }
 

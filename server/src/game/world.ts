@@ -13,6 +13,7 @@ import { Stone } from "@/game/produceable/stone";
 import { Territory, TileType } from "@/types/world.types";
 import { Building } from "@/game/building";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
+import { EntityType } from "@/types/state.types";
 
 export class World {
   private static world: Cell[][] = [];
@@ -178,5 +179,12 @@ export class World {
     );
 
     return obstacles;
+  }
+
+  public static isCellInTerritory(socket: Socket, entity: EntityType): boolean {
+    const { i, j } = entity.data.indices;
+    const cells: Cell[][] = this.getWorld(socket);
+
+    return cells[i][j].getOwner() === entity.data.owner;
   }
 }

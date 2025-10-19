@@ -81,6 +81,9 @@ export const handleStart = (io: Server, socket: Socket) => {
       },
     };
 
+    const { i, j } = indices;
+    World.getWorld(socket)[i][j].setOwner(playerId);
+
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
       entity
