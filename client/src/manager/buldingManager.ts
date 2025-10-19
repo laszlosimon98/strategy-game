@@ -67,10 +67,9 @@ export class BuildingManager {
   }
 
   public static destroyBuilding(entity: EntityType, state: StateType): void {
-    const id: string = ServerHandler.getId();
-
-    state.game.players[id].buildings = this.getBuildings(state, id).filter(
-      (building) => building.getEntity().data.id !== entity.data.id
-    );
+    state.game.players[entity.data.owner].buildings = this.getBuildings(
+      state,
+      entity.data.owner
+    ).filter((building) => building.getEntity().data.id !== entity.data.id);
   }
 }
