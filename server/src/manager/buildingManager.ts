@@ -151,7 +151,7 @@ export class BuildingManager {
 
       building.setOwner(entity.data.owner);
       this.createBuilding(room, socket, state, building);
-      World.occupyCells(socket, entity);
+      World.occupyCells(socket, building);
       this.setProduction(entity, building);
 
       return building;
@@ -214,7 +214,7 @@ export class BuildingManager {
       building
     );
 
-    World.restoreCells(socket, entity);
+    World.restoreCells(socket, building);
 
     return {
       status: "completed",

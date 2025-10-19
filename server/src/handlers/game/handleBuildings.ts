@@ -99,8 +99,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         entity,
       });
 
-      console.log(restoredCells);
-
       if (restoredCells && restoredCells.length > 0) {
         ServerHandler.sendMessageToEveryOne(
           io,
