@@ -87,8 +87,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
   };
 
   const destroy = (entity: EntityType): void => {
-    const indices: Indices = entity.data.indices;
-    if (!Validator.validateIndices(indices)) {
+    if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
 
@@ -96,7 +95,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       status,
       message,
     }: { status: "completed" | "failed" } & ReturnMessage =
-      StateManager.destroyBuilding(socket, indices);
+      StateManager.destroyBuilding(socket, entity);
 
     if (status === "completed") {
       ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {

@@ -200,48 +200,43 @@ export class BuildingManager {
 
   public static destroy(
     socket: Socket,
-    indices: Indices,
+    entity: EntityType,
     state: StateType
   ): { status: "completed" | "failed" } & ReturnMessage {
     const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = World.getWorld(socket);
-    const i = indices.i;
-    const j = indices.j;
+    const { i, j } = entity.data.indices;
 
-    if (world[i][j].cellHasObstacle()) {
-      const buildings: Building[] = this.getBuildings(room, socket, state);
-
-      for (let index = buildings.length - 1; index >= 0; --index) {
-        const building: Building = buildings[index];
-        const buildingIndices: Indices = building.getEntity().data.indices;
-
-        if (buildingIndices.i === i && buildingIndices.j === j) {
-          if (
-            !Validator.canDemolishBuilding(
-              socket,
-              building.getEntity().data.owner
-            )
-          ) {
-            return {
-              status: "failed",
-              message: "Sikertelen épület elbontás!",
-            };
-          }
-
-          this.destroyBuilding(room, socket, state, building);
-        }
-      }
-
-      this.restoreCells(indices, world);
-
-      return {
-        status: "completed",
-        message: "Épület sikeresen elbontva!",
-      };
+    if (!world[i][j].cellHasObstacle()) {
+      return { status: "failed", message: "Sikertelen épület elbontás!" };
     }
+
+    const building: Building | undefined = this.getBuildingByEntity(
+      room,
+      socket,
+      state,
+      entity
+    );
+
+    if (!building) {
+      return { status: "failed", message: "Sikertelen épület elbontás!" };
+    }
+
+    if (
+      !Validator.canPlayerDemolishOwnBuilding(
+        socket,
+        building.getEntity().data.owner
+      )
+    ) {
+      return { status: "failed", message: "Sikertelen épület elbontás!" };
+    }
+
+    this.destroyBuilding(room, socket, state, building);
+    this.restoreCells(entity.data.indices, world);
+
     return {
-      status: "failed",
-      message: "Sikertelen épület elbontás!",
+      status: "completed",
+      message: "Épület sikeresen elbontva!",
     };
   }
 

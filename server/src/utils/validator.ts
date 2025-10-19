@@ -15,7 +15,10 @@ export class Validator {
     );
   }
 
-  public static canDemolishBuilding(socket: Socket, owner: string): boolean {
+  public static canPlayerDemolishOwnBuilding(
+    socket: Socket,
+    owner: string
+  ): boolean {
     return socket.id === owner;
   }
 }

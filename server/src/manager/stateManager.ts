@@ -241,9 +241,9 @@ export class StateManager {
 
   public static destroyBuilding(
     socket: Socket,
-    indices: Indices
+    entity: EntityType
   ): { status: "completed" | "failed" } & ReturnMessage {
-    return BuildingManager.destroy(socket, indices, this.state);
+    return BuildingManager.destroy(socket, entity, this.state);
   }
 
   public static getBuidingPrices(): BuildingPrices {
