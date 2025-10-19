@@ -97,7 +97,7 @@ export class BuildingManager extends Manager<Building> {
     const world: Cell[][] = StateManager.getWorld();
     const { i, j } = indices;
 
-    if (world[i][j].getOwner() === entity.data.owner) {
+    if (world[i][j].getOwner() === entity.data.owner && world[i][j].isEmpty()) {
       this.fakeHouse.setBuilding(entity);
       this.setObjectPosition(this.fakeHouse, this.pos);
     }

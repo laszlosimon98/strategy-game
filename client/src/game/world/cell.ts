@@ -123,6 +123,10 @@ export class Cell {
     this.obstacleImage.src = image;
   }
 
+  public isEmpty(): boolean {
+    return this.obstacleImage === null;
+  }
+
   public getCameraPos(): Position {
     return this.cameraPos;
   }
