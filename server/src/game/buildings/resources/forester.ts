@@ -11,17 +11,16 @@ import { Server, Socket } from "socket.io";
 export class Forester extends Building {
   public constructor(building: EntityType) {
     super(building);
-    this.production = new Production(100, 120, "", "");
+    this.production = new Production(10000, 12000, "", "");
     this.range = 4;
   }
 
   public produce(
     io: Server,
-    socket: Socket,
-    room: string
+    socket: Socket
   ): ProductionItem | null | ReturnMessage {
     const closestCell: Cell | null = this.handleCellObstacleChange(
-      room,
+      socket,
       CellTypeEnum.Empty
     );
 

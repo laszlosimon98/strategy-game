@@ -71,7 +71,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
 
     if (unit) {
-      const world: Cell[][] = World.getWorld(socket);
+      const world: Cell[][] = StateManager.getWorld(socket);
 
       if (!world[next.i][next.j].isWalkAble()) {
         const indices: Indices[] = PathFinder.getPath(

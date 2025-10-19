@@ -18,13 +18,12 @@ export class Woodcutter extends Building {
 
   public produce(
     io: Server,
-    socket: Socket,
-    room: string
+    socket: Socket
   ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
 
     const closestCell: Cell | null = this.handleCellObstacleChange(
-      room,
+      socket,
       CellTypeEnum.Tree
     );
 

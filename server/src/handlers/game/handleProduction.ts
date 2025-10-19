@@ -47,8 +47,7 @@ export const handleProduction = (io: Server, socket: Socket) => {
     const category: CategoryType | null = building.getCategory();
     const item: ProductionItem | null | ReturnMessage = building.produce(
       io,
-      socket,
-      room
+      socket
     );
 
     if (!category || !item) return;

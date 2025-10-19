@@ -9,10 +9,11 @@ import { Validator } from "@/utils/validator";
 import { StateManager } from "@/manager/stateManager";
 import { settings } from "@/settings";
 import { BuildingPrices, Buildings } from "@/types/building.types";
-import { ReturnMessage } from "@/types/setting.types";
+import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { GuardHouse } from "@/game/buildings/military/guardhouse";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
@@ -40,46 +41,8 @@ export class BuildingManager {
     yPos: number,
     socket: Socket
   ): boolean => {
-    return World.getWorld(socket)[xPos][yPos].isBuildAble();
+    return StateManager.getWorld(socket)[xPos][yPos].isBuildAble();
   };
-
-  private static occupyCells(indices: Indices, world: Cell[][]) {
-    const { i, j } = indices;
-
-    world[i][j].setObstacleType(CellTypeEnum.House);
-    const size: number = settings.mapSize;
-
-    for (let l = -1; l <= 1; ++l) {
-      for (let k = -1; k <= 1; ++k) {
-        const il = i + l;
-        const jk = j + k;
-
-        if (il >= 0 && il < size && jk >= 0 && jk < size) {
-          const cell: Cell = world[i + l][j + k];
-          cell.setObstacle(true);
-        }
-      }
-    }
-  }
-
-  private static restoreCells(indices: Indices, world: Cell[][]) {
-    const { i, j } = indices;
-
-    world[i][j].setObstacleType(CellTypeEnum.Empty);
-    const size: number = settings.mapSize;
-
-    for (let l = -1; l <= 1; ++l) {
-      for (let k = -1; k <= 1; ++k) {
-        const il = i + l;
-        const jk = j + k;
-
-        if (il >= 0 && il < size && jk >= 0 && jk < size) {
-          const cell: Cell = world[i + l][j + k];
-          cell.setObstacle(false);
-        }
-      }
-    }
-  }
 
   private static createBuilding(
     room: string,
@@ -181,7 +144,6 @@ export class BuildingManager {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
     if (this.hasMaterialsToBuild(socket, room, buildingName as Buildings)) {
-      const world: Cell[][] = World.getWorld(socket);
       const building: Building = this.creator<Building>(
         buildingRegister[entity.data.name],
         entity
@@ -189,7 +151,7 @@ export class BuildingManager {
 
       building.setOwner(entity.data.owner);
       this.createBuilding(room, socket, state, building);
-      this.occupyCells(entity.data.indices, world);
+      World.occupyCells(socket, entity);
       this.setProduction(entity, building);
 
       return building;
@@ -202,13 +164,19 @@ export class BuildingManager {
     socket: Socket,
     entity: EntityType,
     state: StateType
-  ): { status: "completed" | "failed" } & ReturnMessage {
+  ): DestroyBuildingResponse {
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const world: Cell[][] = World.getWorld(socket);
+    const world: Cell[][] = StateManager.getWorld(socket);
     const { i, j } = entity.data.indices;
 
+    const failedMessage: DestroyBuildingResponse = {
+      status: "failed",
+      message: "Sikertelen épület elbontás!",
+      restoredCells: [],
+    };
+
     if (!world[i][j].cellHasObstacle()) {
-      return { status: "failed", message: "Sikertelen épület elbontás!" };
+      return failedMessage;
     }
 
     const building: Building | undefined = this.getBuildingByEntity(
@@ -218,25 +186,40 @@ export class BuildingManager {
       entity
     );
 
-    if (!building) {
-      return { status: "failed", message: "Sikertelen épület elbontás!" };
-    }
-
     if (
-      !Validator.canPlayerDemolishOwnBuilding(
-        socket,
-        building.getEntity().data.owner
-      )
+      !building ||
+      (building &&
+        !Validator.canPlayerDemolishOwnBuilding(
+          socket,
+          building.getEntity().data.owner
+        ))
     ) {
-      return { status: "failed", message: "Sikertelen épület elbontás!" };
+      return failedMessage;
     }
-
     this.destroyBuilding(room, socket, state, building);
-    this.restoreCells(entity.data.indices, world);
+
+    World.markCellToRestoreOwner(socket, building);
+
+    const guardHouses: Building[] = StateManager.getBuildings(
+      room,
+      socket
+    ).filter((building) => building instanceof GuardHouse);
+
+    guardHouses.forEach((guardHouse) =>
+      World.updateTerritory(socket, guardHouse)
+    );
+
+    const restoredCells = World.restoreCellsWithoutTowerInfluence(
+      socket,
+      building
+    );
+
+    World.restoreCells(socket, entity);
 
     return {
       status: "completed",
       message: "Épület sikeresen elbontva!",
+      restoredCells,
     };
   }
 

@@ -1,11 +1,10 @@
 import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
 import { Building } from "@/game/building";
-import { Indices } from "@/utils/indices";
 import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
-import { ReturnMessage } from "@/types/setting.types";
+import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
 import { getImageNameFromUrl } from "@/utils/utils";
@@ -91,10 +90,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const {
-      status,
-      message,
-    }: { status: "completed" | "failed" } & ReturnMessage =
+    const { status, message, restoredCells }: DestroyBuildingResponse =
       StateManager.destroyBuilding(socket, entity);
 
     if (status === "completed") {
@@ -102,6 +98,19 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         id: socket.id,
         entity,
       });
+
+      console.log(restoredCells);
+
+      if (restoredCells && restoredCells.length > 0) {
+        ServerHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:updateTerritory",
+          {
+            data: restoredCells,
+          }
+        );
+      }
     }
 
     ServerHandler.sendMessageToSender(socket, "game:info", { message });

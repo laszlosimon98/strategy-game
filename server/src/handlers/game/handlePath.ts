@@ -21,7 +21,7 @@ export const handlePath = (io: Server, socket: Socket) => {
     }
 
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const world: Cell[][] = StateManager.getWorld(room);
+    const world: Cell[][] = StateManager.getWorld(socket);
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
 
     if (unit) {

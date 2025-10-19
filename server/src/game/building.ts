@@ -54,8 +54,7 @@ export class Building implements ProductionBuildingInterface {
 
   public produce(
     io: Server,
-    socket: Socket,
-    room: string
+    socket: Socket
   ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
     return this.production.getProductionItem();
@@ -70,11 +69,11 @@ export class Building implements ProductionBuildingInterface {
   }
 
   protected handleCellObstacleChange(
-    room: string,
+    socket: Socket,
     findType: CellTypeEnum
   ): Cell | null {
     const cells: Cell[] = StateManager.getWorldInRange(
-      room,
+      socket,
       this.entity.data.indices,
       this.range,
       findType

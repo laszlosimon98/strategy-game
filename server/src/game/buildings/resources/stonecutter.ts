@@ -3,8 +3,6 @@ import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
 import { Stone } from "@/game/produceable/stone";
 import { Production } from "@/game/production";
-import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";
@@ -20,13 +18,12 @@ export class Stonecutter extends Building {
 
   public produce(
     io: Server,
-    socket: Socket,
-    room: string
+    socket: Socket
   ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
 
     const closestCell: Cell | null = this.handleCellObstacleChange(
-      room,
+      socket,
       CellTypeEnum.Stone
     );
 

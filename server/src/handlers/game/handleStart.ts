@@ -82,7 +82,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     };
 
     const { i, j } = indices;
-    World.getWorld(socket)[i][j].setOwner(playerId);
+    StateManager.getWorld(socket)[i][j].setOwner(playerId);
 
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
@@ -109,7 +109,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       building
     );
 
-    if (!updateTerritory) return;
+    if (!updatedCells) return;
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
       data: updatedCells,

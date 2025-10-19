@@ -17,7 +17,7 @@ import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
-import { ReturnMessage } from "@/types/setting.types";
+import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
 
@@ -147,11 +147,13 @@ export class StateManager {
     this.state[room].isGameStarted = true;
   }
 
-  public static getWorld(room: string): Cell[][] {
+  public static getWorld(socket: Socket): Cell[][] {
+    const room: string = ServerHandler.getCurrentRoom(socket);
     return this.state[room].world;
   }
 
-  public static setWorld(room: string, world: Cell[][]): void {
+  public static setWorld(socket: Socket, world: Cell[][]): void {
+    const room: string = ServerHandler.getCurrentRoom(socket);
     this.state[room].world = world;
   }
 
@@ -172,14 +174,14 @@ export class StateManager {
   }
 
   public static getWorldInRange(
-    room: string,
+    socket: Socket,
     indices: Indices,
     range: number,
     obstacle?: CellTypeEnum
   ): Cell[] {
     const result: Cell[] = [];
 
-    const world: Cell[][] = this.getWorld(room);
+    const world: Cell[][] = this.getWorld(socket);
     const { i, j } = indices;
     const size: number = settings.mapSize;
 
@@ -242,7 +244,7 @@ export class StateManager {
   public static destroyBuilding(
     socket: Socket,
     entity: EntityType
-  ): { status: "completed" | "failed" } & ReturnMessage {
+  ): DestroyBuildingResponse {
     return BuildingManager.destroy(socket, entity, this.state);
   }
 

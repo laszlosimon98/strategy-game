@@ -105,42 +105,7 @@ export class World {
     mirroredCell.setInstance(originalCell.getInstance());
   }
 
-  public static updateTerritory(
-    socket: Socket,
-    building: Building
-  ): Territory[] | undefined {
-    if (!(building instanceof GuardHouse)) return;
-
-    const { owner, indices } = building.getEntity().data;
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const range = building.getRange();
-
-    const world: Cell[][] = StateManager.getWorld(room);
-    const { i, j } = indices;
-    const size: number = settings.mapSize;
-    const updatedCells: Territory[] = [];
-
-    for (let l = -range; l <= range; ++l) {
-      for (let k = -range; k <= range; ++k) {
-        const il = i + l;
-        const jk = j + k;
-
-        if (il >= 0 && il < size && jk >= 0 && jk < size) {
-          const cell: Cell = world[i + l][j + k];
-          cell.setOwner(owner);
-          updatedCells.push({
-            indices: cell.getIndices(),
-            owner,
-          });
-        }
-      }
-    }
-
-    return updatedCells;
-  }
-
   public static createWorld(socket: Socket): void {
-    this.world = [];
     for (let i = 0; i < settings.mapSize; ++i) {
       this.world.push([]);
       for (let j = 0; j < settings.mapSize; ++j) {
@@ -152,21 +117,13 @@ export class World {
     this.populateWorld();
     this.mirrorWorld();
     this.initNeighbor();
-    this.setWorld(this.world, socket);
-  }
 
-  public static getWorld(socket: Socket): Cell[][] {
-    const room = ServerHandler.getCurrentRoom(socket);
-    return StateManager.getWorld(room);
-  }
-
-  public static setWorld(world: Cell[][], socket: Socket): void {
-    const room = ServerHandler.getCurrentRoom(socket);
-    StateManager.setWorld(room, world);
+    StateManager.setWorld(socket, this.world);
+    this.world = [];
   }
 
   public static getTiles(socket: Socket): TileType[][] {
-    const tiles: TileType[][] = this.getWorld(socket).map((cells) =>
+    const tiles: TileType[][] = StateManager.getWorld(socket).map((cells) =>
       cells.map((cell) => cell.getType())
     );
 
@@ -174,7 +131,7 @@ export class World {
   }
 
   public static getObstacles(socket: Socket): any {
-    const obstacles: any = this.getWorld(socket).map((cells) =>
+    const obstacles: any = StateManager.getWorld(socket).map((cells) =>
       cells.map((cell) => cell.getObstacleType())
     );
 
@@ -183,8 +140,148 @@ export class World {
 
   public static isCellInTerritory(socket: Socket, entity: EntityType): boolean {
     const { i, j } = entity.data.indices;
-    const cells: Cell[][] = this.getWorld(socket);
+    const cells: Cell[][] = StateManager.getWorld(socket);
 
     return cells[i][j].getOwner() === entity.data.owner;
+  }
+
+  public static updateTerritory(
+    socket: Socket,
+    building: Building
+  ): Territory[] | undefined {
+    if (!(building instanceof GuardHouse)) return;
+
+    const { owner, indices } = building.getEntity().data;
+    const range = building.getRange();
+
+    const world: Cell[][] = StateManager.getWorld(socket);
+    const { i, j } = indices;
+    const size: number = settings.mapSize;
+    const updatedCells: Territory[] = [];
+
+    for (let l = -range; l <= range; ++l) {
+      for (let k = -range; k <= range; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          if (cell.getOwner() === null) {
+            cell.setOwner(owner);
+            cell.setTowerInfluence(true);
+
+            updatedCells.push({
+              indices: cell.getIndices(),
+              owner,
+            });
+          }
+        }
+      }
+    }
+
+    return updatedCells;
+  }
+
+  public static markCellToRestoreOwner(
+    socket: Socket,
+    building: Building
+  ): void {
+    if (!(building instanceof GuardHouse)) return;
+
+    const { indices } = building.getEntity().data;
+    const world = StateManager.getWorld(socket);
+    const range = building.getRange();
+
+    const { i, j } = indices;
+    const size: number = settings.mapSize;
+
+    for (let l = -range; l <= range; ++l) {
+      for (let k = -range; k <= range; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setTowerInfluence(false);
+          console.log(cell.getIndices(), cell.getTowerInfluence());
+        }
+      }
+    }
+  }
+
+  public static restoreCellsWithoutTowerInfluence(
+    socket: Socket,
+    building: Building
+  ): Territory[] | undefined {
+    if (!(building instanceof GuardHouse)) return;
+
+    const { indices } = building.getEntity().data;
+    const world = StateManager.getWorld(socket);
+    const range = building.getRange();
+
+    const { i, j } = indices;
+    const size: number = settings.mapSize;
+    const restoredCells: Territory[] = [];
+
+    for (let l = -range; l <= range; ++l) {
+      for (let k = -range; k <= range; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          console.log(cell.getIndices(), cell.getTowerInfluence());
+          if (!cell.getTowerInfluence()) {
+            cell.setOwner(null);
+            restoredCells.push({
+              indices: cell.getIndices(),
+              owner: null,
+            });
+          }
+        }
+      }
+    }
+
+    return restoredCells;
+  }
+
+  public static occupyCells(socket: Socket, entity: EntityType) {
+    const { i, j } = entity.data.indices;
+    const world = StateManager.getWorld(socket);
+
+    world[i][j].setObstacleType(CellTypeEnum.House);
+    const size: number = settings.mapSize;
+
+    for (let l = -1; l <= 1; ++l) {
+      for (let k = -1; k <= 1; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setObstacle(true);
+        }
+      }
+    }
+  }
+
+  public static restoreCells(socket: Socket, entity: EntityType) {
+    const { i, j } = entity.data.indices;
+    const world = StateManager.getWorld(socket);
+
+    world[i][j].setObstacleType(CellTypeEnum.Empty);
+    const size: number = settings.mapSize;
+
+    for (let l = -1; l <= 1; ++l) {
+      for (let k = -1; k <= 1; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setObstacle(false);
+        }
+      }
+    }
   }
 }

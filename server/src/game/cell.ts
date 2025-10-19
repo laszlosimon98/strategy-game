@@ -19,12 +19,15 @@ export class Cell {
   private obstacleType: CellTypeEnum;
 
   private instance: Instance;
-  private owner: string | null = null;
+  private owner: string | null;
+  private hasTowerInfluence: boolean;
 
   public constructor(indices: Indices) {
     this.indices = indices;
     this.obstacleType = CellTypeEnum.Empty;
     this.instance = null;
+    this.owner = null;
+    this.hasTowerInfluence = false;
 
     this.g = 0;
     this.h = 0;
@@ -129,6 +132,14 @@ export class Cell {
 
   public setOwner(id: string | null): void {
     this.owner = id;
+  }
+
+  public setTowerInfluence(towerInfluence: boolean): void {
+    this.hasTowerInfluence = towerInfluence;
+  }
+
+  public getTowerInfluence(): boolean {
+    return this.hasTowerInfluence;
   }
 
   public isWalkAble(): boolean {
