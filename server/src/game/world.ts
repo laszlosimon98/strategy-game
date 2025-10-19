@@ -10,6 +10,9 @@ import { StateManager } from "@/manager/stateManager";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Tree } from "@/game/produceable/tree";
 import { Stone } from "@/game/produceable/stone";
+import { Territory, TileType } from "@/types/world.types";
+import { Building } from "@/game/building";
+import { GuardHouse } from "@/game/buildings/military/guardhouse";
 
 export class World {
   private static world: Cell[][] = [];
@@ -101,7 +104,41 @@ export class World {
     mirroredCell.setInstance(originalCell.getInstance());
   }
 
-  public static createWorld(): Cell[][] {
+  public static updateTerritory(
+    socket: Socket,
+    building: Building
+  ): Territory[] | undefined {
+    if (!(building instanceof GuardHouse)) return;
+
+    const { owner, indices } = building.getEntity().data;
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const range = building.getRange();
+
+    const world: Cell[][] = StateManager.getWorld(room);
+    const { i, j } = indices;
+    const size: number = settings.mapSize;
+    const updateCells: Territory[] = [];
+
+    for (let l = -range; l <= range; ++l) {
+      for (let k = -range; k <= range; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setOwner(owner);
+          updateCells.push({
+            indices: cell.getIndices(),
+            owner,
+          });
+        }
+      }
+    }
+
+    return updateCells;
+  }
+
+  public static createWorld(socket: Socket): void {
     this.world = [];
     for (let i = 0; i < settings.mapSize; ++i) {
       this.world.push([]);
@@ -114,8 +151,7 @@ export class World {
     this.populateWorld();
     this.mirrorWorld();
     this.initNeighbor();
-
-    return this.world;
+    this.setWorld(this.world, socket);
   }
 
   public static getWorld(socket: Socket): Cell[][] {
@@ -126,5 +162,21 @@ export class World {
   public static setWorld(world: Cell[][], socket: Socket): void {
     const room = ServerHandler.getCurrentRoom(socket);
     StateManager.setWorld(room, world);
+  }
+
+  public static getTiles(socket: Socket): TileType[][] {
+    const tiles: TileType[][] = this.getWorld(socket).map((cells) =>
+      cells.map((cell) => cell.getType())
+    );
+
+    return tiles;
+  }
+
+  public static getObstacles(socket: Socket): any {
+    const obstacles: any = this.getWorld(socket).map((cells) =>
+      cells.map((cell) => cell.getObstacleType())
+    );
+
+    return obstacles;
   }
 }

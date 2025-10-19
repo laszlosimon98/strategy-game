@@ -173,7 +173,7 @@ export class UnitManager extends Manager<Unit> {
         path.forEach((index) => {
           const i = index.i;
           const j = index.j;
-          _path.push(this.world[i][j]);
+          _path.push(StateManager.getWorld()[i][j]);
         });
 
         const unit = StateManager.findSoldier(entity);

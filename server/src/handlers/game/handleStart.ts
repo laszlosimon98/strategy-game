@@ -34,15 +34,11 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const createWorld = () => {
-    const world: Cell[][] = World.createWorld();
-    World.setWorld(world, socket);
-
-    const tiles = getTiles(world);
-    const obstacles = getObstacles(world);
+    World.createWorld(socket);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:createWorld", {
-      tiles,
-      obstacles,
+      tiles: World.getTiles(socket),
+      obstacles: World.getObstacles(socket),
     });
   };
 
@@ -105,33 +101,15 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const updateTerritory = (building: Building) => {
-    const { owner, indices } = building.getEntity().data;
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const range = building.getRange();
+    const updatedCells: Territory[] | undefined = World.updateTerritory(
+      socket,
+      building
+    );
 
-    const world: Cell[][] = StateManager.getWorld(room);
-    const { i, j } = indices;
-    const size: number = settings.mapSize;
-    const updateCells: Territory[] = [];
-
-    for (let l = -range; l <= range; ++l) {
-      for (let k = -range; k <= range; ++k) {
-        const il = i + l;
-        const jk = j + k;
-
-        if (il >= 0 && il < size && jk >= 0 && jk < size) {
-          const cell: Cell = world[i + l][j + k];
-          cell.setOwner(owner);
-          updateCells.push({
-            indices: cell.getIndices(),
-            owner,
-          });
-        }
-      }
-    }
+    if (!updateTerritory) return;
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      data: updateCells,
+      data: updatedCells,
     });
   };
 
@@ -149,22 +127,6 @@ export const handleStart = (io: Server, socket: Socket) => {
     };
 
     return isometricPos;
-  };
-
-  const getTiles = (world: Cell[][]): TileType[][] => {
-    const tiles: TileType[][] = world.map((cells) =>
-      cells.map((cell) => cell.getType())
-    );
-
-    return tiles;
-  };
-
-  const getObstacles = (world: Cell[][]): any => {
-    const obstacles: any = world.map((cells) =>
-      cells.map((cell) => cell.getObstacleType())
-    );
-
-    return obstacles;
   };
 
   socket.on("game:starts", gameStarts);

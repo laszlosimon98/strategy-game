@@ -52,20 +52,6 @@ export class World implements MouseHandlerInterface {
           const cell = StateManager.getWorld()[pos.i][pos.j];
           if (cell) this.camera.setScroll(cell.getCameraPos());
         });
-
-        ServerHandler.receiveMessage(
-          "game:updateTerritory",
-          ({ data }: { data: Territory[] }) => {
-            data.forEach((cell) => {
-              const { indices, owner } = cell;
-
-              StateManager.setCellOwner(indices, owner);
-            });
-          }
-        );
-
-        this.unitManager.setWorld(StateManager.getWorld());
-        this.buildingManager.setWorld(StateManager.getWorld());
       }
     );
   }
@@ -185,6 +171,17 @@ export class World implements MouseHandlerInterface {
             StateManager.getImages("obstacles", obstacle).url
           );
         }
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:updateTerritory",
+      ({ data }: { data: Territory[] }) => {
+        data.forEach((cell) => {
+          const { indices, owner } = cell;
+
+          StateManager.setCellOwner(indices, owner);
+        });
       }
     );
   }

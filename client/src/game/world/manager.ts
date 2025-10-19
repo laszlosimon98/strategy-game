@@ -1,7 +1,6 @@
 import { MainMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
-import { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import type { RendererInterface } from "@/interfaces/rendererInterface";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
@@ -14,11 +13,9 @@ import { isMouseIntersect } from "@/utils/utils";
 
 export abstract class Manager<T> implements MouseHandlerInterface {
   protected pos: Position;
-  protected world: Cell[][];
 
   protected constructor() {
     this.pos = Position.zero();
-    this.world = [];
     this.handleCommunication();
   }
 
@@ -49,10 +46,6 @@ export abstract class Manager<T> implements MouseHandlerInterface {
       ] as unknown as T[];
       arr.forEach((object) => object.update(dt, cameraScroll));
     });
-  }
-
-  public setWorld(world: Cell[][]): void {
-    this.world = world;
   }
 
   protected creator<T>(
