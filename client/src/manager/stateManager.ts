@@ -2,6 +2,7 @@ import { MainMenuState, SubMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { PageState } from "@/enums/pageState";
 import type { Building } from "@/game/world/building/building";
+import type { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import type { Soldier } from "@/game/world/unit/units/soldier";
 import { BuildingManager } from "@/manager/buldingManager";
@@ -73,6 +74,7 @@ export class StateManager {
     },
     game: {
       worldSize: 15, // Ennek majd a szerverről kell jönnie
+      world: [],
       state: GameState.Default,
       players: {},
       builder: {
@@ -189,6 +191,14 @@ export class StateManager {
     this.state.server.status = status;
   }
 
+  public static getWorld(): Cell[][] {
+    return this.state.game.world;
+  }
+
+  public static setWorld(world: Cell[][]): void {
+    this.state.game.world = world;
+  }
+
   // ------------------- Storage -------------------
 
   public static getStorage(id: string): StorageType | null {
@@ -200,17 +210,6 @@ export class StateManager {
     const player = this.getPlayerById(id);
 
     StorageManager.updateStorage(player, newStorageValues);
-  }
-
-  // TODO: törölni, itt nem kell ilyen, minden a szerverről jön
-  public static updateStorageItem(
-    id: string,
-    type: CategoryType,
-    name: CombinedType,
-    amount: number
-  ) {
-    const player = this.getPlayerById(id);
-    StorageManager.updateStorageItem(player, type, name, amount);
   }
 
   // ------------------- State -------------------

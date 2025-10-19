@@ -9,8 +9,9 @@ import { ServerHandler } from "@/server/serverHandler";
 import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { ySort } from "@/utils/utils";
+import { convertIsometricCoordsToCartesianCoords, ySort } from "@/utils/utils";
 import { StateManager } from "@/manager/stateManager";
+import type { Cell } from "@/game/world/cell";
 
 export class BuildingManager extends Manager<Building> {
   private fakeHouse: FakeBuilding;
@@ -64,7 +65,7 @@ export class BuildingManager extends Manager<Building> {
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
     if (StateManager.getBuilder().data.url.length) {
-      this.setFakeHouse();
+      this.setFakeHouse(mousePos, cameraScroll);
     }
     this.hoverObject(mousePos, cameraScroll, "buildings");
   }
@@ -77,31 +78,33 @@ export class BuildingManager extends Manager<Building> {
     ySort(StateManager.getBuildings(entity.data.owner));
   }
 
-  private setFakeHouse(): void {
+  private setFakeHouse(mousePos: Position, cameraScroll: Position): void {
+    const indices: Indices = convertIsometricCoordsToCartesianCoords(
+      mousePos,
+      cameraScroll
+    );
+
     const entity: EntityType = {
       data: {
         ...StateManager.getBuilder().data,
         position: this.pos,
         owner: ServerHandler.getId(),
         id: uuidv4(),
+        indices,
       },
     };
 
-    this.fakeHouse.setBuilding(entity);
-    this.setObjectPosition(this.fakeHouse, this.pos);
+    const world: Cell[][] = StateManager.getWorld();
+    const { i, j } = indices;
+
+    if (world[i][j].getOwner() === entity.data.owner) {
+      this.fakeHouse.setBuilding(entity);
+      this.setObjectPosition(this.fakeHouse, this.pos);
+    }
   }
 
-  private destroy(id: string, entity: EntityType): void {
+  private destroy(entity: EntityType): void {
     StateManager.destroyBuilding(entity);
-    // const buildings = StateManager.getBuildings(id);
-
-    // for (let i = buildings.length - 1; i >= 0; --i) {
-    //   const buildingIndices = buildings[i].getIndices();
-
-    //   if (buildingIndices.i === indices.i && buildingIndices.j === indices.j) {
-    //     buildings.splice(i, 1);
-    //   }
-    // }
   }
 
   private resetStates(): void {
@@ -132,8 +135,8 @@ export class BuildingManager extends Manager<Building> {
 
     ServerHandler.receiveMessage(
       "game:destroy",
-      ({ id, entity }: { id: string; entity: EntityType }) => {
-        this.destroy(id, entity);
+      ({ entity }: { entity: EntityType }) => {
+        this.destroy(entity);
       }
     );
   }

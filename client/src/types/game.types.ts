@@ -2,6 +2,7 @@ import { MainMenuState, SubMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { PageState } from "@/enums/pageState";
 import { Building } from "@/game/world/building/building";
+import type { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import { Soldier } from "@/game/world/unit/units/soldier";
 import type { StorageType } from "@/types/storage.types";
@@ -119,6 +120,7 @@ export type PlayerGameType = {
 type Game = {
   game: {
     worldSize: number;
+    world: Cell[][];
     state: GameState;
     players: PlayerGameType;
     builder: EntityType;

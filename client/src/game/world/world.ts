@@ -1,4 +1,3 @@
-import { MainMenuState } from "@/enums/gameMenuState";
 import { Camera } from "@/game/camera/camera";
 import { CellTypeEnum } from "@/game/enums/cellTypeEnum";
 import { BuildingManager } from "@/game/world/building/buildingManager";
@@ -10,11 +9,10 @@ import { ServerHandler } from "@/server/serverHandler";
 import type { TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { convertIsometricCoordsToCartesianCoords, ySort } from "@/utils/utils";
+import { convertIsometricCoordsToCartesianCoords } from "@/utils/utils";
 
 export class World implements MouseHandlerInterface {
   private mousePos: Position;
-  private world: Cell[][];
   private camera: Camera;
 
   private buildingManager: BuildingManager;
@@ -22,7 +20,6 @@ export class World implements MouseHandlerInterface {
 
   public constructor() {
     this.mousePos = Position.zero();
-    this.world = [];
     this.camera = new Camera();
 
     this.buildingManager = new BuildingManager();
@@ -37,7 +34,7 @@ export class World implements MouseHandlerInterface {
     ServerHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any[][] }) => {
-        this.world = tiles.map((row, i) =>
+        const world: Cell[][] = tiles.map((row, i) =>
           row.map((tile, j) => {
             const groundImg = StateManager.getImages("ground", tile).url;
             const obstacle = obstacles[i][j];
@@ -49,20 +46,21 @@ export class World implements MouseHandlerInterface {
             return new Cell(new Indices(i, j), groundImg, obstacleImg);
           })
         );
+        StateManager.setWorld(world);
 
         ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
-          const cell = this.world[pos.i][pos.j];
+          const cell = StateManager.getWorld()[pos.i][pos.j];
           if (cell) this.camera.setScroll(cell.getCameraPos());
         });
 
-        this.unitManager.setWorld(this.world);
-        this.buildingManager.setWorld(this.world);
+        this.unitManager.setWorld(StateManager.getWorld());
+        this.buildingManager.setWorld(StateManager.getWorld());
       }
     );
   }
 
   public draw(): void {
-    this.world.forEach((tiles) => {
+    StateManager.getWorld().forEach((tiles) => {
       tiles.forEach((tile) => {
         tile.draw();
       });
@@ -75,7 +73,7 @@ export class World implements MouseHandlerInterface {
     this.mousePos = mousePos;
     this.camera.update(dt, this.mousePos, key);
 
-    this.world.forEach((tiles) => {
+    StateManager.getWorld().forEach((tiles) => {
       tiles.forEach((tile) => tile.update(this.camera.getScroll()));
     });
 
@@ -113,7 +111,9 @@ export class World implements MouseHandlerInterface {
     );
 
     if (this.isActionInsideOfTheMap(indices)) {
-      this.unitManager.setPos(this.world[indices.i][indices.j].getUnitPos());
+      this.unitManager.setPos(
+        StateManager.getWorld()[indices.i][indices.j].getUnitPos()
+      );
       this.unitManager.handleMiddleClick(
         indices,
         this.mousePos,
@@ -140,7 +140,7 @@ export class World implements MouseHandlerInterface {
 
     if (this.isActionInsideOfTheMap(indices)) {
       this.buildingManager.setPos(
-        this.world[indices.i][indices.j].getBuildingPos()
+        StateManager.getWorld()[indices.i][indices.j].getBuildingPos()
       );
       this.buildingManager.handleMouseMove(mousePos, this.getCameraScroll());
       this.unitManager.handleMouseMove(mousePos, this.getCameraScroll());
@@ -152,9 +152,9 @@ export class World implements MouseHandlerInterface {
   public isActionInsideOfTheMap(indices: Indices): boolean {
     return (
       indices.i >= 0 &&
-      indices.i < this.world.length - 1 &&
+      indices.i < StateManager.getWorld().length - 1 &&
       indices.j >= 0 &&
-      indices.j < this.world.length
+      indices.j < StateManager.getWorld().length
     );
   }
 
@@ -168,9 +168,9 @@ export class World implements MouseHandlerInterface {
       ({ indices, obstacle }: { indices: Indices; obstacle: CellTypeEnum }) => {
         const { i, j } = indices;
         if (obstacle === CellTypeEnum.Empty) {
-          this.world[i][j].setObstacleImage(CellTypeEnum.Empty);
+          StateManager.getWorld()[i][j].setObstacleImage(CellTypeEnum.Empty);
         } else {
-          this.world[i][j].setObstacleImage(
+          StateManager.getWorld()[i][j].setObstacleImage(
             StateManager.getImages("obstacles", obstacle).url
           );
         }

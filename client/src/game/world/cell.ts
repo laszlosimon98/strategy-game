@@ -14,6 +14,7 @@ export class Cell {
   private unitPos: Position;
   private cameraPos: Position;
   private obstaclePos: Position;
+  private owner: string | null = null;
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
@@ -144,5 +145,13 @@ export class Cell {
 
   public drawIsometricGrid(): void {
     this.drawGrid(this.position.getIsometricPos());
+  }
+
+  public getOwner(): string | null {
+    return this.owner;
+  }
+
+  public setOwner(id: string | null): void {
+    this.owner = id;
   }
 }
