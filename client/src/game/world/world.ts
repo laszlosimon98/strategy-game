@@ -6,7 +6,7 @@ import { UnitManager } from "@/game/world/unit/unitManager";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
-import type { TileType } from "@/types/world.types";
+import type { Territory, TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { convertIsometricCoordsToCartesianCoords } from "@/utils/utils";
@@ -52,6 +52,17 @@ export class World implements MouseHandlerInterface {
           const cell = StateManager.getWorld()[pos.i][pos.j];
           if (cell) this.camera.setScroll(cell.getCameraPos());
         });
+
+        ServerHandler.receiveMessage(
+          "game:updateTerritory",
+          ({ data }: { data: Territory[] }) => {
+            data.forEach((cell) => {
+              const { indices, owner } = cell;
+
+              StateManager.setCellOwner(indices, owner);
+            });
+          }
+        );
 
         this.unitManager.setWorld(StateManager.getWorld());
         this.buildingManager.setWorld(StateManager.getWorld());

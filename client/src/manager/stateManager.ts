@@ -18,11 +18,7 @@ import type {
   StateType,
   PlayerGameType,
 } from "@/types/game.types";
-import type {
-  CombinedType,
-  StorageType,
-  CategoryType,
-} from "@/types/storage.types";
+import type { StorageType } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -191,12 +187,19 @@ export class StateManager {
     this.state.server.status = status;
   }
 
+  // ------------------- World -------------------
+
   public static getWorld(): Cell[][] {
     return this.state.game.world;
   }
 
   public static setWorld(world: Cell[][]): void {
     this.state.game.world = world;
+  }
+
+  public static setCellOwner(indices: Indices, owner: string | null): void {
+    const { i, j } = indices;
+    this.state.game.world[i][j].setOwner(owner);
   }
 
   // ------------------- Storage -------------------

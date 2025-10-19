@@ -65,6 +65,10 @@ export class Building implements ProductionBuildingInterface {
     return this.production !== null;
   }
 
+  public getRange(): number {
+    return this.range;
+  }
+
   protected handleCellObstacleChange(
     room: string,
     findType: CellTypeEnum

@@ -19,6 +19,7 @@ export class Cell {
   private obstacleType: CellTypeEnum;
 
   private instance: Instance;
+  private owner: string | null = null;
 
   public constructor(indices: Indices) {
     this.indices = indices;
@@ -120,6 +121,14 @@ export class Cell {
 
   public setInstance(instance: Instance): void {
     this.instance = instance;
+  }
+
+  public getOwner(): string | null {
+    return this.owner;
+  }
+
+  public setOwner(id: string | null): void {
+    this.owner = id;
   }
 
   public isWalkAble(): boolean {

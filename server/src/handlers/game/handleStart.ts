@@ -6,7 +6,7 @@ import { World } from "@/game/world";
 import { Indices } from "@/utils/indices";
 import type { EntityType, PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
-import type { TileType } from "@/types/world.types";
+import type { Territory, TileType } from "@/types/world.types";
 import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
@@ -55,11 +55,15 @@ export const handleStart = (io: Server, socket: Socket) => {
       const pos = startPositions.splice(idx, 1)[0];
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
-      placeTower(id, pos);
+      const building: Building | null = placeTower(id, pos);
+
+      if (building instanceof Building) {
+        updateTerritory(building);
+      }
     });
   };
 
-  const placeTower = (playerId: string, indices: Indices): void => {
+  const placeTower = (playerId: string, indices: Indices): Building | null => {
     const entity: EntityType = {
       data: {
         id: uuidv4(),
@@ -93,9 +97,42 @@ export const handleStart = (io: Server, socket: Socket) => {
         "game:build",
         response.getEntity()
       );
+      return response;
     } else {
       ServerHandler.sendMessageToSender(socket, "game:error", response);
+      return null;
     }
+  };
+
+  const updateTerritory = (building: Building) => {
+    const { owner, indices } = building.getEntity().data;
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const range = building.getRange();
+
+    const world: Cell[][] = StateManager.getWorld(room);
+    const { i, j } = indices;
+    const size: number = settings.mapSize;
+    const updateCells: Territory[] = [];
+
+    for (let l = -range; l <= range; ++l) {
+      for (let k = -range; k <= range; ++k) {
+        const il = i + l;
+        const jk = j + k;
+
+        if (il >= 0 && il < size && jk >= 0 && jk < size) {
+          const cell: Cell = world[i + l][j + k];
+          cell.setOwner(owner);
+          updateCells.push({
+            indices: cell.getIndices(),
+            owner,
+          });
+        }
+      }
+    }
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+      data: updateCells,
+    });
   };
 
   const calculateInitTowerPosition = (indices: Indices): Position => {
