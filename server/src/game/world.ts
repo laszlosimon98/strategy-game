@@ -117,7 +117,7 @@ export class World {
     const world: Cell[][] = StateManager.getWorld(room);
     const { i, j } = indices;
     const size: number = settings.mapSize;
-    const updateCells: Territory[] = [];
+    const updatedCells: Territory[] = [];
 
     for (let l = -range; l <= range; ++l) {
       for (let k = -range; k <= range; ++k) {
@@ -127,7 +127,7 @@ export class World {
         if (il >= 0 && il < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
           cell.setOwner(owner);
-          updateCells.push({
+          updatedCells.push({
             indices: cell.getIndices(),
             owner,
           });
@@ -135,7 +135,7 @@ export class World {
       }
     }
 
-    return updateCells;
+    return updatedCells;
   }
 
   public static createWorld(socket: Socket): void {

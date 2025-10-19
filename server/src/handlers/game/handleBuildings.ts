@@ -9,6 +9,8 @@ import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
 import { getImageNameFromUrl } from "@/utils/utils";
+import { Territory } from "@/types/world.types";
+import { World } from "@/game/world";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (
@@ -53,6 +55,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       calculateNewStorageValues(room, response);
 
       const storage: StorageType = StateManager.getStorage(socket, room);
+      const updatedCells: Territory[] | undefined = World.updateTerritory(
+        socket,
+        response
+      );
 
       ServerHandler.sendMessageToEveryOne(
         io,
@@ -60,6 +66,17 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         "game:build",
         response.getEntity()
       );
+
+      if (updatedCells) {
+        ServerHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:updateTerritory",
+          {
+            data: updatedCells,
+          }
+        );
+      }
 
       ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
         storage,
