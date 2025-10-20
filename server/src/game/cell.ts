@@ -1,6 +1,7 @@
 import { Indices } from "@/utils/indices";
 import type { Instance, TileType } from "@/types/world.types";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { Building } from "@/game/building";
 
 export class Cell {
   private indices: Indices;
@@ -19,6 +20,7 @@ export class Cell {
   private obstacleType: CellTypeEnum;
 
   private instance: Instance;
+  private building: Building | null;
   private owner: string | null;
   private hasTowerInfluence: boolean;
 
@@ -28,6 +30,7 @@ export class Cell {
     this.instance = null;
     this.owner = null;
     this.hasTowerInfluence = false;
+    this.building = null;
 
     this.g = 0;
     this.h = 0;
@@ -140,6 +143,14 @@ export class Cell {
 
   public getTowerInfluence(): boolean {
     return this.hasTowerInfluence;
+  }
+
+  public getBuilding(): Building | null {
+    return this.building;
+  }
+
+  public setBuilding(building: Building | null): void {
+    this.building = building;
   }
 
   public isWalkAble(): boolean {

@@ -1,6 +1,5 @@
 import type { Building } from "@/game/world/building/building";
 import { PlayerManager } from "@/manager/playerManager";
-import { ServerHandler } from "@/server/serverHandler";
 import type { BuildingPrices } from "@/types/building.types";
 import type { EntityType, ImageItemType, StateType } from "@/types/game.types";
 import { getImageNameFromUrl } from "@/utils/utils";

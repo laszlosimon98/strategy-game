@@ -1,3 +1,4 @@
+import { Building } from "@/game/building";
 import type { ColorType } from "@/types/state.types";
 import { Territory } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
@@ -22,5 +23,6 @@ export type ReturnMessage = {
 export type DestroyBuildingResponse = {
   status: "completed" | "failed";
 } & ReturnMessage & {
-    restoredCells: Territory[] | undefined;
+    restoredCells: Territory[];
+    lostTerritoryBuildings: Building[];
   };

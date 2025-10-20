@@ -3,16 +3,13 @@ import { buildingRegister } from "@/game/buildingRegister";
 import { Cell } from "@/game/cell";
 import { World } from "@/game/world";
 import { ServerHandler } from "@/server/serverHandler";
-import { Indices } from "@/utils/indices";
 import { getImageNameFromUrl } from "@/utils/utils";
 import { Validator } from "@/utils/validator";
 import { StateManager } from "@/manager/stateManager";
-import { settings } from "@/settings";
 import { BuildingPrices, Buildings } from "@/types/building.types";
 import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
-import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Territory } from "@/types/world.types";
 
@@ -62,19 +59,10 @@ export class BuildingManager {
     state: StateType,
     building: Building
   ): void {
-    const buildingToDemolish: Building | undefined = this.getBuilding(
-      room,
-      socket,
-      state,
-      building
-    );
-
-    if (!buildingToDemolish) return;
-
     const buildingIndex: number = state[room].players[
       socket.id
     ].buildings.findIndex(
-      (b) => b.getEntity().data.id === buildingToDemolish.getEntity().data.id
+      (b) => b.getEntity().data.id === building.getEntity().data.id
     );
 
     if (buildingIndex === -1) return;
@@ -174,6 +162,7 @@ export class BuildingManager {
       status: "failed",
       message: "Sikertelen épület elbontás!",
       restoredCells: [],
+      lostTerritoryBuildings: [],
     };
 
     if (!world[i][j].cellHasObstacle()) {
@@ -198,17 +187,31 @@ export class BuildingManager {
       return failedMessage;
     }
     this.destroyBuilding(room, socket, state, building);
-    World.restoreCells(socket, building);
 
-    let restoredCells: Territory[] | undefined;
+    let restoredCells: Territory[] = [];
+    let lostTerritoryBuildings: Building[] = [];
+
     if (building instanceof GuardHouse) {
-      restoredCells = World.handleGuardHouseDestrucition(socket, building);
+      const result = World.handleGuardHouseDestruction(socket, building);
+
+      if (!result) return failedMessage;
+
+      restoredCells = result.restoredCells;
+      lostTerritoryBuildings = result.lostTerritoryBuildings;
+
+      lostTerritoryBuildings.forEach((b) => {
+        this.destroyBuilding(room, socket, state, b);
+        World.restoreCells(socket, b);
+      });
     }
+
+    World.restoreCells(socket, building);
 
     return {
       status: "completed",
       message: "Épület sikeresen elbontva!",
       restoredCells,
+      lostTerritoryBuildings,
     };
   }
 

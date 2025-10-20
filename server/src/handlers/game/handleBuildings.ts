@@ -90,8 +90,12 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const { status, message, restoredCells }: DestroyBuildingResponse =
-      StateManager.destroyBuilding(socket, entity);
+    const {
+      status,
+      message,
+      restoredCells,
+      lostTerritoryBuildings,
+    }: DestroyBuildingResponse = StateManager.destroyBuilding(socket, entity);
 
     if (status === "completed") {
       ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
@@ -109,6 +113,18 @@ export const handleBuildings = (io: Server, socket: Socket) => {
           }
         );
       }
+
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:destroyLostTerritoryBuildings",
+        {
+          id: socket.id,
+          entities: lostTerritoryBuildings.map((building) =>
+            building.getEntity()
+          ),
+        }
+      );
     }
 
     ServerHandler.sendMessageToSender(socket, "game:info", { message });

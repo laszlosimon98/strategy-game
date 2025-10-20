@@ -139,5 +139,12 @@ export class BuildingManager extends Manager<Building> {
         this.destroy(entity);
       }
     );
+
+    ServerHandler.receiveMessage(
+      "game:destroyLostTerritoryBuildings",
+      ({ entities }: { entities: EntityType[] }) => {
+        entities.forEach((entity) => this.destroy(entity));
+      }
+    );
   }
 }
