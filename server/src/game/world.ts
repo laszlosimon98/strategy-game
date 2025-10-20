@@ -278,4 +278,24 @@ export class World {
 
     return restoredCells;
   }
+
+  public static handleGuardHouseDestrucition(
+    socket: Socket,
+    building: Building
+  ): Territory[] | undefined {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+
+    this.markCellToRestoreOwner(socket, building);
+
+    const guardHouses: Building[] = StateManager.getBuildings(
+      room,
+      socket
+    ).filter((building) => building instanceof GuardHouse);
+
+    guardHouses.forEach((guardHouse) =>
+      this.updateTerritory(socket, guardHouse)
+    );
+
+    return this.restoreCellsWithoutTowerInfluence(socket, building);
+  }
 }

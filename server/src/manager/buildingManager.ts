@@ -14,6 +14,7 @@ import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
+import { Territory } from "@/types/world.types";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
@@ -197,24 +198,12 @@ export class BuildingManager {
       return failedMessage;
     }
     this.destroyBuilding(room, socket, state, building);
-
-    World.markCellToRestoreOwner(socket, building);
-
-    const guardHouses: Building[] = StateManager.getBuildings(
-      room,
-      socket
-    ).filter((building) => building instanceof GuardHouse);
-
-    guardHouses.forEach((guardHouse) =>
-      World.updateTerritory(socket, guardHouse)
-    );
-
-    const restoredCells = World.restoreCellsWithoutTowerInfluence(
-      socket,
-      building
-    );
-
     World.restoreCells(socket, building);
+
+    let restoredCells: Territory[] | undefined;
+    if (building instanceof GuardHouse) {
+      restoredCells = World.handleGuardHouseDestrucition(socket, building);
+    }
 
     return {
       status: "completed",
