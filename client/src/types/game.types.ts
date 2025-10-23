@@ -74,6 +74,7 @@ type Images = {
     ground: any;
     ui: any;
     obstacles: any;
+    utils: any;
   };
 };
 

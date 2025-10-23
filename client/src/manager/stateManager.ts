@@ -51,6 +51,7 @@ export class StateManager {
       units: {},
       ground: {},
       obstacles: {},
+      utils: {},
     },
     navigation: {
       pageState: PageState.MainMenu,
@@ -98,11 +99,12 @@ export class StateManager {
     );
   }
 
-  // FIXME: any
   public static getFlag(entity: EntityType): any {
-    return this.state.images.units[
-      this.state.game.players[entity.data.owner].color
-    ].flag;
+    return this.getImages(
+      "utils",
+      this.getPlayerColor(entity.data.owner),
+      "flag"
+    );
   }
 
   public static getStaticImage(owner: string, name: string): ImageItemType {
