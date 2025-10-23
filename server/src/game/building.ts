@@ -96,6 +96,7 @@ export class Building implements ProductionBuildingInterface {
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
       indices: closestCell.getIndices(),
       obstacle: sendType,
+      owner: socket.id,
     });
   }
 }

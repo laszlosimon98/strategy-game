@@ -195,7 +195,7 @@ export class StateManager {
           const cell: Cell = world[i + l][j + k];
 
           if (obstacle) {
-            if (cell.getObstacleType() === obstacle) {
+            if (cell.getHighestPriorityObstacleType() === obstacle) {
               result.push(cell);
             }
           } else {

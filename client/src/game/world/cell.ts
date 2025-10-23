@@ -1,4 +1,4 @@
-import { CellTypeEnum } from "@/game/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/game/enums/obstacleEnum";
 import { canvasWidth, canvasHeight, ctx } from "@/init";
 import { settings } from "@/settings";
 import { Indices } from "@/utils/indices";
@@ -14,15 +14,18 @@ export class Cell {
   private unitPos: Position;
   private cameraPos: Position;
   private obstaclePos: Position;
-  private owner: string | null = null;
+  private borderPos: Position;
+  private owner: string | null;
 
   private isometricPos: Position[];
   private image: HTMLImageElement;
-  private obstacleImage: HTMLImageElement | null = null;
+  private obstacleImage: HTMLImageElement | null;
 
   public constructor(indices: Indices, type: string, obstacle?: string) {
     this.indices = indices;
     this.position = new Vector(indices.i, indices.j);
+    this.owner = null;
+    this.obstacleImage = null;
 
     this.isometricPos = this.position.getIsometricPos();
 
@@ -50,6 +53,11 @@ export class Cell {
     );
 
     this.obstaclePos = new Position(
+      this.isometricPos[0].x,
+      this.isometricPos[0].y - 64
+    );
+
+    this.borderPos = new Position(
       this.isometricPos[0].x,
       this.isometricPos[0].y - 64
     );
@@ -114,13 +122,18 @@ export class Cell {
   }
 
   public setObstacleImage(image: string): void {
-    if (image === CellTypeEnum.Empty) {
+    if (image === ObstacleEnum.Empty) {
       this.obstacleImage = null;
       return;
     }
 
+    this.obstacleImage = null;
     this.obstacleImage = new Image();
     this.obstacleImage.src = image;
+  }
+
+  public getObstacle(): string | undefined {
+    return this.obstacleImage?.src;
   }
 
   public isEmpty(): boolean {

@@ -25,9 +25,14 @@ export class Forester extends Building {
     );
 
     if (closestCell) {
-      closestCell.setObstacleType(ObstacleEnum.Tree);
+      closestCell.addObstacle(ObstacleEnum.Tree);
       closestCell.setInstance(new Tree());
-      this.sendMessage(io, socket, closestCell, ObstacleEnum.Tree);
+      this.sendMessage(
+        io,
+        socket,
+        closestCell,
+        closestCell.getHighestPriorityObstacleType()
+      );
     }
 
     return null;

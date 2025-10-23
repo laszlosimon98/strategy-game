@@ -4,6 +4,17 @@ import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Building } from "@/game/building";
 import { TileEnum } from "@/enums/tileEnum";
 
+const priorityList: Record<ObstacleEnum, number> = {
+  [ObstacleEnum.Empty]: 0,
+  [ObstacleEnum.Decorated]: 1,
+  [ObstacleEnum.Occupied]: 2,
+  [ObstacleEnum.Border]: 3,
+  [ObstacleEnum.House]: 4,
+  [ObstacleEnum.Tree]: 4,
+  [ObstacleEnum.Stone]: 4,
+  [ObstacleEnum.Unit]: 4,
+};
+
 export class Cell {
   private indices: Indices;
 
@@ -17,7 +28,7 @@ export class Cell {
   private prevType: TileEnum;
   private type: TileEnum;
 
-  private obstacleType: ObstacleEnum;
+  private obstacleTypes: ObstacleEnum[];
 
   private instance: Instance;
   private building: Building | null;
@@ -26,7 +37,7 @@ export class Cell {
 
   public constructor(indices: Indices) {
     this.indices = indices;
-    this.obstacleType = ObstacleEnum.Empty;
+    this.obstacleTypes = [ObstacleEnum.Empty];
     this.instance = null;
     this.owner = null;
     this.hasTowerInfluence = false;
@@ -55,12 +66,24 @@ export class Cell {
     return this.prevType;
   }
 
-  public setObstacleType(type: ObstacleEnum): void {
-    this.obstacleType = type;
+  public addObstacle(type: ObstacleEnum): void {
+    this.obstacleTypes.push(type);
   }
 
-  public getObstacleType(): ObstacleEnum {
-    return this.obstacleType;
+  public removeObstacle(obstacle: ObstacleEnum): void {
+    this.obstacleTypes = this.obstacleTypes.filter((obs) => obs !== obstacle);
+  }
+
+  public getHighestPriorityObstacleType(): ObstacleEnum {
+    let highestPriority: ObstacleEnum = ObstacleEnum.Empty;
+
+    this.obstacleTypes.forEach((type) => {
+      if (priorityList[type] > priorityList[highestPriority]) {
+        highestPriority = type;
+      }
+    });
+
+    return highestPriority;
   }
 
   public setType(type: TileEnum): void {
@@ -148,13 +171,15 @@ export class Cell {
       ObstacleEnum.Empty,
       ObstacleEnum.Decorated,
       ObstacleEnum.Occupied,
+      ObstacleEnum.Border,
       // CellTypeEnum.Unit,
-    ].includes(this.obstacleType);
+    ].includes(this.getHighestPriorityObstacleType());
   }
 
   public isBuildAble(): boolean {
     return (
-      this.type === TileEnum.Grass && this.obstacleType === ObstacleEnum.Empty
+      this.type === TileEnum.Grass &&
+      this.getHighestPriorityObstacleType() === ObstacleEnum.Empty
     );
   }
 

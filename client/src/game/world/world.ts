@@ -1,5 +1,5 @@
 import { Camera } from "@/game/camera/camera";
-import { CellTypeEnum } from "@/game/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/game/enums/obstacleEnum";
 import { BuildingManager } from "@/game/world/building/buildingManager";
 import { Cell } from "@/game/world/cell";
 import { UnitManager } from "@/game/world/unit/unitManager";
@@ -9,7 +9,10 @@ import { ServerHandler } from "@/server/serverHandler";
 import type { Territory, TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { convertIsometricCoordsToCartesianCoords } from "@/utils/utils";
+import {
+  convertIsometricCoordsToCartesianCoords,
+  getImageNameFromUrl,
+} from "@/utils/utils";
 
 export class World implements MouseHandlerInterface {
   private mousePos: Position;
@@ -39,7 +42,7 @@ export class World implements MouseHandlerInterface {
             const groundImg = StateManager.getImages("ground", tile).url;
             const obstacle = obstacles[i][j];
             const obstacleImg =
-              obstacle && obstacle !== CellTypeEnum.Empty
+              obstacle && obstacle !== ObstacleEnum.Empty
                 ? StateManager.getImages("obstacles", obstacle).url
                 : undefined;
 
@@ -162,13 +165,33 @@ export class World implements MouseHandlerInterface {
   private handleCommunication(): void {
     ServerHandler.receiveMessage(
       "game:updateCell",
-      ({ indices, obstacle }: { indices: Indices; obstacle: CellTypeEnum }) => {
+      ({
+        indices,
+        obstacle,
+        owner,
+      }: {
+        indices: Indices;
+        obstacle: ObstacleEnum;
+        owner: string;
+      }) => {
         const { i, j } = indices;
-        if (obstacle === CellTypeEnum.Empty) {
-          StateManager.getWorld()[i][j].setObstacleImage(CellTypeEnum.Empty);
-        } else {
-          StateManager.getWorld()[i][j].setObstacleImage(
+        const currentCell: Cell = StateManager.getWorld()[i][j];
+
+        console.log(obstacle, owner);
+
+        if (obstacle === ObstacleEnum.Empty) {
+          currentCell.setObstacleImage(ObstacleEnum.Empty);
+        } else if (obstacle === ObstacleEnum.Tree) {
+          currentCell.setObstacleImage(
             StateManager.getImages("obstacles", obstacle).url
+          );
+        } else {
+          currentCell.setObstacleImage(
+            StateManager.getImages(
+              "utils",
+              StateManager.getPlayerColor(owner),
+              obstacle
+            ).url
           );
         }
       }
@@ -191,14 +214,19 @@ export class World implements MouseHandlerInterface {
         data.forEach((cell) => {
           const { indices, owner } = cell;
           const { i, j } = indices;
+          const currentCell: Cell = StateManager.getWorld()[i][j];
 
-          StateManager.getWorld()[i][j].setObstacleImage(
-            StateManager.getImages(
-              "utils",
-              StateManager.getPlayerColor(owner as string),
-              "border"
-            ).url
-          );
+          const currentObstacle = currentCell.getObstacle();
+
+          if (!currentObstacle) {
+            currentCell.setObstacleImage(
+              StateManager.getImages(
+                "utils",
+                StateManager.getPlayerColor(owner as string),
+                "border"
+              ).url
+            );
+          }
         });
       }
     );

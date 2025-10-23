@@ -71,10 +71,10 @@ export class World {
         }
 
         if (treeNoise >= 50 || treeNoise <= -50) {
-          cell.setObstacleType(ObstacleEnum.Tree);
+          cell.addObstacle(ObstacleEnum.Tree);
           cell.setInstance(new Tree());
         } else if (stoneNoise >= 60 || stoneNoise <= -80) {
-          cell.setObstacleType(ObstacleEnum.Stone);
+          cell.addObstacle(ObstacleEnum.Stone);
           cell.setInstance(new Stone());
         }
       }
@@ -99,7 +99,7 @@ export class World {
 
   private static mirrorCell(originalCell: Cell, mirroredCell: Cell) {
     mirroredCell.setType(originalCell.getType());
-    mirroredCell.setObstacleType(originalCell.getObstacleType());
+    mirroredCell.addObstacle(originalCell.getHighestPriorityObstacleType());
     mirroredCell.setInstance(originalCell.getInstance());
   }
 
@@ -159,7 +159,7 @@ export class World {
 
   public static getObstacles(socket: Socket): any {
     const obstacles: any = StateManager.getWorld(socket).map((cells) =>
-      cells.map((cell) => cell.getObstacleType())
+      cells.map((cell) => cell.getHighestPriorityObstacleType())
     );
 
     return obstacles;
@@ -203,7 +203,7 @@ export class World {
       const cell: Cell = StateManager.getWorld(socket)[i][j];
 
       if (this.isCellBorder(cell)) {
-        cell.setObstacleType(ObstacleEnum.Border);
+        cell.addObstacle(ObstacleEnum.Border);
         borderCells.push({
           indices: cell.getIndices(),
           owner,
@@ -259,9 +259,9 @@ export class World {
     world[i][j].setBuilding(building);
 
     this.updateWorldInRange(socket, building, 1, (cell: Cell) => {
-      cell.setObstacleType(ObstacleEnum.Occupied);
+      cell.addObstacle(ObstacleEnum.Occupied);
     });
-    world[i][j].setObstacleType(ObstacleEnum.House);
+    world[i][j].addObstacle(ObstacleEnum.House);
   }
 
   public static restoreCells(socket: Socket, building: Building) {
@@ -269,9 +269,9 @@ export class World {
     const world = StateManager.getWorld(socket);
 
     this.updateWorldInRange(socket, building, 1, (cell: Cell) => {
-      cell.setObstacleType(ObstacleEnum.Empty);
+      cell.removeObstacle(ObstacleEnum.Occupied);
     });
-    world[i][j].setObstacleType(ObstacleEnum.Empty);
+    world[i][j].removeObstacle(ObstacleEnum.House);
   }
 
   public static handleGuardHouseDestruction(
@@ -322,7 +322,6 @@ export class World {
 
       if (getCellBuilding !== null) {
         lostTerritoryBuildings.push(getCellBuilding);
-        world[i][j].setObstacleType(ObstacleEnum.Empty);
         world[i][j].setBuilding(null);
       }
     });

@@ -38,9 +38,14 @@ export class Stonecutter extends Building {
     }
 
     if (closestCell && cellInstance.getAmount() <= 1) {
-      closestCell.setObstacleType(ObstacleEnum.Empty);
+      closestCell.removeObstacle(ObstacleEnum.Stone);
       closestCell.setInstance(null);
-      this.sendMessage(io, socket, closestCell, ObstacleEnum.Empty);
+      this.sendMessage(
+        io,
+        socket,
+        closestCell,
+        closestCell.getHighestPriorityObstacleType()
+      );
       return this.production.getProductionItem();
     }
 

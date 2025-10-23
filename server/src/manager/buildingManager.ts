@@ -166,7 +166,7 @@ export class BuildingManager {
       lostTerritoryBuildings: [],
     };
 
-    if (world[i][j].getObstacleType() !== ObstacleEnum.House) {
+    if (world[i][j].getHighestPriorityObstacleType() !== ObstacleEnum.House) {
       return failedMessage;
     }
 

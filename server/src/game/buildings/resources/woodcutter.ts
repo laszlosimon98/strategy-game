@@ -33,9 +33,14 @@ export class Woodcutter extends Building {
       return null;
 
     if (closestCell) {
-      closestCell.setObstacleType(ObstacleEnum.Empty);
+      closestCell.removeObstacle(ObstacleEnum.Tree);
       closestCell.setInstance(null);
-      this.sendMessage(io, socket, closestCell, ObstacleEnum.Empty);
+      this.sendMessage(
+        io,
+        socket,
+        closestCell,
+        closestCell.getHighestPriorityObstacleType()
+      );
       return this.production.getProductionItem();
     }
 
