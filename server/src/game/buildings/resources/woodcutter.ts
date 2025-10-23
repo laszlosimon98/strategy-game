@@ -1,4 +1,4 @@
-import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
 import { Tree } from "@/game/produceable/tree";
@@ -24,7 +24,7 @@ export class Woodcutter extends Building {
 
     const closestCell: Cell | null = this.handleCellObstacleChange(
       socket,
-      CellTypeEnum.Tree
+      ObstacleEnum.Tree
     );
 
     if (!closestCell) return null;
@@ -33,9 +33,9 @@ export class Woodcutter extends Building {
       return null;
 
     if (closestCell) {
-      closestCell.setObstacleType(CellTypeEnum.Empty);
+      closestCell.setObstacleType(ObstacleEnum.Empty);
       closestCell.setInstance(null);
-      this.sendMessage(io, socket, closestCell, CellTypeEnum.Empty);
+      this.sendMessage(io, socket, closestCell, ObstacleEnum.Empty);
       return this.production.getProductionItem();
     }
 

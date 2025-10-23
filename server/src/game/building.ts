@@ -1,4 +1,4 @@
-import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Cell } from "@/game/cell";
 import { Production } from "@/game/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
@@ -70,7 +70,7 @@ export class Building implements ProductionBuildingInterface {
 
   protected handleCellObstacleChange(
     socket: Socket,
-    findType: CellTypeEnum
+    findType: ObstacleEnum
   ): Cell | null {
     const cells: Cell[] = StateManager.getWorldInRange(
       socket,
@@ -91,7 +91,7 @@ export class Building implements ProductionBuildingInterface {
     io: Server,
     socket: Socket,
     closestCell: Cell,
-    sendType: CellTypeEnum
+    sendType: ObstacleEnum
   ): void {
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
       indices: closestCell.getIndices(),

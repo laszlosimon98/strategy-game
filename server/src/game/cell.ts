@@ -1,6 +1,6 @@
 import { Indices } from "@/utils/indices";
 import type { Instance } from "@/types/world.types";
-import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Building } from "@/game/building";
 import { TileEnum } from "@/enums/tileEnum";
 
@@ -17,7 +17,7 @@ export class Cell {
   private prevType: TileEnum;
   private type: TileEnum;
 
-  private obstacleType: CellTypeEnum;
+  private obstacleType: ObstacleEnum;
 
   private instance: Instance;
   private building: Building | null;
@@ -26,7 +26,7 @@ export class Cell {
 
   public constructor(indices: Indices) {
     this.indices = indices;
-    this.obstacleType = CellTypeEnum.Empty;
+    this.obstacleType = ObstacleEnum.Empty;
     this.instance = null;
     this.owner = null;
     this.hasTowerInfluence = false;
@@ -55,11 +55,11 @@ export class Cell {
     return this.prevType;
   }
 
-  public setObstacleType(type: CellTypeEnum): void {
+  public setObstacleType(type: ObstacleEnum): void {
     this.obstacleType = type;
   }
 
-  public getObstacleType(): CellTypeEnum {
+  public getObstacleType(): ObstacleEnum {
     return this.obstacleType;
   }
 
@@ -145,16 +145,16 @@ export class Cell {
 
   public isWalkAble(): boolean {
     return [
-      CellTypeEnum.Empty,
-      CellTypeEnum.Decorated,
-      CellTypeEnum.Occupied,
+      ObstacleEnum.Empty,
+      ObstacleEnum.Decorated,
+      ObstacleEnum.Occupied,
       // CellTypeEnum.Unit,
     ].includes(this.obstacleType);
   }
 
   public isBuildAble(): boolean {
     return (
-      this.type === TileEnum.Grass && this.obstacleType === CellTypeEnum.Empty
+      this.type === TileEnum.Grass && this.obstacleType === ObstacleEnum.Empty
     );
   }
 

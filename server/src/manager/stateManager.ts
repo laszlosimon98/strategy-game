@@ -18,7 +18,7 @@ import { Indices } from "@/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
-import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
 
 export class StateManager {
@@ -177,7 +177,7 @@ export class StateManager {
     socket: Socket,
     indices: Indices,
     range: number,
-    obstacle?: CellTypeEnum
+    obstacle?: ObstacleEnum
   ): Cell[] {
     const result: Cell[] = [];
 

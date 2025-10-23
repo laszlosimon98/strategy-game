@@ -1,4 +1,4 @@
-export enum CellTypeEnum {
+export enum ObstacleEnum {
   Empty = "empty",
   Occupied = "occupied",
   Decorated = "decorated",

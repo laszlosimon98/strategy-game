@@ -7,7 +7,7 @@ import { Cell } from "@/game/cell";
 import { Indices } from "@/utils/indices";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
-import { CellTypeEnum } from "@/enums/cellTypeEnum";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Tree } from "@/game/produceable/tree";
 import { Stone } from "@/game/produceable/stone";
 import { Territory } from "@/types/world.types";
@@ -71,10 +71,10 @@ export class World {
         }
 
         if (treeNoise >= 50 || treeNoise <= -50) {
-          cell.setObstacleType(CellTypeEnum.Tree);
+          cell.setObstacleType(ObstacleEnum.Tree);
           cell.setInstance(new Tree());
         } else if (stoneNoise >= 60 || stoneNoise <= -80) {
-          cell.setObstacleType(CellTypeEnum.Stone);
+          cell.setObstacleType(ObstacleEnum.Stone);
           cell.setInstance(new Stone());
         }
       }
@@ -236,9 +236,9 @@ export class World {
     world[i][j].setBuilding(building);
 
     this.updateCell(socket, building, 1, (cell: Cell) => {
-      cell.setObstacleType(CellTypeEnum.Occupied);
+      cell.setObstacleType(ObstacleEnum.Occupied);
     });
-    world[i][j].setObstacleType(CellTypeEnum.House);
+    world[i][j].setObstacleType(ObstacleEnum.House);
   }
 
   public static restoreCells(socket: Socket, building: Building) {
@@ -246,9 +246,9 @@ export class World {
     const world = StateManager.getWorld(socket);
 
     this.updateCell(socket, building, 1, (cell: Cell) => {
-      cell.setObstacleType(CellTypeEnum.Empty);
+      cell.setObstacleType(ObstacleEnum.Empty);
     });
-    world[i][j].setObstacleType(CellTypeEnum.Empty);
+    world[i][j].setObstacleType(ObstacleEnum.Empty);
   }
 
   public static handleGuardHouseDestruction(
@@ -299,7 +299,7 @@ export class World {
 
       if (getCellBuilding !== null) {
         lostTerritoryBuildings.push(getCellBuilding);
-        world[i][j].setObstacleType(CellTypeEnum.Empty);
+        world[i][j].setObstacleType(ObstacleEnum.Empty);
         world[i][j].setBuilding(null);
       }
     });
