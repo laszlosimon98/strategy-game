@@ -17,7 +17,6 @@ export class Cell {
   private prevType: TileEnum;
   private type: TileEnum;
 
-  // private hasObstacle: boolean;
   private obstacleType: CellTypeEnum;
 
   private instance: Instance;
@@ -42,8 +41,6 @@ export class Cell {
 
     this.prevType = TileEnum.Grass;
     this.type = TileEnum.Grass;
-
-    // this.hasObstacle = false;
   }
 
   public getIndices(): Indices {
