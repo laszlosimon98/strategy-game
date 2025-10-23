@@ -203,6 +203,7 @@ export class World {
       const cell: Cell = StateManager.getWorld(socket)[i][j];
 
       if (this.isCellBorder(cell)) {
+        cell.setObstacleType(ObstacleEnum.Border);
         borderCells.push({
           indices: cell.getIndices(),
           owner,
