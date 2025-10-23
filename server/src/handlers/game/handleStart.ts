@@ -1,12 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
-import { Cell } from "@/game/cell";
 import { World } from "@/game/world";
 import { Indices } from "@/utils/indices";
 import type { EntityType, PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
-import type { Territory, TileType } from "@/types/world.types";
+import type { Territory } from "@/types/world.types";
 import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";

@@ -10,10 +10,11 @@ import { StateManager } from "@/manager/stateManager";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Tree } from "@/game/produceable/tree";
 import { Stone } from "@/game/produceable/stone";
-import { Territory, TileType } from "@/types/world.types";
+import { Territory } from "@/types/world.types";
 import { Building } from "@/game/building";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { EntityType } from "@/types/state.types";
+import { TileEnum } from "@/enums/tileEnum";
 
 export class World {
   private static world: Cell[][] = [];
@@ -62,19 +63,17 @@ export class World {
         const cell: Cell = this.world[i][j];
 
         if (terrainNoise >= 0 && terrainNoise <= 1) {
-          cell.setType("grass_flower");
+          cell.setType(TileEnum.Flower);
         }
 
         if (terrainNoise >= settings.rockspawnChance) {
-          cell.setType("grass_rock");
+          cell.setType(TileEnum.Flower);
         }
 
         if (treeNoise >= 50 || treeNoise <= -50) {
-          cell.setObstacle(true);
           cell.setObstacleType(CellTypeEnum.Tree);
           cell.setInstance(new Tree());
         } else if (stoneNoise >= 60 || stoneNoise <= -80) {
-          cell.setObstacle(true);
           cell.setObstacleType(CellTypeEnum.Stone);
           cell.setInstance(new Stone());
         }
@@ -101,7 +100,6 @@ export class World {
   private static mirrorCell(originalCell: Cell, mirroredCell: Cell) {
     mirroredCell.setType(originalCell.getType());
     mirroredCell.setObstacleType(originalCell.getObstacleType());
-    mirroredCell.setObstacle(originalCell.cellHasObstacle());
     mirroredCell.setInstance(originalCell.getInstance());
   }
 
@@ -145,8 +143,8 @@ export class World {
     this.world = [];
   }
 
-  public static getTiles(socket: Socket): TileType[][] {
-    const tiles: TileType[][] = StateManager.getWorld(socket).map((cells) =>
+  public static getTiles(socket: Socket): TileEnum[][] {
+    const tiles: TileEnum[][] = StateManager.getWorld(socket).map((cells) =>
       cells.map((cell) => cell.getType())
     );
 
@@ -235,23 +233,22 @@ export class World {
     const { i, j } = building.getEntity().data.indices;
     const world = StateManager.getWorld(socket);
 
-    world[i][j].setObstacleType(CellTypeEnum.House);
     world[i][j].setBuilding(building);
 
     this.updateCell(socket, building, 1, (cell: Cell) => {
-      cell.setObstacle(true);
+      cell.setObstacleType(CellTypeEnum.Occupied);
     });
+    world[i][j].setObstacleType(CellTypeEnum.House);
   }
 
   public static restoreCells(socket: Socket, building: Building) {
     const { i, j } = building.getEntity().data.indices;
     const world = StateManager.getWorld(socket);
 
-    world[i][j].setObstacleType(CellTypeEnum.Empty);
-
     this.updateCell(socket, building, 1, (cell: Cell) => {
-      cell.setObstacle(false);
+      cell.setObstacleType(CellTypeEnum.Empty);
     });
+    world[i][j].setObstacleType(CellTypeEnum.Empty);
   }
 
   public static handleGuardHouseDestruction(
@@ -302,7 +299,6 @@ export class World {
 
       if (getCellBuilding !== null) {
         lostTerritoryBuildings.push(getCellBuilding);
-        world[i][j].setObstacle(false);
         world[i][j].setObstacleType(CellTypeEnum.Empty);
         world[i][j].setBuilding(null);
       }

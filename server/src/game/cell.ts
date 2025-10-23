@@ -1,7 +1,8 @@
 import { Indices } from "@/utils/indices";
-import type { Instance, TileType } from "@/types/world.types";
+import type { Instance } from "@/types/world.types";
 import { CellTypeEnum } from "@/enums/cellTypeEnum";
 import { Building } from "@/game/building";
+import { TileEnum } from "@/enums/tileEnum";
 
 export class Cell {
   private indices: Indices;
@@ -13,10 +14,10 @@ export class Cell {
   private neighbors: Cell[];
   private previous?: Cell | undefined;
 
-  private prevType: TileType;
-  private type: TileType;
+  private prevType: TileEnum;
+  private type: TileEnum;
 
-  private hasObstacle: boolean;
+  // private hasObstacle: boolean;
   private obstacleType: CellTypeEnum;
 
   private instance: Instance;
@@ -39,30 +40,22 @@ export class Cell {
     this.neighbors = [];
     this.previous = undefined;
 
-    this.prevType = "grass";
-    this.type = "grass";
+    this.prevType = TileEnum.Grass;
+    this.type = TileEnum.Grass;
 
-    this.hasObstacle = false;
+    // this.hasObstacle = false;
   }
 
   public getIndices(): Indices {
     return this.indices;
   }
 
-  public setPrevType(type: TileType): void {
+  public setPrevType(type: TileEnum): void {
     this.prevType = type;
   }
 
-  public getPrevType(): TileType {
+  public getPrevType(): TileEnum {
     return this.prevType;
-  }
-
-  public setObstacle(state: boolean): void {
-    this.hasObstacle = state;
-  }
-
-  public cellHasObstacle(): boolean {
-    return this.hasObstacle;
   }
 
   public setObstacleType(type: CellTypeEnum): void {
@@ -73,11 +66,11 @@ export class Cell {
     return this.obstacleType;
   }
 
-  public setType(type: TileType): void {
+  public setType(type: TileEnum): void {
     this.type = type;
   }
 
-  public getType(): TileType {
+  public getType(): TileEnum {
     return this.type;
   }
 
@@ -157,12 +150,15 @@ export class Cell {
     return [
       CellTypeEnum.Empty,
       CellTypeEnum.Decorated,
+      CellTypeEnum.Occupied,
       // CellTypeEnum.Unit,
     ].includes(this.obstacleType);
   }
 
   public isBuildAble(): boolean {
-    return this.type === "grass" && !this.hasObstacle;
+    return (
+      this.type === TileEnum.Grass && this.obstacleType === CellTypeEnum.Empty
+    );
   }
 
   public equals(other: Cell) {

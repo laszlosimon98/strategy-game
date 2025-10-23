@@ -39,7 +39,6 @@ export class Stonecutter extends Building {
 
     if (closestCell && cellInstance.getAmount() <= 1) {
       closestCell.setObstacleType(CellTypeEnum.Empty);
-      closestCell.setObstacle(false);
       closestCell.setInstance(null);
       this.sendMessage(io, socket, closestCell, CellTypeEnum.Empty);
       return this.production.getProductionItem();

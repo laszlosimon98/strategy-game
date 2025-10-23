@@ -12,6 +12,7 @@ import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Territory } from "@/types/world.types";
+import { CellTypeEnum } from "@/enums/cellTypeEnum";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
@@ -165,7 +166,7 @@ export class BuildingManager {
       lostTerritoryBuildings: [],
     };
 
-    if (!world[i][j].cellHasObstacle()) {
+    if (world[i][j].getObstacleType() !== CellTypeEnum.House) {
       return failedMessage;
     }
 
