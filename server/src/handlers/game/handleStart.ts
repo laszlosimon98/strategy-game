@@ -5,11 +5,12 @@ import { World } from "@/game/world";
 import { Indices } from "@/utils/indices";
 import type { EntityType, PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
-import type { Territory } from "@/types/world.types";
+import type { Territory, TerritoryUpdateResponse } from "@/types/world.types";
 import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Position } from "@/types/utils.types";
+import { GuardHouse } from "@/game/buildings/military/guardhouse";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
@@ -52,7 +53,7 @@ export const handleStart = (io: Server, socket: Socket) => {
 
       const building: Building | null = placeTower(id, pos);
 
-      if (building instanceof Building) {
+      if (building instanceof GuardHouse) {
         updateTerritory(building);
       }
     });
@@ -103,15 +104,21 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const updateTerritory = (building: Building) => {
-    const updatedCells: Territory[] | undefined = World.updateTerritory(
-      socket,
-      building
-    );
+    const updateResponse: TerritoryUpdateResponse | undefined =
+      World.updateTerritory(socket, building);
+
+    if (!updateResponse) return;
+
+    const { updatedCells, borderCells } = updateResponse;
 
     if (!updatedCells) return;
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
       data: updatedCells,
+    });
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateBorder", {
+      data: borderCells,
     });
   };
 

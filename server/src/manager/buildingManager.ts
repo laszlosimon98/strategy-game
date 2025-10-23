@@ -7,11 +7,11 @@ import { getImageNameFromUrl } from "@/utils/utils";
 import { Validator } from "@/utils/validator";
 import { StateManager } from "@/manager/stateManager";
 import { BuildingPrices, Buildings } from "@/types/building.types";
-import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
-import { Territory } from "@/types/world.types";
+import { DestroyBuildingResponse, Territory } from "@/types/world.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 
 export class BuildingManager {

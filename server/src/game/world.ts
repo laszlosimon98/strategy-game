@@ -10,7 +10,7 @@ import { StateManager } from "@/manager/stateManager";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Tree } from "@/game/produceable/tree";
 import { Stone } from "@/game/produceable/stone";
-import { Territory } from "@/types/world.types";
+import { Territory, TerritoryUpdateResponse } from "@/types/world.types";
 import { Building } from "@/game/building";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { EntityType } from "@/types/state.types";
@@ -39,7 +39,7 @@ export class World {
 
     for (let i = 0; i < size; ++i) {
       for (let j = 0; j < size; ++j) {
-        const cell = this.world[i][j];
+        const cell: Cell = this.world[i][j];
         for (const [di, dj] of dirs) {
           const ni = i + di;
           const nj = j + dj;
@@ -103,7 +103,7 @@ export class World {
     mirroredCell.setInstance(originalCell.getInstance());
   }
 
-  private static updateCell(
+  private static updateWorldInRange(
     socket: Socket,
     building: Building,
     range: number,
@@ -124,6 +124,12 @@ export class World {
         }
       }
     }
+  }
+
+  private static isCellBorder(cell: Cell): boolean {
+    return cell
+      .getNeighbors()
+      .some((neighbour) => neighbour.getOwner() === null);
   }
 
   public static createWorld(socket: Socket): void {
@@ -169,14 +175,15 @@ export class World {
   public static updateTerritory(
     socket: Socket,
     building: Building
-  ): Territory[] | undefined {
+  ): TerritoryUpdateResponse | undefined {
     if (!(building instanceof GuardHouse)) return;
 
     const { owner } = building.getEntity().data;
     const range = building.getRange();
     const updatedCells: Territory[] = [];
+    const borderCells: Territory[] = [];
 
-    this.updateCell(socket, building, range, (cell: Cell) => {
+    this.updateWorldInRange(socket, building, range, (cell: Cell) => {
       if (
         !cell.getOwner() ||
         cell.getOwner() === building.getEntity().data.owner
@@ -191,7 +198,22 @@ export class World {
       }
     });
 
-    return updatedCells;
+    updatedCells.forEach((c) => {
+      const { i, j } = c.indices;
+      const cell: Cell = StateManager.getWorld(socket)[i][j];
+
+      if (this.isCellBorder(cell)) {
+        borderCells.push({
+          indices: cell.getIndices(),
+          owner,
+        });
+      }
+    });
+
+    return {
+      updatedCells,
+      borderCells,
+    };
   }
 
   public static markCellToRestoreOwner(
@@ -202,7 +224,7 @@ export class World {
 
     const range = building.getRange();
 
-    this.updateCell(socket, building, range, (cell: Cell) => {
+    this.updateWorldInRange(socket, building, range, (cell: Cell) => {
       cell.setTowerInfluence(false);
     });
   }
@@ -216,7 +238,7 @@ export class World {
     const range = building.getRange();
     const restoredCells: Territory[] = [];
 
-    this.updateCell(socket, building, range, (cell: Cell) => {
+    this.updateWorldInRange(socket, building, range, (cell: Cell) => {
       if (!cell.getTowerInfluence()) {
         cell.setOwner(null);
         restoredCells.push({
@@ -235,7 +257,7 @@ export class World {
 
     world[i][j].setBuilding(building);
 
-    this.updateCell(socket, building, 1, (cell: Cell) => {
+    this.updateWorldInRange(socket, building, 1, (cell: Cell) => {
       cell.setObstacleType(ObstacleEnum.Occupied);
     });
     world[i][j].setObstacleType(ObstacleEnum.House);
@@ -245,7 +267,7 @@ export class World {
     const { i, j } = building.getEntity().data.indices;
     const world = StateManager.getWorld(socket);
 
-    this.updateCell(socket, building, 1, (cell: Cell) => {
+    this.updateWorldInRange(socket, building, 1, (cell: Cell) => {
       cell.setObstacleType(ObstacleEnum.Empty);
     });
     world[i][j].setObstacleType(ObstacleEnum.Empty);

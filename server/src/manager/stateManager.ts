@@ -17,9 +17,10 @@ import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/utils/indices";
 import { BuildingPrices } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
-import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
+import { DestroyBuildingResponse } from "@/types/world.types";
 
 export class StateManager {
   private static state: StateType = {};

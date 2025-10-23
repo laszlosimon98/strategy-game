@@ -184,5 +184,23 @@ export class World implements MouseHandlerInterface {
         });
       }
     );
+
+    ServerHandler.receiveMessage(
+      "game:updateBorder",
+      ({ data }: { data: Territory[] }) => {
+        data.forEach((cell) => {
+          const { indices, owner } = cell;
+          const { i, j } = indices;
+
+          StateManager.getWorld()[i][j].setObstacleImage(
+            StateManager.getImages(
+              "utils",
+              StateManager.getPlayerColor(owner as string),
+              "border"
+            ).url
+          );
+        });
+      }
+    );
   }
 }

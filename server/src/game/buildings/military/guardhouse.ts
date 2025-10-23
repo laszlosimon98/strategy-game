@@ -5,6 +5,6 @@ export class GuardHouse extends Building {
   public constructor(building: EntityType) {
     super(building);
 
-    this.range = 7;
+    this.range = 11;
   }
 }

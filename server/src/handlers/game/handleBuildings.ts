@@ -4,12 +4,16 @@ import { Building } from "@/game/building";
 import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
-import { DestroyBuildingResponse, ReturnMessage } from "@/types/setting.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
 import { getImageNameFromUrl } from "@/utils/utils";
-import { Territory } from "@/types/world.types";
+import {
+  DestroyBuildingResponse,
+  TerritoryUpdateResponse,
+} from "@/types/world.types";
 import { World } from "@/game/world";
+import { GuardHouse } from "@/game/buildings/military/guardhouse";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (
@@ -54,10 +58,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       calculateNewStorageValues(room, response);
 
       const storage: StorageType = StateManager.getStorage(socket, room);
-      const updatedCells: Territory[] | undefined = World.updateTerritory(
-        socket,
-        response
-      );
+      const updateResponse: TerritoryUpdateResponse | undefined =
+        World.updateTerritory(socket, response);
 
       ServerHandler.sendMessageToEveryOne(
         io,
@@ -66,7 +68,11 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         response.getEntity()
       );
 
-      if (updatedCells) {
+      if (response instanceof GuardHouse) {
+        if (!updateResponse) return;
+
+        const { updatedCells, borderCells } = updateResponse;
+
         ServerHandler.sendMessageToEveryOne(
           io,
           socket,
@@ -75,6 +81,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
             data: updatedCells,
           }
         );
+
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:updateBorder", {
+          data: borderCells,
+        });
       }
 
       ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
