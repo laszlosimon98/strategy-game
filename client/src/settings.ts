@@ -13,7 +13,7 @@ const MESSAGE_INDICATOR: Dimension = new Dimension(500, 50);
 const CELL_SIZE: number = 48;
 
 export const settings = {
-  fps: 30,
+  fps: 60,
   margin: MARGIN,
   size: {
     button: BUTTON_DIMENSION,
