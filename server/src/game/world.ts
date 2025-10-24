@@ -15,6 +15,7 @@ import { Building } from "@/game/building";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { EntityType } from "@/types/state.types";
 import { TileEnum } from "@/enums/tileEnum";
+import { calculateDistanceByIndices } from "@/utils/utils";
 
 export class World {
   private static world: Cell[][] = [];
@@ -107,7 +108,10 @@ export class World {
     socket: Socket,
     building: Building,
     range: number,
-    fn: (cell: Cell) => void
+    fn: (cell: Cell) => void,
+    options?: {
+      isCircle: boolean;
+    }
   ): void {
     const world: Cell[][] = StateManager.getWorld(socket);
     const { i, j } = building.getEntity().data.indices;
@@ -120,7 +124,18 @@ export class World {
 
         if (il >= 0 && il < size && jk >= 0 && jk < size) {
           const cell: Cell = world[i + l][j + k];
-          fn(cell);
+          if (options && options.isCircle) {
+            const distance: number = calculateDistanceByIndices(
+              cell.getIndices(),
+              building.getEntity().data.indices
+            );
+
+            if (distance < range) {
+              fn(cell);
+            }
+          } else {
+            fn(cell);
+          }
         }
       }
     }
@@ -183,7 +198,7 @@ export class World {
     const updatedCells: Territory[] = [];
     const borderCells: Territory[] = [];
 
-    this.updateWorldInRange(socket, building, range, (cell: Cell) => {
+    const handleTerritory = (cell: Cell): void => {
       if (
         !cell.getOwner() ||
         cell.getOwner() === building.getEntity().data.owner
@@ -196,7 +211,15 @@ export class World {
           owner,
         });
       }
-    });
+    };
+
+    this.updateWorldInRange(
+      socket,
+      building,
+      range,
+      (cell: Cell) => handleTerritory(cell),
+      { isCircle: true }
+    );
 
     updatedCells.forEach((c) => {
       const { i, j } = c.indices;
@@ -225,9 +248,15 @@ export class World {
 
     const range = building.getRange();
 
-    this.updateWorldInRange(socket, building, range, (cell: Cell) => {
-      cell.setTowerInfluence(false);
-    });
+    this.updateWorldInRange(
+      socket,
+      building,
+      range,
+      (cell: Cell) => {
+        cell.setTowerInfluence(false);
+      },
+      { isCircle: true }
+    );
   }
 
   public static restoreCellsWithoutTowerInfluence(
@@ -239,15 +268,21 @@ export class World {
     const range = building.getRange();
     const restoredCells: Territory[] = [];
 
-    this.updateWorldInRange(socket, building, range, (cell: Cell) => {
-      if (!cell.getTowerInfluence()) {
-        cell.setOwner(null);
-        restoredCells.push({
-          indices: cell.getIndices(),
-          owner: null,
-        });
-      }
-    });
+    this.updateWorldInRange(
+      socket,
+      building,
+      range,
+      (cell: Cell) => {
+        if (!cell.getTowerInfluence()) {
+          cell.setOwner(null);
+          restoredCells.push({
+            indices: cell.getIndices(),
+            owner: null,
+          });
+        }
+      },
+      { isCircle: true }
+    );
 
     return restoredCells;
   }

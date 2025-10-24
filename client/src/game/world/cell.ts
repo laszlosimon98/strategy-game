@@ -14,7 +14,6 @@ export class Cell {
   private unitPos: Position;
   private cameraPos: Position;
   private obstaclePos: Position;
-  private borderPos: Position;
   private owner: string | null;
 
   private isometricPos: Position[];
@@ -53,11 +52,6 @@ export class Cell {
     );
 
     this.obstaclePos = new Position(
-      this.isometricPos[0].x,
-      this.isometricPos[0].y - 64
-    );
-
-    this.borderPos = new Position(
       this.isometricPos[0].x,
       this.isometricPos[0].y - 64
     );
