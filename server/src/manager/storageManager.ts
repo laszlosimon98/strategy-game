@@ -31,15 +31,6 @@ export class StorageManager {
 
   private constructor() {}
 
-  private static updateStorage(
-    socket: Socket,
-    room: string,
-    state: StateType,
-    newStorageValues: StorageType
-  ): void {
-    state[room].players[socket.id].storage = { ...newStorageValues };
-  }
-
   public static getInitStorage(): StorageType {
     return this.initStorage;
   }
@@ -135,5 +126,14 @@ export class StorageManager {
     }
 
     return currentItem;
+  }
+
+  private static updateStorage(
+    socket: Socket,
+    room: string,
+    state: StateType,
+    newStorageValues: StorageType
+  ): void {
+    state[room].players[socket.id].storage = { ...newStorageValues };
   }
 }

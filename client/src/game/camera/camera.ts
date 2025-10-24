@@ -16,6 +16,27 @@ export class Camera {
     this.speed = settings.speed.camera;
   }
 
+  public getScroll(): Position {
+    return this.scroll;
+  }
+
+  public setScroll(scroll: Position): void {
+    this.scroll = scroll;
+  }
+
+  public update(dt: number, mousePos: Position, key: string): void {
+    this.handleCameraMovementWithKeyboard(key);
+    // this.handleCameraMovementWithMouse(mousePos);
+
+    const movementDir: Vector = new Vector(
+      this.keyboardDir.x || this.mouseDir.x,
+      this.keyboardDir.y || this.mouseDir.y
+    );
+
+    this.scroll.x += this.speed * dt * movementDir.x;
+    this.scroll.y += this.speed * dt * movementDir.y;
+  }
+
   private handleCameraMovementWithKeyboard(key: string): void {
     switch (key) {
       case "ArrowLeft": {
@@ -78,26 +99,5 @@ export class Camera {
     } else {
       this.mouseDir.y = 0;
     }
-  }
-
-  public getScroll(): Position {
-    return this.scroll;
-  }
-
-  public setScroll(scroll: Position): void {
-    this.scroll = scroll;
-  }
-
-  public update(dt: number, mousePos: Position, key: string): void {
-    this.handleCameraMovementWithKeyboard(key);
-    // this.handleCameraMovementWithMouse(mousePos);
-
-    const movementDir: Vector = new Vector(
-      this.keyboardDir.x || this.mouseDir.x,
-      this.keyboardDir.y || this.mouseDir.y
-    );
-
-    this.scroll.x += this.speed * dt * movementDir.x;
-    this.scroll.y += this.speed * dt * movementDir.y;
   }
 }

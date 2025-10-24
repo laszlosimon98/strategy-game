@@ -39,19 +39,6 @@ export class Game {
     this.handleCommunication();
   }
 
-  private async init(): Promise<void> {
-    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
-    this.initPlayers(players);
-
-    StateManager.setGameState(GameState.Default);
-    this.world = new World();
-    this.world.init();
-  }
-
-  private initPlayers(players: PlayerGameType): void {
-    StateManager.initPlayers(players);
-  }
-
   public draw(): void {
     this.world?.draw();
     this.gameMenu.draw();
@@ -93,6 +80,19 @@ export class Game {
 
   public handleKeyPress(key: string): void {
     this.key = key;
+  }
+
+  private async init(): Promise<void> {
+    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
+    this.initPlayers(players);
+
+    StateManager.setGameState(GameState.Default);
+    this.world = new World();
+    this.world.init();
+  }
+
+  private initPlayers(players: PlayerGameType): void {
+    StateManager.initPlayers(players);
   }
 
   private async handleCommunication(): Promise<void> {

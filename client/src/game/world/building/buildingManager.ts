@@ -70,6 +70,26 @@ export class BuildingManager extends Manager<Building> {
     this.hoverObject(mousePos, cameraScroll, "buildings");
   }
 
+  protected handleCommunication(): void {
+    ServerHandler.receiveMessage("game:build", (entity: EntityType) => {
+      this.build(entity);
+    });
+
+    ServerHandler.receiveMessage(
+      "game:destroy",
+      ({ entity }: { entity: EntityType }) => {
+        this.destroy(entity);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:destroyLostTerritoryBuildings",
+      ({ entities }: { entities: EntityType[] }) => {
+        entities.forEach((entity) => this.destroy(entity));
+      }
+    );
+  }
+
   private build(entity: EntityType): void {
     const newBuilding: Building = this.creator<Building>(Building, entity);
 
@@ -126,25 +146,5 @@ export class BuildingManager extends Manager<Building> {
 
       ServerHandler.sendMessage("game:build", entity);
     }
-  }
-
-  protected handleCommunication(): void {
-    ServerHandler.receiveMessage("game:build", (entity: EntityType) => {
-      this.build(entity);
-    });
-
-    ServerHandler.receiveMessage(
-      "game:destroy",
-      ({ entity }: { entity: EntityType }) => {
-        this.destroy(entity);
-      }
-    );
-
-    ServerHandler.receiveMessage(
-      "game:destroyLostTerritoryBuildings",
-      ({ entities }: { entities: EntityType[] }) => {
-        entities.forEach((entity) => this.destroy(entity));
-      }
-    );
   }
 }

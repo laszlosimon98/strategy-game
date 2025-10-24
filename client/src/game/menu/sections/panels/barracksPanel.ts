@@ -20,6 +20,28 @@ export class BarracksPanel extends Section {
     this.initButtons();
   }
 
+  public draw(): void {
+    if (this.isPlayerInitialized) {
+      this.barracksButtons.forEach((btn) => btn.draw());
+    }
+  }
+
+  public update(dt: number, mousePos: Position): void {
+    if (!this.isPlayerInitialized) {
+      this.initButtons();
+    } else {
+      this.barracksButtons.forEach((btn) => btn.update(dt, mousePos));
+    }
+  }
+
+  public handleClick(mousePos: Position): void {
+    this.barracksButtons.forEach((btn) => {
+      if (btn.isClicked(mousePos.x, mousePos.y)) {
+        this.createUnit(btn);
+      }
+    });
+  }
+
   private initButtons(): void {
     const playerId = ServerHandler.getId();
     const players = StateManager.getPlayers();
@@ -55,28 +77,6 @@ export class BarracksPanel extends Section {
         )
       );
     }
-  }
-
-  public draw(): void {
-    if (this.isPlayerInitialized) {
-      this.barracksButtons.forEach((btn) => btn.draw());
-    }
-  }
-
-  public update(dt: number, mousePos: Position): void {
-    if (!this.isPlayerInitialized) {
-      this.initButtons();
-    } else {
-      this.barracksButtons.forEach((btn) => btn.update(dt, mousePos));
-    }
-  }
-
-  public handleClick(mousePos: Position): void {
-    this.barracksButtons.forEach((btn) => {
-      if (btn.isClicked(mousePos.x, mousePos.y)) {
-        this.createUnit(btn);
-      }
-    });
   }
 
   // FIXME: Amint elmentem a cellákat is a state-be, akkor onnan le tudom kérdeni a pos-t

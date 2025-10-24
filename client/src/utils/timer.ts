@@ -16,11 +16,6 @@ export class Timer {
     this.startTime = performance.now();
   }
 
-  private deactivate(): void {
-    this.isActive = false;
-    this.startTime = 0;
-  }
-
   public update(): void {
     const currentTime = performance.now();
     if (currentTime - this.startTime >= this.duration) {
@@ -33,5 +28,10 @@ export class Timer {
 
   public isTimerActive(): boolean {
     return this.isActive;
+  }
+
+  private deactivate(): void {
+    this.isActive = false;
+    this.startTime = 0;
   }
 }

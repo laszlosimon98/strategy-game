@@ -5,12 +5,6 @@ import { Indices } from "@/utils/indices";
 export class PathFinder {
   private constructor() {}
 
-  private static resetWorld(world: Cell[][]): void {
-    world.forEach((cells) =>
-      cells.forEach((cell) => cell.setPrevious(undefined))
-    );
-  }
-
   public static getPath(
     world: Cell[][],
     start: Indices,
@@ -24,5 +18,11 @@ export class PathFinder {
     const path: Indices[] = AStar.getPath(startCell, endCell);
 
     return path;
+  }
+
+  private static resetWorld(world: Cell[][]): void {
+    world.forEach((cells) =>
+      cells.forEach((cell) => cell.setPrevious(undefined))
+    );
   }
 }

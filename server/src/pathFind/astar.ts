@@ -6,6 +6,15 @@ export class AStar {
 
   private constructor() {}
 
+  public static getPath(start: Cell, end: Cell): Indices[] {
+    this.calculatePath(start, end);
+    const path: Cell[] = this.buildPath();
+    const pathIndices = this.convertPathToIndices(path);
+    // this.destroyPath();
+
+    return pathIndices;
+  }
+
   private static heuristic(current: Cell, end: Cell): number {
     const { i: ci, j: cj } = current.getIndices();
     const { i: ei, j: ej } = current.getIndices();
@@ -77,15 +86,6 @@ export class AStar {
     }
 
     return false;
-  }
-
-  public static getPath(start: Cell, end: Cell): Indices[] {
-    this.calculatePath(start, end);
-    const path: Cell[] = this.buildPath();
-    const pathIndices = this.convertPathToIndices(path);
-    // this.destroyPath();
-
-    return pathIndices;
   }
 
   private static buildPath(): Cell[] {

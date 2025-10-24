@@ -124,21 +124,6 @@ export class UnitManager extends Manager<Unit> {
     });
   }
 
-  private handleMove(dt: number): void {
-    StateManager.getMovingUnits(ServerHandler.getId()).forEach((unit) => {
-      if (unit.getState() === UnitStates.Walking) {
-        unit.move(dt);
-      }
-    });
-  }
-
-  private sendPathFindRequest(entity: EntityType, goal: Indices): void {
-    ServerHandler.sendMessage("game:pathFind", {
-      entity,
-      goal,
-    });
-  }
-
   protected handleCommunication(): void {
     ServerHandler.receiveMessage(
       "game:unitCreate",
@@ -242,5 +227,20 @@ export class UnitManager extends Manager<Unit> {
         ServerHandler.sendMessage("game:unitStopAttacking", unit);
       }
     );
+  }
+
+  private handleMove(dt: number): void {
+    StateManager.getMovingUnits(ServerHandler.getId()).forEach((unit) => {
+      if (unit.getState() === UnitStates.Walking) {
+        unit.move(dt);
+      }
+    });
+  }
+
+  private sendPathFindRequest(entity: EntityType, goal: Indices): void {
+    ServerHandler.sendMessage("game:pathFind", {
+      entity,
+      goal,
+    });
   }
 }

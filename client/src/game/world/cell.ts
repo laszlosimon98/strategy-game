@@ -65,33 +65,6 @@ export class Cell {
     }
   }
 
-  private drawGrid(grid: Position[]): void {
-    ctx.beginPath();
-    for (let i = 0; i < grid.length - 1; ++i) {
-      const current: Position = grid[i];
-      const next: Position = grid[i + 1];
-
-      ctx.moveTo(current.x, current.y);
-      ctx.lineTo(next.x, next.y);
-    }
-
-    const last: Position = grid[grid.length - 1];
-    const first: Position = grid[0];
-
-    ctx.moveTo(last.x, last.y);
-    ctx.lineTo(first.x, first.y);
-
-    ctx.strokeStyle = "#fff";
-    ctx.stroke();
-    ctx.closePath();
-  }
-
-  private drawObstacles(): void {
-    if (this.obstacleImage) {
-      ctx.drawImage(this.obstacleImage, this.obstaclePos.x, this.obstaclePos.y);
-    }
-  }
-
   public draw(): void {
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
     this.drawObstacles();
@@ -164,5 +137,32 @@ export class Cell {
 
   public setOwner(id: string | null): void {
     this.owner = id;
+  }
+
+  private drawGrid(grid: Position[]): void {
+    ctx.beginPath();
+    for (let i = 0; i < grid.length - 1; ++i) {
+      const current: Position = grid[i];
+      const next: Position = grid[i + 1];
+
+      ctx.moveTo(current.x, current.y);
+      ctx.lineTo(next.x, next.y);
+    }
+
+    const last: Position = grid[grid.length - 1];
+    const first: Position = grid[0];
+
+    ctx.moveTo(last.x, last.y);
+    ctx.lineTo(first.x, first.y);
+
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+    ctx.closePath();
+  }
+
+  private drawObstacles(): void {
+    if (this.obstacleImage) {
+      ctx.drawImage(this.obstacleImage, this.obstaclePos.x, this.obstaclePos.y);
+    }
   }
 }

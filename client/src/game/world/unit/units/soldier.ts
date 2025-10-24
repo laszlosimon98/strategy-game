@@ -11,11 +11,10 @@ import { Timer } from "@/utils/timer";
 
 export class Soldier extends Unit {
   protected properties: SoldierPropertiesType;
-  private unitHealth: number;
-
   protected attackTimer: Timer;
-  private rangeIndicator: RangeIndicator;
 
+  private unitHealth: number;
+  private rangeIndicator: RangeIndicator;
   private opponent: Soldier | undefined;
 
   constructor(
@@ -69,29 +68,6 @@ export class Soldier extends Unit {
     );
   }
 
-  private attack(): void {
-    const opponent = this.getOpponent();
-    if (this.getState() === UnitStates.Attacking && opponent) {
-      ServerHandler.sendMessage("game:unitDealDamage", {
-        unit: this.getEntity(),
-        opponent: opponent.getEntity(),
-      });
-      this.attackTimer.activate();
-    }
-  }
-
-  private drawHealthBar(): void {
-    ctx.save();
-    ctx.fillStyle = StateManager.getPlayerColor(this.entity.data.owner);
-    ctx.fillRect(
-      this.renderPos.x + this.image.width / 2 - this.unitHealth / 4,
-      this.renderPos.y - 3,
-      Math.max(0, this.properties.health / 2),
-      7
-    );
-    ctx.restore();
-  }
-
   public setHealth(health: number): void {
     this.properties.health = health;
   }
@@ -114,5 +90,28 @@ export class Soldier extends Unit {
 
   public getCurrentHealth(): number {
     return this.unitHealth;
+  }
+
+  private attack(): void {
+    const opponent = this.getOpponent();
+    if (this.getState() === UnitStates.Attacking && opponent) {
+      ServerHandler.sendMessage("game:unitDealDamage", {
+        unit: this.getEntity(),
+        opponent: opponent.getEntity(),
+      });
+      this.attackTimer.activate();
+    }
+  }
+
+  private drawHealthBar(): void {
+    ctx.save();
+    ctx.fillStyle = StateManager.getPlayerColor(this.entity.data.owner);
+    ctx.fillRect(
+      this.renderPos.x + this.image.width / 2 - this.unitHealth / 4,
+      this.renderPos.y - 3,
+      Math.max(0, this.properties.health / 2),
+      7
+    );
+    ctx.restore();
   }
 }

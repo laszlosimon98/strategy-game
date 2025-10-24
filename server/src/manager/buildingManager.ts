@@ -35,83 +35,6 @@ export class BuildingManager {
 
   private constructor() {}
 
-  private static isPossibleToBuild = (
-    xPos: number,
-    yPos: number,
-    socket: Socket
-  ): boolean => {
-    return StateManager.getWorld(socket)[xPos][yPos].isBuildAble();
-  };
-
-  private static createBuilding(
-    room: string,
-    socket: Socket,
-    state: StateType,
-    building: Building
-  ): void {
-    state[room].players[building.getEntity().data.owner].buildings.push(
-      building
-    );
-  }
-
-  private static destroyBuilding(
-    room: string,
-    socket: Socket,
-    state: StateType,
-    building: Building
-  ): void {
-    const buildingIndex: number = state[room].players[
-      socket.id
-    ].buildings.findIndex(
-      (b) => b.getEntity().data.id === building.getEntity().data.id
-    );
-
-    if (buildingIndex === -1) return;
-
-    state[room].players[socket.id].buildings.splice(buildingIndex, 1);
-  }
-
-  private static hasMaterialsToBuild(
-    socket: Socket,
-    room: string,
-    buildingName: Buildings
-  ): boolean {
-    const { boards, stone } = this.buildingPrices[buildingName as Buildings];
-
-    const hasPlayerEnoughBoards: boolean = StateManager.hasMaterial(
-      socket,
-      room,
-      "materials",
-      "boards",
-      boards
-    );
-    const hasPlayerEnoughStone: boolean = StateManager.hasMaterial(
-      socket,
-      room,
-      "materials",
-      "stone",
-      stone
-    );
-
-    return hasPlayerEnoughBoards && hasPlayerEnoughStone;
-  }
-
-  private static setProduction(entity: EntityType, building: Building) {
-    entity.data.cooldownTimer = building.getCooldown();
-    entity.data.productionTime = building.getProductionTime();
-
-    if (building.isProductionBuilding()) {
-      entity.data.isProductionBuilding = true;
-    }
-  }
-
-  private static creator<T>(
-    Creator: new (...args: any[]) => T,
-    ...args: ConstructorParameters<typeof Creator>
-  ): T {
-    return new Creator(...args);
-  }
-
   public static getBuildingPrices(): BuildingPrices {
     return this.buildingPrices;
   }
@@ -244,5 +167,82 @@ export class BuildingManager {
   ): Building | undefined {
     const buildings: Building[] = this.getBuildings(room, socket, state);
     return buildings.find((b) => b.getEntity().data.id === entity.data.id);
+  }
+
+  private static isPossibleToBuild = (
+    xPos: number,
+    yPos: number,
+    socket: Socket
+  ): boolean => {
+    return StateManager.getWorld(socket)[xPos][yPos].isBuildAble();
+  };
+
+  private static createBuilding(
+    room: string,
+    socket: Socket,
+    state: StateType,
+    building: Building
+  ): void {
+    state[room].players[building.getEntity().data.owner].buildings.push(
+      building
+    );
+  }
+
+  private static destroyBuilding(
+    room: string,
+    socket: Socket,
+    state: StateType,
+    building: Building
+  ): void {
+    const buildingIndex: number = state[room].players[
+      socket.id
+    ].buildings.findIndex(
+      (b) => b.getEntity().data.id === building.getEntity().data.id
+    );
+
+    if (buildingIndex === -1) return;
+
+    state[room].players[socket.id].buildings.splice(buildingIndex, 1);
+  }
+
+  private static hasMaterialsToBuild(
+    socket: Socket,
+    room: string,
+    buildingName: Buildings
+  ): boolean {
+    const { boards, stone } = this.buildingPrices[buildingName as Buildings];
+
+    const hasPlayerEnoughBoards: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "materials",
+      "boards",
+      boards
+    );
+    const hasPlayerEnoughStone: boolean = StateManager.hasMaterial(
+      socket,
+      room,
+      "materials",
+      "stone",
+      stone
+    );
+
+    return hasPlayerEnoughBoards && hasPlayerEnoughStone;
+  }
+
+  private static setProduction(entity: EntityType, building: Building) {
+    entity.data.cooldownTimer = building.getCooldown();
+    entity.data.productionTime = building.getProductionTime();
+
+    if (building.isProductionBuilding()) {
+      entity.data.isProductionBuilding = true;
+    }
+  }
+
+  private static creator<T>(
+    Creator: new (...args: any[]) => T,
+    ...args: ConstructorParameters<typeof Creator>
+  ): T {
+    return new Creator(...args);
   }
 }

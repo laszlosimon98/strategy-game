@@ -6,6 +6,11 @@ import { settings } from "@/settings";
 export class Loader {
   private constructor() {}
 
+  public static async loadImages(baseDir: string) {
+    const files = await this.getFiles(baseDir);
+    return this.generateRoutes(baseDir, files);
+  }
+
   private static async getFiles(dir: string): Promise<string[]> {
     const entries = await fs.readdir(dir, { withFileTypes: true });
     const files = await Promise.all(
@@ -16,11 +21,6 @@ export class Loader {
     );
 
     return files.flat().filter((file) => file.endsWith(".png"));
-  }
-
-  public static async loadImages(baseDir: string) {
-    const files = await this.getFiles(baseDir);
-    return this.generateRoutes(baseDir, files);
   }
 
   private static generateRoutes(baseDir: string, files: string[]) {

@@ -24,6 +24,21 @@ export class StorageSection extends Section {
     this.handleCommunication();
   }
 
+  public draw(): void {
+    super.draw();
+    if (this.storage) {
+      this.items.forEach((item) => item.draw());
+    }
+  }
+
+  public update(dt: number, mousePos: Position): void {
+    super.update(dt, mousePos);
+
+    if (!this.storage) {
+      this.initializeStorage();
+    }
+  }
+
   private initializeStorage(): void {
     this.storage = StateManager.getStorage(this.playerId);
 
@@ -110,21 +125,6 @@ export class StorageSection extends Section {
     this.items.push(
       new StorageItem(pos, Dimension.zero(), path, item, this.storage)
     );
-  }
-
-  public draw(): void {
-    super.draw();
-    if (this.storage) {
-      this.items.forEach((item) => item.draw());
-    }
-  }
-
-  public update(dt: number, mousePos: Position): void {
-    super.update(dt, mousePos);
-
-    if (!this.storage) {
-      this.initializeStorage();
-    }
   }
 
   private updateStorageUI() {

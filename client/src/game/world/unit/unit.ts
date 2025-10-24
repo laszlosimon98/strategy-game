@@ -70,21 +70,6 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.nextCellPos = Position.zero();
   }
 
-  private initDirections(): Record<string, number> {
-    const result: Record<string, number> = {
-      DOWN: 0,
-      DOWN_LEFT: 64,
-      LEFT: 128,
-      UP_LEFT: 192,
-      UP: 256,
-      UP_RIGHT: 320,
-      RIGHT: 384,
-      DOWN_RIGHT: 448,
-    };
-
-    return result;
-  }
-
   public draw(): void {
     ctx.drawImage(
       this.image,
@@ -174,6 +159,66 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.path = [...path];
   }
 
+  public resetAnimation(): void {
+    this.animationCounter = 0;
+  }
+
+  public reset(): void {
+    this.animationCounter = 0;
+    this.setState(UnitStates.Idle);
+    this.path = [];
+
+    const id: string = ServerHandler.getId();
+    const movingUnits = StateManager.getMovingUnits(id);
+    removeElementFromArray(
+      movingUnits,
+      StateManager.findSoldier(this.getEntity())
+    );
+  }
+
+  public move(dt: number): void {
+    if (this.path.length > 1) {
+      this.setNextFace();
+      this.initCells();
+
+      const { x: startX, y: startY }: Position = this.currentCellPos;
+      const { x: endX, y: endY }: Position = this.nextCellPos;
+
+      let dirVector: Vector = new Vector(endX - startX, endY - startY);
+      const distance = dirVector.getDistance();
+      const maxMove = settings.speed.unit * dt;
+      let newPos: Position;
+
+      if (distance > maxMove) {
+        this.setNextCell();
+        const moveVector: Vector = dirVector.normalize().mult(maxMove);
+        newPos = this.getPosition().add(moveVector as Position);
+      } else {
+        newPos = this.nextCellPos;
+        this.path.shift();
+      }
+      this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
+      ySort(StateManager.getSoldiers(ServerHandler.getId()));
+    } else {
+      this.sendDestinationReachedRequest(this.entity);
+    }
+  }
+
+  private initDirections(): Record<string, number> {
+    const result: Record<string, number> = {
+      DOWN: 0,
+      DOWN_LEFT: 64,
+      LEFT: 128,
+      UP_LEFT: 192,
+      UP: 256,
+      UP_RIGHT: 320,
+      RIGHT: 384,
+      DOWN_RIGHT: 448,
+    };
+
+    return result;
+  }
+
   private animate(dt: number): void {
     this.animationCounter += settings.animation.speed * dt;
 
@@ -221,23 +266,6 @@ export abstract class Unit extends Entity implements RendererInterface {
     }
   }
 
-  public resetAnimation(): void {
-    this.animationCounter = 0;
-  }
-
-  public reset(): void {
-    this.animationCounter = 0;
-    this.setState(UnitStates.Idle);
-    this.path = [];
-
-    const id: string = ServerHandler.getId();
-    const movingUnits = StateManager.getMovingUnits(id);
-    removeElementFromArray(
-      movingUnits,
-      StateManager.findSoldier(this.getEntity())
-    );
-  }
-
   private async setNextCell() {
     const currentCell: Cell = this.path[0];
     const nextCell: Cell = this.path[1];
@@ -264,34 +292,6 @@ export abstract class Unit extends Entity implements RendererInterface {
     const currentCell: Cell = this.path[0];
     const nextCell: Cell = this.path[1];
     this.calculateFacing(currentCell, nextCell);
-  }
-
-  public move(dt: number): void {
-    if (this.path.length > 1) {
-      this.setNextFace();
-      this.initCells();
-
-      const { x: startX, y: startY }: Position = this.currentCellPos;
-      const { x: endX, y: endY }: Position = this.nextCellPos;
-
-      let dirVector: Vector = new Vector(endX - startX, endY - startY);
-      const distance = dirVector.getDistance();
-      const maxMove = settings.speed.unit * dt;
-      let newPos: Position;
-
-      if (distance > maxMove) {
-        this.setNextCell();
-        const moveVector: Vector = dirVector.normalize().mult(maxMove);
-        newPos = this.getPosition().add(moveVector as Position);
-      } else {
-        newPos = this.nextCellPos;
-        this.path.shift();
-      }
-      this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
-      ySort(StateManager.getSoldiers(ServerHandler.getId()));
-    } else {
-      this.sendDestinationReachedRequest(this.entity);
-    }
   }
 
   private sendDestinationReachedRequest(entity: EntityType): void {

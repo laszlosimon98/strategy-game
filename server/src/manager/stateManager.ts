@@ -27,14 +27,6 @@ export class StateManager {
 
   private constructor() {}
 
-  private static chooseColor(colors: ColorType[]): ColorType {
-    const randomNumber = Math.floor(Math.random() * colors.length);
-
-    const playerColor = colors[randomNumber];
-    colors.splice(randomNumber, 1);
-    return playerColor;
-  }
-
   public static getState(): StateType {
     return this.state;
   }
@@ -335,5 +327,13 @@ export class StateManager {
       name,
       amount
     );
+  }
+
+  private static chooseColor(colors: ColorType[]): ColorType {
+    const randomNumber = Math.floor(Math.random() * colors.length);
+
+    const playerColor = colors[randomNumber];
+    colors.splice(randomNumber, 1);
+    return playerColor;
   }
 }
