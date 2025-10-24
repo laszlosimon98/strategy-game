@@ -177,9 +177,10 @@ export class World implements MouseHandlerInterface {
         const { i, j } = indices;
         const currentCell: Cell = StateManager.getWorld()[i][j];
 
-        console.log(obstacle, owner);
-
-        if (obstacle === ObstacleEnum.Empty) {
+        if (
+          obstacle === ObstacleEnum.Empty ||
+          obstacle === ObstacleEnum.Occupied
+        ) {
           currentCell.setObstacleImage(ObstacleEnum.Empty);
         } else if (obstacle === ObstacleEnum.Tree) {
           currentCell.setObstacleImage(
