@@ -10,7 +10,6 @@ import { StateManager } from "@/manager/stateManager";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Tree } from "@/game/produceable/tree";
 import { Stone } from "@/game/produceable/stone";
-import { Territory, TerritoryUpdateResponse } from "@/types/world.types";
 import { Building } from "@/game/building";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { EntityType } from "@/types/state.types";
@@ -93,57 +92,47 @@ export class World {
     return cells[i][j].getOwner() === entity.data.owner;
   }
 
-  public static updateTerritory(
-    socket: Socket,
-    building: Building
-  ): TerritoryUpdateResponse | undefined {
-    if (!(building instanceof GuardHouse)) return;
-
-    const { owner } = building.getEntity().data;
-    const range = building.getRange();
-    const updatedCells: Territory[] = [];
-    const borderCells: Territory[] = [];
-
-    const handleTerritory = (cell: Cell): void => {
-      if (
-        !cell.getOwner() ||
-        cell.getOwner() === building.getEntity().data.owner
-      ) {
-        cell.setOwner(owner);
-        cell.setTowerInfluence(true);
-
-        updatedCells.push({
-          indices: cell.getIndices(),
-          owner,
-        });
-      }
-    };
-
-    this.updateWorldInRange(
-      socket,
-      building,
-      range,
-      (cell: Cell) => handleTerritory(cell),
-      { isCircle: true }
+  public static updateTerritory(socket: Socket): Cell[] {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const buildings: Building[] = StateManager.getBuildings(room, socket);
+    const guardHouses: GuardHouse[] = buildings.filter(
+      (building) => building.getEntity().data.name === "guardhouse"
     );
+    const updatedCells: Cell[] = [];
 
-    updatedCells.forEach((c) => {
-      const { i, j } = c.indices;
-      const cell: Cell = StateManager.getWorld(socket)[i][j];
+    guardHouses.forEach((guardHouse) => {
+      const { owner } = guardHouse.getEntity().data;
+      const range = guardHouse.getRange();
 
+      const handleTerritory = (cell: Cell): void => {
+        if (
+          !cell.getOwner() ||
+          cell.getOwner() === guardHouse.getEntity().data.owner
+        ) {
+          cell.setOwner(owner);
+          cell.setTowerInfluence(true);
+
+          updatedCells.push(cell);
+        }
+      };
+
+      this.updateWorldInRange(
+        socket,
+        guardHouse,
+        range,
+        (cell: Cell) => handleTerritory(cell),
+        { isCircle: true }
+      );
+    });
+
+    updatedCells.forEach((cell) => {
+      cell.removeObstacle(ObstacleEnum.Border);
       if (this.isCellBorder(cell)) {
         cell.addObstacle(ObstacleEnum.Border);
-        borderCells.push({
-          indices: cell.getIndices(),
-          owner,
-        });
       }
     });
 
-    return {
-      updatedCells,
-      borderCells,
-    };
+    return updatedCells;
   }
 
   public static occupyCells(socket: Socket, building: Building) {
@@ -171,23 +160,10 @@ export class World {
   public static handleGuardHouseDestruction(
     socket: Socket,
     building: Building
-  ):
-    | { restoredCells: Territory[]; lostTerritoryBuildings: Building[] }
-    | undefined {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-
+  ): { restoredCells: Cell[]; lostTerritoryBuildings: Building[] } | undefined {
     this.markCellToRestoreOwner(socket, building);
 
-    const guardHouses: Building[] = StateManager.getBuildings(
-      room,
-      socket
-    ).filter((building) => building instanceof GuardHouse);
-
-    guardHouses.forEach((guardHouse) =>
-      this.updateTerritory(socket, guardHouse)
-    );
-
-    const restoredCells: Territory[] | undefined =
+    const restoredCells: Cell[] | undefined =
       this.restoreCellsWithoutTowerInfluence(socket, building);
 
     const lostTerritoryBuildings: Building[] | undefined =
@@ -316,11 +292,11 @@ export class World {
   private static restoreCellsWithoutTowerInfluence(
     socket: Socket,
     building: Building
-  ): Territory[] | undefined {
+  ): Cell[] | undefined {
     if (!(building instanceof GuardHouse)) return;
 
     const range = building.getRange();
-    const restoredCells: Territory[] = [];
+    const restoredCells: Cell[] = [];
 
     this.updateWorldInRange(
       socket,
@@ -329,10 +305,9 @@ export class World {
       (cell: Cell) => {
         if (!cell.getTowerInfluence()) {
           cell.setOwner(null);
-          restoredCells.push({
-            indices: cell.getIndices(),
-            owner: null,
-          });
+          cell.removeObstacle(ObstacleEnum.Border);
+
+          restoredCells.push(cell);
         }
       },
       { isCircle: true }
@@ -343,7 +318,7 @@ export class World {
 
   private static destroyBuildingOutsideTerritory(
     socket: Socket,
-    restoredCells: Territory[] | undefined
+    restoredCells: Cell[] | undefined
   ): Building[] | undefined {
     if (!restoredCells || (restoredCells && restoredCells.length === 0)) return;
 
@@ -351,7 +326,7 @@ export class World {
     const lostTerritoryBuildings: Building[] = [];
 
     restoredCells.forEach((cell) => {
-      const { i, j } = cell.indices;
+      const { i, j } = cell.getIndices();
       const getCellBuilding: Building | null = world[i][j].getBuilding();
 
       if (getCellBuilding !== null) {

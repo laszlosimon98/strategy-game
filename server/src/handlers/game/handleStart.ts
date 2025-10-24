@@ -5,12 +5,12 @@ import { World } from "@/game/world";
 import { Indices } from "@/utils/indices";
 import type { EntityType, PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
-import type { Territory, TerritoryUpdateResponse } from "@/types/world.types";
 import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Position } from "@/types/utils.types";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
+import { Cell } from "@/game/cell";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
@@ -51,11 +51,8 @@ export const handleStart = (io: Server, socket: Socket) => {
       const pos = startPositions.splice(idx, 1)[0];
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
-      const building: Building | null = placeTower(id, pos);
-
-      if (building instanceof GuardHouse) {
-        updateTerritory(building);
-      }
+      placeTower(id, pos);
+      updateTerritory();
     });
   };
 
@@ -103,22 +100,17 @@ export const handleStart = (io: Server, socket: Socket) => {
     }
   };
 
-  const updateTerritory = (building: Building) => {
-    const updateResponse: TerritoryUpdateResponse | undefined =
-      World.updateTerritory(socket, building);
-
-    if (!updateResponse) return;
-
-    const { updatedCells, borderCells } = updateResponse;
-
-    if (!updatedCells) return;
+  const updateTerritory = () => {
+    const updatedCells: Cell[] = World.updateTerritory(socket);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      data: updatedCells,
-    });
-
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateBorder", {
-      data: borderCells,
+      data: updatedCells.map((cell) => {
+        return {
+          indices: cell.getIndices(),
+          owner: cell.getOwner(),
+          obstacle: cell.getHighestPriorityObstacleType(),
+        };
+      }),
     });
   };
 

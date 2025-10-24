@@ -11,7 +11,7 @@ import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
-import { DestroyBuildingResponse, Territory } from "@/types/world.types";
+import { DestroyBuildingResponse } from "@/types/world.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 
 export class BuildingManager {
@@ -112,7 +112,7 @@ export class BuildingManager {
     }
     this.destroyBuilding(room, socket, state, building);
 
-    let restoredCells: Territory[] = [];
+    let restoredCells: Cell[] = [];
     let lostTerritoryBuildings: Building[] = [];
 
     if (building instanceof GuardHouse) {

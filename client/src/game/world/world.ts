@@ -199,31 +199,40 @@ export class World implements MouseHandlerInterface {
       "game:updateTerritory",
       ({ data }: { data: Territory[] }) => {
         data.forEach((cell) => {
-          const { indices, owner } = cell;
+          const { indices, owner, obstacle } = cell;
+          const { i, j } = indices;
 
           StateManager.setCellOwner(indices, owner);
-        });
-      }
-    );
 
-    ServerHandler.receiveMessage(
-      "game:updateBorder",
-      ({ data }: { data: Territory[] }) => {
-        data.forEach((cell) => {
-          const { indices, owner } = cell;
-          const { i, j } = indices;
           const currentCell: Cell = StateManager.getWorld()[i][j];
-
           const currentObstacle = currentCell.getObstacle();
 
-          if (!currentObstacle) {
-            currentCell.setObstacleImage(
-              StateManager.getImages(
-                "utils",
-                StateManager.getPlayerColor(owner as string),
-                "border"
-              ).url
-            );
+          if (
+            obstacle === ObstacleEnum.Empty ||
+            obstacle === ObstacleEnum.Occupied
+          ) {
+            currentCell.setObstacleImage(ObstacleEnum.Empty);
+          }
+
+          if (obstacle !== ObstacleEnum.Border) {
+            if (
+              obstacle === ObstacleEnum.Tree ||
+              obstacle === ObstacleEnum.Stone
+            ) {
+              currentCell.setObstacleImage(
+                StateManager.getImages("obstacles", obstacle).url
+              );
+            }
+          } else {
+            if (!currentObstacle) {
+              currentCell.setObstacleImage(
+                StateManager.getImages(
+                  "utils",
+                  StateManager.getPlayerColor(owner as string),
+                  obstacle
+                ).url
+              );
+            }
           }
         });
       }

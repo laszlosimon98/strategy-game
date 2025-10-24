@@ -8,12 +8,10 @@ import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
 import { getImageNameFromUrl } from "@/utils/utils";
-import {
-  DestroyBuildingResponse,
-  TerritoryUpdateResponse,
-} from "@/types/world.types";
+import { DestroyBuildingResponse } from "@/types/world.types";
 import { World } from "@/game/world";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
+import { Cell } from "@/game/cell";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (
@@ -58,8 +56,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       calculateNewStorageValues(room, response);
 
       const storage: StorageType = StateManager.getStorage(socket, room);
-      const updateResponse: TerritoryUpdateResponse | undefined =
-        World.updateTerritory(socket, response);
 
       ServerHandler.sendMessageToEveryOne(
         io,
@@ -69,22 +65,22 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       );
 
       if (response instanceof GuardHouse) {
-        if (!updateResponse) return;
-
-        const { updatedCells, borderCells } = updateResponse;
+        const updatedCells: Cell[] = World.updateTerritory(socket);
 
         ServerHandler.sendMessageToEveryOne(
           io,
           socket,
           "game:updateTerritory",
           {
-            data: updatedCells,
+            data: updatedCells.map((cell) => {
+              return {
+                indices: cell.getIndices(),
+                owner: cell.getOwner(),
+                obstacle: cell.getHighestPriorityObstacleType(),
+              };
+            }),
           }
         );
-
-        ServerHandler.sendMessageToEveryOne(io, socket, "game:updateBorder", {
-          data: borderCells,
-        });
       }
 
       ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
@@ -114,7 +110,13 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       });
 
       ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-        data: restoredCells,
+        data: restoredCells.map((cell) => {
+          return {
+            indices: cell.getIndices(),
+            owner: cell.getOwner(),
+            obstacle: cell.getHighestPriorityObstacleType(),
+          };
+        }),
       });
 
       ServerHandler.sendMessageToEveryOne(
