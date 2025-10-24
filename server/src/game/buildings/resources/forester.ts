@@ -12,7 +12,7 @@ export class Forester extends Building {
   public constructor(building: EntityType) {
     super(building);
     this.production = new Production(10000, 12000, "", "");
-    this.range = 4;
+    this.range = 5;
   }
 
   public produce(

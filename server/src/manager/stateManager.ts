@@ -150,16 +150,27 @@ export class StateManager {
     this.state[room].world = world;
   }
 
-  public static getClosestCell(objIndices: Indices, cell: Cell[]): Cell | null {
-    if (cell.length === 0) return null;
+  public static getClosestCell(
+    objIndices: Indices,
+    cells: Cell[]
+  ): Cell | null {
+    if (cells.length === 0) return null;
 
-    let closestCell = cell[0];
-    for (let i = 1; i < cell.length; ++i) {
-      if (
-        calculateDistanceByIndices(cell[i].getIndices(), objIndices) <
-        calculateDistanceByIndices(closestCell.getIndices(), objIndices)
-      ) {
-        closestCell = cell[i];
+    let closestCell: Cell = cells[0];
+
+    for (let i = 1; i < cells.length; ++i) {
+      const currentDistance: number = calculateDistanceByIndices(
+        cells[i].getIndices(),
+        objIndices
+      );
+
+      const closestDistance: number = calculateDistanceByIndices(
+        closestCell.getIndices(),
+        objIndices
+      );
+
+      if (currentDistance < closestDistance) {
+        closestCell = cells[i];
       }
     }
 
@@ -170,29 +181,32 @@ export class StateManager {
     socket: Socket,
     indices: Indices,
     range: number,
-    obstacle?: ObstacleEnum
+    obstacle: ObstacleEnum
   ): Cell[] {
     const result: Cell[] = [];
 
     const world: Cell[][] = this.getWorld(socket);
-    const { i, j } = indices;
+    const { i: baseI, j: baseJ } = indices;
     const size: number = settings.mapSize;
 
-    for (let l = -range; l <= range; ++l) {
-      for (let k = -range; k <= range; ++k) {
-        const il = i + l;
-        const jk = j + k;
+    const startI = Math.max(baseI - range, 0);
+    const endI = Math.min(baseI + range, size - 1);
+    const startJ = Math.max(baseJ - range, 0);
+    const endJ = Math.min(baseJ + range, size - 1);
 
-        if (il >= 0 && il < size && jk >= 0 && jk < size) {
-          const cell: Cell = world[i + l][j + k];
+    for (let row = startI; row <= endI; ++row) {
+      for (let col = startJ; col <= endJ; ++col) {
+        const cell: Cell = world[row][col];
+        const distance: number = calculateDistanceByIndices(
+          indices,
+          cell.getIndices()
+        );
 
-          if (obstacle) {
-            if (cell.getHighestPriorityObstacleType() === obstacle) {
-              result.push(cell);
-            }
-          } else {
-            result.push(cell);
-          }
+        if (
+          cell.getHighestPriorityObstacleType() === obstacle &&
+          distance <= range
+        ) {
+          result.push(cell);
         }
       }
     }

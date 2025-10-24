@@ -257,33 +257,32 @@ export class World {
     building: Building,
     range: number,
     fn: (cell: Cell) => void,
-    options?: {
-      isCircle: boolean;
-    }
+    options?: { isCircle: boolean }
   ): void {
     const world: Cell[][] = StateManager.getWorld(socket);
-    const { i, j } = building.getEntity().data.indices;
+    const { i: baseI, j: baseJ } = building.getEntity().data.indices;
     const size: number = settings.mapSize;
+    const isCircle = options?.isCircle ?? false;
 
-    for (let l = -range; l <= range; ++l) {
-      for (let k = -range; k <= range; ++k) {
-        const il = i + l;
-        const jk = j + k;
+    const startI = Math.max(baseI - range, 0);
+    const endI = Math.min(baseI + range, size - 1);
+    const startJ = Math.max(baseJ - range, 0);
+    const endJ = Math.min(baseJ + range, size - 1);
 
-        if (il >= 0 && il < size && jk >= 0 && jk < size) {
-          const cell: Cell = world[i + l][j + k];
-          if (options && options.isCircle) {
-            const distance: number = calculateDistanceByIndices(
-              cell.getIndices(),
-              building.getEntity().data.indices
-            );
+    for (let row = startI; row <= endI; ++row) {
+      for (let col = startJ; col <= endJ; ++col) {
+        const cell: Cell = world[row][col];
 
-            if (distance < range) {
-              fn(cell);
-            }
-          } else {
+        if (isCircle) {
+          const distance = calculateDistanceByIndices(
+            cell.getIndices(),
+            new Indices(baseI, baseJ)
+          );
+          if (distance < range) {
             fn(cell);
           }
+        } else {
+          fn(cell);
         }
       }
     }

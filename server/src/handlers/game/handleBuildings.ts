@@ -113,16 +113,9 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         entity,
       });
 
-      if (restoredCells && restoredCells.length > 0) {
-        ServerHandler.sendMessageToEveryOne(
-          io,
-          socket,
-          "game:updateTerritory",
-          {
-            data: restoredCells,
-          }
-        );
-      }
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+        data: restoredCells,
+      });
 
       ServerHandler.sendMessageToEveryOne(
         io,
