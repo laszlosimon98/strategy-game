@@ -4,7 +4,7 @@ import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 
-export const connectionHandler = (io: Server, socket: Socket) => {
+export const handleConnection = (io: Server, socket: Socket) => {
   const createGame = ({ name }: { name: string }) => {
     const room = StateManager.generateGameCode();
 

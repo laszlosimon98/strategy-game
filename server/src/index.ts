@@ -4,13 +4,13 @@ import { Server, Socket } from "socket.io";
 import path from "path";
 
 import { Loader } from "@/utils/imageLoader";
-import { utilsHandler } from "@/handlers/utilsHandler";
-import { handleBuildings } from "@/handlers/game/handleBuildings";
-import { handlePath } from "@/handlers/game/handlePath";
-import { handleStart } from "@/handlers/game/handleStart";
-import { handleUnits } from "@/handlers/game/handleUnits";
-import { connectionHandler } from "@/handlers/connectionHandler";
-import { handleProduction } from "@/handlers/game/handleProduction";
+import { handleUtils } from "@/handlers/handleUtils";
+import { handleBuildings } from "@/handlers/handleBuildings";
+import { handlePath } from "@/handlers/handlePath";
+import { handleStart } from "@/handlers/handleStart";
+import { handleUnits } from "@/handlers/handleUnits";
+import { handleConnection } from "@/handlers/handleConnection";
+import { handleProduction } from "@/handlers/handleProduction";
 
 const PORT = 3000;
 
@@ -42,8 +42,8 @@ const gameHandler = (io: Server, socket: Socket) => {
 };
 
 const onConnecton = async (socket: Socket) => {
-  await utilsHandler(io, socket, images);
-  connectionHandler(io, socket);
+  await handleUtils(io, socket, images);
+  handleConnection(io, socket);
   gameHandler(io, socket);
 };
 

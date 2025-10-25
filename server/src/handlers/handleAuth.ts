@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-export const authHandler = () => {
+export const handleAuth = () => {
   const prismaClient = new PrismaClient();
 
   const login = async () => {
@@ -11,4 +11,4 @@ export const authHandler = () => {
   login();
 };
 
-authHandler();
+handleAuth();

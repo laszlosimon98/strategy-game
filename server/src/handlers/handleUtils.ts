@@ -3,7 +3,7 @@ import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
 import { StateManager } from "@/manager/stateManager";
 
-export const utilsHandler = async (io: Server, socket: Socket, images: any) => {
+export const handleUtils = async (io: Server, socket: Socket, images: any) => {
   const page = () => {
     ServerHandler.sendMessageToSender(socket, "start:page", images);
   };

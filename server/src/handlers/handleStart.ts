@@ -9,7 +9,6 @@ import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Position } from "@/types/utils.types";
-import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Cell } from "@/game/cell";
 
 export const handleStart = (io: Server, socket: Socket) => {
