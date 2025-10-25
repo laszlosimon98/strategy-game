@@ -94,7 +94,6 @@ export class World {
 
   public static updateTerritory(socket: Socket, id: string): Cell[] {
     const room: string = ServerHandler.getCurrentRoom(socket);
-    // const buildings: Building[] = StateManager.getBuildings(room, id);
     const buildings: Building[] = StateManager.getAllPlayerBuildings(room);
 
     const guardHouses: GuardHouse[] = buildings.filter(
@@ -222,8 +221,8 @@ export class World {
           cell.setType(TileEnum.Flower);
         }
 
-        if (terrainNoise >= settings.rockspawnChance) {
-          cell.setType(TileEnum.Flower);
+        if (terrainNoise >= 93) {
+          cell.setType(TileEnum.Rock);
         }
 
         if (treeNoise >= 50 || treeNoise <= -50) {
@@ -232,6 +231,12 @@ export class World {
         } else if (stoneNoise >= 60 || stoneNoise <= -80) {
           cell.addObstacle(ObstacleEnum.Stone);
           cell.setInstance(new Stone());
+        }
+
+        if (terrainNoise >= 80 && terrainNoise <= 90) {
+          if (cell.getHighestPriorityObstacleType() === ObstacleEnum.Empty) {
+            cell.setType(TileEnum.Dirt);
+          }
         }
       }
     }

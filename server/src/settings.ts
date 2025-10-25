@@ -25,8 +25,6 @@ export const settings: Settings = {
   codeLength: CODE_LENGTH,
   mapSeed: MAP_SEED,
   mapSize: 80,
-  treespawnChance: 10,
-  rockspawnChance: 93,
   cellSize: CELL_SIZE,
   startPositions: [
     new Indices(START_IDX, START_IDX),

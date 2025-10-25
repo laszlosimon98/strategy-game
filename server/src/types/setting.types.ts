@@ -8,8 +8,6 @@ export type Settings = {
   codeLength: number;
   mapSeed: string;
   mapSize: number;
-  treespawnChance: number;
-  rockspawnChance: number;
   cellSize: number;
   startPositions: Indices[];
 };

@@ -26,7 +26,10 @@ export const convertIsometricCoordsToCartesianCoords = (
   return new Indices(grid_x, grid_y);
 };
 
-export const isMouseIntersect = (mousePos: Position, element: any): boolean => {
+export const isMouseIntersect = (
+  mousePos: Position,
+  element: Entity
+): boolean => {
   const horizontal =
     mousePos.x >= element.getPosition().x &&
     mousePos.x <= element.getPosition().x + element.getDimension().width;
