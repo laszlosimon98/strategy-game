@@ -15,6 +15,8 @@ import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { EntityType } from "@/types/state.types";
 import { TileEnum } from "@/enums/tileEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
+import { BuildingManager } from "@/manager/buildingManager";
+import { DestroyBuildingResponse } from "@/types/world.types";
 
 export class World {
   private static world: Cell[][] = [];
@@ -92,9 +94,20 @@ export class World {
     return cells[i][j].getOwner() === entity.data.owner;
   }
 
-  public static updateTerritory(socket: Socket, id: string): Cell[] {
+  public static updateTerritory(
+    socket: Socket,
+    options?: {
+      id: string;
+    }
+  ): Cell[] {
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const buildings: Building[] = StateManager.getAllPlayerBuildings(room);
+
+    let buildings: Building[];
+    if (options && options.id) {
+      buildings = StateManager.getBuildings(room, options.id);
+    } else {
+      buildings = StateManager.getAllPlayerBuildings(room);
+    }
 
     const guardHouses: GuardHouse[] = buildings.filter(
       (building) => building.getEntity().data.name === "guardhouse"
@@ -183,7 +196,7 @@ export class World {
     }
   }
 
-  public static cleanupLostTerritory(
+  public static markedLostBuildings(
     socket: Socket,
     markedCells: Cell[]
   ): Building[] {
@@ -205,6 +218,49 @@ export class World {
     });
 
     return lostBuildings;
+  }
+
+  public static cleanupPlayerTerritory(socket: Socket, id: string): void {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const buildings: Building[] = StateManager.getBuildings(room, id);
+    const guardHouses: GuardHouse[] = buildings.filter(
+      (building) => building.getEntity().data.name === "guardhouse"
+    );
+
+    guardHouses.forEach((guardHouse) => {
+      this.cleanTerritory(socket, guardHouse);
+    });
+  }
+
+  public static cleanTerritory(
+    socket: Socket,
+    building: Building
+  ): DestroyBuildingResponse {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const state = StateManager.getState();
+
+    const markedCells: Cell[] = World.markCellToRestore(socket, building) ?? [];
+
+    BuildingManager.destroyBuilding(room, socket, state, building);
+    World.restoreCells(socket, building);
+
+    const updatedCells: Cell[] = World.updateTerritory(socket);
+
+    const lostBuildings: Building[] = World.markedLostBuildings(
+      socket,
+      markedCells
+    );
+
+    lostBuildings.forEach((building) => {
+      BuildingManager.destroyBuilding(room, socket, state, building);
+      World.restoreCells(socket, building);
+    });
+
+    return {
+      updatedCells,
+      markedCells,
+      lostBuildings,
+    };
   }
 
   private static populateWorld() {

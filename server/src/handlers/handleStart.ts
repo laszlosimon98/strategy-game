@@ -100,7 +100,7 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const updateTerritory = (id: string) => {
-    const updatedCells: Cell[] = World.updateTerritory(socket, id);
+    const updatedCells: Cell[] = World.updateTerritory(socket);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
       data: updatedCells.map((cell) => {

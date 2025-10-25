@@ -3,6 +3,8 @@ import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
+import { World } from "@/game/world";
+import { Cell } from "@/game/cell";
 
 export const handleConnection = (io: Server, socket: Socket) => {
   const createGame = ({ name }: { name: string }) => {
@@ -60,6 +62,11 @@ export const handleConnection = (io: Server, socket: Socket) => {
     if (room) {
       const user = StateManager.getPlayer(room, socket);
 
+      World.cleanupPlayerTerritory(socket, user.id);
+      const playerOldTerritory: Cell[] = World.updateTerritory(socket, {
+        id: user.id,
+      });
+
       StateManager.handlePlayerDisconnect(socket, room, user.color);
       StateManager.playerleftMessage(io, socket, user.name);
 
@@ -84,6 +91,24 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
       ServerHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
         id: user.id,
+        data: playerOldTerritory.map((cell) => {
+          return {
+            indices: cell.getIndices(),
+            obstacle: cell.getHighestPriorityObstacleType(),
+          };
+        }),
+      });
+
+      const updatedCells: Cell[] = World.updateTerritory(socket);
+
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+        data: updatedCells.map((cell) => {
+          return {
+            indices: cell.getIndices(),
+            owner: cell.getOwner(),
+            obstacle: cell.getHighestPriorityObstacleType(),
+          };
+        }),
       });
     }
     socket.leave(room);

@@ -102,31 +102,33 @@ export class BuildingManager {
       return null;
     }
 
-    const markedCells: Cell[] = World.markCellToRestore(socket, building) ?? [];
-
-    this.destroyBuilding(room, socket, state, building);
-    World.restoreCells(socket, building);
-
-    const updatedCells: Cell[] = World.updateTerritory(
+    const { lostBuildings, markedCells, updatedCells } = World.cleanTerritory(
       socket,
-      building.getEntity().data.owner
+      building
     );
-
-    const lostBuildings: Building[] = World.cleanupLostTerritory(
-      socket,
-      markedCells
-    );
-
-    lostBuildings.forEach((building) => {
-      this.destroyBuilding(room, socket, state, building);
-      World.restoreCells(socket, building);
-    });
 
     return {
       updatedCells,
       markedCells,
       lostBuildings,
     };
+  }
+
+  public static destroyBuilding(
+    room: string,
+    socket: Socket,
+    state: StateType,
+    building: Building
+  ): void {
+    const buildingIndex: number = state[room].players[
+      socket.id
+    ].buildings.findIndex(
+      (b) => b.getEntity().data.id === building.getEntity().data.id
+    );
+
+    if (buildingIndex === -1) return;
+
+    state[room].players[socket.id].buildings.splice(buildingIndex, 1);
   }
 
   public static getBuildings(
@@ -167,23 +169,6 @@ export class BuildingManager {
     state[room].players[building.getEntity().data.owner].buildings.push(
       building
     );
-  }
-
-  private static destroyBuilding(
-    room: string,
-    socket: Socket,
-    state: StateType,
-    building: Building
-  ): void {
-    const buildingIndex: number = state[room].players[
-      socket.id
-    ].buildings.findIndex(
-      (b) => b.getEntity().data.id === building.getEntity().data.id
-    );
-
-    if (buildingIndex === -1) return;
-
-    state[room].players[socket.id].buildings.splice(buildingIndex, 1);
   }
 
   private static hasMaterialsToBuild(

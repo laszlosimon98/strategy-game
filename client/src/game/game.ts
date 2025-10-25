@@ -10,6 +10,9 @@ import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
 import { MessageIndicator } from "@/game/messageIndicator/messageIndicator";
 import { canvasWidth } from "@/init";
+import type { Indices } from "@/utils/indices";
+import type { Cell } from "@/game/world/cell";
+import { ObstacleEnum } from "@/game/enums/obstacleEnum";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -98,9 +101,31 @@ export class Game {
   private async handleCommunication(): Promise<void> {
     ServerHandler.receiveMessage(
       "game:playerLeft",
-      ({ id }: { id: string }) => {
-        console.log(id);
+      ({
+        id,
+        data,
+      }: {
+        id: string;
+        data: { indices: Indices; obstacle: ObstacleEnum }[];
+      }) => {
         StateManager.playerLeft(id);
+        const world: Cell[][] = StateManager.getWorld();
+        const invalidObstacles: ObstacleEnum[] = [
+          ObstacleEnum.Empty,
+          ObstacleEnum.Stone,
+          ObstacleEnum.Tree,
+        ];
+
+        data.forEach((cell) => {
+          const { i, j } = cell.indices;
+          const obstacle = cell.obstacle;
+
+          if (!invalidObstacles.includes(obstacle)) {
+            world[i][j].setObstacle(false);
+            world[i][j].setObstacleImage(ObstacleEnum.Empty);
+            world[i][j].setOwner(null);
+          }
+        });
       }
     );
 

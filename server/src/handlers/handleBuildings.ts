@@ -65,10 +65,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       );
 
       if (response instanceof GuardHouse) {
-        const updatedCells: Cell[] = World.updateTerritory(
-          socket,
-          response.getEntity().data.owner
-        );
+        const updatedCells: Cell[] = World.updateTerritory(socket);
 
         ServerHandler.sendMessageToEveryOne(
           io,
