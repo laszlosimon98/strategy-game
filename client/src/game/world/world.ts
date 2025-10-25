@@ -43,7 +43,17 @@ export class World implements MouseHandlerInterface {
                 ? StateManager.getImages("obstacles", obstacle).url
                 : undefined;
 
-            return new Cell(new Indices(i, j), groundImg, obstacleImg);
+            const cell: Cell = new Cell(
+              new Indices(i, j),
+              groundImg,
+              obstacleImg
+            );
+
+            if (obstacle !== ObstacleEnum.Empty) {
+              cell.setObstacle(true);
+            }
+
+            return cell;
           })
         );
         StateManager.setWorld(world);
@@ -159,6 +169,46 @@ export class World implements MouseHandlerInterface {
     return this.camera.getScroll();
   }
 
+  private updateCellVisual(
+    indices: Indices,
+    obstacle: ObstacleEnum,
+    owner: string | null
+  ): void {
+    const { i, j } = indices;
+    const cell = StateManager.getWorld()[i][j];
+
+    const setImage = (url: string | ObstacleEnum, isObstacle: boolean) => {
+      cell.setObstacleImage(url);
+      cell.setObstacle(isObstacle);
+    };
+
+    switch (obstacle) {
+      case ObstacleEnum.Empty:
+      case ObstacleEnum.Occupied:
+        setImage(ObstacleEnum.Empty, false);
+        break;
+
+      case ObstacleEnum.Tree:
+      case ObstacleEnum.Stone:
+        setImage(StateManager.getImages("obstacles", obstacle).url, true);
+        break;
+
+      case ObstacleEnum.Border:
+        if (!cell.getObstacle() && owner) {
+          setImage(
+            StateManager.getImages(
+              "utils",
+              StateManager.getPlayerColor(owner),
+              obstacle
+            ).url,
+            true
+          );
+        }
+        break;
+    }
+    console.log(cell.isEmpty());
+  }
+
   private handleCommunication(): void {
     ServerHandler.receiveMessage(
       "game:updateCell",
@@ -171,67 +221,17 @@ export class World implements MouseHandlerInterface {
         obstacle: ObstacleEnum;
         owner: string;
       }) => {
-        const { i, j } = indices;
-        const currentCell: Cell = StateManager.getWorld()[i][j];
-
-        if (
-          obstacle === ObstacleEnum.Empty ||
-          obstacle === ObstacleEnum.Occupied
-        ) {
-          currentCell.setObstacleImage(ObstacleEnum.Empty);
-        } else if (obstacle === ObstacleEnum.Tree) {
-          currentCell.setObstacleImage(
-            StateManager.getImages("obstacles", obstacle).url
-          );
-        } else {
-          currentCell.setObstacleImage(
-            StateManager.getImages(
-              "utils",
-              StateManager.getPlayerColor(owner),
-              obstacle
-            ).url
-          );
-        }
+        this.updateCellVisual(indices, obstacle, owner);
       }
     );
 
     ServerHandler.receiveMessage(
       "game:updateTerritory",
       ({ data }: { data: Territory[] }) => {
-        data.forEach((cell) => {
-          const { indices, owner, obstacle } = cell;
-          const { i, j } = indices;
-
+        data.forEach(({ indices, owner, obstacle }) => {
+          console.log(obstacle);
           StateManager.setCellOwner(indices, owner);
-
-          const currentCell: Cell = StateManager.getWorld()[i][j];
-          const currentObstacle = currentCell.getObstacle();
-
-          if (
-            obstacle === ObstacleEnum.Empty ||
-            obstacle === ObstacleEnum.Occupied
-          ) {
-            currentCell.setObstacleImage(ObstacleEnum.Empty);
-          } else if (obstacle !== ObstacleEnum.Border) {
-            if (
-              obstacle === ObstacleEnum.Tree ||
-              obstacle === ObstacleEnum.Stone
-            ) {
-              currentCell.setObstacleImage(
-                StateManager.getImages("obstacles", obstacle).url
-              );
-            }
-          } else {
-            if (!currentObstacle) {
-              currentCell.setObstacleImage(
-                StateManager.getImages(
-                  "utils",
-                  StateManager.getPlayerColor(owner as string),
-                  obstacle
-                ).url
-              );
-            }
-          }
+          this.updateCellVisual(indices, obstacle, owner);
         });
       }
     );

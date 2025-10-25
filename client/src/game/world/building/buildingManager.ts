@@ -92,9 +92,12 @@ export class BuildingManager extends Manager<Building> {
 
   private build(entity: EntityType): void {
     const newBuilding: Building = this.creator<Building>(Building, entity);
+    const { i, j } = entity.data.indices;
 
     this.setObjectPosition(newBuilding, entity.data.position);
     StateManager.createBuilding(entity, newBuilding);
+    StateManager.getWorld()[i][j].setObstacle(true);
+
     ySort(StateManager.getBuildings(entity.data.owner));
   }
 
@@ -124,7 +127,10 @@ export class BuildingManager extends Manager<Building> {
   }
 
   private destroy(entity: EntityType): void {
+    const { i, j } = entity.data.indices;
+
     StateManager.destroyBuilding(entity);
+    StateManager.getWorld()[i][j].setObstacle(false);
   }
 
   private resetStates(): void {

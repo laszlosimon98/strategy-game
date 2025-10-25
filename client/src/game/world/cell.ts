@@ -19,12 +19,14 @@ export class Cell {
   private isometricPos: Position[];
   private image: HTMLImageElement;
   private obstacleImage: HTMLImageElement | null;
+  private hasObstacle: boolean;
 
   public constructor(indices: Indices, type: string, obstacle?: string) {
     this.indices = indices;
     this.position = new Vector(indices.i, indices.j);
     this.owner = null;
     this.obstacleImage = null;
+    this.hasObstacle = false;
 
     this.isometricPos = this.position.getIsometricPos();
 
@@ -84,6 +86,10 @@ export class Cell {
     }
   }
 
+  public setObstacle(b: boolean): void {
+    this.hasObstacle = b;
+  }
+
   public setImage(image: string): void {
     this.image.src = image;
   }
@@ -104,7 +110,7 @@ export class Cell {
   }
 
   public isEmpty(): boolean {
-    return this.obstacleImage === null;
+    return !this.hasObstacle;
   }
 
   public getCameraPos(): Position {
