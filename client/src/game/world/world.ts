@@ -198,7 +198,6 @@ export class World implements MouseHandlerInterface {
     ServerHandler.receiveMessage(
       "game:updateTerritory",
       ({ data }: { data: Territory[] }) => {
-        console.log(data);
         data.forEach((cell) => {
           const { indices, owner, obstacle } = cell;
           const { i, j } = indices;

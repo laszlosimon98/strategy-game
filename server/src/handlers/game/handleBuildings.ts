@@ -70,6 +70,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
           response.getEntity().data.owner
         );
 
+        console.log(updatedCells.length);
+
         ServerHandler.sendMessageToEveryOne(
           io,
           socket,
@@ -99,27 +101,57 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const { status, message }: DestroyBuildingResponse =
+    const cells: { updatedCells: Cell[]; markedCells: Cell[] } | null =
       StateManager.destroyBuilding(socket, entity);
 
-    if (status === "completed") {
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
-        id: socket.id,
-        entity,
+    if (cells === null) {
+      ServerHandler.sendMessageToSender(socket, "game:info", {
+        message: "Sikertelen épület elbontás!",
       });
-
-      // ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      //   data: restoredCells.map((cell) => {
-      //     return {
-      //       indices: cell.getIndices(),
-      //       owner: cell.getOwner(),
-      //       obstacle: cell.getHighestPriorityObstacleType(),
-      //     };
-      //   }),
-      // });
+      return;
     }
 
-    ServerHandler.sendMessageToSender(socket, "game:info", { message });
+    console.log(cells.updatedCells.length);
+    console.log(cells.markedCells.length);
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
+      id: socket.id,
+      entity,
+    });
+
+    ServerHandler.sendMessageToSender(socket, "game:info", {
+      message: "Épület sikeresen elbontva!",
+    });
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+      data: cells.markedCells.map((cell) => {
+        return {
+          indices: cell.getIndices(),
+          owner: cell.getOwner(),
+          obstacle: cell.getHighestPriorityObstacleType(),
+        };
+      }),
+    });
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+      data: cells.updatedCells.map((cell) => {
+        return {
+          indices: cell.getIndices(),
+          owner: cell.getOwner(),
+          obstacle: cell.getHighestPriorityObstacleType(),
+        };
+      }),
+    });
+
+    // ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+    //   data: restoredCells.map((cell) => {
+    //     return {
+    //       indices: cell.getIndices(),
+    //       owner: cell.getOwner(),
+    //       obstacle: cell.getHighestPriorityObstacleType(),
+    //     };
+    //   }),
+    // });
   };
 
   socket.on("game:build", build);

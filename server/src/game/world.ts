@@ -98,6 +98,11 @@ export class World {
     const guardHouses: GuardHouse[] = buildings.filter(
       (building) => building.getEntity().data.name === "guardhouse"
     );
+
+    console.log();
+    console.log("------------------------------------------");
+    console.log();
+    console.log(guardHouses);
     const updatedCells: Cell[] = [];
 
     guardHouses.forEach((guardHouse) => {
@@ -159,6 +164,30 @@ export class World {
       cell.removeObstacle(ObstacleEnum.Occupied);
     });
     world[i][j].removeObstacle(ObstacleEnum.House);
+  }
+
+  public static markCellToRestore(
+    socket: Socket,
+    building: Building
+  ): Cell[] | undefined {
+    if (building instanceof GuardHouse) {
+      const range: number = building.getRange();
+      const markedCells: Cell[] = [];
+
+      this.updateWorldInRange(
+        socket,
+        building,
+        range,
+        (cell: Cell) => {
+          cell.setOwner(null);
+          cell.removeObstacle(ObstacleEnum.Border);
+          cell.setTowerInfluence(false);
+          markedCells.push(cell);
+        },
+        { isCircle: true }
+      );
+      return markedCells;
+    }
   }
 
   private static populateWorld() {

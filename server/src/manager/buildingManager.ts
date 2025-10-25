@@ -77,18 +77,13 @@ export class BuildingManager {
     socket: Socket,
     entity: EntityType,
     state: StateType
-  ): DestroyBuildingResponse {
+  ): { updatedCells: Cell[]; markedCells: Cell[] } | null {
     const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = StateManager.getWorld(socket);
     const { i, j } = entity.data.indices;
 
-    const failedMessage: DestroyBuildingResponse = {
-      status: "failed",
-      message: "Sikertelen épület elbontás!",
-    };
-
     if (world[i][j].getHighestPriorityObstacleType() !== ObstacleEnum.House) {
-      return failedMessage;
+      return null;
     }
 
     const building: Building | undefined = this.getBuildingByEntity(
@@ -105,15 +100,22 @@ export class BuildingManager {
           building.getEntity().data.owner
         ))
     ) {
-      return failedMessage;
+      return null;
     }
-    this.destroyBuilding(room, socket, state, building);
 
+    const markedCells: Cell[] = World.markCellToRestore(socket, building) ?? [];
+
+    this.destroyBuilding(room, socket, state, building);
     World.restoreCells(socket, building);
 
+    const updatedCells: Cell[] = World.updateTerritory(
+      socket,
+      building.getEntity().data.owner
+    );
+
     return {
-      status: "completed",
-      message: "Épület sikeresen elbontva!",
+      updatedCells,
+      markedCells,
     };
   }
 
