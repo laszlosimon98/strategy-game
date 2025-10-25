@@ -206,7 +206,6 @@ export class World implements MouseHandlerInterface {
         }
         break;
     }
-    console.log(cell.isEmpty());
   }
 
   private handleCommunication(): void {
@@ -229,7 +228,6 @@ export class World implements MouseHandlerInterface {
       "game:updateTerritory",
       ({ data }: { data: Territory[] }) => {
         data.forEach(({ indices, owner, obstacle }) => {
-          console.log(obstacle);
           StateManager.setCellOwner(indices, owner);
           this.updateCellVisual(indices, obstacle, owner);
         });
