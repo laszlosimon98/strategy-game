@@ -85,8 +85,6 @@ export class BuildingManager {
     const failedMessage: DestroyBuildingResponse = {
       status: "failed",
       message: "Sikertelen épület elbontás!",
-      restoredCells: [],
-      lostTerritoryBuildings: [],
     };
 
     if (world[i][j].getHighestPriorityObstacleType() !== ObstacleEnum.House) {
@@ -95,7 +93,6 @@ export class BuildingManager {
 
     const building: Building | undefined = this.getBuildingByEntity(
       room,
-      socket,
       state,
       entity
     );
@@ -112,60 +109,32 @@ export class BuildingManager {
     }
     this.destroyBuilding(room, socket, state, building);
 
-    let restoredCells: Cell[] = [];
-    let lostTerritoryBuildings: Building[] = [];
-
-    if (building instanceof GuardHouse) {
-      const result = World.handleGuardHouseDestruction(socket, building);
-
-      if (!result) return failedMessage;
-
-      restoredCells = result.restoredCells;
-      lostTerritoryBuildings = result.lostTerritoryBuildings;
-
-      lostTerritoryBuildings.forEach((b) => {
-        this.destroyBuilding(room, socket, state, b);
-        World.restoreCells(socket, b);
-      });
-    }
-
     World.restoreCells(socket, building);
 
     return {
       status: "completed",
       message: "Épület sikeresen elbontva!",
-      restoredCells,
-      lostTerritoryBuildings,
     };
   }
 
   public static getBuildings(
     room: string,
-    socket: Socket,
+    owner: string,
     state: StateType
   ): Building[] {
-    return [...state[room].players[socket.id].buildings];
-  }
-
-  public static getBuilding(
-    room: string,
-    socket: Socket,
-    state: StateType,
-    building: Building
-  ): Building | undefined {
-    const buildings: Building[] = this.getBuildings(room, socket, state);
-    return buildings.find(
-      (b) => b.getEntity().data.id === building.getEntity().data.id
-    );
+    return [...state[room].players[owner].buildings];
   }
 
   public static getBuildingByEntity(
     room: string,
-    socket: Socket,
     state: StateType,
     entity: EntityType
   ): Building | undefined {
-    const buildings: Building[] = this.getBuildings(room, socket, state);
+    const buildings: Building[] = this.getBuildings(
+      room,
+      entity.data.owner,
+      state
+    );
     return buildings.find((b) => b.getEntity().data.id === entity.data.id);
   }
 

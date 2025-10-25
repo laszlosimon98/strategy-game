@@ -52,7 +52,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
       placeTower(id, pos);
-      updateTerritory();
+      updateTerritory(id);
     });
   };
 
@@ -100,8 +100,8 @@ export const handleStart = (io: Server, socket: Socket) => {
     }
   };
 
-  const updateTerritory = () => {
-    const updatedCells: Cell[] = World.updateTerritory(socket);
+  const updateTerritory = (id: string) => {
+    const updatedCells: Cell[] = World.updateTerritory(socket, id);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
       data: updatedCells.map((cell) => {

@@ -86,7 +86,6 @@ export const handleProduction = (io: Server, socket: Socket) => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     const building: Building | undefined = StateManager.getBuildingByEntity(
       room,
-      socket,
       entity
     );
 

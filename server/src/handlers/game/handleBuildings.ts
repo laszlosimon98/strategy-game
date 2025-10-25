@@ -65,7 +65,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       );
 
       if (response instanceof GuardHouse) {
-        const updatedCells: Cell[] = World.updateTerritory(socket);
+        const updatedCells: Cell[] = World.updateTerritory(
+          socket,
+          response.getEntity().data.owner
+        );
 
         ServerHandler.sendMessageToEveryOne(
           io,
@@ -96,12 +99,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const {
-      status,
-      message,
-      restoredCells,
-      lostTerritoryBuildings,
-    }: DestroyBuildingResponse = StateManager.destroyBuilding(socket, entity);
+    const { status, message }: DestroyBuildingResponse =
+      StateManager.destroyBuilding(socket, entity);
 
     if (status === "completed") {
       ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
@@ -109,27 +108,15 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         entity,
       });
 
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-        data: restoredCells.map((cell) => {
-          return {
-            indices: cell.getIndices(),
-            owner: cell.getOwner(),
-            obstacle: cell.getHighestPriorityObstacleType(),
-          };
-        }),
-      });
-
-      ServerHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:destroyLostTerritoryBuildings",
-        {
-          id: socket.id,
-          entities: lostTerritoryBuildings.map((building) =>
-            building.getEntity()
-          ),
-        }
-      );
+      // ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+      //   data: restoredCells.map((cell) => {
+      //     return {
+      //       indices: cell.getIndices(),
+      //       owner: cell.getOwner(),
+      //       obstacle: cell.getHighestPriorityObstacleType(),
+      //     };
+      //   }),
+      // });
     }
 
     ServerHandler.sendMessageToSender(socket, "game:info", { message });

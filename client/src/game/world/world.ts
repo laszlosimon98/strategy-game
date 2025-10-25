@@ -198,6 +198,7 @@ export class World implements MouseHandlerInterface {
     ServerHandler.receiveMessage(
       "game:updateTerritory",
       ({ data }: { data: Territory[] }) => {
+        console.log(data);
         data.forEach((cell) => {
           const { indices, owner, obstacle } = cell;
           const { i, j } = indices;
@@ -212,9 +213,7 @@ export class World implements MouseHandlerInterface {
             obstacle === ObstacleEnum.Occupied
           ) {
             currentCell.setObstacleImage(ObstacleEnum.Empty);
-          }
-
-          if (obstacle !== ObstacleEnum.Border) {
+          } else if (obstacle !== ObstacleEnum.Border) {
             if (
               obstacle === ObstacleEnum.Tree ||
               obstacle === ObstacleEnum.Stone

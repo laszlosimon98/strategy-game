@@ -223,29 +223,15 @@ export class StateManager {
     return BuildingManager.build(socket, this.state, entity);
   }
 
-  public static getBuildings(room: string, socket: Socket): Building[] {
-    return BuildingManager.getBuildings(room, socket, this.state);
-  }
-
-  public static getBuilding(
-    room: string,
-    socket: Socket,
-    building: Building
-  ): Building | undefined {
-    return BuildingManager.getBuilding(room, socket, this.state, building);
+  public static getBuildings(room: string, owner: string): Building[] {
+    return BuildingManager.getBuildings(room, owner, this.state);
   }
 
   public static getBuildingByEntity(
     room: string,
-    socket: Socket,
     entity: EntityType
   ): Building | undefined {
-    return BuildingManager.getBuildingByEntity(
-      room,
-      socket,
-      this.state,
-      entity
-    );
+    return BuildingManager.getBuildingByEntity(room, this.state, entity);
   }
 
   public static destroyBuilding(
