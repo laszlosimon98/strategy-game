@@ -10,9 +10,8 @@ import { BuildingPrices, Buildings } from "@/types/building.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
-import { GuardHouse } from "@/game/buildings/military/guardhouse";
-import { DestroyBuildingResponse } from "@/types/world.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
+import { DestroyBuildingResponse } from "@/types/world.types";
 
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
@@ -77,7 +76,7 @@ export class BuildingManager {
     socket: Socket,
     entity: EntityType,
     state: StateType
-  ): { updatedCells: Cell[]; markedCells: Cell[] } | null {
+  ): DestroyBuildingResponse | null {
     const room: string = ServerHandler.getCurrentRoom(socket);
     const world: Cell[][] = StateManager.getWorld(socket);
     const { i, j } = entity.data.indices;
@@ -113,9 +112,20 @@ export class BuildingManager {
       building.getEntity().data.owner
     );
 
+    const lostBuildings: Building[] = World.cleanupLostTerritory(
+      socket,
+      markedCells
+    );
+
+    lostBuildings.forEach((building) => {
+      this.destroyBuilding(room, socket, state, building);
+      World.restoreCells(socket, building);
+    });
+
     return {
       updatedCells,
       markedCells,
+      lostBuildings,
     };
   }
 

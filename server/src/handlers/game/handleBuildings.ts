@@ -8,10 +8,10 @@ import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
 import { getImageNameFromUrl } from "@/utils/utils";
-import { DestroyBuildingResponse } from "@/types/world.types";
 import { World } from "@/game/world";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Cell } from "@/game/cell";
+import { DestroyBuildingResponse } from "@/types/world.types";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (
@@ -101,8 +101,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    const cells: { updatedCells: Cell[]; markedCells: Cell[] } | null =
-      StateManager.destroyBuilding(socket, entity);
+    const cells: DestroyBuildingResponse | null = StateManager.destroyBuilding(
+      socket,
+      entity
+    );
 
     if (cells === null) {
       ServerHandler.sendMessageToSender(socket, "game:info", {
@@ -110,9 +112,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       });
       return;
     }
-
-    console.log(cells.updatedCells.length);
-    console.log(cells.markedCells.length);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
       id: socket.id,
@@ -142,6 +141,16 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         };
       }),
     });
+
+    ServerHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:destroyLostTerritoryBuildings",
+      {
+        id: socket.id,
+        entities: cells.lostBuildings.map((building) => building.getEntity()),
+      }
+    );
 
     // ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
     //   data: restoredCells.map((cell) => {

@@ -237,7 +237,7 @@ export class StateManager {
   public static destroyBuilding(
     socket: Socket,
     entity: EntityType
-  ): { updatedCells: Cell[]; markedCells: Cell[] } | null {
+  ): DestroyBuildingResponse | null {
     return BuildingManager.destroy(socket, entity, this.state);
   }
 

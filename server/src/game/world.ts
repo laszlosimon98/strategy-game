@@ -99,10 +99,6 @@ export class World {
       (building) => building.getEntity().data.name === "guardhouse"
     );
 
-    console.log();
-    console.log("------------------------------------------");
-    console.log();
-    console.log(guardHouses);
     const updatedCells: Cell[] = [];
 
     guardHouses.forEach((guardHouse) => {
@@ -110,10 +106,6 @@ export class World {
       const range = guardHouse.getRange();
 
       const handleTerritory = (cell: Cell): void => {
-        cell.setOwner(null);
-        cell.setTowerInfluence(false);
-        cell.removeObstacle(ObstacleEnum.Border);
-
         if (
           !cell.getOwner() ||
           cell.getOwner() === guardHouse.getEntity().data.owner
@@ -188,6 +180,30 @@ export class World {
       );
       return markedCells;
     }
+  }
+
+  public static cleanupLostTerritory(
+    socket: Socket,
+    markedCells: Cell[]
+  ): Building[] {
+    const lostCells: Cell[] = markedCells.filter(
+      (cell) => !cell.getTowerInfluence()
+    );
+
+    const world: Cell[][] = StateManager.getWorld(socket);
+    const lostBuildings: Building[] = [];
+
+    lostCells.forEach((cell) => {
+      const { i, j } = cell.getIndices();
+      const getCellBuilding: Building | null = world[i][j].getBuilding();
+
+      if (getCellBuilding !== null) {
+        world[i][j].setBuilding(null);
+        lostBuildings.push(getCellBuilding);
+      }
+    });
+
+    return lostBuildings;
   }
 
   private static populateWorld() {
