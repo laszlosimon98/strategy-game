@@ -3,7 +3,6 @@ import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
-import { PlayerType } from "@/types/state.types";
 
 export const handleConnection = (io: Server, socket: Socket) => {
   const createGame = ({ name }: { name: string }) => {
@@ -60,9 +59,9 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
     if (room) {
       const user = StateManager.getPlayer(room, socket);
-      StateManager.restoreColor(room, user.color);
+
+      StateManager.handlePlayerDisconnect(socket, room, user.color);
       StateManager.playerleftMessage(io, socket, user.name);
-      StateManager.disconnectPlayer(room, socket);
 
       const isGameRoomEmpty: boolean = StateManager.isGameRoomEmpty(room);
 
@@ -82,6 +81,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
           });
         }
       }
+
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
+        id: user.id,
+      });
     }
     socket.leave(room);
   };

@@ -117,6 +117,7 @@ export class StateManager {
     isHost: boolean
   ): void {
     this.state[room].players[socket.id] = {
+      id: socket.id,
       name,
       isHost,
       color: this.chooseColor(this.state[room].remainingColors),
@@ -127,7 +128,21 @@ export class StateManager {
   }
 
   public static disconnectPlayer(room: string, socket: Socket): void {
+    const player = this.state[room].players[socket.id];
+    player.buildings = [];
+    player.units = [];
+    player.storage = {} as StorageType;
+
     delete this.state[room].players[socket.id];
+  }
+
+  public static handlePlayerDisconnect(
+    socket: Socket,
+    room: string,
+    color: ColorType
+  ): void {
+    this.restoreColor(room, color);
+    this.disconnectPlayer(room, socket);
   }
 
   public static isGameRoomEmpty(room: string): boolean {

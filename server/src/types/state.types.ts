@@ -36,6 +36,7 @@ export type EntityType = {
 
 export type PlayerType = {
   [id: string]: {
+    id: string;
     name: string;
     isHost: boolean;
     color: ColorType;

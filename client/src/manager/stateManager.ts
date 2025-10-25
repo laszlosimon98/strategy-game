@@ -167,6 +167,16 @@ export class StateManager {
     this.state.player.host = host;
   }
 
+  public static playerLeft(id: string): void {
+    const player = this.state.game.players[id];
+    player.buildings = [];
+    player.movingUnits = [];
+    player.storage = {} as StorageType;
+    player.units = [];
+
+    delete this.state.game.players[id];
+  }
+
   // ------------------- InfoPanel -------------------
 
   public static getInfoPanelData(): Building | Soldier | null {

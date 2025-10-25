@@ -97,6 +97,14 @@ export class Game {
 
   private async handleCommunication(): Promise<void> {
     ServerHandler.receiveMessage(
+      "game:playerLeft",
+      ({ id }: { id: string }) => {
+        console.log(id);
+        StateManager.playerLeft(id);
+      }
+    );
+
+    ServerHandler.receiveMessage(
       "game:info",
       ({ message }: MessageResponse) => {
         this.messageIndicator.setText(message);

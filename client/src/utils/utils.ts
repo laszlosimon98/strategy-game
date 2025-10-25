@@ -1,3 +1,4 @@
+import type { GameMenu } from "@/game/menu/gameMenu";
 import { Entity } from "@/game/world/entity";
 import { settings } from "@/settings";
 import { Indices } from "@/utils/indices";
@@ -28,7 +29,7 @@ export const convertIsometricCoordsToCartesianCoords = (
 
 export const isMouseIntersect = (
   mousePos: Position,
-  element: Entity
+  element: Entity | GameMenu
 ): boolean => {
   const horizontal =
     mousePos.x >= element.getPosition().x &&
