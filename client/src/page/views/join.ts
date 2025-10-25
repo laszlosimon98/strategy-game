@@ -43,7 +43,7 @@ export class Join extends Page {
     this.codeText.setCenter({
       xFrom: 0,
       xTo: canvasWidth - 375,
-      yFrom: 425,
+      yFrom: settings.pos.code.y - 25,
       yTo: 0,
     });
 
