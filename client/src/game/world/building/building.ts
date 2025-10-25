@@ -102,7 +102,10 @@ export class Building extends Entity implements RendererInterface {
   }
 
   public action(): void {
-    if (this.entity.data.isProductionBuilding) {
+    if (
+      this.entity.data.owner === ServerHandler.getId() &&
+      this.entity.data.isProductionBuilding
+    ) {
       ServerHandler.sendMessage("game:production", { entity: this.entity });
       this.cooldownTimer?.activate();
     }
