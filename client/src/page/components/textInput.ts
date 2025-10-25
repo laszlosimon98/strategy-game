@@ -69,6 +69,8 @@ export class TextInput extends Frame {
       this.text.setText(text.slice(0, text.length - 1));
     } else if (key.match(/^[a-zA-Z0-9]+$/) && key.length === 1) {
       this.text.setText(text.concat(key));
+    } else if (key === " ") {
+      this.text.setText(text.concat(" "));
     }
   }
 

@@ -66,6 +66,8 @@ export class Game {
     this.world?.update(dt, this.mousePos, this.key);
     this.messageIndicator.update(dt, this.mousePos);
     this.chatInput.update(dt, this.mousePos, this.key);
+
+    this.key = "";
   }
 
   public handleClick(e: MouseEvent) {
