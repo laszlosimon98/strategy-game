@@ -8,7 +8,7 @@ import type { MessageResponse, PlayerGameType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
-import { MessageIndicator } from "@/game/messageIndicator/messageIndicator";
+import { MessagePopup } from "@/game/messagePopup/messagePopup";
 import { canvasWidth } from "@/init";
 import type { Indices } from "@/utils/indices";
 import type { Cell } from "@/game/world/cell";
@@ -21,11 +21,11 @@ export class Game {
   private mousePos: Position;
   private key: string;
 
-  private messageIndicator: MessageIndicator;
+  private messageIndicator: MessagePopup;
 
   public constructor() {
     this.gameMenu = new GameMenu(settings.gameMenu.pos, settings.gameMenu.dim);
-    this.messageIndicator = new MessageIndicator(
+    this.messageIndicator = new MessagePopup(
       new Position(
         canvasWidth / 2 - settings.size.messageIndicator.width / 2,
         100
