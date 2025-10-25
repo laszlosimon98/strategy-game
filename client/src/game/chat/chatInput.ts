@@ -1,5 +1,6 @@
 import { StateManager } from "@/manager/stateManager";
 import { TextInput } from "@/page/components/textInput";
+import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import type { Dimension } from "@/utils/dimension";
 import type { Position } from "@/utils/position";
@@ -31,6 +32,10 @@ export class ChatInput {
   public toggleVisibility(key: string): void {
     switch (key) {
       case "Enter": {
+        if (this.input.getText().trim().length > 0) {
+          this.sendMessage();
+        }
+
         this.isPanelVisible = !this.isPanelVisible;
         this.input.clearText();
         break;
@@ -42,5 +47,13 @@ export class ChatInput {
       }
     }
     StateManager.setChatState(this.isPanelVisible);
+  }
+
+  private sendMessage(): void {
+    ServerHandler.sendMessage("chat:message", {
+      message: this.input.getText(),
+      name: StateManager.getPlayerName(),
+      color: StateManager.getPlayerColor(ServerHandler.getId()),
+    });
   }
 }

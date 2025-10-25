@@ -12,12 +12,13 @@ export const handleChat = (io: Server, socket: Socket) => {
     name: string;
     color: ColorType;
   }) => {
-    ServerHandler.sendMessageToEveryOne(io, socket, "chat:sendMessage", {
+    console.log(message, name, color);
+    ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
       message,
       name,
       color,
     });
   };
 
-  socket.on("chat:receiveMessage", receiveMessage);
+  socket.on("chat:message", receiveMessage);
 };
