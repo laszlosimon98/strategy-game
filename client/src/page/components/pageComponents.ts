@@ -12,7 +12,7 @@ export abstract class PageComponents {
 
   public draw(): void {}
 
-  public update(dt: number, mousePos: Position): void {}
+  public update(dt: number, mousePos: Position, key?: string): void {}
 
   public getPos(): Position {
     return this.pos;

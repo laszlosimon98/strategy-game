@@ -9,14 +9,16 @@ import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
 import { MessagePopup } from "@/game/messagePopup/messagePopup";
-import { canvasWidth } from "@/init";
+import { canvasHeight, canvasWidth } from "@/init";
 import type { Indices } from "@/utils/indices";
 import type { Cell } from "@/game/world/cell";
 import { ObstacleEnum } from "@/game/enums/obstacleEnum";
+import { ChatInput } from "@/game/chat/chatInput";
 
 export class Game {
   private gameMenu: GameMenu;
   private world: World | undefined;
+  private chatInput: ChatInput;
 
   private mousePos: Position;
   private key: string;
@@ -31,6 +33,14 @@ export class Game {
         100
       ),
       settings.size.messageIndicator
+    );
+
+    this.chatInput = new ChatInput(
+      new Position(
+        canvasWidth / 2 - settings.size.chatIndicator.width / 2,
+        canvasHeight / 2 - 25
+      ),
+      settings.size.chatIndicator
     );
 
     this.world = undefined;
@@ -48,12 +58,14 @@ export class Game {
 
     this.gameMenu.drawTooltips();
     this.messageIndicator.draw();
+    this.chatInput.draw();
   }
 
   public update(dt: number) {
     this.gameMenu.update(dt, this.mousePos);
     this.world?.update(dt, this.mousePos, this.key);
     this.messageIndicator.update(dt, this.mousePos);
+    this.chatInput.update(dt, this.mousePos, this.key);
   }
 
   public handleClick(e: MouseEvent) {
@@ -83,6 +95,7 @@ export class Game {
 
   public handleKeyPress(key: string): void {
     this.key = key;
+    this.chatInput.toggleVisibility(key);
   }
 
   private async init(): Promise<void> {
