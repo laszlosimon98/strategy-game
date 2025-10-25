@@ -226,13 +226,13 @@ export class World {
           cell.setType(TileEnum.Flower);
         }
 
-        // if (treeNoise >= 50 || treeNoise <= -50) {
-        //   cell.addObstacle(ObstacleEnum.Tree);
-        //   cell.setInstance(new Tree());
-        // } else if (stoneNoise >= 60 || stoneNoise <= -80) {
-        //   cell.addObstacle(ObstacleEnum.Stone);
-        //   cell.setInstance(new Stone());
-        // }
+        if (treeNoise >= 50 || treeNoise <= -50) {
+          cell.addObstacle(ObstacleEnum.Tree);
+          cell.setInstance(new Tree());
+        } else if (stoneNoise >= 60 || stoneNoise <= -80) {
+          cell.addObstacle(ObstacleEnum.Stone);
+          cell.setInstance(new Stone());
+        }
       }
     }
   }
