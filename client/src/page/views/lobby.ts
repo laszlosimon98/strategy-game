@@ -184,6 +184,13 @@ export class Lobby extends Page {
       "connect:playerLeft",
       ({ name, message }: { name: string; message: string }) => {
         this.info.setText(message);
+        this.info.setCenter({
+          xFrom: 0,
+          xTo: canvasWidth,
+          yFrom: settings.pos.titlePos.y + settings.margin + 125,
+          yTo: 0,
+        });
+
         this.info.setColor(settings.color.error);
 
         this.removePlayer(name);
