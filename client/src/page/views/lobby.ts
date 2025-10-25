@@ -189,5 +189,14 @@ export class Lobby extends Page {
         this.removePlayer(name);
       }
     );
+
+    ServerHandler.receiveMessage(
+      "connect:newHost",
+      ({ name }: { name: string }) => {
+        if (StateManager.getPlayerName() === name) {
+          StateManager.setHost(true);
+        }
+      }
+    );
   }
 }

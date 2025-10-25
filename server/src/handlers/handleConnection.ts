@@ -3,13 +3,14 @@ import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
+import { PlayerType } from "@/types/state.types";
 
 export const handleConnection = (io: Server, socket: Socket) => {
   const createGame = ({ name }: { name: string }) => {
     const room = StateManager.generateGameCode();
 
     StateManager.initRoom(room);
-    StateManager.initPlayerInRoom(room, name, socket);
+    StateManager.initPlayerInRoom(room, name, socket, true);
 
     socket.join(room);
 
@@ -45,7 +46,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
       return;
     }
 
-    StateManager.initPlayerInRoom(room, name, socket);
+    StateManager.initPlayerInRoom(room, name, socket, false);
 
     socket.join(room);
 
@@ -67,6 +68,19 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
       if (isGameRoomEmpty) {
         StateManager.deleteLobby(room);
+      } else {
+        if (user.isHost) {
+          const playerKeys: string[] = Object.keys(
+            StateManager.getPlayers(room)
+          );
+          const idx: number = Math.floor(Math.random() * playerKeys.length);
+          const randomPlayer: string =
+            StateManager.getPlayers(room)[playerKeys[idx]].name;
+
+          ServerHandler.sendMessageToEveryOne(io, socket, "connect:newHost", {
+            name: randomPlayer,
+          });
+        }
       }
     }
     socket.leave(room);

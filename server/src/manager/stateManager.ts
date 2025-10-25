@@ -113,10 +113,12 @@ export class StateManager {
   public static initPlayerInRoom(
     room: string,
     name: string,
-    socket: Socket
+    socket: Socket,
+    isHost: boolean
   ): void {
     this.state[room].players[socket.id] = {
       name,
+      isHost,
       color: this.chooseColor(this.state[room].remainingColors),
       buildings: [],
       units: [],
