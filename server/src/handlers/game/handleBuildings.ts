@@ -70,8 +70,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
           response.getEntity().data.owner
         );
 
-        console.log(updatedCells.length);
-
         ServerHandler.sendMessageToEveryOne(
           io,
           socket,
@@ -151,16 +149,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         entities: cells.lostBuildings.map((building) => building.getEntity()),
       }
     );
-
-    // ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-    //   data: restoredCells.map((cell) => {
-    //     return {
-    //       indices: cell.getIndices(),
-    //       owner: cell.getOwner(),
-    //       obstacle: cell.getHighestPriorityObstacleType(),
-    //     };
-    //   }),
-    // });
   };
 
   socket.on("game:build", build);

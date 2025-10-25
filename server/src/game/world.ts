@@ -94,7 +94,9 @@ export class World {
 
   public static updateTerritory(socket: Socket, id: string): Cell[] {
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const buildings: Building[] = StateManager.getBuildings(room, id);
+    // const buildings: Building[] = StateManager.getBuildings(room, id);
+    const buildings: Building[] = StateManager.getAllPlayerBuildings(room);
+
     const guardHouses: GuardHouse[] = buildings.filter(
       (building) => building.getEntity().data.name === "guardhouse"
     );
@@ -224,13 +226,13 @@ export class World {
           cell.setType(TileEnum.Flower);
         }
 
-        if (treeNoise >= 50 || treeNoise <= -50) {
-          cell.addObstacle(ObstacleEnum.Tree);
-          cell.setInstance(new Tree());
-        } else if (stoneNoise >= 60 || stoneNoise <= -80) {
-          cell.addObstacle(ObstacleEnum.Stone);
-          cell.setInstance(new Stone());
-        }
+        // if (treeNoise >= 50 || treeNoise <= -50) {
+        //   cell.addObstacle(ObstacleEnum.Tree);
+        //   cell.setInstance(new Tree());
+        // } else if (stoneNoise >= 60 || stoneNoise <= -80) {
+        //   cell.addObstacle(ObstacleEnum.Stone);
+        //   cell.setInstance(new Stone());
+        // }
       }
     }
   }
@@ -296,6 +298,6 @@ export class World {
   private static isCellBorder(cell: Cell): boolean {
     return cell
       .getNeighbors()
-      .some((neighbour) => neighbour.getOwner() === null);
+      .some((neighbour) => neighbour.getOwner() !== cell.getOwner());
   }
 }

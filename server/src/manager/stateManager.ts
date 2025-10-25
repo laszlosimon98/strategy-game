@@ -15,7 +15,7 @@ import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/utils/indices";
-import { BuildingPrices } from "@/types/building.types";
+import { BuildingPrices, Buildings } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
@@ -225,6 +225,19 @@ export class StateManager {
 
   public static getBuildings(room: string, owner: string): Building[] {
     return BuildingManager.getBuildings(room, owner, this.state);
+  }
+
+  public static getAllPlayerBuildings(room: string): Building[] {
+    const buildings: Building[] = [];
+    const playersKeys: string[] = Object.keys(this.state[room].players);
+
+    playersKeys.forEach((key) => {
+      this.getBuildings(room, key).forEach((building) =>
+        buildings.push(building)
+      );
+    });
+
+    return buildings;
   }
 
   public static getBuildingByEntity(
