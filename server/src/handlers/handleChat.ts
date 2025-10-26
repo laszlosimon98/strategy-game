@@ -12,7 +12,6 @@ export const handleChat = (io: Server, socket: Socket) => {
     name: string;
     color: ColorType;
   }) => {
-    console.log(message, name, color);
     ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
       message,
       name,
