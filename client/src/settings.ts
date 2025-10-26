@@ -10,7 +10,8 @@ const UNIT_DIMENSION: Dimension = new Dimension(64, 64);
 const HOUSEITEM_DIMENSION: Dimension = new Dimension(96, 96);
 const TOOLTIP_DIMENDION: Dimension = new Dimension(120, 100);
 const MESSAGE_INDICATOR: Dimension = new Dimension(500, 50);
-const CHAT_INDICATOR: Dimension = new Dimension(650, 50);
+const CHAT_INPUT: Dimension = new Dimension(650, 50);
+const CHAT_FRAME: Dimension = new Dimension(300, 200);
 const CELL_SIZE: number = 48;
 
 export const settings = {
@@ -25,7 +26,8 @@ export const settings = {
     houseItem: HOUSEITEM_DIMENSION,
     tooltip: TOOLTIP_DIMENDION,
     messageIndicator: MESSAGE_INDICATOR,
-    chatIndicator: CHAT_INDICATOR,
+    chatInput: CHAT_INPUT,
+    chatFrame: CHAT_FRAME,
     unitAsset: 64,
     item: 96,
     cell: CELL_SIZE,

@@ -4,7 +4,11 @@ import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
-import type { MessageResponse, PlayerGameType } from "@/types/game.types";
+import type {
+  ColorsType,
+  MessageResponse,
+  PlayerGameType,
+} from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
@@ -14,11 +18,13 @@ import type { Indices } from "@/utils/indices";
 import type { Cell } from "@/game/world/cell";
 import { ObstacleEnum } from "@/game/enums/obstacleEnum";
 import { ChatInput } from "@/game/chat/chatInput";
+import { ChatFrame } from "@/game/chat/chatFrame";
 
 export class Game {
   private gameMenu: GameMenu;
   private world: World | undefined;
   private chatInput: ChatInput;
+  private chatFrame: ChatFrame;
 
   private mousePos: Position;
   private key: string;
@@ -37,10 +43,18 @@ export class Game {
 
     this.chatInput = new ChatInput(
       new Position(
-        canvasWidth / 2 - settings.size.chatIndicator.width / 2,
+        canvasWidth / 2 - settings.size.chatInput.width / 2,
         canvasHeight / 2 - 25
       ),
-      settings.size.chatIndicator
+      settings.size.chatInput
+    );
+
+    this.chatFrame = new ChatFrame(
+      new Position(
+        canvasWidth - settings.size.chatFrame.width - 5,
+        canvasHeight - settings.size.chatFrame.height - 5
+      ),
+      settings.size.chatFrame
     );
 
     this.world = undefined;
@@ -59,6 +73,7 @@ export class Game {
     this.gameMenu.drawTooltips();
     this.messageIndicator.draw();
     this.chatInput.draw();
+    this.chatFrame.draw();
   }
 
   public update(dt: number) {
@@ -66,6 +81,7 @@ export class Game {
     this.world?.update(dt, this.mousePos, this.key);
     this.messageIndicator.update(dt, this.mousePos);
     this.chatInput.update(dt, this.mousePos, this.key);
+    this.chatFrame.update(dt, this.mousePos);
 
     this.key = "";
   }
@@ -148,6 +164,21 @@ export class Game {
       "game:info",
       ({ message }: MessageResponse) => {
         this.messageIndicator.setText(message);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "chat:message",
+      ({
+        message,
+        name,
+        color,
+      }: {
+        message: string;
+        name: string;
+        color: ColorsType;
+      }) => {
+        console.log(message, name, color);
       }
     );
   }
