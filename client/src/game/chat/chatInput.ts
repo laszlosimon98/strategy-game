@@ -5,26 +5,25 @@ import { settings } from "@/settings";
 import type { Dimension } from "@/utils/dimension";
 import type { Position } from "@/utils/position";
 
-export class ChatInput {
-  private input: TextInput;
+export class ChatInput extends TextInput {
   private isPanelVisible: boolean;
 
   constructor(pos: Position, dim: Dimension) {
-    this.input = new TextInput(pos, dim, 0.75, { fontSize: "32px" });
+    super(pos, dim, 0.75, { fontSize: "32px" });
     this.isPanelVisible = false;
   }
 
   public draw(): void {
     if (this.isPanelVisible) {
-      this.input.draw();
+      super.draw();
     }
   }
 
   public update(dt: number, mousePos: Position, key: string): void {
     if (this.isPanelVisible) {
-      this.input.update(dt, mousePos);
-      if (key && this.input.getText().length < settings.chatTextLength) {
-        this.input.updateText(key);
+      super.update(dt, mousePos);
+      if (key && super.getText().length < settings.chatTextLength) {
+        super.updateText(key);
       }
     }
   }
@@ -32,12 +31,12 @@ export class ChatInput {
   public toggleVisibility(key: string): void {
     switch (key) {
       case "Enter": {
-        if (this.input.getText().trim().length > 0) {
+        if (super.getText().trim().length > 0) {
           this.sendMessage();
         }
 
         this.isPanelVisible = !this.isPanelVisible;
-        this.input.clearText();
+        super.clearText();
         break;
       }
 
@@ -51,7 +50,7 @@ export class ChatInput {
 
   private sendMessage(): void {
     ServerHandler.sendMessage("chat:message", {
-      message: this.input.getText(),
+      message: super.getText(),
       name: StateManager.getPlayerName(),
       color: StateManager.getPlayerColor(ServerHandler.getId()),
     });
