@@ -22,7 +22,12 @@ export class ChatInput extends TextInput {
   public update(dt: number, mousePos: Position, key: string): void {
     if (this.isPanelVisible) {
       super.update(dt, mousePos);
-      if (key && super.getText().length < settings.chatTextLength) {
+      if (
+        key &&
+        (super.getText().length < settings.chatTextLength ||
+          key === "Backspace")
+      ) {
+        console.log(key);
         super.updateText(key);
       }
     }

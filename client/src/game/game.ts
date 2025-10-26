@@ -178,7 +178,7 @@ export class Game {
         name: string;
         color: ColorsType;
       }) => {
-        console.log(message, name, color);
+        this.chatFrame.pushText(name, message, color);
       }
     );
   }
