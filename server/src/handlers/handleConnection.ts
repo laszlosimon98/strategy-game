@@ -93,6 +93,12 @@ export const handleConnection = (io: Server, socket: Socket) => {
     ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
       data: updatedCells.map(formatCell),
     });
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+      message: `${user.name} elhagyta a játékot!`,
+      name: "Rendszer",
+      color: "#707070ff",
+    });
   };
 
   const handleNewHost = (room: string) => {
