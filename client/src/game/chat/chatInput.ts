@@ -27,7 +27,6 @@ export class ChatInput extends TextInput {
         (super.getText().length < settings.chatTextLength ||
           key === "Backspace")
       ) {
-        console.log(key);
         super.updateText(key);
       }
     }

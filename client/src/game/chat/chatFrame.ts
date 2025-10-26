@@ -3,9 +3,13 @@ import { Text } from "@/page/components/text";
 import type { ColorsType } from "@/types/game.types";
 import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
+import { Timer } from "@/utils/timer";
 
 export class ChatFrame extends Frame {
-  private texts: Text[];
+  private texts: {
+    text: Text;
+    timer: Timer;
+  }[];
   private positions: Record<number, Position>;
   private maxTextItem: number = 7;
 
@@ -25,7 +29,7 @@ export class ChatFrame extends Frame {
   }
 
   public draw(): void {
-    this.texts.forEach((text) => {
+    this.texts.forEach(({ text }) => {
       text.setEnd(this.pos, this.dim);
       text.draw();
     });
@@ -33,6 +37,12 @@ export class ChatFrame extends Frame {
 
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
+
+    this.texts.forEach(({ timer }) => {
+      if (timer.isTimerActive()) {
+        timer.update();
+      }
+    });
   }
 
   public pushText(name: string, message: string, color: ColorsType): void {
@@ -41,16 +51,25 @@ export class ChatFrame extends Frame {
       color,
       fontSize: "24px",
     });
-    this.texts.unshift(text);
+    const timer: Timer = new Timer(7000, () => this.removeElement());
+
+    this.texts.unshift({ text, timer });
+    timer.activate();
 
     if (this.texts.length === this.maxTextItem) {
+      const lastText = this.texts[this.texts.length - 1];
+      lastText.timer.deactivate();
       this.texts.pop();
     }
 
     this.reOrderTexts();
   }
 
+  private removeElement(): void {
+    this.texts.pop();
+  }
+
   private reOrderTexts(): void {
-    this.texts.forEach((text, idx) => text.setPos(this.positions[idx]));
+    this.texts.forEach(({ text }, idx) => text.setPos(this.positions[idx]));
   }
 }
