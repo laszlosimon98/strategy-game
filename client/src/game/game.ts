@@ -142,7 +142,6 @@ export class Game {
         StateManager.playerLeft(id);
         const world: Cell[][] = StateManager.getWorld();
         const invalidObstacles: ObstacleEnum[] = [
-          ObstacleEnum.Empty,
           ObstacleEnum.Stone,
           ObstacleEnum.Tree,
         ];
