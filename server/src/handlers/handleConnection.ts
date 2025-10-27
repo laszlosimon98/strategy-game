@@ -5,6 +5,7 @@ import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 import { World } from "@/game/world";
 import { Cell } from "@/game/cell";
+import { PlayerType } from "@/types/state.types";
 
 export const handleConnection = (io: Server, socket: Socket) => {
   const createGame = ({ name }: { name: string }) => {
@@ -58,61 +59,68 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
   const disconnect = () => {
     const room = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
 
-    if (room) {
-      const user = StateManager.getPlayer(room, socket);
+    const user = StateManager.getPlayer(room, socket);
+    if (!user) return;
 
-      World.cleanupPlayerTerritory(socket, user.id);
-      const playerOldTerritory: Cell[] = World.updateTerritory(socket, {
-        id: user.id,
-      });
+    const playerOldTerritory: Cell[] = World.updateTerritory(socket, {
+      id: user.id,
+    });
+    World.cleanupPlayerTerritory(socket, user.id);
 
-      StateManager.handlePlayerDisconnect(socket, room, user.color);
-      StateManager.playerleftMessage(io, socket, user.name);
+    StateManager.handlePlayerDisconnect(socket, room, user.color);
+    StateManager.playerleftMessage(io, socket, user.name);
 
-      const isGameRoomEmpty: boolean = StateManager.isGameRoomEmpty(room);
+    const isGameRoomEmpty: boolean = StateManager.isGameRoomEmpty(room);
 
-      if (isGameRoomEmpty) {
-        StateManager.deleteLobby(room);
-      } else {
-        if (user.isHost) {
-          const playerKeys: string[] = Object.keys(
-            StateManager.getPlayers(room)
-          );
-          const idx: number = Math.floor(Math.random() * playerKeys.length);
-          const randomPlayer: string =
-            StateManager.getPlayers(room)[playerKeys[idx]].name;
+    if (isGameRoomEmpty) {
+      StateManager.deleteLobby(room);
+      socket.leave(room);
+      return;
+    }
 
-          ServerHandler.sendMessageToEveryOne(io, socket, "connect:newHost", {
-            name: randomPlayer,
-          });
-        }
-      }
+    if (user.isHost) {
+      handleNewHost(room);
+    }
 
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
-        id: user.id,
-        data: playerOldTerritory.map((cell) => {
-          return {
-            indices: cell.getIndices(),
-            obstacle: cell.getHighestPriorityObstacleType(),
-          };
-        }),
-      });
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
+      id: user.id,
+      data: playerOldTerritory.map(formatCell),
+    });
 
-      const updatedCells: Cell[] = World.updateTerritory(socket);
+    const updatedCells: Cell[] = World.updateTerritory(socket);
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+      data: updatedCells.map(formatCell),
+    });
 
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-        data: updatedCells.map((cell) => {
-          return {
-            indices: cell.getIndices(),
-            owner: cell.getOwner(),
-            obstacle: cell.getHighestPriorityObstacleType(),
-          };
-        }),
+    ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+      message: `${user.name} elhagyta a játékot!`,
+      name: "Rendszer",
+      color: "#707070ff",
+    });
+  };
+
+  const handleNewHost = (room: string) => {
+    const players: PlayerType = StateManager.getPlayers(room);
+    const playerKeys: string[] = Object.keys(players);
+
+    if (playerKeys.length > 0) {
+      const randomKey: string =
+        playerKeys[Math.floor(Math.random() * playerKeys.length)];
+      const newHost: string = players[randomKey].name;
+
+      ServerHandler.sendMessageToEveryOne(io, socket, "connect:newHost", {
+        name: newHost,
       });
     }
-    socket.leave(room);
   };
+
+  const formatCell = (cell: Cell) => ({
+    indices: cell.getIndices(),
+    owner: cell.getOwner(),
+    obstacle: cell.getHighestPriorityObstacleType(),
+  });
 
   socket.on("connect:create", createGame);
   socket.on("connect:join", joinGame);

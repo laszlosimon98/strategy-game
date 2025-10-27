@@ -77,6 +77,7 @@ export class StateManager {
       builder: {
         data: { ...this.initEntity.data },
       },
+      isChatOpen: false,
     },
   };
 
@@ -109,6 +110,15 @@ export class StateManager {
 
   public static getStaticImage(owner: string, name: string): ImageItemType {
     return this.getImages("units", this.getPlayerColor(owner), name);
+  }
+
+  // ------------------- Chat -------------------
+  public static isChatOpen(): boolean {
+    return this.state.game.isChatOpen;
+  }
+
+  public static setChatState(state: boolean): void {
+    this.state.game.isChatOpen = state;
   }
 
   // ------------------- Navigation -------------------

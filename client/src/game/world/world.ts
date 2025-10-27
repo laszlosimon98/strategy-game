@@ -78,7 +78,11 @@ export class World implements MouseHandlerInterface {
 
   public update(dt: number, mousePos: Position, key: string): void {
     this.mousePos = mousePos;
-    this.camera.update(dt, this.mousePos, key);
+    if (key !== "") {
+      if (!StateManager.isChatOpen()) {
+        this.camera.update(dt, this.mousePos, key);
+      }
+    }
 
     StateManager.getWorld().forEach((tiles) => {
       tiles.forEach((tile) => tile.update(this.camera.getScroll()));
@@ -154,8 +158,6 @@ export class World implements MouseHandlerInterface {
     }
   }
 
-  public moveWorld(): void {}
-
   public isActionInsideOfTheMap(indices: Indices): boolean {
     return (
       indices.i >= 0 &&
@@ -194,7 +196,7 @@ export class World implements MouseHandlerInterface {
         break;
 
       case ObstacleEnum.Border:
-        if (!cell.getObstacle() && owner) {
+        if (owner) {
           setImage(
             StateManager.getImages(
               "utils",
@@ -204,6 +206,7 @@ export class World implements MouseHandlerInterface {
             true
           );
         }
+
         break;
     }
   }

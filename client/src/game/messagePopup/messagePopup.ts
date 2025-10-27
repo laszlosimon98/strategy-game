@@ -5,7 +5,7 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
 
-export class MessageIndicator extends Frame {
+export class MessagePopup extends Frame {
   private text: Text;
   private visibilityTimer: Timer;
 

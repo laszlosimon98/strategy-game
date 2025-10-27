@@ -1,29 +1,33 @@
 import { ctx } from "@/init";
+import { Frame } from "@/page/components/frame";
 import { Text } from "@/page/components/text";
 import { settings } from "@/settings";
 import type { Options } from "@/types/text.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
-export class TextInput {
-  private pos: Position;
+export class TextInput extends Frame {
   private text: Text;
-  private dim: Dimension;
   private isSelected: boolean;
   private isSecret: boolean;
 
-  public constructor(pos: Position, dim: Dimension, options?: Options) {
+  public constructor(
+    pos: Position,
+    dim: Dimension,
+    alpha: number,
+    options?: Options
+  ) {
+    super(pos, dim, alpha);
     this.pos = pos;
-    this.text = new Text(pos, "");
+    this.text = new Text(pos, "", options);
     this.dim = dim;
     this.isSelected = false;
     this.isSecret = (options && options.isSecret) || false;
   }
 
   public draw(): void {
+    super.draw();
     ctx.save();
-    ctx.fillStyle = settings.color.brown;
-    ctx.fillRect(this.pos.x, this.pos.y, this.dim.width, this.dim.height);
 
     ctx.fillStyle = settings.color.text;
 
@@ -65,12 +69,9 @@ export class TextInput {
       this.text.setText(text.slice(0, text.length - 1));
     } else if (key.match(/^[a-zA-Z0-9]+$/) && key.length === 1) {
       this.text.setText(text.concat(key));
+    } else if (key === " ") {
+      this.text.setText(text.concat(" "));
     }
-    // this.metrics = ctx.measureText(
-    //   !this.isSecret
-    //     ? this.texts
-    //     : new Array(this.text.length).fill("*").join("")
-    // );
   }
 
   public getText(): string {
@@ -79,7 +80,6 @@ export class TextInput {
 
   public clearText(): void {
     this.text.setText("");
-    // this.metrics = ctx.measureText("");
   }
 
   public setIsSelected(isSelected: boolean): void {

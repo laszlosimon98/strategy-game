@@ -1,6 +1,7 @@
 import { ctx } from "@/init";
 import { settings } from "@/settings";
 import type { Options } from "@/types/text.types";
+import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
 export class Text {
@@ -41,6 +42,10 @@ export class Text {
       (this.metrics.actualBoundingBoxAscent -
         this.metrics.actualBoundingBoxDescent) /
         2;
+  }
+
+  public setEnd(pos: Position, dim: Dimension): void {
+    this.pos = new Position(pos.x + dim.width - this.metrics.width, this.pos.y);
   }
 
   public getPos(): Position {

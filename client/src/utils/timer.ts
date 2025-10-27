@@ -30,7 +30,7 @@ export class Timer {
     return this.isActive;
   }
 
-  private deactivate(): void {
+  public deactivate(): void {
     this.isActive = false;
     this.startTime = 0;
   }

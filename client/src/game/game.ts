@@ -4,33 +4,57 @@ import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
-import type { MessageResponse, PlayerGameType } from "@/types/game.types";
+import type {
+  ColorsType,
+  MessageResponse,
+  PlayerGameType,
+} from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import { settings } from "@/settings";
-import { MessageIndicator } from "@/game/messageIndicator/messageIndicator";
-import { canvasWidth } from "@/init";
+import { MessagePopup } from "@/game/messagePopup/messagePopup";
+import { canvasHeight, canvasWidth } from "@/init";
 import type { Indices } from "@/utils/indices";
 import type { Cell } from "@/game/world/cell";
 import { ObstacleEnum } from "@/game/enums/obstacleEnum";
+import { ChatInput } from "@/game/chat/chatInput";
+import { ChatFrame } from "@/game/chat/chatFrame";
 
 export class Game {
   private gameMenu: GameMenu;
   private world: World | undefined;
+  private chatInput: ChatInput;
+  private chatFrame: ChatFrame;
 
   private mousePos: Position;
   private key: string;
 
-  private messageIndicator: MessageIndicator;
+  private messageIndicator: MessagePopup;
 
   public constructor() {
     this.gameMenu = new GameMenu(settings.gameMenu.pos, settings.gameMenu.dim);
-    this.messageIndicator = new MessageIndicator(
+    this.messageIndicator = new MessagePopup(
       new Position(
         canvasWidth / 2 - settings.size.messageIndicator.width / 2,
         100
       ),
       settings.size.messageIndicator
+    );
+
+    this.chatInput = new ChatInput(
+      new Position(
+        canvasWidth / 2 - settings.size.chatInput.width / 2,
+        canvasHeight / 2 - 25
+      ),
+      settings.size.chatInput
+    );
+
+    this.chatFrame = new ChatFrame(
+      new Position(
+        canvasWidth - settings.size.chatFrame.width - 5,
+        canvasHeight - settings.size.chatFrame.height - 5
+      ),
+      settings.size.chatFrame
     );
 
     this.world = undefined;
@@ -48,12 +72,18 @@ export class Game {
 
     this.gameMenu.drawTooltips();
     this.messageIndicator.draw();
+    this.chatInput.draw();
+    this.chatFrame.draw();
   }
 
   public update(dt: number) {
     this.gameMenu.update(dt, this.mousePos);
     this.world?.update(dt, this.mousePos, this.key);
     this.messageIndicator.update(dt, this.mousePos);
+    this.chatInput.update(dt, this.mousePos, this.key);
+    this.chatFrame.update(dt, this.mousePos);
+
+    this.key = "";
   }
 
   public handleClick(e: MouseEvent) {
@@ -83,6 +113,7 @@ export class Game {
 
   public handleKeyPress(key: string): void {
     this.key = key;
+    this.chatInput.toggleVisibility(key);
   }
 
   private async init(): Promise<void> {
@@ -111,7 +142,6 @@ export class Game {
         StateManager.playerLeft(id);
         const world: Cell[][] = StateManager.getWorld();
         const invalidObstacles: ObstacleEnum[] = [
-          ObstacleEnum.Empty,
           ObstacleEnum.Stone,
           ObstacleEnum.Tree,
         ];
@@ -133,6 +163,21 @@ export class Game {
       "game:info",
       ({ message }: MessageResponse) => {
         this.messageIndicator.setText(message);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "chat:message",
+      ({
+        message,
+        name,
+        color,
+      }: {
+        message: string;
+        name: string;
+        color: ColorsType;
+      }) => {
+        this.chatFrame.pushText(name, message, color);
       }
     );
   }

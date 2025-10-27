@@ -125,6 +125,7 @@ type Game = {
     state: GameState;
     players: PlayerGameType;
     builder: EntityType;
+    isChatOpen: boolean;
   };
 };
 

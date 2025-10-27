@@ -47,7 +47,11 @@ export class Join extends Page {
       yTo: 0,
     });
 
-    this.codeInput = new TextInput(settings.pos.code, new Dimension(500, 40));
+    this.codeInput = new TextInput(
+      settings.pos.code,
+      new Dimension(500, 40),
+      1
+    );
 
     this.buttons.push(this.joinButton);
     this.buttons.push(this.backButton);

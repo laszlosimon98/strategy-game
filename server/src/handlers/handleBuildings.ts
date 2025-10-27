@@ -117,35 +117,37 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       message: "Épület sikeresen elbontva!",
     });
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      data: cells.markedCells.map((cell) => {
-        return {
-          indices: cell.getIndices(),
-          owner: cell.getOwner(),
-          obstacle: cell.getHighestPriorityObstacleType(),
-        };
-      }),
-    });
+    if (entity.data.name === "guardhouse") {
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+        data: cells.markedCells.map((cell) => {
+          return {
+            indices: cell.getIndices(),
+            owner: cell.getOwner(),
+            obstacle: cell.getHighestPriorityObstacleType(),
+          };
+        }),
+      });
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      data: cells.updatedCells.map((cell) => {
-        return {
-          indices: cell.getIndices(),
-          owner: cell.getOwner(),
-          obstacle: cell.getHighestPriorityObstacleType(),
-        };
-      }),
-    });
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
+        data: cells.updatedCells.map((cell) => {
+          return {
+            indices: cell.getIndices(),
+            owner: cell.getOwner(),
+            obstacle: cell.getHighestPriorityObstacleType(),
+          };
+        }),
+      });
 
-    ServerHandler.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:destroyLostTerritoryBuildings",
-      {
-        id: socket.id,
-        entities: cells.lostBuildings.map((building) => building.getEntity()),
-      }
-    );
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:destroyLostTerritoryBuildings",
+        {
+          id: socket.id,
+          entities: cells.lostBuildings.map((building) => building.getEntity()),
+        }
+      );
+    }
   };
 
   socket.on("game:build", build);
