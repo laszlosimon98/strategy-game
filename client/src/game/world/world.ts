@@ -196,7 +196,7 @@ export class World implements MouseHandlerInterface {
         break;
 
       case ObstacleEnum.Border:
-        if (!cell.getObstacle() && owner) {
+        if (owner) {
           setImage(
             StateManager.getImages(
               "utils",
@@ -206,6 +206,7 @@ export class World implements MouseHandlerInterface {
             true
           );
         }
+
         break;
     }
   }
