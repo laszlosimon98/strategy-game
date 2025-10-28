@@ -23,7 +23,6 @@ export const handleAuth = (io: Server, socket: Socket) => {
     });
 
     if (user) {
-      console.log("user");
       ServerHandler.sendMessageToSender(socket, "auth:response", {
         message: "A felhasználónév foglalt!",
         status: 400,
@@ -33,7 +32,6 @@ export const handleAuth = (io: Server, socket: Socket) => {
     }
 
     if (!username || !password) {
-      console.log("username, password");
       ServerHandler.sendMessageToSender(socket, "auth:response", {
         message: "Az adatok megadása kötelező!",
         status: 400,
