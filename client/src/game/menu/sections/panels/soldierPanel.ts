@@ -29,7 +29,6 @@ export class SoldierPanel extends Section {
       fontSize: "20px",
     });
 
-    // FIXME: le kell forditani
     this.healthText = new Text(
       new Position(pos.x, pos.y),
       language[StateManager.getLanguage()].utils["hitPoints" as Utils],

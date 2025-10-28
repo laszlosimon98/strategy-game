@@ -42,13 +42,14 @@ export class Auth extends Page {
       new Position(settings.pos.auth.name.x, settings.pos.auth.name.y - 10),
       "Felhasználó név: ",
       {
-        color: settings.color.black,
+        color: settings.color.brown,
       }
     );
 
     this.nameInput = new TextInput(
       settings.pos.auth.name,
-      new Dimension(500, 40)
+      new Dimension(500, 40),
+      1
     );
 
     this.passwordText = new Text(
@@ -58,13 +59,14 @@ export class Auth extends Page {
       ),
       "Jelszó: ",
       {
-        color: settings.color.black,
+        color: settings.color.brown,
       }
     );
 
     this.passwordInput = new TextInput(
       settings.pos.auth.password,
       new Dimension(500, 40),
+      1,
       {
         isSecret: true,
       }
@@ -91,8 +93,8 @@ export class Auth extends Page {
     };
   }
 
-  public handleNext = (): void => {
-    const [isError, error] = this.handleAuth();
+  public handleNext = async () => {
+    const [isError, error] = await this.handleAuth();
 
     if (isError) {
       StateManager.setPageState(PageState.Registration);
@@ -102,7 +104,7 @@ export class Auth extends Page {
     }
   };
 
-  public handleAuth(): [boolean, string] {
+  public async handleAuth(): Promise<[boolean, string]> {
     return [false, ""];
   }
 }
