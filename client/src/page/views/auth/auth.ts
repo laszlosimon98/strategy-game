@@ -1,4 +1,5 @@
 import { PageState } from "@/enums/pageState";
+import { canvasWidth } from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Text } from "@/page/components/text";
@@ -18,6 +19,8 @@ export class Auth extends Page {
 
   private nameText: Text;
   private passwordText: Text;
+
+  private errorText: Text;
 
   public constructor(title: string) {
     super(title);
@@ -72,6 +75,17 @@ export class Auth extends Page {
       }
     );
 
+    this.errorText = new Text(
+      new Position(
+        settings.pos.auth.password.x,
+        settings.pos.auth.password.y + 30
+      ),
+      "",
+      {
+        color: settings.color.error,
+      }
+    );
+
     this.buttons.push(this.backButton);
     this.buttons.push(this.actionButton);
     this.inputs.push(this.nameInput);
@@ -84,6 +98,16 @@ export class Auth extends Page {
     this.passwordInput.draw();
     this.nameText.draw();
     this.passwordText.draw();
+    this.errorText.draw();
+  }
+
+  public update(): void {
+    this.errorText.setCenter({
+      xFrom: 0,
+      xTo: canvasWidth,
+      yFrom: settings.pos.auth.password.y + 85,
+      yTo: 0,
+    });
   }
 
   protected getInputData(): AuthType {
@@ -98,7 +122,7 @@ export class Auth extends Page {
 
     if (isError) {
       StateManager.setPageState(PageState.Registration);
-      console.error(error);
+      this.errorText.setText(error);
     } else {
       StateManager.setPageState(PageState.MainMenu);
     }
