@@ -12,6 +12,7 @@ import { handleUnits } from "@/handlers/handleUnits";
 import { handleConnection } from "@/handlers/handleConnection";
 import { handleProduction } from "@/handlers/handleProduction";
 import { handleChat } from "@/handlers/handleChat";
+import { handleAuth } from "@/handlers/handleAuth";
 
 const PORT = 3000;
 
@@ -46,6 +47,7 @@ const gameHandler = (io: Server, socket: Socket) => {
 const onConnecton = async (socket: Socket) => {
   await handleUtils(io, socket, images);
   handleConnection(io, socket);
+  handleAuth(io, socket);
   gameHandler(io, socket);
 };
 
