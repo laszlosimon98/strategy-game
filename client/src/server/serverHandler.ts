@@ -1,5 +1,6 @@
 import { io, Socket } from "socket.io-client";
 import { StateManager } from "@/manager/stateManager";
+import { SERVER_URL } from "@/settings";
 
 export class ServerHandler {
   private static socket: Socket;
@@ -7,8 +8,7 @@ export class ServerHandler {
 
   private static getInstance(): Socket {
     if (!this.socket) {
-      this.socket = io("http://localhost:3000");
-      // this.socket = io("http://192.168.1.70:3000");
+      this.socket = io(SERVER_URL);
     }
 
     this.socket.once("connect_error", () => {
