@@ -7,6 +7,7 @@ export class Registration extends Auth {
   }
 
   public async handleAuth(): Promise<any> {
+    console.log("registration");
     const data = this.getInputData();
 
     ServerHandler.sendMessage("auth:register", data);

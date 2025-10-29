@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Server, Socket } from "socket.io";
-import * as bcrypt from "bcrypt";
 import { ServerHandler } from "@/server/serverHandler";
+import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 
 type UserEntity = {
   username: string;
@@ -64,7 +65,56 @@ export const handleAuth = (io: Server, socket: Socket) => {
     }
   };
 
-  const login = async () => {};
+  const login = async ({ username, password }: UserEntity) => {
+    const user = await prismaService.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (!user) {
+      ServerHandler.sendMessageToSender(socket, "auth:response", {
+        message: "A felhasználó nem található!",
+        status: 400,
+      });
+
+      return;
+    }
+
+    const isPasswordValid: boolean = await bcrypt.compare(
+      password,
+      user.password
+    );
+
+    if (!isPasswordValid) {
+      ServerHandler.sendMessageToSender(socket, "auth:response", {
+        message: "Helytelen felhasználónév vagy jelszó!",
+        status: 400,
+      });
+
+      return;
+    }
+
+    const accessToken = jwt.sign(
+      { username: user.username },
+      process.env.JWT_ACCESS_TOKEN_SECRET || "default_access_secret",
+      { expiresIn: "5m" }
+    );
+
+    const refreshToken = jwt.sign(
+      { username: user.username },
+      process.env.JWT_REFRESH_TOKEN_SECRET || "default_refresh_secret",
+      { expiresIn: "1d" }
+    );
+
+    ServerHandler.sendMessageToSender(socket, "auth:response", {
+      message: "OK",
+      status: 200,
+      accessToken,
+      refreshToken,
+    });
+  };
+
   const refresh = async () => {};
   const logout = async () => {};
 

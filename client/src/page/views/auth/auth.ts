@@ -37,8 +37,7 @@ export class Auth extends Page {
       settings.pos.default.next,
       settings.size.button,
       StateManager.getImages("ui", "plate"),
-      title,
-      this.handleNext
+      title
     );
 
     this.nameText = new Text(
@@ -121,6 +120,8 @@ export class Auth extends Page {
 
   public handleNext = async () => {
     const responseData = await this.handleAuth();
+
+    console.log(responseData);
 
     if (responseData.status === 400) {
       this.errorText.setText(responseData.message);
