@@ -90,6 +90,8 @@ export class Auth extends Page {
     this.buttons.push(this.actionButton);
     this.inputs.push(this.nameInput);
     this.inputs.push(this.passwordInput);
+
+    this.actionButton.handleError = this.handleNext;
   }
 
   public draw(): void {
@@ -118,17 +120,14 @@ export class Auth extends Page {
   }
 
   public handleNext = async () => {
-    const [isError, error] = await this.handleAuth();
+    const responseData = await this.handleAuth();
 
-    if (isError) {
-      StateManager.setPageState(PageState.Registration);
-      this.errorText.setText(error);
+    if (responseData.status === 400) {
+      this.errorText.setText(responseData.message);
     } else {
       StateManager.setPageState(PageState.MainMenu);
     }
   };
 
-  public async handleAuth(): Promise<[boolean, string]> {
-    return [false, ""];
-  }
+  public async handleAuth(): Promise<any> {}
 }

@@ -6,9 +6,8 @@ export class Registration extends Auth {
     super(title);
   }
 
-  public async handleAuth(): Promise<[boolean, string]> {
+  public async handleAuth(): Promise<any> {
     const data = this.getInputData();
-    const response: [boolean, string] = [false, ""];
 
     ServerHandler.sendMessage("auth:register", data);
 
@@ -16,13 +15,6 @@ export class Registration extends Auth {
       "auth:response"
     );
 
-    if (responseData.status === 400) {
-      response[0] = true;
-      response[1] = responseData.message;
-    }
-
-    console.log(response);
-
-    return response;
+    return responseData;
   }
 }
