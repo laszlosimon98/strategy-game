@@ -66,21 +66,17 @@ export const settings = {
         canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
         canvasHeight / 2 - MARGIN
       ),
-      description: new Position(
-        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
-        canvasHeight / 2
-      ),
       statistic: new Position(
         canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
-        canvasHeight / 2 + MARGIN
-      ),
-      login: new Position(
-        canvasWidth - BUTTON_DIMENSION.width - MARGIN,
-        MARGIN / 2
+        canvasHeight / 2 + 25
       ),
       registration: new Position(
         canvasWidth - BUTTON_DIMENSION.width - MARGIN,
-        BUTTON_DIMENSION.height / 2 + MARGIN
+        MARGIN / 2
+      ),
+      login: new Position(
+        canvasWidth - BUTTON_DIMENSION.width - MARGIN,
+        BUTTON_DIMENSION.height / 2 + MARGIN + 10
       ),
       namePlate: new Position(MARGIN, MARGIN),
     },

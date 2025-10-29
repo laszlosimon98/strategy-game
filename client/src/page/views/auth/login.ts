@@ -1,5 +1,5 @@
+import { authApi } from "@/api/api";
 import { Auth } from "@/page/views/auth/auth";
-import { ServerHandler } from "@/server/serverHandler";
 
 export class Login extends Auth {
   public constructor(title: string) {
@@ -7,15 +7,7 @@ export class Login extends Auth {
   }
 
   public async handleAuth(): Promise<any> {
-    console.log("login");
     const data = this.getInputData();
-
-    ServerHandler.sendMessage("auth:login", data);
-
-    const responseData = await ServerHandler.receiveAsyncMessage(
-      "auth:response"
-    );
-
-    return responseData;
+    return authApi.post("/login", data);
   }
 }

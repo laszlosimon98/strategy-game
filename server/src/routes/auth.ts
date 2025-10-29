@@ -1,6 +1,7 @@
-import { handleRegister } from "@/controller/authController";
+import { handleLogin, handleRegister } from "@/controller/authController";
 import express from "express";
 
 export const authRoutes = express.Router();
 
 authRoutes.post("/register", handleRegister);
+authRoutes.post("/login", handleLogin);

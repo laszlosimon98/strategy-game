@@ -3,10 +3,10 @@ import * as bcrypt from "bcrypt";
 import { Response, Request } from "express";
 import * as jwt from "jsonwebtoken";
 
+const prismaService = new PrismaClient();
+
 export const handleRegister = async (request: Request, response: Response) => {
   const { username, password } = request.body;
-
-  const prismaService = new PrismaClient();
 
   const user = await prismaService.user.findUnique({
     where: {
@@ -15,15 +15,11 @@ export const handleRegister = async (request: Request, response: Response) => {
   });
 
   if (user) {
-    response.status(400).send("A felhasználónév foglalt!");
-
-    return;
+    return response.status(400).send("A felhasználónév foglalt!");
   }
 
   if (!username || !password) {
-    response.status(400).send("Az adatok megadása kötelező!");
-
-    return;
+    return response.status(400).send("Az adatok megadása kötelező!");
   }
 
   const hashedPassword: string = await bcrypt.hash(
@@ -39,10 +35,53 @@ export const handleRegister = async (request: Request, response: Response) => {
         refreshToken: "",
       },
     });
-    response.status(200).send("Sikeres regisztráció!");
 
-    return;
+    return response.status(200).send("Sikeres regisztráció!");
   } catch (err) {
     console.log(err);
   }
+};
+
+export const handleLogin = async (request: Request, response: Response) => {
+  const { username, password } = request.body;
+
+  const user = await prismaService.user.findUnique({
+    where: {
+      username,
+    },
+  });
+
+  if (!user) {
+    return response.status(400).send("A felhasználó nem található!");
+  }
+
+  const isPasswordValid: boolean = await bcrypt.compare(
+    password,
+    user.password
+  );
+
+  if (!isPasswordValid) {
+    return response.status(400).send("Rossz felhasználónév vagy jelszó!");
+  }
+
+  const accessToken = jwt.sign(
+    { username: user.username },
+    process.env.JWT_ACCESS_TOKEN_SECRET || "default_access_secret",
+    { expiresIn: "5m" }
+  );
+
+  const refreshToken = jwt.sign(
+    { username: user.username },
+    process.env.JWT_REFRESH_TOKEN_SECRET || "default_refresh_secret",
+    { expiresIn: "1d" }
+  );
+
+  response.cookie("jwt", refreshToken, {
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  });
+
+  return response.status(200).json({ accessToken });
 };

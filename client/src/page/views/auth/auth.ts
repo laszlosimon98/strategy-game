@@ -119,14 +119,11 @@ export class Auth extends Page {
   }
 
   public handleNext = async () => {
-    const responseData = await this.handleAuth();
-
-    console.log(responseData);
-
-    if (responseData.status === 400) {
-      this.errorText.setText(responseData.message);
-    } else {
+    try {
+      await this.handleAuth();
       StateManager.setPageState(PageState.MainMenu);
+    } catch (error: any) {
+      this.errorText.setText(error.response.data);
     }
   };
 
