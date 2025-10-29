@@ -1,4 +1,5 @@
-import { authApi } from "@/api/api";
+import { authApi, userApi } from "@/api/api";
+import { StateManager } from "@/manager/stateManager";
 import { Auth } from "@/page/views/auth/auth";
 
 export class Login extends Auth {
@@ -8,6 +9,20 @@ export class Login extends Auth {
 
   public async handleAuth(): Promise<any> {
     const data = this.getInputData();
-    return authApi.post("/login", data);
+    const response = await authApi.post("/login", data);
+
+    await new Promise((resolve) => {
+      resolve(StateManager.setAccessToken(response.data.accessToken));
+    });
+
+    const user = await userApi.get("/getUser", {
+      headers: {
+        Authorization: `Bearer ${StateManager.getAccessToken()}`,
+      },
+    });
+
+    StateManager.setPlayerName(user.data.username);
+
+    return response;
   }
 }

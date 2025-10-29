@@ -1,9 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { prismaService } from "@/prisma/prisma";
 import * as bcrypt from "bcrypt";
 import { Response, Request } from "express";
 import * as jwt from "jsonwebtoken";
-
-const prismaService = new PrismaClient();
 
 export const handleRegister = async (request: Request, response: Response) => {
   const { username, password } = request.body;
@@ -38,7 +36,7 @@ export const handleRegister = async (request: Request, response: Response) => {
 
     return response.status(200).send("Sikeres regisztráció!");
   } catch (err) {
-    console.log(err);
+    return response.status(500).send("Váratlan hiba történt!");
   }
 };
 
@@ -75,6 +73,13 @@ export const handleLogin = async (request: Request, response: Response) => {
     process.env.JWT_REFRESH_TOKEN_SECRET || "default_refresh_secret",
     { expiresIn: "1d" }
   );
+
+  await prismaService.user.update({
+    where: { username },
+    data: {
+      refreshToken,
+    },
+  });
 
   response.cookie("jwt", refreshToken, {
     httpOnly: true,

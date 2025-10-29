@@ -18,6 +18,8 @@ import { authRoutes } from "@/routes/auth";
 import { allowedOrigins } from "@/config/allowedOrigins";
 import { corsOptions } from "@/config/corsOptions";
 import { credentials } from "@/middleware/credentials";
+import { verifyJWT } from "@/middleware/verifyJWT";
+import { userRoutes } from "@/routes/user";
 
 const PORT = 3000;
 const app = express();
@@ -30,6 +32,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "..", "/public")));
 
 app.use("/auth", authRoutes);
+
+app.use(verifyJWT);
+app.use("/user", userRoutes);
 
 const io: Server = new Server(httpServer, {
   cors: {

@@ -20,17 +20,6 @@ export type ColorsType =
   | "red"
   | "white";
 
-// type ColorItemType =
-//   | "archerattacking"
-//   | "archeridle"
-//   | "archerstatic"
-//   | "archerwalking"
-//   | "flag"
-//   | "knightattacking"
-//   | "knightidle"
-//   | "knightstatic"
-//   | "knightwalking";
-
 export type ImageItemType = {
   url: string;
   dimensions: { width: number; height: number };
@@ -62,14 +51,11 @@ export type SoldierPropertiesType = {
 
 type Language = { language: "hu" | "en" };
 
+type AccessToken = { accessToken: string };
+
 type Images = {
   images: {
     buildings: any;
-    // colors: {
-    //   [colors in ColorsType]: {
-    //     [item in ColorItemType]: ItemType;
-    //   };
-    // };
     units: any;
     ground: any;
     ui: any;
@@ -84,12 +70,6 @@ type NavigationType = {
     gameMenuState: MainMenuState;
     subMenuState: SubMenuState;
     prevMenuState: MainMenuState;
-  };
-};
-
-type ServerType = {
-  server: {
-    status: "online" | "offline";
   };
 };
 
@@ -120,7 +100,6 @@ export type PlayerGameType = {
 
 type Game = {
   game: {
-    worldSize: number;
     world: Cell[][];
     state: GameState;
     players: PlayerGameType;
@@ -129,10 +108,10 @@ type Game = {
   };
 };
 
-export type StateType = Language &
+export type StateType = AccessToken &
+  Language &
   Images &
   NavigationType &
-  ServerType &
   PlayerType &
   InfoType &
   Game;

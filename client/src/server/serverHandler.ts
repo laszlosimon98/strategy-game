@@ -1,5 +1,4 @@
 import { io, Socket } from "socket.io-client";
-import { StateManager } from "@/manager/stateManager";
 import { SERVER_URL } from "@/settings";
 
 export class ServerHandler {
@@ -10,16 +9,6 @@ export class ServerHandler {
     if (!this.socket) {
       this.socket = io(SERVER_URL);
     }
-
-    this.socket.once("connect_error", () => {
-      StateManager.setServerStatus("offline");
-      return;
-    });
-
-    this.socket.on("connect", () => {
-      StateManager.setServerStatus("online");
-    });
-
     return this.socket;
   }
 
@@ -33,7 +22,7 @@ export class ServerHandler {
 
   public static receiveAsyncMessage(event: string): Promise<any> {
     return new Promise((resolve) => {
-      this.getInstance().on(event, (data: any) => {
+      this.getInstance().once(event, (data: any) => {
         resolve(data);
       });
     });
