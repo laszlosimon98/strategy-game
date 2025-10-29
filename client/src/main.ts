@@ -1,3 +1,4 @@
+import { authApi, userApi } from "@/api/api";
 import init from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Program } from "@/program";
@@ -21,8 +22,31 @@ const initBuildingPrices = async () => {
   console.log(StateManager.getBuildingPrices());
 };
 
+const checkUser = async () => {
+  try {
+    const response = await authApi.post("/refresh");
+
+    if (response.data) {
+      StateManager.setAccessToken(response.data.accessToken);
+    }
+  } catch (err) {}
+
+  try {
+    const user = await userApi.get("/getUser", {
+      headers: {
+        Authorization: `Bearer ${StateManager.getAccessToken()}`,
+      },
+    });
+
+    if (user.data) {
+      StateManager.setPlayerName(user.data.username);
+    }
+  } catch (err) {}
+};
+
 const main = async () => {
   init();
+  await checkUser();
 
   await initImages();
   await initBuildingPrices();

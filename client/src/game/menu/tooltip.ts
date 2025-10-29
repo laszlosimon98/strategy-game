@@ -7,7 +7,6 @@ import { settings } from "@/settings";
 import type { Price } from "@/types/building.types";
 import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
-import { getImageNameFromUrl } from "@/utils/utils";
 
 export class Tooltip extends Frame {
   private triangleSize: number = 12;

@@ -1,3 +1,4 @@
+import { authApi, userApi } from "@/api/api";
 import { StateManager } from "@/manager/stateManager";
 import { Auth } from "@/page/views/auth/auth";
 
@@ -6,10 +7,25 @@ export class Login extends Auth {
     super(title);
   }
 
-  public handleAuth(): [boolean, string] {
-    const { username } = this.getInputData();
-    StateManager.setPlayerName(username);
-    console.log(this.getInputData());
-    return [false, ""];
+  public async handleAuth(): Promise<any> {
+    const data = this.getInputData();
+    const response = await authApi.post("/login", data);
+
+    if (response.data) {
+      StateManager.setAccessToken(response.data.accessToken);
+    }
+
+    const user = await userApi.get("/getUser", {
+      headers: {
+        Authorization: `Bearer ${StateManager.getAccessToken()}`,
+      },
+    });
+
+    if (user.data) {
+      StateManager.setPlayerName(user.data.username);
+      window.location.reload();
+    }
+
+    return response;
   }
 }

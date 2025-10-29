@@ -2,6 +2,8 @@ import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import path from "path";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { Loader } from "@/utils/imageLoader";
 import { handleUtils } from "@/handlers/handleUtils";
@@ -12,41 +14,47 @@ import { handleUnits } from "@/handlers/handleUnits";
 import { handleConnection } from "@/handlers/handleConnection";
 import { handleProduction } from "@/handlers/handleProduction";
 import { handleChat } from "@/handlers/handleChat";
+import { authRoutes } from "@/routes/auth";
+import { allowedOrigins } from "@/config/allowedOrigins";
+import { corsOptions } from "@/config/corsOptions";
+import { credentials } from "@/middleware/credentials";
+import { verifyJWT } from "@/middleware/verifyJWT";
+import { userRoutes } from "@/routes/user";
 
 const PORT = 3000;
-
 const app = express();
 const httpServer = createServer(app);
 
+app.use(credentials);
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "..", "/public")));
+
+app.use("/auth", authRoutes);
+
+app.use(verifyJWT);
+app.use("/user", userRoutes);
 
 const io: Server = new Server(httpServer, {
   cors: {
-    // origin: "*",
-    origin: ["http://localhost:5173", "http://192.168.1.70:5173"],
+    origin: allowedOrigins,
   },
 });
 
-let images: any;
-(async () => {
-  images = await Loader.loadImages(
-    path.join(__dirname, "..", "/public/assets")
-  );
-})();
+const loadImages = async () => {
+  return await Loader.loadImages(path.join(__dirname, "..", "/public/assets"));
+};
 
-const gameHandler = (io: Server, socket: Socket) => {
+const onConnecton = async (socket: Socket) => {
+  handleUtils(io, socket, await loadImages());
+  handleConnection(io, socket);
   handleStart(io, socket);
   handlePath(io, socket);
   handleBuildings(io, socket);
   handleUnits(io, socket);
   handleProduction(io, socket);
   handleChat(io, socket);
-};
-
-const onConnecton = async (socket: Socket) => {
-  await handleUtils(io, socket, images);
-  handleConnection(io, socket);
-  gameHandler(io, socket);
 };
 
 io.on("connection", onConnecton);

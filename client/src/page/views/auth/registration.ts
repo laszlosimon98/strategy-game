@@ -1,3 +1,4 @@
+import { authApi } from "@/api/api";
 import { Auth } from "@/page/views/auth/auth";
 
 export class Registration extends Auth {
@@ -5,8 +6,8 @@ export class Registration extends Auth {
     super(title);
   }
 
-  public handleAuth(): [boolean, string] {
-    console.log(this.getInputData());
-    return [true, "this is an error"];
+  public async handleAuth(): Promise<any> {
+    const data = this.getInputData();
+    return await authApi.post("/register", data);
   }
 }

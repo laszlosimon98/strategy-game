@@ -1,3 +1,4 @@
+import { authApi } from "@/api/api";
 import { PageState } from "@/enums/pageState";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
@@ -7,10 +8,10 @@ import { settings } from "@/settings";
 
 export class MainMenu extends Page {
   private newGame: Button;
-  // private description: Button;
   private statistic: Button;
   private login: Button;
   private registration: Button;
+  private logout: Button;
   private namePlate: Plate;
 
   public constructor(title: string) {
@@ -23,6 +24,14 @@ export class MainMenu extends Page {
       "name"
     );
 
+    this.registration = new Button(
+      settings.pos.mainMenu.registration,
+      settings.size.button,
+      StateManager.getImages("ui", "plate"),
+      "registration",
+      () => StateManager.setPageState(PageState.Registration)
+    );
+
     this.login = new Button(
       settings.pos.mainMenu.login,
       settings.size.button,
@@ -31,12 +40,19 @@ export class MainMenu extends Page {
       () => StateManager.setPageState(PageState.Login)
     );
 
-    this.registration = new Button(
-      settings.pos.mainMenu.registration,
+    this.logout = new Button(
+      settings.pos.mainMenu.logout,
       settings.size.button,
       StateManager.getImages("ui", "plate"),
-      "registration",
-      () => StateManager.setPageState(PageState.Registration)
+      "logout",
+      async () => {
+        const response = await authApi.post("/logout");
+
+        if (response.status === 204) {
+          StateManager.setAccessToken("");
+          window.location.reload();
+        }
+      }
     );
 
     this.newGame = new Button(
@@ -47,14 +63,6 @@ export class MainMenu extends Page {
       () => StateManager.setPageState(PageState.NewGame)
     );
 
-    // this.description = new Button(
-    //   settings.pos.mainMenu.description,
-    //   settings.size.button,
-    //   StateManager.getImages("ui", "plate"),
-    //   "description",
-    //   () => StateManager.setPageState(PageState.Description)
-    // );
-
     this.statistic = new Button(
       settings.pos.mainMenu.statistic,
       settings.size.button,
@@ -64,10 +72,14 @@ export class MainMenu extends Page {
     );
 
     this.buttons.push(this.newGame);
-    // this.buttons.push(this.description);
     this.buttons.push(this.statistic);
-    this.buttons.push(this.login);
-    this.buttons.push(this.registration);
+
+    if (StateManager.getAccessToken()) {
+      this.buttons.push(this.logout);
+    } else {
+      this.buttons.push(this.login);
+      this.buttons.push(this.registration);
+    }
   }
 
   public draw(): void {

@@ -2,6 +2,8 @@ import { canvasWidth, canvasHeight } from "@/init";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+export const SERVER_URL: string = "http://localhost:3000";
+
 const MARGIN: number = 75;
 const BUTTON_DIMENSION: Dimension = new Dimension(192, 60);
 const TITLE_DIMENSION: Dimension = new Dimension(288, 90);
@@ -64,23 +66,20 @@ export const settings = {
         canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
         canvasHeight / 2 - MARGIN
       ),
-      description: new Position(
-        canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
-        canvasHeight / 2
-      ),
       statistic: new Position(
         canvasWidth / 2 - BUTTON_DIMENSION.width / 2,
-        canvasHeight / 2 + MARGIN
-      ),
-      login: new Position(
-        canvasWidth - BUTTON_DIMENSION.width - MARGIN,
-        MARGIN / 2
+        canvasHeight / 2 + 25
       ),
       registration: new Position(
         canvasWidth - BUTTON_DIMENSION.width - MARGIN,
-        BUTTON_DIMENSION.height / 2 + MARGIN
+        MARGIN / 2
       ),
-      namePlate: new Position(MARGIN, MARGIN),
+      login: new Position(
+        canvasWidth - BUTTON_DIMENSION.width - MARGIN,
+        BUTTON_DIMENSION.height / 2 + MARGIN + 10
+      ),
+      logout: new Position(canvasWidth - BUTTON_DIMENSION.width - MARGIN, 60),
+      namePlate: new Position(MARGIN, 60),
     },
     newGame: {
       back: new Position(

@@ -22,7 +22,6 @@ import type { StorageType } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { faker } from "@faker-js/faker/locale/hu";
 
 export class StateManager {
   private static initEntity: EntityType = {
@@ -44,6 +43,7 @@ export class StateManager {
   };
 
   private static state: StateType = {
+    accessToken: "",
     language: "hu",
     images: {
       buildings: {},
@@ -59,18 +59,14 @@ export class StateManager {
       subMenuState: SubMenuState.Unselected,
       prevMenuState: MainMenuState.Unselected,
     },
-    server: {
-      status: "offline",
-    },
     player: {
-      name: faker.person.firstName(),
+      name: "Játékos",
       host: false,
     },
     infoPanel: {
       data: null,
     },
     game: {
-      worldSize: 15, // Ennek majd a szerverről kell jönnie
       world: [],
       state: GameState.Default,
       players: {},
@@ -85,6 +81,15 @@ export class StateManager {
 
   public static getInitData(): EntityType {
     return this.initEntity;
+  }
+
+  // ------------------- AccessToken -------------------
+  public static getAccessToken(): string {
+    return this.state.accessToken;
+  }
+
+  public static setAccessToken(token: string): void {
+    this.state.accessToken = token;
   }
 
   // ------------------- Images -------------------
@@ -201,12 +206,6 @@ export class StateManager {
 
   public static getLanguage(): "hu" | "en" {
     return this.state.language;
-  }
-
-  // ------------------- Server -------------------
-
-  public static setServerStatus(status: "online" | "offline"): void {
-    this.state.server.status = status;
   }
 
   // ------------------- World -------------------

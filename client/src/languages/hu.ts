@@ -6,6 +6,7 @@ export const hu = {
     description: "Leírás",
     registration: "Regisztráció",
     login: "Bejelentkezés",
+    logout: "Kijelentkezés",
     back: "Vissza",
     create: "Létrehozás",
     lobby: "Váró",
