@@ -3,6 +3,12 @@ import * as bcrypt from "bcrypt";
 import { Response, Request } from "express";
 import * as jwt from "jsonwebtoken";
 
+interface DecodedToken {
+  username: string;
+  iat: number;
+  exp: number;
+}
+
 export const handleRegister = async (request: Request, response: Response) => {
   const { username, password } = request.body;
 
@@ -89,4 +95,48 @@ export const handleLogin = async (request: Request, response: Response) => {
   });
 
   return response.status(200).json({ accessToken });
+};
+
+export const handleRefreshToken = async (
+  request: Request,
+  response: Response
+) => {
+  const cookies = request.cookies;
+
+  if (!cookies?.jwt) {
+    return response.sendStatus(401);
+  }
+
+  const refreshToken = cookies.jwt;
+
+  const user = await prismaService.user.findFirst({
+    where: {
+      refreshToken,
+    },
+  });
+
+  if (!user) {
+    return response.sendStatus(403);
+  }
+
+  jwt.verify(
+    refreshToken,
+    process.env.JWT_REFRESH_TOKEN_SECRET || "default_refresh_secret",
+    (
+      err: jwt.VerifyErrors | null,
+      decoded: string | jwt.JwtPayload | undefined
+    ) => {
+      if (err || user.username !== (decoded as DecodedToken).username) {
+        return response.sendStatus(403);
+      }
+
+      const accessToken: string = jwt.sign(
+        { username: user.username },
+        process.env.JWT_ACCESS_TOKEN_SECRET || "default_access_secret",
+        { expiresIn: "5m" }
+      );
+
+      response.json({ accessToken });
+    }
+  );
 };

@@ -11,9 +11,9 @@ export class Login extends Auth {
     const data = this.getInputData();
     const response = await authApi.post("/login", data);
 
-    await new Promise((resolve) => {
-      resolve(StateManager.setAccessToken(response.data.accessToken));
-    });
+    if (response.data) {
+      StateManager.setAccessToken(response.data.accessToken);
+    }
 
     const user = await userApi.get("/getUser", {
       headers: {
@@ -21,7 +21,9 @@ export class Login extends Auth {
       },
     });
 
-    StateManager.setPlayerName(user.data.username);
+    if (user.data) {
+      StateManager.setPlayerName(user.data.username);
+    }
 
     return response;
   }
