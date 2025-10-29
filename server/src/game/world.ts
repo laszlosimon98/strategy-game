@@ -172,28 +172,24 @@ export class World {
     world[i][j].removeObstacle(ObstacleEnum.House);
   }
 
-  public static markCellToRestore(
-    socket: Socket,
-    building: Building
-  ): Cell[] | undefined {
-    if (building instanceof GuardHouse) {
-      const range: number = building.getRange();
-      const markedCells: Cell[] = [];
+  public static markCellToRestore(socket: Socket, building: Building): Cell[] {
+    const range: number = building.getRange();
+    const markedCells: Cell[] = [];
 
-      this.updateWorldInRange(
-        socket,
-        building,
-        range,
-        (cell: Cell) => {
-          cell.setOwner(null);
-          cell.removeObstacle(ObstacleEnum.Border);
-          cell.setTowerInfluence(false);
-          markedCells.push(cell);
-        },
-        { isCircle: true }
-      );
-      return markedCells;
-    }
+    this.updateWorldInRange(
+      socket,
+      building,
+      range,
+      (cell: Cell) => {
+        cell.setOwner(null);
+        cell.removeObstacle(ObstacleEnum.Border);
+        cell.setTowerInfluence(false);
+        markedCells.push(cell);
+      },
+      { isCircle: true }
+    );
+
+    return markedCells;
   }
 
   public static markedLostBuildings(
@@ -236,6 +232,14 @@ export class World {
     socket: Socket,
     building: Building
   ): DestroyBuildingResponse {
+    if (!(building instanceof GuardHouse)) {
+      return {
+        updatedCells: [],
+        markedCells: [],
+        lostBuildings: [],
+      };
+    }
+
     const room: string = ServerHandler.getCurrentRoom(socket);
     const state = StateManager.getState();
 
