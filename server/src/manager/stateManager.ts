@@ -108,6 +108,7 @@ export class StateManager {
       players: {},
       world: [],
       remainingColors: [...settings.colors],
+      winner: null,
     };
   }
 
@@ -258,6 +259,25 @@ export class StateManager {
     return buildings;
   }
 
+  public static getAllPlayerBuildingsSeparatedByKeys(
+    room: string
+  ): Record<string, Building[]> {
+    const result: Record<string, Building[]> = {};
+    const playersKeys: string[] = Object.keys(this.state[room].players);
+
+    playersKeys.forEach((key) => {
+      if (!result[key]) {
+        result[key] = [];
+      }
+
+      this.getBuildings(room, key).forEach((building) =>
+        result[key].push(building)
+      );
+    });
+
+    return result;
+  }
+
   public static getBuildingByEntity(
     room: string,
     entity: EntityType
@@ -368,15 +388,47 @@ export class StateManager {
   ): boolean {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
-    const buildings: Building[] = StateManager.getBuildings(
-      room,
-      entity.data.owner
-    );
+    const buildings: Building[] = this.getBuildings(room, entity.data.owner);
     const guardHouses: GuardHouse[] = buildings.filter(
       (building) => building.getEntity().data.name === "guardhouse"
     );
 
     return guardHouses.length === 0;
+  }
+
+  public static isGameOver(socket: Socket): boolean {
+    let count: number = 0;
+    let winner: string = "";
+
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const playersBuildings: Record<string, Building[]> =
+      this.getAllPlayerBuildingsSeparatedByKeys(room);
+
+    const keys: string[] = Object.keys(playersBuildings);
+
+    keys.forEach((key) => {
+      if (playersBuildings[key].length > 0) {
+        count++;
+        winner = key;
+      }
+    });
+
+    if (count === 1) {
+      this.setWinner(socket, winner);
+      return true;
+    }
+    return false;
+  }
+
+  public static getWinner(socket: Socket): string | null {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    return this.state[room].winner;
+  }
+
+  private static setWinner(socket: Socket, key: string): void {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const { name } = this.getPlayers(room)[key];
+    this.state[room].winner = name;
   }
 
   private static chooseColor(colors: ColorType[]): ColorType {

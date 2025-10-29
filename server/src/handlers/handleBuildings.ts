@@ -113,11 +113,22 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         ServerHandler.getCurrentRoom(socket),
         socket
       );
+
       ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
         message: `${user.name} kiesett a játékból!`,
         name: "Rendszer",
         color: "#000",
       });
+    }
+
+    if (StateManager.isGameOver(socket)) {
+      setTimeout(() => {
+        ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+          message: `${StateManager.getWinner(socket)} megnyerte a játékot!`,
+          name: "Rendszer",
+          color: "#000",
+        });
+      }, 1000);
     }
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {

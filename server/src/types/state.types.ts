@@ -51,6 +51,7 @@ export type TeamType = {
   players: PlayerType;
   world: Cell[][];
   remainingColors: ColorType[];
+  winner: string | null;
 };
 
 export type StateType = {
