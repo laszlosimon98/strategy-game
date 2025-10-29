@@ -362,19 +362,19 @@ export class StateManager {
 
   // ------------------- Game Over -------------------
 
-  public static isPlayerLostTheGame(socket: Socket): boolean {
+  public static isPlayerLostTheGame(
+    socket: Socket,
+    entity: EntityType
+  ): boolean {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
-    const buildings: Building[] = StateManager.getAllPlayerBuildings(room);
-    const guardHouses: GuardHouse[] = buildings.filter((building) => {
-      const entity: EntityType = building.getEntity();
-      if (
-        entity.data.owner === socket.id &&
-        entity.data.name === "guardhouse"
-      ) {
-        return building;
-      }
-    });
+    const buildings: Building[] = StateManager.getBuildings(
+      room,
+      entity.data.owner
+    );
+    const guardHouses: GuardHouse[] = buildings.filter(
+      (building) => building.getEntity().data.name === "guardhouse"
+    );
 
     return guardHouses.length === 0;
   }

@@ -108,7 +108,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
-    if (StateManager.isPlayerLostTheGame(socket)) {
+    if (StateManager.isPlayerLostTheGame(socket, entity)) {
       const user = StateManager.getPlayer(
         ServerHandler.getCurrentRoom(socket),
         socket
