@@ -108,6 +108,18 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
+    if (StateManager.isPlayerLostTheGame(socket)) {
+      const user = StateManager.getPlayer(
+        ServerHandler.getCurrentRoom(socket),
+        socket
+      );
+      ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+        message: `${user.name} kiesett a játékból!`,
+        name: "Rendszer",
+        color: "#000",
+      });
+    }
+
     ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
       id: socket.id,
       entity,

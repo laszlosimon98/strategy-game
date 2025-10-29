@@ -21,6 +21,7 @@ import { ReturnMessage } from "@/types/setting.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
 import { DestroyBuildingResponse } from "@/types/world.types";
+import { GuardHouse } from "@/game/buildings/military/guardhouse";
 
 export class StateManager {
   private static state: StateType = {};
@@ -357,6 +358,25 @@ export class StateManager {
       name,
       amount
     );
+  }
+
+  // ------------------- Game Over -------------------
+
+  public static isPlayerLostTheGame(socket: Socket): boolean {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+
+    const buildings: Building[] = StateManager.getAllPlayerBuildings(room);
+    const guardHouses: GuardHouse[] = buildings.filter((building) => {
+      const entity: EntityType = building.getEntity();
+      if (
+        entity.data.owner === socket.id &&
+        entity.data.name === "guardhouse"
+      ) {
+        return building;
+      }
+    });
+
+    return guardHouses.length === 0;
   }
 
   private static chooseColor(colors: ColorType[]): ColorType {

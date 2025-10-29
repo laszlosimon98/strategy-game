@@ -94,10 +94,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
       data: updatedCells.map(formatCell),
     });
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+    ServerHandler.sendMessageToEveryOneExceptSender(socket, "chat:message", {
       message: `${user.name} elhagyta a játékot!`,
       name: "Rendszer",
-      color: "#707070ff",
+      color: "#000",
     });
   };
 
