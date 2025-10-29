@@ -51,6 +51,7 @@ export const handleAuth = (io: Server, socket: Socket) => {
         data: {
           username,
           password: hashedPassword,
+          refreshToken: "",
         },
       });
 
