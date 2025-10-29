@@ -10,6 +10,7 @@ export type Buttons =
   | "description"
   | "registration"
   | "login"
+  | "logout"
   | "back"
   | "create"
   | "lobby"

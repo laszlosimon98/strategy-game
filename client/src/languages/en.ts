@@ -6,6 +6,7 @@ export const en = {
     description: "Description",
     registration: "Registration",
     login: "Login",
+    logout: "Logout",
     back: "Back",
     create: "Create",
     lobby: "Lobby",

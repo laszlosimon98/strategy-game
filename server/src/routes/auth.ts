@@ -1,5 +1,6 @@
 import {
   handleLogin,
+  handleLogout,
   handleRefreshToken,
   handleRegister,
 } from "@/controller/authController";
@@ -10,3 +11,4 @@ export const authRoutes = express.Router();
 authRoutes.post("/register", handleRegister);
 authRoutes.post("/login", handleLogin);
 authRoutes.post("/refresh", handleRefreshToken);
+authRoutes.post("/logout", handleLogout);

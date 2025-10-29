@@ -87,7 +87,7 @@ export const handleLogin = async (request: Request, response: Response) => {
     },
   });
 
-  response.cookie("jwt", refreshToken, {
+  response.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     sameSite: "none",
     secure: true,
@@ -103,11 +103,11 @@ export const handleRefreshToken = async (
 ) => {
   const cookies = request.cookies;
 
-  if (!cookies?.jwt) {
+  if (!cookies?.refreshToken) {
     return response.sendStatus(401);
   }
 
-  const refreshToken = cookies.jwt;
+  const refreshToken = cookies.refreshToken;
 
   const user = await prismaService.user.findFirst({
     where: {
@@ -139,4 +139,49 @@ export const handleRefreshToken = async (
       response.json({ accessToken });
     }
   );
+};
+
+export const handleLogout = async (request: Request, response: Response) => {
+  const cookies = request.cookies;
+
+  if (!cookies?.refreshToken) {
+    return response.sendStatus(204);
+  }
+
+  const refreshToken = cookies.refreshToken;
+
+  const user = await prismaService.user.findFirst({
+    where: {
+      refreshToken,
+    },
+  });
+
+  if (!user) {
+    response.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+    return response.sendStatus(204);
+  }
+
+  try {
+    await prismaService.user.update({
+      where: {
+        username: user.username,
+      },
+      data: {
+        refreshToken: "",
+      },
+    });
+
+    response.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    });
+    return response.sendStatus(204);
+  } catch (err) {
+    return response.json(err);
+  }
 };

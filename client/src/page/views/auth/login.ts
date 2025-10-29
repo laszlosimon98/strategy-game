@@ -23,6 +23,7 @@ export class Login extends Auth {
 
     if (user.data) {
       StateManager.setPlayerName(user.data.username);
+      window.location.reload();
     }
 
     return response;
