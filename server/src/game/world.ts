@@ -232,7 +232,13 @@ export class World {
     socket: Socket,
     building: Building
   ): DestroyBuildingResponse {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const state = StateManager.getState();
+
     if (!(building instanceof GuardHouse)) {
+      BuildingManager.destroyBuilding(room, state, building);
+      World.restoreCells(socket, building);
+
       return {
         updatedCells: [],
         markedCells: [],
@@ -240,12 +246,9 @@ export class World {
       };
     }
 
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const state = StateManager.getState();
-
     const markedCells: Cell[] = World.markCellToRestore(socket, building) ?? [];
 
-    BuildingManager.destroyBuilding(room, socket, state, building);
+    BuildingManager.destroyBuilding(room, state, building);
     World.restoreCells(socket, building);
 
     const updatedCells: Cell[] = World.updateTerritory(socket);
@@ -256,7 +259,7 @@ export class World {
     );
 
     lostBuildings.forEach((building) => {
-      BuildingManager.destroyBuilding(room, socket, state, building);
+      BuildingManager.destroyBuilding(room, state, building);
       World.restoreCells(socket, building);
     });
 

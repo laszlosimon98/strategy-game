@@ -116,19 +116,21 @@ export class BuildingManager {
 
   public static destroyBuilding(
     room: string,
-    socket: Socket,
     state: StateType,
     building: Building
   ): void {
     const buildingIndex: number = state[room].players[
-      socket.id
+      building.getEntity().data.owner
     ].buildings.findIndex(
       (b) => b.getEntity().data.id === building.getEntity().data.id
     );
 
     if (buildingIndex === -1) return;
 
-    state[room].players[socket.id].buildings.splice(buildingIndex, 1);
+    state[room].players[building.getEntity().data.owner].buildings.splice(
+      buildingIndex,
+      1
+    );
   }
 
   public static getBuildings(
