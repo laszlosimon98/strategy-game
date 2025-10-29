@@ -14,7 +14,7 @@ import { handleUnits } from "@/handlers/handleUnits";
 import { handleConnection } from "@/handlers/handleConnection";
 import { handleProduction } from "@/handlers/handleProduction";
 import { handleChat } from "@/handlers/handleChat";
-import { authRoutes } from "routes/auth";
+import { authRoutes } from "@/routes/auth";
 import { allowedOrigins } from "@/config/allowedOrigins";
 import { corsOptions } from "@/config/corsOptions";
 import { credentials } from "@/middleware/credentials";
