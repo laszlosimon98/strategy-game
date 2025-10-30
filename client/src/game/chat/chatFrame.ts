@@ -46,7 +46,7 @@ export class ChatFrame extends Frame {
   }
 
   public pushText(name: string, message: string, color: ColorType): void {
-    const t: string = `(${name}): ${message}`;
+    const t: string = `${name}: ${message}`;
     const text: Text = new Text(this.positions[0], t, {
       color,
       fontSize: "24px",
