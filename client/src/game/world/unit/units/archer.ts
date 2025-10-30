@@ -1,14 +1,10 @@
 import { Soldier } from "@/game/world/unit/units/soldier";
-import type { EntityType, SoldierPropertiesType } from "@/types/game.types";
+import type { EntityType, SoldierPropertyType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 
 export class Archer extends Soldier {
-  constructor(
-    entity: EntityType,
-    name: string,
-    propterties: SoldierPropertiesType
-  ) {
-    super(entity, name, propterties);
+  constructor(entity: EntityType, property: SoldierPropertyType) {
+    super(entity, property);
   }
 
   public draw(): void {

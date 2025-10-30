@@ -5,7 +5,7 @@ import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type {
-  ColorsType,
+  ColorType,
   MessageResponse,
   PlayerGameType,
 } from "@/types/game.types";
@@ -175,7 +175,7 @@ export class Game {
       }: {
         message: string;
         name: string;
-        color: ColorsType;
+        color: ColorType;
       }) => {
         this.chatFrame.pushText(name, message, color);
       }

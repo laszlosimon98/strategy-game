@@ -11,6 +11,19 @@ export const getImageNameFromUrl = (url: string): string => {
   return split[length - 1].split(".")[0];
 };
 
+export const isMouseIntersect = (
+  mousePos: Position,
+  element: Entity | GameMenu
+): boolean => {
+  const horizontal =
+    mousePos.x >= element.getPosition().x &&
+    mousePos.x <= element.getPosition().x + element.getDimension().width;
+  const vertical =
+    mousePos.y >= element.getPosition().y &&
+    mousePos.y <= element.getPosition().y + element.getDimension().height;
+  return horizontal && vertical;
+};
+
 export const convertIsometricCoordsToCartesianCoords = (
   position: Position,
   cameraScroll: Position
@@ -25,45 +38,6 @@ export const convertIsometricCoordsToCartesianCoords = (
   const grid_y = Math.floor(cart_y / settings.size.cell);
 
   return new Indices(grid_x, grid_y);
-};
-
-export const isMouseIntersect = (
-  mousePos: Position,
-  element: Entity | GameMenu
-): boolean => {
-  const horizontal =
-    mousePos.x >= element.getPosition().x &&
-    mousePos.x <= element.getPosition().x + element.getDimension().width;
-  const vertical =
-    mousePos.y >= element.getPosition().y &&
-    mousePos.y <= element.getPosition().y + element.getDimension().height;
-  return horizontal && vertical;
-};
-
-export const getRandomNumberFromInterval = (
-  min: number,
-  max: number
-): number => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
-
-export const ySort = (entityArray: Entity[]): void => {
-  entityArray.sort((a: Entity, b: Entity) => {
-    const { x: ax, y: ay } = a.getPosition();
-    const { x: bx, y: by } = b.getPosition();
-
-    if (ax === bx) {
-      return ay - by;
-    } else if (ay === by) {
-      return bx - ax;
-    } else if (ax < bx && ay < by) {
-      return -1;
-    } else if (ax > bx && ay < by) {
-      return -1;
-    }
-
-    return 0;
-  });
 };
 
 export const cartesianToIsometric = (pos: Position): Position => {
@@ -92,6 +66,32 @@ export const calculatePositionFromIndices = (indices: Indices): Position => {
   return isometricPos;
 };
 
+export const getRandomNumberFromInterval = (
+  min: number,
+  max: number
+): number => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+export const ySort = (entityArray: Entity[]): void => {
+  entityArray.sort((a: Entity, b: Entity) => {
+    const { x: ax, y: ay } = a.getPosition();
+    const { x: bx, y: by } = b.getPosition();
+
+    if (ax === bx) {
+      return ay - by;
+    } else if (ay === by) {
+      return bx - ax;
+    } else if (ax < bx && ay < by) {
+      return -1;
+    } else if (ax > bx && ay < by) {
+      return -1;
+    }
+
+    return 0;
+  });
+};
+
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;
   const y = to.y - from.y;
@@ -105,4 +105,9 @@ export const removeElementFromArray = (arr: Entity[], element: Entity) => {
       arr.splice(i, 1);
     }
   }
+};
+
+export const getRandomElementFromArray = <T>(arr: T[]): T => {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
 };

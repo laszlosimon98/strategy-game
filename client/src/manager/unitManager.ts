@@ -1,5 +1,5 @@
 import type { Unit } from "@/game/world/unit/unit";
-import type { Soldier } from "@/game/world/unit/units/soldier";
+import { Soldier } from "@/game/world/unit/units/soldier";
 import { PlayerManager } from "@/manager/playerManager";
 import type { EntityType, StateType } from "@/types/game.types";
 
@@ -11,24 +11,10 @@ export class UnitManager {
     unitsReference.push(unit);
   }
 
-  public static addUnitToMovingArray(
-    state: StateType,
-    id: string,
-    unit: Unit
-  ): void {
-    const movingUnitsReference: Unit[] = PlayerManager.getPlayerById(
-      state,
-      id
-    ).movingUnits;
-    movingUnitsReference.push(unit);
-  }
-
-  public static getMovingUnits(state: StateType, id: string): Unit[] {
-    return PlayerManager.getPlayerById(state, id).movingUnits;
-  }
-
   public static getSoldiers(state: StateType, id: string): Soldier[] {
-    return PlayerManager.getPlayerById(state, id).units;
+    const units: Unit[] = PlayerManager.getPlayerById(state, id).units;
+    const soldiers: Soldier[] = units.filter((unit) => unit instanceof Soldier);
+    return soldiers;
   }
 
   public static findSoldier(state: StateType, entity: EntityType): Soldier {
@@ -38,7 +24,7 @@ export class UnitManager {
     return units.find((unit) => unit.getEntity().data.id === id) as Soldier;
   }
 
-  public static unitDies(state: StateType, entity: EntityType): void {
+  public static removeUnit(state: StateType, entity: EntityType): void {
     state.game.players[entity.data.owner].units = this.getSoldiers(
       state,
       entity.data.owner

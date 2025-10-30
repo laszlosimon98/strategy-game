@@ -12,7 +12,7 @@ import { UnitManager } from "@/manager/unitManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type { BuildingPrices } from "@/types/building.types";
 import type {
-  ColorsType,
+  ColorType,
   EntityType,
   ImageItemType,
   StateType,
@@ -264,7 +264,7 @@ export class StateManager {
     return PlayerManager.getPlayerById(this.state, id);
   }
 
-  public static getPlayerColor(id: string): ColorsType {
+  public static getPlayerColor(id: string): ColorType {
     return PlayerManager.getPlayerColor(this.state, id);
   }
 
@@ -308,14 +308,6 @@ export class StateManager {
     UnitManager.createUnit(this.state, id, unit);
   }
 
-  public static addUnitToMovingArray(id: string, unit: Unit): void {
-    UnitManager.addUnitToMovingArray(this.state, id, unit);
-  }
-
-  public static getMovingUnits(id: string): Unit[] {
-    return UnitManager.getMovingUnits(this.state, id);
-  }
-
   public static getSoldiers(id: string): Soldier[] {
     return UnitManager.getSoldiers(this.state, id);
   }
@@ -324,7 +316,7 @@ export class StateManager {
     return UnitManager.findSoldier(this.state, entity);
   }
 
-  public static unitDies(entity: EntityType): void {
-    UnitManager.unitDies(this.state, entity);
+  public static removeUnit(entity: EntityType): void {
+    UnitManager.removeUnit(this.state, entity);
   }
 }

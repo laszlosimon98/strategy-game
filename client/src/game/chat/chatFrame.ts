@@ -1,6 +1,6 @@
 import { Frame } from "@/page/components/frame";
 import { Text } from "@/page/components/text";
-import type { ColorsType } from "@/types/game.types";
+import type { ColorType } from "@/types/game.types";
 import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
@@ -45,7 +45,7 @@ export class ChatFrame extends Frame {
     });
   }
 
-  public pushText(name: string, message: string, color: ColorsType): void {
+  public pushText(name: string, message: string, color: ColorType): void {
     const t: string = `(${name}): ${message}`;
     const text: Text = new Text(this.positions[0], t, {
       color,

@@ -1,4 +1,4 @@
-import type { PlayerGameType, ColorsType, StateType } from "@/types/game.types";
+import type { PlayerGameType, ColorType, StateType } from "@/types/game.types";
 
 export class PlayerManager {
   private constructor() {}
@@ -27,7 +27,7 @@ export class PlayerManager {
     return state.game.players[id];
   }
 
-  public static getPlayerColor(state: StateType, id: string): ColorsType {
+  public static getPlayerColor(state: StateType, id: string): ColorType {
     return this.getPlayerById(state, id).color;
   }
 }

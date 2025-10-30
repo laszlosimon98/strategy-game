@@ -10,7 +10,7 @@ import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
-export type ColorsType =
+export type ColorType =
   | "black"
   | "blue"
   | "brown"
@@ -43,7 +43,7 @@ export type EntityType = {
   };
 };
 
-export type SoldierPropertiesType = {
+export type SoldierPropertyType = {
   damage: number;
   range: number;
   health: number;
@@ -88,12 +88,11 @@ type InfoType = {
 
 export type PlayerGameType = {
   [code: string]: {
-    [key: string]: string | ColorsType | Building[] | Unit[] | StorageType;
+    [key: string]: string | ColorType | Building[] | Unit[] | StorageType;
     name: string;
-    color: ColorsType;
+    color: ColorType;
     buildings: Building[];
-    units: Soldier[];
-    movingUnits: Unit[];
+    units: Unit[];
     storage: StorageType;
   };
 };
