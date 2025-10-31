@@ -1,5 +1,6 @@
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Cell } from "@/game/cell";
+import { Entity } from "@/game/entities/entity";
 import { Production } from "@/game/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
 import { StateManager } from "@/manager/stateManager";
@@ -10,23 +11,14 @@ import type { EntityType } from "@/types/state.types";
 import { CategoryType, ProductionItem } from "@/types/storage.types";
 import { Server, Socket } from "socket.io";
 
-export class Building implements ProductionBuildingInterface {
-  protected entity: EntityType;
+export class Building extends Entity implements ProductionBuildingInterface {
   protected production: Production | null;
   protected range: number;
 
   public constructor(entity: EntityType) {
-    this.entity = entity;
+    super(entity);
     this.production = null;
     this.range = 0;
-  }
-
-  public getEntity(): EntityType {
-    return this.entity;
-  }
-
-  public setOwner(newOwner: string): void {
-    this.entity.data.owner = newOwner;
   }
 
   public getCooldown(): number | null {
