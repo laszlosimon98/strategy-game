@@ -55,12 +55,12 @@ export class BuildingManager extends Manager {
       return { message: "A kiválaszott helyre nem lehet építeni!" };
     }
 
-    const buildingName = getImageNameFromUrl(entity.data.url);
+    const buildingName = entity.data.name;
     const room: string = ServerHandler.getCurrentRoom(socket);
 
     if (this.hasMaterialsToBuild(socket, room, buildingName as Buildings)) {
       const building: Building = this.creator<Building>(
-        buildingRegister[entity.data.name],
+        buildingRegister[buildingName],
         entity
       );
 
