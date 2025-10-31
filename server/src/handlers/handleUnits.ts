@@ -23,9 +23,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
       return;
     }
 
-    entity.data.owner = socket.id;
     const room = ServerHandler.getCurrentRoom(socket);
-
     const response: Soldier | ReturnMessage = StateManager.createSoldier(
       socket,
       entity
@@ -38,8 +36,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
       return;
     }
-
-    console.log(response);
 
     if (response instanceof Soldier) {
       calculateNewStorageValues(room, entity.data.name);

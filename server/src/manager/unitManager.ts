@@ -7,6 +7,7 @@ import { UnitsType } from "@/types/units.types";
 import { Socket } from "socket.io";
 import { Manager } from "@/manager/manager";
 import { Soldier } from "@/game/units/soldier";
+import { unitRegister } from "@/game/unitRegister";
 
 export class UnitManager extends Manager {
   protected constructor() {
@@ -18,13 +19,14 @@ export class UnitManager extends Manager {
     state: StateType,
     entity: EntityType
   ): Soldier | ReturnMessage {
+    const unitName: string = entity.data.name;
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const name: string = entity.data.name;
 
-    if (this.hasWeapons(socket, room, name)) {
-      const soldier = this.creator<Soldier>(Soldier, entity);
+    if (this.hasWeapons(socket, room, unitName)) {
+      const soldier = this.creator<Soldier>(unitRegister[unitName], entity);
       const room: string = ServerHandler.getCurrentRoom(socket);
       state[room].players[socket.id].units.push(soldier);
+      soldier.setOwner(entity.data.owner);
 
       return soldier;
     } else {
