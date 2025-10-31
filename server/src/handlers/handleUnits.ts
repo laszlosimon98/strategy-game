@@ -1,22 +1,15 @@
 import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
-import { Unit } from "@/game/unit";
-import { Indices } from "@/utils/indices";
+import { Unit } from "@/game/units/unit";
 import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
-import { Cell } from "@/game/cell";
-import { World } from "@/game/world";
-import { PathFinder } from "@/pathFind/pathFinder";
-import type { Position } from "@/types/utils.types";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
+import { Soldier } from "@/game/units/soldier";
 
 export const handleUnits = (io: Server, socket: Socket) => {
-  const calculateNewStorageValues = (
-    room: string,
-    name: "knight" | "archer"
-  ): void => {
+  const calculateNewStorageValues = (room: string, name: string): void => {
     if (name === "knight") {
       StateManager.updateStorageItem(socket, room, "weapons", "sword", -1);
       StateManager.updateStorageItem(socket, room, "weapons", "shield", -1);
@@ -32,22 +25,29 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
     entity.data.owner = socket.id;
     const room = ServerHandler.getCurrentRoom(socket);
-    const name: "knight" | "archer" = entity.data.name as "knight" | "archer";
 
-    const response: Unit | ReturnMessage = StateManager.createUnit(
+    const response: Soldier | ReturnMessage = StateManager.createSoldier(
       socket,
-      room,
-      entity,
-      name
+      entity
     );
 
-    if (response instanceof Unit) {
-      calculateNewStorageValues(room, name);
+    if (!["knight", "archer"].includes(entity.data.name)) {
+      ServerHandler.sendMessageToSender(socket, "game:info", {
+        message: "Az egység nem lovag vagy íjász!",
+      });
+
+      return;
+    }
+
+    console.log(response);
+
+    if (response instanceof Soldier) {
+      calculateNewStorageValues(room, entity.data.name);
       const storage: StorageType = StateManager.getStorage(socket, room);
 
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:unitCreate", {
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:soldier-create", {
         entity: response.getEntity(),
-        properties: StateManager.getUnitProperties()[name],
+        properties: response.getProperties(),
       });
 
       ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
@@ -58,145 +58,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  const unitMoving = ({
-    entity,
-    next,
-    goal,
-  }: {
-    entity: EntityType;
-    next: Indices;
-    goal: Indices;
-  }) => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
-
-    if (unit) {
-      const world: Cell[][] = StateManager.getWorld(socket);
-
-      if (!world[next.i][next.j].isWalkAble()) {
-        const indices: Indices[] = PathFinder.getPath(
-          world,
-          unit.getEntity().data.indices,
-          goal
-        );
-
-        ServerHandler.sendMessageToEveryOne(io, socket, "game:pathFind", {
-          path: indices,
-          entity,
-        });
-      } else {
-        unit.setIndices(next);
-        ServerHandler.sendMessageToEveryOne(
-          io,
-          socket,
-          "game:unitMoving",
-          next
-        );
-      }
-    }
-  };
-
-  const unitUpdatePosition = ({
-    entity,
-    newPos,
-    direction,
-  }: {
-    entity: EntityType;
-    newPos: Position;
-    direction: string;
-  }): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
-
-    if (unit) {
-      unit.setPosition(newPos);
-      ServerHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:unitUpdatePosition",
-        {
-          entity: unit.getEntity(),
-          newPos: unit.getPosition(),
-          direction,
-        }
-      );
-    }
-  };
-
-  const unitDestinationReached = (entity: EntityType) => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
-
-    if (unit) {
-      ServerHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:unitDestinationReached",
-        entity
-      );
-    }
-  };
-
-  const startAttack = (unit: EntityType): void => {
-    ServerHandler.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:unitStartAttacking",
-      unit
-    );
-  };
-
-  const stopAttack = (unit: EntityType): void => {
-    ServerHandler.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:unitStopAttacking",
-      unit
-    );
-  };
-
-  const dealDamage = ({
-    unit,
-    opponent,
-  }: {
-    unit: EntityType;
-    opponent: EntityType;
-  }): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const _unit: Unit | undefined = StateManager.getUnit(room, unit);
-    const _opponent: Unit | undefined = StateManager.getUnit(room, opponent);
-
-    if (_unit && _opponent) {
-      _opponent.takeDamage(_unit.getDamage());
-
-      if (_opponent.getHealth() > 0) {
-        ServerHandler.sendMessageToEveryOne(io, socket, "game:unitDealDamage", {
-          entity: _opponent.getEntity(),
-          health: _opponent.getHealth(),
-        });
-      } else {
-        ServerHandler.sendMessageToEveryOne(io, socket, "game:unitDies", {
-          unit: _unit.getEntity(),
-          opponent: _opponent.getEntity(),
-        });
-        stopAttack(unit);
-        deleteUnit(_opponent);
-      }
-    }
-  };
-
   const deleteUnit = (unit: Unit): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     StateManager.deleteUnit(room, unit);
   };
 
-  socket.on("game:unitCreate", unitCreate);
-
-  socket.on("game:unitMoving", unitMoving);
-  socket.on("game:unitUpdatePosition", unitUpdatePosition);
-  socket.on("game:unitDestinationReached", unitDestinationReached);
-
-  socket.on("game:unitStartAttacking", startAttack);
-  socket.on("game:unitStopAttacking", stopAttack);
-  socket.on("game:unitDealDamage", dealDamage);
+  socket.on("game:soldier-create", unitCreate);
 };

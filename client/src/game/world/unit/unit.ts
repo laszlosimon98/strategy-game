@@ -8,8 +8,8 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
 import {
+  getRandomElementFromArray,
   getRandomNumberFromInterval,
-  removeElementFromArray,
   ySort,
 } from "@/utils/utils";
 import { Vector } from "@/utils/vector";
@@ -20,13 +20,10 @@ import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 
 export abstract class Unit extends Entity implements RendererInterface {
-  protected name: string;
-
   private path: Cell[];
   private dimension: Dimension;
 
-  private prevState: UnitStates;
-  private state: UnitStates;
+  private unitState: UnitStates;
 
   private directions: Record<string, number>;
   private facing: string;
@@ -37,33 +34,35 @@ export abstract class Unit extends Entity implements RendererInterface {
   private currentCellPos: Position;
   private nextCellPos: Position;
 
-  public constructor(entity: EntityType, name: string) {
+  public constructor(entity: EntityType) {
     super(entity);
-    this.name = name;
     this.path = [];
 
     this.entity = {
       data: {
         ...entity.data,
-        static: StateManager.getStaticImage(entity.data.owner, this.name).url,
+        static: StateManager.getStaticImage(
+          entity.data.owner,
+          this.entity.data.name
+        ).url,
       },
     };
+
     this.dimension = new Dimension(
       settings.size.unitAsset,
       settings.size.unitAsset
     );
 
-    this.prevState = UnitStates.Idle;
-    this.state = UnitStates.Idle;
+    this.unitState = UnitStates.Idle;
 
     this.directions = this.initDirections();
-    this.facing = this.randomFacing(Object.keys(this.directions));
+    this.facing = getRandomElementFromArray<string>(
+      Object.keys(this.directions)
+    );
 
     this.animationCounter = 0;
 
-    this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000), () =>
-      this.changeDirection()
-    );
+    this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000));
     this.facingTimer.activate();
 
     this.currentCellPos = Position.zero();
@@ -82,29 +81,16 @@ export abstract class Unit extends Entity implements RendererInterface {
       settings.size.unitAsset,
       settings.size.unitAsset
     );
-
-    // if (this.isHovered) {
-    //   ctx.save();
-    //   ctx.strokeStyle = StateManager.getPlayerColor(this.entity.data.owner);
-    //   ctx.lineWidth = 2;
-    //   ctx.strokeRect(
-    //     this.renderPos.x + this.image.width / 4,
-    //     this.renderPos.y,
-    //     this.image.width / 2,
-    //     this.image.height
-    //   );
-    //   ctx.restore();
-    // }
   }
 
   public update(dt: number, mousePos: Position): void {
     super.update(dt, mousePos);
 
-    if (this.state !== UnitStates.Idle) {
+    if (this.unitState !== UnitStates.Idle) {
       this.animate(dt);
     }
 
-    if (this.state === UnitStates.Idle) {
+    if (this.unitState === UnitStates.Idle) {
       if (this.facingTimer.isTimerActive()) {
         this.facingTimer.update();
       } else {
@@ -113,67 +99,33 @@ export abstract class Unit extends Entity implements RendererInterface {
     }
   }
 
-  public getPrevState(): UnitStates {
-    return this.prevState;
-  }
-
-  public setPrevState(state: UnitStates): void {
-    this.prevState = state;
-  }
-
-  public getState(): UnitStates {
-    return this.state;
-  }
-
   public setState(newState: UnitStates): void {
-    this.state = newState;
+    this.unitState = newState;
 
+    const name: string = this.entity.data.name;
     const owner: string = this.entity.data.owner;
     const color: string = StateManager.getPlayerColor(owner);
 
     const entity: EntityType = {
       data: {
         ...this.entity.data,
-        url: StateManager.getImages("units", color, `${this.name}${this.state}`)
+        url: StateManager.getImages("units", color, `${name}${this.unitState}`)
           .url,
       },
     };
 
     this.setEntity(entity);
-    this.setImage(entity.data.url);
-  }
-
-  public getPath(): Cell[] {
-    return this.path;
+    this.updateImage();
   }
 
   public getDimension(): Dimension {
     return this.dimension;
   }
 
-  public setFacing(facing: string): void {
-    this.facing = facing;
-  }
-
-  public setPath(path: Cell[]): void {
-    this.path = [...path];
-  }
-
-  public resetAnimation(): void {
-    this.animationCounter = 0;
-  }
-
   public reset(): void {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
     this.path = [];
-
-    const id: string = ServerHandler.getId();
-    const movingUnits = StateManager.getMovingUnits(id);
-    removeElementFromArray(
-      movingUnits,
-      StateManager.findSoldier(this.getEntity())
-    );
   }
 
   public move(dt: number): void {
@@ -197,23 +149,22 @@ export abstract class Unit extends Entity implements RendererInterface {
         newPos = this.nextCellPos;
         this.path.shift();
       }
-      this.sendUpdatePositionRequest(this.entity, newPos, this.facing);
       ySort(StateManager.getSoldiers(ServerHandler.getId()));
     } else {
-      this.sendDestinationReachedRequest(this.entity);
     }
   }
 
   private initDirections(): Record<string, number> {
+    const assetSize: number = settings.size.unitAsset;
     const result: Record<string, number> = {
-      DOWN: 0,
-      DOWN_LEFT: 64,
-      LEFT: 128,
-      UP_LEFT: 192,
-      UP: 256,
-      UP_RIGHT: 320,
-      RIGHT: 384,
-      DOWN_RIGHT: 448,
+      DOWN: assetSize * 0,
+      DOWN_LEFT: assetSize * 1,
+      LEFT: assetSize * 2,
+      UP_LEFT: assetSize * 3,
+      UP: assetSize * 4,
+      UP_RIGHT: assetSize * 5,
+      RIGHT: assetSize * 6,
+      DOWN_RIGHT: assetSize * 7,
     };
 
     return result;
@@ -224,22 +175,6 @@ export abstract class Unit extends Entity implements RendererInterface {
 
     if (this.animationCounter >= settings.animation.count - 1) {
       this.animationCounter = 0;
-    }
-  }
-
-  private randomFacing(arr: string[]): string {
-    const randomIndex = Math.floor(Math.random() * arr.length);
-    return arr[randomIndex];
-  }
-
-  private changeDirection(): void {
-    if (this.state === UnitStates.Idle) {
-      const excludedKeys = Object.keys(this.directions).filter(
-        (key) => key !== this.facing
-      );
-      const newFacing: string = this.randomFacing(excludedKeys);
-
-      this.setFacing(newFacing);
     }
   }
 
@@ -269,9 +204,7 @@ export abstract class Unit extends Entity implements RendererInterface {
   private async setNextCell() {
     const currentCell: Cell = this.path[0];
     const nextCell: Cell = this.path[1];
-    const goal: Cell = this.path[this.path.length - 1];
 
-    this.sendMovingRequest(nextCell.getIndices(), goal.getIndices());
     const indices: Indices = await ServerHandler.receiveAsyncMessage(
       "game:unitMoving"
     );
@@ -292,29 +225,5 @@ export abstract class Unit extends Entity implements RendererInterface {
     const currentCell: Cell = this.path[0];
     const nextCell: Cell = this.path[1];
     this.calculateFacing(currentCell, nextCell);
-  }
-
-  private sendDestinationReachedRequest(entity: EntityType): void {
-    ServerHandler.sendMessage("game:unitDestinationReached", entity);
-  }
-
-  private sendMovingRequest(next: Indices, goal: Indices): void {
-    ServerHandler.sendMessage("game:unitMoving", {
-      entity: this.entity,
-      next,
-      goal,
-    });
-  }
-
-  private sendUpdatePositionRequest(
-    entity: EntityType,
-    newPos: Position,
-    direction: string
-  ): void {
-    ServerHandler.sendMessage("game:unitUpdatePosition", {
-      entity,
-      newPos,
-      direction,
-    });
   }
 }

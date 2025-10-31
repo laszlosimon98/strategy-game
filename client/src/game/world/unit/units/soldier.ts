@@ -1,33 +1,25 @@
-import { UnitStates } from "@/enums/unitsState";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
 import { ctx } from "@/init";
-import { ServerHandler } from "@/server/serverHandler";
 import { settings } from "@/settings";
-import type { SoldierPropertiesType, EntityType } from "@/types/game.types";
+import type { SoldierPropertyType, EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { RangeIndicator } from "@/utils/rangeIndicator";
-import { Timer } from "@/utils/timer";
 
 export class Soldier extends Unit {
-  protected properties: SoldierPropertiesType;
-  protected attackTimer: Timer;
+  protected properties: SoldierPropertyType;
+  // protected attackTimer: Timer;
 
   private unitHealth: number;
   private rangeIndicator: RangeIndicator;
-  private opponent: Soldier | undefined;
 
-  constructor(
-    entity: EntityType,
-    name: string,
-    properties: SoldierPropertiesType
-  ) {
-    super(entity, name);
+  constructor(entity: EntityType, properties: SoldierPropertyType) {
+    super(entity);
     this.properties = properties;
     this.unitHealth = this.properties.health;
 
-    this.attackTimer = new Timer(1500, () => this.attack());
-    this.attackTimer.activate();
+    // this.attackTimer = new Timer(1500, () => this.attack());
+    // this.attackTimer.activate();
 
     this.rangeIndicator = new RangeIndicator(
       new Position(
@@ -56,7 +48,7 @@ export class Soldier extends Unit {
 
   public update(dt: number, cameraPos: Position): void {
     super.update(dt, cameraPos);
-    this.attackTimer.update();
+    // this.attackTimer.update();
 
     this.rangeIndicator.update(
       new Position(
@@ -68,39 +60,12 @@ export class Soldier extends Unit {
     );
   }
 
-  public setHealth(health: number): void {
-    this.properties.health = health;
-  }
-
-  public setOpponent(soldier: Soldier | undefined): void {
-    this.opponent = soldier;
-  }
-
-  public getOpponent(): Soldier | undefined {
-    return this.opponent;
-  }
-
-  public getRange(): number {
-    return this.rangeIndicator.getRange();
-  }
-
   public getHealth(): number {
     return this.properties.health;
   }
 
   public getCurrentHealth(): number {
     return this.unitHealth;
-  }
-
-  private attack(): void {
-    const opponent = this.getOpponent();
-    if (this.getState() === UnitStates.Attacking && opponent) {
-      ServerHandler.sendMessage("game:unitDealDamage", {
-        unit: this.getEntity(),
-        opponent: opponent.getEntity(),
-      });
-      this.attackTimer.activate();
-    }
   }
 
   private drawHealthBar(): void {
