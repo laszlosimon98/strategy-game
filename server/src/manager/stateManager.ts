@@ -1,7 +1,7 @@
 import { ServerHandler } from "@/server/serverHandler";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
-import { Unit } from "@/game/unit";
+import { Unit } from "@/game/units/unit";
 import { settings } from "@/settings";
 import type {
   ColorType,
@@ -9,19 +9,19 @@ import type {
   StateType,
   PlayerType,
 } from "@/types/state.types";
-import type { UnitsType } from "@/types/units.types";
 import { Server, Socket } from "socket.io";
 import { StorageManager } from "@/manager/storageManager";
 import { BuildingManager } from "@/manager/buildingManager";
 import { UnitManager } from "@/manager/unitManager";
 import { Indices } from "@/utils/indices";
-import { BuildingPrices, Buildings } from "@/types/building.types";
+import { BuildingPrices } from "@/types/building.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
 import { DestroyBuildingResponse } from "@/types/world.types";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
+import { Soldier } from "@/game/units/soldier";
 
 export class StateManager {
   private static state: StateType = {};
@@ -30,10 +30,6 @@ export class StateManager {
 
   public static getState(): StateType {
     return this.state;
-  }
-
-  public static getUnitProperties(): UnitsType {
-    return UnitManager.getUnitProperties();
   }
 
   public static newPlayerMessage(
@@ -298,13 +294,11 @@ export class StateManager {
 
   // ------------------- Units -------------------
 
-  public static createUnit(
+  public static createSoldier(
     socket: Socket,
-    room: string,
-    entity: EntityType,
-    name: "knight" | "archer"
-  ): Unit | ReturnMessage {
-    return UnitManager.createUnit(socket, room, this.state, entity, name);
+    entity: EntityType
+  ): Soldier | ReturnMessage {
+    return UnitManager.createSoldier(socket, this.state, entity);
   }
 
   public static getUnits(room: string, entity: EntityType): Unit[] {

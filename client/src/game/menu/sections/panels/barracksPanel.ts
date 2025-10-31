@@ -79,7 +79,6 @@ export class BarracksPanel extends Section {
     }
   }
 
-  // FIXME: Amint elmentem a cellákat is a state-be, akkor onnan le tudom kérdeni a pos-t
   private createUnit(btn: LabelButton): void {
     const playerId: string = ServerHandler.getId();
     const color: string = StateManager.getPlayerColor(playerId);
@@ -114,6 +113,6 @@ export class BarracksPanel extends Section {
   }
 
   private sendUnitCreateRequest(entity: EntityType): void {
-    ServerHandler.sendMessage("game:unitCreate", { entity });
+    ServerHandler.sendMessage("game:soldier-create", { entity });
   }
 }

@@ -1,6 +1,6 @@
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
-import { Unit } from "@/game/unit";
+import { Unit } from "@/game/units/unit";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import type { Position } from "@/types/utils.types";

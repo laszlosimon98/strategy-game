@@ -1,7 +1,6 @@
 import { MainMenuState } from "@/enums/gameMenuState";
 import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
-import { Unit } from "@/game/world/unit/unit";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
@@ -10,8 +9,9 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { isMouseIntersect } from "@/utils/utils";
 import type { Entity } from "@/game/world/entity";
+import type { Soldier } from "@/game/world/unit/units/soldier";
 
-export abstract class Manager<T> implements MouseHandlerInterface {
+export abstract class Manager implements MouseHandlerInterface {
   protected pos: Position;
 
   protected constructor() {
@@ -96,7 +96,7 @@ export abstract class Manager<T> implements MouseHandlerInterface {
     }
   }
 
-  protected selectObject<T extends Building & Unit>(
+  protected selectObject<T extends Building & Soldier>(
     mousePos: Position,
     cameraScroll: Position,
     key: string

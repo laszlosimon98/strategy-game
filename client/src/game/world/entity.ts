@@ -33,10 +33,6 @@ export abstract class Entity implements RendererInterface {
     this.image.src = entity.data.url;
   }
 
-  public equal(other: EntityType): boolean {
-    return this.entity.data.id === other.data.id;
-  }
-
   public draw(): void {
     ctx.drawImage(this.image, this.renderPos.x, this.renderPos.y);
   }
@@ -100,7 +96,7 @@ export abstract class Entity implements RendererInterface {
     return objectName;
   }
 
-  protected setImage(image: string): void {
-    this.image.src = image;
+  protected updateImage(): void {
+    this.image.src = this.entity.data.url;
   }
 }
