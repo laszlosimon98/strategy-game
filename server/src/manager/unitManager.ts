@@ -1,44 +1,32 @@
-import { Unit } from "@/game/unit";
+import { Unit } from "@/game/units/unit";
 import { ServerHandler } from "@/server/serverHandler";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
 import { UnitsType } from "@/types/units.types";
 import { Socket } from "socket.io";
+import { Manager } from "@/manager/manager";
+import { Soldier } from "@/game/units/soldier";
 
-export class UnitManager {
-  private static unitProperties: UnitsType = {
-    knight: {
-      damage: 13,
-      health: 100,
-      range: 1,
-    },
-    archer: {
-      damage: 9,
-      health: 75,
-      range: 5,
-    },
-  };
-
-  private constructor() {}
-
-  public static getUnitProperties(): UnitsType {
-    return this.unitProperties;
+export class UnitManager extends Manager {
+  protected constructor() {
+    super();
   }
 
-  public static createUnit(
+  public static createSoldier(
     socket: Socket,
-    room: string,
     state: StateType,
-    entity: EntityType,
-    name: "knight" | "archer"
-  ): Unit | ReturnMessage {
-    if (this.hasWeapons(socket, room, name)) {
-      const unit = new Unit(entity, name);
-      const room: string = ServerHandler.getCurrentRoom(socket);
-      state[room].players[socket.id].units.push(unit);
+    entity: EntityType
+  ): Soldier | ReturnMessage {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const name: string = entity.data.name;
 
-      return unit;
+    if (this.hasWeapons(socket, room, name)) {
+      const soldier = this.creator<Soldier>(Soldier, entity);
+      const room: string = ServerHandler.getCurrentRoom(socket);
+      state[room].players[socket.id].units.push(soldier);
+
+      return soldier;
     } else {
       return { message: "Nincs elegendő fegyver raktáron!" };
     }
@@ -97,7 +85,7 @@ export class UnitManager {
   private static hasWeapons(
     socket: Socket,
     room: string,
-    name: "knight" | "archer"
+    name: string
   ): boolean {
     const hasPlayerEnoughSword: boolean = StateManager.hasMaterial(
       socket,

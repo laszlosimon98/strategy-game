@@ -12,8 +12,9 @@ import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { DestroyBuildingResponse } from "@/types/world.types";
+import { Manager } from "@/manager/manager";
 
-export class BuildingManager {
+export class BuildingManager extends Manager {
   private static buildingPrices: BuildingPrices = {
     bakery: { boards: 2, stone: 2 },
     barracks: { boards: 2, stone: 1 },
@@ -32,7 +33,9 @@ export class BuildingManager {
     woodcutter: { boards: 2, stone: 0 },
   };
 
-  private constructor() {}
+  protected constructor() {
+    super();
+  }
 
   public static getBuildingPrices(): BuildingPrices {
     return this.buildingPrices;
@@ -205,12 +208,5 @@ export class BuildingManager {
     if (building.isProductionBuilding()) {
       entity.data.isProductionBuilding = true;
     }
-  }
-
-  private static creator<T>(
-    Creator: new (...args: any[]) => T,
-    ...args: ConstructorParameters<typeof Creator>
-  ): T {
-    return new Creator(...args);
   }
 }
