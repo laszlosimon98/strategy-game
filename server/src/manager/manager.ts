@@ -1,4 +1,4 @@
-export class Manager {
+export abstract class Manager {
   protected constructor() {}
 
   protected static creator<T>(
