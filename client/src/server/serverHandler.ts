@@ -1,5 +1,4 @@
 import { io, Socket } from "socket.io-client";
-import { SERVER_URL } from "@/settings";
 
 export class ServerHandler {
   private static socket: Socket;
@@ -7,7 +6,7 @@ export class ServerHandler {
 
   private static getInstance(): Socket {
     if (!this.socket) {
-      this.socket = io(SERVER_URL);
+      this.socket = io(import.meta.env.VITE_SERVER_URL);
     }
     return this.socket;
   }

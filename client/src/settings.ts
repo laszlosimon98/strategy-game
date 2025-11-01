@@ -2,8 +2,6 @@ import { canvasWidth, canvasHeight } from "@/init";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
-export const SERVER_URL: string = "http://localhost:3000";
-
 const MARGIN: number = 75;
 const BUTTON_DIMENSION: Dimension = new Dimension(192, 60);
 const TITLE_DIMENSION: Dimension = new Dimension(288, 90);
@@ -50,7 +48,6 @@ export const settings = {
   },
   speed: {
     camera: 800,
-    unit: 80,
   },
   animation: {
     count: 8,
