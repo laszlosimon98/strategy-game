@@ -10,7 +10,6 @@ import { Timer } from "@/utils/timer";
 import {
   getRandomElementFromArray,
   getRandomNumberFromInterval,
-  ySort,
 } from "@/utils/utils";
 import { Vector } from "@/utils/vector";
 

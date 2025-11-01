@@ -1,8 +1,8 @@
 import { Camera } from "@/game/camera/camera";
 import { ObstacleEnum } from "@/game/enums/obstacleEnum";
-import { BuildingManager } from "@/game/world/building/buildingManager";
+import { BuildingManager } from "@/game/world/building/buildingHandler";
 import { Cell } from "@/game/world/cell";
-import { UnitManager } from "@/game/world/unit/unitManager";
+import { UnitManager } from "@/game/world/unit/unitHandler";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
