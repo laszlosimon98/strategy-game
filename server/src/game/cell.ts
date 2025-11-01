@@ -3,6 +3,9 @@ import type { Instance } from "@/types/world.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Building } from "@/game/building";
 import { TileEnum } from "@/enums/tileEnum";
+import { Position } from "@/utils/position";
+import { Vector } from "@/utils/vector";
+import { settings } from "@/settings";
 
 const priorityList: Record<ObstacleEnum, number> = {
   [ObstacleEnum.Empty]: 0,
@@ -35,6 +38,9 @@ export class Cell {
   private owner: string | null;
   private hasTowerInfluence: boolean;
 
+  private isometricPos: Position[];
+  private unitPos: Position;
+
   public constructor(indices: Indices) {
     this.indices = indices;
     this.obstacleTypes = [ObstacleEnum.Empty];
@@ -52,6 +58,17 @@ export class Cell {
 
     this.prevType = TileEnum.Grass;
     this.type = TileEnum.Grass;
+
+    this.isometricPos = new Vector(indices.i, indices.j).getIsometricPos();
+
+    this.unitPos = new Position(
+      this.isometricPos[2].x,
+      this.isometricPos[2].y - settings.cellSize / 4
+    );
+  }
+
+  public getUnitPos(): Position {
+    return this.unitPos;
   }
 
   public getIndices(): Indices {

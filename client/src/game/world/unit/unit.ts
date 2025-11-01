@@ -4,13 +4,9 @@ import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import { ServerHandler } from "@/server/serverHandler";
 import { Dimension } from "@/utils/dimension";
-import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
-import {
-  getRandomElementFromArray,
-  getRandomNumberFromInterval,
-} from "@/utils/utils";
+import { getRandomNumberFromInterval } from "@/utils/utils";
 import { Vector } from "@/utils/vector";
 
 import type { EntityType } from "@/types/game.types";
@@ -21,12 +17,8 @@ import { StateManager } from "@/manager/stateManager";
 export abstract class Unit extends Entity implements RendererInterface {
   private path: Cell[];
   private dimension: Dimension;
-
+  private facing: number;
   private unitState: UnitStates;
-
-  private directions: Record<string, number>;
-  private facing: string;
-
   private facingTimer: Timer;
   private animationCounter: number;
 
@@ -50,15 +42,12 @@ export abstract class Unit extends Entity implements RendererInterface {
     );
 
     this.unitState = UnitStates.Idle;
-
-    this.directions = this.initDirections();
-    this.facing = getRandomElementFromArray<string>(
-      Object.keys(this.directions)
-    );
-
     this.animationCounter = 0;
+    this.facing = 0;
 
-    this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000));
+    this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000), () =>
+      this.newFacingRequets()
+    );
     this.facingTimer.activate();
   }
 
@@ -66,7 +55,7 @@ export abstract class Unit extends Entity implements RendererInterface {
     ctx.drawImage(
       this.image,
       Math.floor(this.animationCounter) * settings.size.unitAsset,
-      this.directions[this.facing],
+      this.facing,
       settings.size.unitAsset,
       settings.size.unitAsset,
       this.renderPos.x,
@@ -90,8 +79,6 @@ export abstract class Unit extends Entity implements RendererInterface {
     if (this.unitState === UnitStates.Idle) {
       if (this.facingTimer.isTimerActive()) {
         this.facingTimer.update();
-      } else {
-        this.facingTimer.activate();
       }
     }
   }
@@ -123,6 +110,11 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.path = path;
   }
 
+  public setFacing(facing: number): void {
+    this.facing = facing;
+    this.facingTimer.activate();
+  }
+
   private reset(): void {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
@@ -131,7 +123,6 @@ export abstract class Unit extends Entity implements RendererInterface {
 
   private move(dt: number): void {
     if (this.path.length > 1) {
-      // this.setNextFace();
       const { currentPos, nextPos } = this.calculateCurrentAndNextPositions();
 
       const { x: startX, y: startY }: Position = currentPos;
@@ -143,7 +134,6 @@ export abstract class Unit extends Entity implements RendererInterface {
       let newPos: Position;
 
       if (distance > maxMove) {
-        this.setNextCell();
         const moveVector: Vector = dirVector.normalize().mult(maxMove);
         newPos = this.getPosition().add(moveVector as Position);
       } else {
@@ -157,64 +147,12 @@ export abstract class Unit extends Entity implements RendererInterface {
       this.reset();
     }
   }
-
-  private initDirections(): Record<string, number> {
-    const assetSize: number = settings.size.unitAsset;
-    const result: Record<string, number> = {
-      DOWN: assetSize * 0,
-      DOWN_LEFT: assetSize * 1,
-      LEFT: assetSize * 2,
-      UP_LEFT: assetSize * 3,
-      UP: assetSize * 4,
-      UP_RIGHT: assetSize * 5,
-      RIGHT: assetSize * 6,
-      DOWN_RIGHT: assetSize * 7,
-    };
-
-    return result;
-  }
-
   private playAnimation(dt: number): void {
     this.animationCounter += settings.animation.speed * dt;
 
     if (this.animationCounter >= settings.animation.count - 1) {
       this.animationCounter = 0;
     }
-  }
-
-  // private calculateFacing(current: Cell, next: Cell): void {
-  //   const { i: currentI, j: currentJ } = current.getIndices();
-  //   const { i: nextI, j: nextJ } = next.getIndices();
-
-  //   if (nextI < currentI && nextJ < currentJ) {
-  //     this.facing = "UP";
-  //   } else if (nextI === currentI && nextJ < currentJ) {
-  //     this.facing = "UP_RIGHT";
-  //   } else if (nextI > currentI && nextJ < currentJ) {
-  //     this.facing = "RIGHT";
-  //   } else if (nextI > currentI && nextJ === currentJ) {
-  //     this.facing = "DOWN_RIGHT";
-  //   } else if (nextI > currentI && nextJ > currentJ) {
-  //     this.facing = "DOWN";
-  //   } else if (nextI === currentI && nextJ > currentJ) {
-  //     this.facing = "DOWN_LEFT";
-  //   } else if (nextI < currentI && nextJ > currentJ) {
-  //     this.facing = "LEFT";
-  //   } else if (nextI < currentI && nextJ === currentJ) {
-  //     this.facing = "UP_LEFT";
-  //   }
-  // }
-
-  private async setNextCell() {
-    const currentCell: Cell = this.path[0];
-    const nextCell: Cell = this.path[1];
-
-    const indices: Indices = await ServerHandler.receiveAsyncMessage(
-      "game:unit-move"
-    );
-
-    this.setIndices(indices);
-    // this.calculateFacing(currentCell, nextCell);
   }
 
   private calculateCurrentAndNextPositions(): {
@@ -233,9 +171,7 @@ export abstract class Unit extends Entity implements RendererInterface {
     };
   }
 
-  // private setNextFace(): void {
-  //   const currentCell: Cell = this.path[0];
-  //   const nextCell: Cell = this.path[1];
-  //   this.calculateFacing(currentCell, nextCell);
-  // }
+  private newFacingRequets(): void {
+    ServerHandler.sendMessage("game:unit-idle-facing", { entity: this.entity });
+  }
 }

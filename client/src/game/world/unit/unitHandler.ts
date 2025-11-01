@@ -48,7 +48,6 @@ export class UnitHandler extends Manager {
     if (this.selectedUnit) {
       const entity: EntityType = this.selectedUnit.getEntity();
       this.sendMovingRequest(entity, indices);
-      this.moveResponse();
     }
   }
 
@@ -77,16 +76,7 @@ export class UnitHandler extends Manager {
         this.createUnit(entity, properties);
       }
     );
-  }
 
-  private sendMovingRequest(entity: EntityType, goal: Indices): void {
-    ServerHandler.sendMessage("game:unit-move", {
-      entity,
-      goal,
-    });
-  }
-
-  private moveResponse() {
     ServerHandler.receiveMessage(
       "game:unit-move",
       ({ entity, path }: { entity: EntityType; path: Indices[] }) => {
@@ -103,5 +93,20 @@ export class UnitHandler extends Manager {
         unit.setState(UnitStates.Walking);
       }
     );
+
+    ServerHandler.receiveMessage(
+      "game:unit-idle-facing",
+      ({ entity, facing }: { entity: EntityType; facing: number }) => {
+        const unit: Unit = StateManager.getUnit(entity);
+        unit.setFacing(facing);
+      }
+    );
+  }
+
+  private sendMovingRequest(entity: EntityType, goal: Indices): void {
+    ServerHandler.sendMessage("game:unit-move", {
+      entity,
+      goal,
+    });
   }
 }

@@ -8,8 +8,8 @@ import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
-import { Position } from "@/types/utils.types";
 import { Cell } from "@/game/cell";
+import { Position } from "@/utils/position";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
@@ -116,15 +116,15 @@ export const handleStart = (io: Server, socket: Socket) => {
   const calculateInitTowerPosition = (indices: Indices): Position => {
     const { i, j } = indices;
 
-    const normalPos: Position = {
-      x: i * settings.cellSize + settings.cellSize,
-      y: j * settings.cellSize + settings.cellSize,
-    };
+    const normalPos = new Position(
+      i * settings.cellSize + settings.cellSize,
+      j * settings.cellSize + settings.cellSize
+    );
 
-    const isometricPos: Position = {
-      x: normalPos.x - normalPos.y,
-      y: (normalPos.x + normalPos.y) / 2,
-    };
+    const isometricPos = new Position(
+      normalPos.x - normalPos.y,
+      (normalPos.x + normalPos.y) / 2
+    );
 
     return isometricPos;
   };

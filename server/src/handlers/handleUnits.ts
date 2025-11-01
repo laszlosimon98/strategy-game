@@ -10,6 +10,7 @@ import { Soldier } from "@/game/units/soldier";
 import { Cell } from "@/game/cell";
 import { AStar } from "@/pathFind/astar";
 import { Indices } from "@/utils/indices";
+import { Position } from "@/utils/position";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -99,7 +100,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   const unitUpdatePosition = ({ entity }: { entity: EntityType }): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
-    const position = entity.data.position;
+    const position: Position = entity.data.position;
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
 
     if (!unit) return;
@@ -120,7 +121,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
     entity: EntityType;
     goal: Indices;
   }): void => {
-    console.log(entity, goal);
     const unit: Unit | undefined = setUnitStartIndices(entity);
 
     if (!unit) return;
@@ -132,15 +132,27 @@ export const handleUnits = (io: Server, socket: Socket) => {
     );
 
     if (!path) return;
-    console.log("Path: ", path);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-move", {
       entity,
       path,
     });
   };
+
   const unitReachedDestination = ({ entity }: { entity: EntityType }): void => {
     setUnitStartIndices(entity);
+  };
+
+  const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
+    const unit: Unit | undefined = setUnitStartIndices(entity);
+    if (!unit) return;
+
+    const facing = unit.calculateNewIdleFacing();
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-idle-facing", {
+      entity,
+      facing,
+    });
   };
 
   const deleteUnit = (unit: Unit): void => {
@@ -152,4 +164,5 @@ export const handleUnits = (io: Server, socket: Socket) => {
   socket.on("game:unit-move", unitMove);
   socket.on("game:unit-update-position", unitUpdatePosition);
   socket.on("game:unit-reached-destination", unitReachedDestination);
+  socket.on("game:unit-idle-facing", unitChangeFacing);
 };

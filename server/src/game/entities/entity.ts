@@ -1,5 +1,5 @@
+import { Position } from "@/utils/position";
 import { EntityType } from "@/types/state.types";
-import { Position } from "@/types/utils.types";
 import { Indices } from "@/utils/indices";
 
 export abstract class Entity {

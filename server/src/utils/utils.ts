@@ -1,4 +1,4 @@
-import type { Position } from "@/types/utils.types";
+import { Position } from "@/utils/position";
 import { Indices } from "@/utils/indices";
 
 export const calculateDistance = (from: Position, to: Position): number => {
@@ -30,4 +30,9 @@ export const getImageNameFromUrl = (url: string): string => {
   const length = split.length;
 
   return split[length - 1].split(".")[0];
+};
+
+export const getRandomElementFromArray = <T>(arr: T[]): T => {
+  const randomIndex = Math.floor(Math.random() * arr.length);
+  return arr[randomIndex];
 };
