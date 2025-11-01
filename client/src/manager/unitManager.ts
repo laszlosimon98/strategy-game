@@ -1,5 +1,4 @@
 import type { Unit } from "@/game/world/unit/unit";
-import { Soldier } from "@/game/world/unit/units/soldier";
 import { PlayerManager } from "@/manager/playerManager";
 import type { EntityType, StateType } from "@/types/game.types";
 
@@ -11,17 +10,19 @@ export class UnitManager {
     unitsReference.push(unit);
   }
 
-  public static getUnits(state: StateType, id: string): Soldier[] {
+  public static getUnits(state: StateType, id: string): Unit[] {
     const units: Unit[] = PlayerManager.getPlayerById(state, id).units;
-    const soldiers: Soldier[] = units.filter((unit) => unit instanceof Soldier);
-    return soldiers;
+    return units;
   }
 
-  public static getUnit(state: StateType, entity: EntityType): Soldier {
+  public static getUnit(
+    state: StateType,
+    entity: EntityType
+  ): Unit | undefined {
     const { owner, id } = entity.data;
-    const units: Soldier[] = this.getUnits(state, owner);
+    const units: Unit[] = this.getUnits(state, owner);
 
-    return units.find((unit) => unit.getEntity().data.id === id) as Soldier;
+    return units.find((unit) => unit.getEntity().data.id === id);
   }
 
   public static removeUnit(state: StateType, entity: EntityType): void {

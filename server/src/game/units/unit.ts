@@ -3,6 +3,8 @@ import { Entity } from "@/game/entities/entity";
 import { Cell } from "@/game/cell";
 import { getRandomElementFromArray } from "@/utils/utils";
 import { Position } from "@/utils/position";
+import { settings } from "@/settings";
+import { Vector } from "@/utils/vector";
 
 export class Unit extends Entity {
   private path: Cell[];
@@ -23,6 +25,38 @@ export class Unit extends Entity {
     return this.directions[
       getRandomElementFromArray<string>(Object.keys(this.directions))
     ];
+  }
+
+  public setPath(path: Cell[]): void {
+    this.path = path;
+  }
+
+  public move(dt: number): Position | null {
+    if (this.path.length > 1) {
+      const { currentPos, nextPos } = this.calculateCurrentAndNextPositions();
+
+      const { x: startX, y: startY }: Position = currentPos;
+      const { x: endX, y: endY }: Position = nextPos;
+
+      let dirVector: Vector = new Vector(endX - startX, endY - startY);
+      const distance = dirVector.magnitude();
+      const maxMove = settings.unitSpeed * dt;
+      let newPos: Position;
+
+      if (distance > maxMove) {
+        const moveVector: Vector = dirVector.normalize().mult(maxMove);
+        const pos: Position = this.getPosition();
+        newPos = pos.add(moveVector as Position);
+      } else {
+        newPos = nextPos;
+        this.path.shift();
+      }
+
+      this.setPosition(newPos);
+      return newPos;
+    } else {
+      return null;
+    }
   }
 
   private initDirections(): Record<string, number> {

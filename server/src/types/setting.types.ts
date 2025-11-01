@@ -9,7 +9,9 @@ export type Settings = {
   mapSeed: string;
   mapSize: number;
   cellSize: number;
+  unitSpeed: number;
   startPositions: Indices[];
+  fps: number;
 };
 
 export type ReturnMessage = {

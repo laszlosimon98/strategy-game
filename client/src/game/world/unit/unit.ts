@@ -1,5 +1,4 @@
 import { UnitStates } from "@/enums/unitsState";
-import { Cell } from "@/game/world/cell";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import { ServerHandler } from "@/server/serverHandler";
@@ -7,7 +6,6 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
 import { getRandomNumberFromInterval } from "@/utils/utils";
-import { Vector } from "@/utils/vector";
 
 import type { EntityType } from "@/types/game.types";
 import type { RendererInterface } from "@/interfaces/rendererInterface";
@@ -15,7 +13,6 @@ import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 
 export abstract class Unit extends Entity implements RendererInterface {
-  private path: Cell[];
   private dimension: Dimension;
   private facing: number;
   private unitState: UnitStates;
@@ -24,7 +21,6 @@ export abstract class Unit extends Entity implements RendererInterface {
 
   public constructor(entity: EntityType) {
     super(entity);
-    this.path = [];
 
     this.entity = {
       data: {
@@ -70,10 +66,6 @@ export abstract class Unit extends Entity implements RendererInterface {
 
     if (this.unitState !== UnitStates.Idle) {
       this.playAnimation(dt);
-
-      if (this.unitState === UnitStates.Walking) {
-        this.move(dt);
-      }
     }
 
     if (this.unitState === UnitStates.Idle) {
@@ -106,69 +98,22 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.updateImage();
   }
 
-  public setPath(path: Cell[]): void {
-    this.path = path;
-  }
-
   public setFacing(facing: number): void {
     this.facing = facing;
     this.facingTimer.activate();
   }
 
-  private reset(): void {
+  public reset(): void {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
-    this.path = [];
   }
 
-  private move(dt: number): void {
-    if (this.path.length > 1) {
-      const { currentPos, nextPos } = this.calculateCurrentAndNextPositions();
-
-      const { x: startX, y: startY }: Position = currentPos;
-      const { x: endX, y: endY }: Position = nextPos;
-
-      let dirVector: Vector = new Vector(endX - startX, endY - startY);
-      const distance = dirVector.magnitude();
-      const maxMove = settings.speed.unit * dt;
-      let newPos: Position;
-
-      if (distance > maxMove) {
-        const moveVector: Vector = dirVector.normalize().mult(maxMove);
-        newPos = this.getPosition().add(moveVector as Position);
-      } else {
-        newPos = nextPos;
-        this.path.shift();
-      }
-
-      this.setPosition(newPos);
-      // ySort(StateManager.getSoldiers(ServerHandler.getId()));
-    } else {
-      this.reset();
-    }
-  }
   private playAnimation(dt: number): void {
     this.animationCounter += settings.animation.speed * dt;
 
     if (this.animationCounter >= settings.animation.count - 1) {
       this.animationCounter = 0;
     }
-  }
-
-  private calculateCurrentAndNextPositions(): {
-    currentPos: Position;
-    nextPos: Position;
-  } {
-    const currentPos: Position = this.getPosition();
-    const nextPos: Position = new Position(
-      this.path[1].getUnitPos().x - settings.size.unitAsset / 2,
-      this.path[1].getUnitPos().y - settings.size.unitAsset
-    );
-
-    return {
-      currentPos,
-      nextPos,
-    };
   }
 
   private newFacingRequets(): void {

@@ -10,6 +10,7 @@ import { unitRegister } from "@/game/unitRegister";
 import { Indices } from "@/utils/indices";
 import { Cell } from "@/game/cell";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
+import { calculatePositionFromIndices } from "@/utils/utils";
 
 export class UnitManager extends Manager {
   protected constructor() {
@@ -33,6 +34,7 @@ export class UnitManager extends Manager {
 
       const soldier = this.creator<Soldier>(unitRegister[unitName], entity);
       soldier.setOwner(entity.data.owner);
+      soldier.setPosition(cell.getUnitPos());
 
       state[room].players[socket.id].units.push(soldier);
 

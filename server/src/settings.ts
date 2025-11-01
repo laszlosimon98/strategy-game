@@ -25,7 +25,9 @@ export const settings: Settings = {
   codeLength: CODE_LENGTH,
   mapSeed: MAP_SEED,
   mapSize: 80,
+  unitSpeed: 80,
   cellSize: CELL_SIZE,
+  fps: 60,
   startPositions: [
     new Indices(START_IDX, START_IDX),
     new Indices(MAP_SIZE - 1 - START_IDX, START_IDX),

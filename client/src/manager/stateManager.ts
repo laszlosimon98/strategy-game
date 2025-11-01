@@ -308,11 +308,11 @@ export class StateManager {
     UnitManager.createUnit(this.state, id, unit);
   }
 
-  public static getUnits(id: string): Soldier[] {
+  public static getUnits(id: string): Unit[] {
     return UnitManager.getUnits(this.state, id);
   }
 
-  public static getUnit(entity: EntityType): Soldier {
+  public static getUnit(entity: EntityType): Unit | undefined {
     return UnitManager.getUnit(this.state, entity);
   }
 

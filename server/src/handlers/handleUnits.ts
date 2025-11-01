@@ -11,6 +11,7 @@ import { Cell } from "@/game/cell";
 import { AStar } from "@/pathFind/astar";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
+import { settings } from "@/settings";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -35,16 +36,38 @@ export const handleUnits = (io: Server, socket: Socket) => {
     return path;
   };
 
-  const setUnitStartIndices = (entity: EntityType): Unit | undefined => {
+  const setUnitIndices = (entity: EntityType): Unit | undefined => {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
     const indices = entity.data.indices;
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
 
-    if (!unit) return undefined;
+    if (!unit) return;
     unit.setIndices(indices);
 
     return unit;
+  };
+
+  const unitPrepareForMovement = (entity: EntityType, goal: Indices): void => {
+    const unit: Unit | undefined = setUnitIndices(entity);
+    if (!unit) return;
+
+    const path: Indices[] | undefined = calculatePath(
+      entity,
+      unit.getIndices(),
+      goal
+    );
+    if (!path) return;
+
+    const world: Cell[][] = StateManager.getWorld(socket);
+    const cellPath: Cell[] = [];
+
+    path.forEach((p) => {
+      const { i, j } = p;
+      cellPath.push(world[i][j]);
+    });
+
+    unit.setPath(cellPath);
   };
 
   const calculateNewStorageValues = (room: string, name: string): void => {
@@ -114,37 +137,63 @@ export const handleUnits = (io: Server, socket: Socket) => {
     );
   };
 
-  const unitMove = ({
+  const unitStartMovement = ({
     entity,
     goal,
   }: {
     entity: EntityType;
     goal: Indices;
   }): void => {
-    const unit: Unit | undefined = setUnitStartIndices(entity);
+    unitPrepareForMovement(entity, goal);
 
-    if (!unit) return;
-
-    const path: Indices[] | undefined = calculatePath(
-      entity,
-      unit.getIndices(),
-      goal
+    ServerHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:unit-ready-for-move",
+      { entity }
     );
 
-    if (!path) return;
+    setTimeout(() => unitMoving(entity), 50);
+  };
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-move", {
-      entity,
-      path,
-    });
+  const unitMoving = (entity: EntityType): void => {
+    console.log("unitmoving");
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+    if (!unit) return;
+
+    let lastTime = Date.now();
+    const tickRate = 1000 / settings.fps;
+
+    const t = setInterval(() => {
+      const now = Date.now();
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+      const position: Position | null = unit.move(dt);
+
+      if (position === null) {
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-moving", {
+          entity,
+          position,
+        });
+
+        clearInterval(t);
+        return;
+      }
+
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-moving", {
+        entity,
+        position,
+      });
+    }, tickRate);
   };
 
   const unitReachedDestination = ({ entity }: { entity: EntityType }): void => {
-    setUnitStartIndices(entity);
+    setUnitIndices(entity);
   };
 
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
-    const unit: Unit | undefined = setUnitStartIndices(entity);
+    const unit: Unit | undefined = setUnitIndices(entity);
     if (!unit) return;
 
     const facing = unit.calculateNewIdleFacing();
@@ -161,7 +210,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   socket.on("game:soldier-create", soldierCreate);
-  socket.on("game:unit-move", unitMove);
+  socket.on("game:unit-start-movement", unitStartMovement);
   socket.on("game:unit-update-position", unitUpdatePosition);
   socket.on("game:unit-reached-destination", unitReachedDestination);
   socket.on("game:unit-idle-facing", unitChangeFacing);

@@ -7,11 +7,11 @@ import { Position } from "@/utils/position";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
 import { calculatePositionFromIndices } from "@/utils/utils";
-import type { Cell } from "@/game/world/cell";
 import { UnitStates } from "@/enums/unitsState";
 
 export class UnitHandler extends Manager {
   private selectedUnit: Unit | undefined;
+  private dt: number = 0;
 
   public constructor() {
     super();
@@ -24,6 +24,7 @@ export class UnitHandler extends Manager {
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
+    this.dt = dt;
   }
 
   public handleLeftClick(
@@ -78,33 +79,49 @@ export class UnitHandler extends Manager {
     );
 
     ServerHandler.receiveMessage(
-      "game:unit-move",
-      ({ entity, path }: { entity: EntityType; path: Indices[] }) => {
-        const unit: Unit = StateManager.getUnit(entity);
-        const world: Cell[][] = StateManager.getWorld();
-        const calculatePath: Cell[] = [];
+      "game:unit-idle-facing",
+      ({ entity, facing }: { entity: EntityType; facing: number }) => {
+        const unit: Unit | undefined = StateManager.getUnit(entity);
+        if (!unit) return;
 
-        path.forEach((p) => {
-          const { i, j } = p;
-          calculatePath.push(world[i][j]);
-        });
+        unit.setFacing(facing);
+      }
+    );
 
-        unit.setPath(calculatePath);
+    ServerHandler.receiveMessage(
+      "game:unit-ready-for-move",
+      ({ entity }: { entity: EntityType }) => {
+        const unit: Unit | undefined = StateManager.getUnit(entity);
+        if (!unit) return;
+
         unit.setState(UnitStates.Walking);
       }
     );
 
     ServerHandler.receiveMessage(
-      "game:unit-idle-facing",
-      ({ entity, facing }: { entity: EntityType; facing: number }) => {
-        const unit: Unit = StateManager.getUnit(entity);
-        unit.setFacing(facing);
+      "game:unit-moving",
+      ({
+        entity,
+        position,
+      }: {
+        entity: EntityType;
+        position: Position | null;
+      }) => {
+        const unit: Unit | undefined = StateManager.getUnit(entity);
+        if (!unit) return;
+
+        if (position === null) {
+          unit.reset();
+          return;
+        }
+
+        unit.setPosition(position);
       }
     );
   }
 
   private sendMovingRequest(entity: EntityType, goal: Indices): void {
-    ServerHandler.sendMessage("game:unit-move", {
+    ServerHandler.sendMessage("game:unit-start-movement", {
       entity,
       goal,
     });

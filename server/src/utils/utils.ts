@@ -18,6 +18,19 @@ export const calculateDistanceByIndices = (
   return distance;
 };
 
+export const calculatePositionFromIndices = (indices: Indices): Position => {
+  const { i, j } = indices;
+
+  const normalPos: Position = new Position(i * 48 + 48, j * 48 + 48);
+
+  const isometricPos: Position = new Position(
+    normalPos.x - normalPos.y,
+    (normalPos.x + normalPos.y) / 2
+  );
+
+  return isometricPos;
+};
+
 export const getRandomNumberFromInterval = (
   min: number,
   max: number
