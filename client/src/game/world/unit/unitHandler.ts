@@ -8,7 +8,7 @@ import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
 import { calculatePositionFromIndices } from "@/utils/utils";
 
-export class UnitManager extends Manager {
+export class UnitHandler extends Manager {
   private selectedUnit: Unit | undefined;
 
   public constructor() {

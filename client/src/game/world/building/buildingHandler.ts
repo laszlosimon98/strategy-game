@@ -13,7 +13,7 @@ import { convertIsometricCoordsToCartesianCoords, ySort } from "@/utils/utils";
 import { StateManager } from "@/manager/stateManager";
 import type { Cell } from "@/game/world/cell";
 
-export class BuildingManager extends Manager {
+export class BuildingHandler extends Manager {
   private fakeHouse: FakeBuilding;
 
   constructor() {

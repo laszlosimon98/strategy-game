@@ -1,8 +1,8 @@
 import { Camera } from "@/game/camera/camera";
 import { ObstacleEnum } from "@/game/enums/obstacleEnum";
-import { BuildingManager } from "@/game/world/building/buildingHandler";
+import { BuildingHandler } from "@/game/world/building/buildingHandler";
 import { Cell } from "@/game/world/cell";
-import { UnitManager } from "@/game/world/unit/unitHandler";
+import { UnitHandler } from "@/game/world/unit/unitHandler";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
@@ -15,15 +15,15 @@ export class World implements MouseHandlerInterface {
   private mousePos: Position;
   private camera: Camera;
 
-  private buildingManager: BuildingManager;
-  private unitManager: UnitManager;
+  private buildingManager: BuildingHandler;
+  private unitManager: UnitHandler;
 
   public constructor() {
     this.mousePos = Position.zero();
     this.camera = new Camera();
 
-    this.buildingManager = new BuildingManager();
-    this.unitManager = new UnitManager();
+    this.buildingManager = new BuildingHandler();
+    this.unitManager = new UnitHandler();
 
     this.handleCommunication();
   }
