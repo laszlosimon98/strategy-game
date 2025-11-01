@@ -6,6 +6,7 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
+import { calculatePositionFromIndices } from "@/utils/utils";
 
 export class UnitManager extends Manager {
   private selectedUnit: Unit | undefined;
@@ -49,6 +50,7 @@ export class UnitManager extends Manager {
 
   public createUnit(entity: EntityType, properties: SoldierPropertyType): void {
     const unit: Soldier = this.creator<Soldier>(Soldier, entity, properties);
+    entity.data.position = calculatePositionFromIndices(entity.data.indices);
 
     this.setObjectPosition(unit, entity.data.position);
     StateManager.createUnit(entity.data.owner, unit);

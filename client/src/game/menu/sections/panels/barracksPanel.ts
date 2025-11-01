@@ -8,8 +8,6 @@ import { settings } from "@/settings";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
-import { Indices } from "@/utils/indices";
-import { calculatePositionFromIndices } from "@/utils/utils";
 
 export class BarracksPanel extends Section {
   private barracksButtons: LabelButton[] = [];
@@ -86,18 +84,14 @@ export class BarracksPanel extends Section {
     const name = btn.getName();
 
     if (data && data.getEntity().data.name === "barracks") {
-      const indices = data.getIndices();
-
       const unitEntity: EntityType = {
         data: {
           id: uuidv4(),
           owner: playerId,
           url: StateManager.getImages("units", color, `${name}idle`).url,
-          indices: new Indices(indices.i + 1, indices.j),
+          indices: data.getIndices(),
           dimensions: settings.size.unit,
-          position: calculatePositionFromIndices(
-            new Indices(indices.i + 1, indices.j)
-          ),
+          position: Position.zero(),
           static: "",
           name,
           attackTimer: 0,

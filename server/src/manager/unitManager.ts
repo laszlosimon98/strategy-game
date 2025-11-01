@@ -8,6 +8,7 @@ import { Socket } from "socket.io";
 import { Manager } from "@/manager/manager";
 import { Soldier } from "@/game/units/soldier";
 import { unitRegister } from "@/game/unitRegister";
+import { Indices } from "@/utils/indices";
 
 export class UnitManager extends Manager {
   protected constructor() {
@@ -23,6 +24,8 @@ export class UnitManager extends Manager {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
     if (this.hasWeapons(socket, room, unitName)) {
+      const { i, j } = entity.data.indices;
+      entity.data.indices = new Indices(i + 1, j);
       const soldier = this.creator<Soldier>(unitRegister[unitName], entity);
       const room: string = ServerHandler.getCurrentRoom(socket);
       state[room].players[socket.id].units.push(soldier);
