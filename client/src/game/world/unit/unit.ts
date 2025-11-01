@@ -31,9 +31,6 @@ export abstract class Unit extends Entity implements RendererInterface {
   private facingTimer: Timer;
   private animationCounter: number;
 
-  private currentCellPos: Position;
-  private nextCellPos: Position;
-
   public constructor(entity: EntityType) {
     super(entity);
     this.path = [];
@@ -64,9 +61,6 @@ export abstract class Unit extends Entity implements RendererInterface {
 
     this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000));
     this.facingTimer.activate();
-
-    this.currentCellPos = Position.zero();
-    this.nextCellPos = Position.zero();
   }
 
   public draw(): void {
@@ -87,7 +81,7 @@ export abstract class Unit extends Entity implements RendererInterface {
     super.update(dt, mousePos);
 
     if (this.unitState !== UnitStates.Idle) {
-      this.animate(dt);
+      this.playAnimation(dt);
     }
 
     if (this.unitState === UnitStates.Idle) {
@@ -97,44 +91,37 @@ export abstract class Unit extends Entity implements RendererInterface {
         this.facingTimer.activate();
       }
     }
-  }
 
-  public setState(newState: UnitStates): void {
-    this.unitState = newState;
-
-    const name: string = this.entity.data.name;
-    const owner: string = this.entity.data.owner;
-    const color: string = StateManager.getPlayerColor(owner);
-
-    const entity: EntityType = {
-      data: {
-        ...this.entity.data,
-        url: StateManager.getImages("units", color, `${name}${this.unitState}`)
-          .url,
-      },
-    };
-
-    this.setEntity(entity);
-    this.updateImage();
+    if (this.unitState === UnitStates.Walking) {
+      this.move(dt);
+    }
   }
 
   public getDimension(): Dimension {
     return this.dimension;
   }
 
-  public reset(): void {
+  public setUnitState(unitState: UnitStates): void {
+    this.unitState = unitState;
+  }
+
+  public setPath(path: Cell[]): void {
+    this.path = [...path];
+  }
+
+  private reset(): void {
     this.animationCounter = 0;
     this.setState(UnitStates.Idle);
     this.path = [];
   }
 
-  public move(dt: number): void {
+  private move(dt: number): void {
     if (this.path.length > 1) {
-      this.setNextFace();
-      this.initCells();
+      // this.setNextFace();
+      const { currentPos, nextPos } = this.calculateCurrentAndNextPositions();
 
-      const { x: startX, y: startY }: Position = this.currentCellPos;
-      const { x: endX, y: endY }: Position = this.nextCellPos;
+      const { x: startX, y: startY }: Position = currentPos;
+      const { x: endX, y: endY }: Position = nextPos;
 
       let dirVector: Vector = new Vector(endX - startX, endY - startY);
       const distance = dirVector.getDistance();
@@ -146,11 +133,10 @@ export abstract class Unit extends Entity implements RendererInterface {
         const moveVector: Vector = dirVector.normalize().mult(maxMove);
         newPos = this.getPosition().add(moveVector as Position);
       } else {
-        newPos = this.nextCellPos;
+        newPos = nextPos;
         this.path.shift();
       }
-      ySort(StateManager.getSoldiers(ServerHandler.getId()));
-    } else {
+      // ySort(StateManager.getSoldiers(ServerHandler.getId()));
     }
   }
 
@@ -170,7 +156,7 @@ export abstract class Unit extends Entity implements RendererInterface {
     return result;
   }
 
-  private animate(dt: number): void {
+  private playAnimation(dt: number): void {
     this.animationCounter += settings.animation.speed * dt;
 
     if (this.animationCounter >= settings.animation.count - 1) {
@@ -178,28 +164,28 @@ export abstract class Unit extends Entity implements RendererInterface {
     }
   }
 
-  private calculateFacing(current: Cell, next: Cell): void {
-    const { i: currentI, j: currentJ } = current.getIndices();
-    const { i: nextI, j: nextJ } = next.getIndices();
+  // private calculateFacing(current: Cell, next: Cell): void {
+  //   const { i: currentI, j: currentJ } = current.getIndices();
+  //   const { i: nextI, j: nextJ } = next.getIndices();
 
-    if (nextI < currentI && nextJ < currentJ) {
-      this.facing = "UP";
-    } else if (nextI === currentI && nextJ < currentJ) {
-      this.facing = "UP_RIGHT";
-    } else if (nextI > currentI && nextJ < currentJ) {
-      this.facing = "RIGHT";
-    } else if (nextI > currentI && nextJ === currentJ) {
-      this.facing = "DOWN_RIGHT";
-    } else if (nextI > currentI && nextJ > currentJ) {
-      this.facing = "DOWN";
-    } else if (nextI === currentI && nextJ > currentJ) {
-      this.facing = "DOWN_LEFT";
-    } else if (nextI < currentI && nextJ > currentJ) {
-      this.facing = "LEFT";
-    } else if (nextI < currentI && nextJ === currentJ) {
-      this.facing = "UP_LEFT";
-    }
-  }
+  //   if (nextI < currentI && nextJ < currentJ) {
+  //     this.facing = "UP";
+  //   } else if (nextI === currentI && nextJ < currentJ) {
+  //     this.facing = "UP_RIGHT";
+  //   } else if (nextI > currentI && nextJ < currentJ) {
+  //     this.facing = "RIGHT";
+  //   } else if (nextI > currentI && nextJ === currentJ) {
+  //     this.facing = "DOWN_RIGHT";
+  //   } else if (nextI > currentI && nextJ > currentJ) {
+  //     this.facing = "DOWN";
+  //   } else if (nextI === currentI && nextJ > currentJ) {
+  //     this.facing = "DOWN_LEFT";
+  //   } else if (nextI < currentI && nextJ > currentJ) {
+  //     this.facing = "LEFT";
+  //   } else if (nextI < currentI && nextJ === currentJ) {
+  //     this.facing = "UP_LEFT";
+  //   }
+  // }
 
   private async setNextCell() {
     const currentCell: Cell = this.path[0];
@@ -210,20 +196,47 @@ export abstract class Unit extends Entity implements RendererInterface {
     );
 
     this.setIndices(indices);
-    this.calculateFacing(currentCell, nextCell);
+    // this.calculateFacing(currentCell, nextCell);
   }
 
-  private initCells(): void {
-    this.currentCellPos = this.getPosition();
-    this.nextCellPos = new Position(
+  private calculateCurrentAndNextPositions(): {
+    currentPos: Position;
+    nextPos: Position;
+  } {
+    const currentPos: Position = this.getPosition();
+    const nextPos: Position = new Position(
       this.path[1].getUnitPos().x - settings.size.unitAsset / 2,
       this.path[1].getUnitPos().y - settings.size.unitAsset
     );
+
+    return {
+      currentPos,
+      nextPos,
+    };
   }
 
-  private setNextFace(): void {
-    const currentCell: Cell = this.path[0];
-    const nextCell: Cell = this.path[1];
-    this.calculateFacing(currentCell, nextCell);
+  // private setNextFace(): void {
+  //   const currentCell: Cell = this.path[0];
+  //   const nextCell: Cell = this.path[1];
+  //   this.calculateFacing(currentCell, nextCell);
+  // }
+
+  private setState(newState: UnitStates): void {
+    this.unitState = newState;
+
+    const name: string = this.entity.data.name;
+    const owner: string = this.entity.data.owner;
+    const color: string = StateManager.getPlayerColor(owner);
+
+    const entity: EntityType = {
+      data: {
+        ...this.entity.data,
+        url: StateManager.getImages("units", color, `${name}${this.unitState}`)
+          .url,
+      },
+    };
+
+    this.setEntity(entity);
+    this.updateImage();
   }
 }

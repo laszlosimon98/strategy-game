@@ -96,11 +96,7 @@ export class BuildingManager extends Manager {
 
     if (
       !building ||
-      (building &&
-        !Validator.canPlayerDemolishOwnBuilding(
-          socket,
-          building.getEntity().data.owner
-        ))
+      (building && !Validator.verifyOwner(socket, building.getEntity()))
     ) {
       return null;
     }

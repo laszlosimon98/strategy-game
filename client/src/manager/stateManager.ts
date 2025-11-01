@@ -308,12 +308,12 @@ export class StateManager {
     UnitManager.createUnit(this.state, id, unit);
   }
 
-  public static getSoldiers(id: string): Soldier[] {
-    return UnitManager.getSoldiers(this.state, id);
+  public static getUnits(id: string): Soldier[] {
+    return UnitManager.getUnits(this.state, id);
   }
 
-  public static findSoldier(entity: EntityType): Soldier {
-    return UnitManager.findSoldier(this.state, entity);
+  public static getUnit(entity: EntityType): Soldier {
+    return UnitManager.getUnit(this.state, entity);
   }
 
   public static removeUnit(entity: EntityType): void {

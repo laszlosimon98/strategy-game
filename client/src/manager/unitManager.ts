@@ -11,21 +11,21 @@ export class UnitManager {
     unitsReference.push(unit);
   }
 
-  public static getSoldiers(state: StateType, id: string): Soldier[] {
+  public static getUnits(state: StateType, id: string): Soldier[] {
     const units: Unit[] = PlayerManager.getPlayerById(state, id).units;
     const soldiers: Soldier[] = units.filter((unit) => unit instanceof Soldier);
     return soldiers;
   }
 
-  public static findSoldier(state: StateType, entity: EntityType): Soldier {
+  public static getUnit(state: StateType, entity: EntityType): Soldier {
     const { owner, id } = entity.data;
-    const units: Soldier[] = this.getSoldiers(state, owner);
+    const units: Soldier[] = this.getUnits(state, owner);
 
     return units.find((unit) => unit.getEntity().data.id === id) as Soldier;
   }
 
   public static removeUnit(state: StateType, entity: EntityType): void {
-    state.game.players[entity.data.owner].units = this.getSoldiers(
+    state.game.players[entity.data.owner].units = this.getUnits(
       state,
       entity.data.owner
     ).filter((unit) => unit.getEntity().data.id !== entity.data.id);

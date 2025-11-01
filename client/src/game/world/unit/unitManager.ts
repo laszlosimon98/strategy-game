@@ -42,7 +42,13 @@ export class UnitManager extends Manager {
     cameraScroll: Position
   ): void {}
 
-  public handleRightClick(indices: Indices): void {}
+  public handleRightClick(indices: Indices): void {
+    if (this.selectedUnit) {
+      const entity: EntityType = this.selectedUnit.getEntity();
+      this.sendMovingRequest(entity, indices);
+      this.moveResponse();
+    }
+  }
 
   public handleMouseMove(mousePos: Position, cameraScroll: Position): void {
     this.hoverObject(mousePos, cameraScroll, "units");
@@ -67,6 +73,23 @@ export class UnitManager extends Manager {
         properties: SoldierPropertyType;
       }) => {
         this.createUnit(entity, properties);
+      }
+    );
+  }
+
+  private sendMovingRequest(entity: EntityType, goal: Indices): void {
+    ServerHandler.sendMessage("game:unit-move", {
+      entity,
+      goal,
+    });
+  }
+
+  private moveResponse() {
+    ServerHandler.receiveMessage(
+      "game:unit-move",
+      ({ entity, path }: { entity: EntityType; path: Indices[] }) => {
+        const unit: Unit = StateManager.getUnit(entity);
+        console.log(unit, path);
       }
     );
   }

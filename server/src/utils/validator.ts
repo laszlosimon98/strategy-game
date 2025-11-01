@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 
 import { Indices } from "@/utils/indices";
 import { settings } from "@/settings";
+import { EntityType } from "@/types/state.types";
 
 export class Validator {
   private constructor() {}
@@ -15,10 +16,7 @@ export class Validator {
     );
   }
 
-  public static canPlayerDemolishOwnBuilding(
-    socket: Socket,
-    owner: string
-  ): boolean {
-    return socket.id === owner;
+  public static verifyOwner(socket: Socket, entity: EntityType): boolean {
+    return socket.id === entity.data.owner;
   }
 }

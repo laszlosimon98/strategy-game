@@ -3,12 +3,13 @@ import { ServerHandler } from "@/server/serverHandler";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
-import { UnitsType } from "@/types/units.types";
 import { Socket } from "socket.io";
 import { Manager } from "@/manager/manager";
 import { Soldier } from "@/game/units/soldier";
 import { unitRegister } from "@/game/unitRegister";
 import { Indices } from "@/utils/indices";
+import { Cell } from "@/game/cell";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 
 export class UnitManager extends Manager {
   protected constructor() {
@@ -23,13 +24,17 @@ export class UnitManager extends Manager {
     const unitName: string = entity.data.name;
     const room: string = ServerHandler.getCurrentRoom(socket);
 
-    if (this.hasWeapons(socket, room, unitName)) {
+    if (this.storageHasWeapons(socket, room, unitName)) {
       const { i, j } = entity.data.indices;
       entity.data.indices = new Indices(i + 1, j);
+
+      const cell: Cell = StateManager.getWorld(socket)[i + 1][j];
+      cell.addObstacle(ObstacleEnum.Unit);
+
       const soldier = this.creator<Soldier>(unitRegister[unitName], entity);
-      const room: string = ServerHandler.getCurrentRoom(socket);
-      state[room].players[socket.id].units.push(soldier);
       soldier.setOwner(entity.data.owner);
+
+      state[room].players[socket.id].units.push(soldier);
 
       return soldier;
     } else {
@@ -42,7 +47,7 @@ export class UnitManager extends Manager {
     state: StateType,
     entity: EntityType
   ): Unit[] {
-    return [...state[room].players[entity.data.owner].units];
+    return state[room].players[entity.data.owner].units;
   }
 
   public static setUnits(
@@ -87,7 +92,7 @@ export class UnitManager extends Manager {
     }
   }
 
-  private static hasWeapons(
+  private static storageHasWeapons(
     socket: Socket,
     room: string,
     name: string

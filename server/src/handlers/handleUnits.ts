@@ -7,8 +7,45 @@ import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Soldier } from "@/game/units/soldier";
+import { Cell } from "@/game/cell";
+import { AStar } from "@/pathFind/astar";
+import { Indices } from "@/utils/indices";
 
 export const handleUnits = (io: Server, socket: Socket) => {
+  const calculatePath = (
+    entity: EntityType,
+    start: Indices,
+    end: Indices
+  ): Indices[] | undefined => {
+    if (!Validator.verifyOwner(socket, entity)) {
+      ServerHandler.sendMessageToSender(socket, "game:info", {
+        message: "Csak saját egységet irányítható!",
+      });
+
+      return;
+    }
+
+    const world: Cell[][] = StateManager.getWorld(socket);
+
+    const startCell: Cell = world[start.i][start.j];
+    const endCell: Cell = world[end.i][end.j];
+    const path: Indices[] = AStar.getPath(startCell, endCell);
+
+    return path;
+  };
+
+  const setUnitStartIndices = (entity: EntityType): Unit | undefined => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+
+    const indices = entity.data.indices;
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+
+    if (!unit) return undefined;
+    unit.setIndices(indices);
+
+    return unit;
+  };
+
   const calculateNewStorageValues = (room: string, name: string): void => {
     if (name === "knight") {
       StateManager.updateStorageItem(socket, room, "weapons", "sword", -1);
@@ -18,7 +55,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  const unitCreate = ({ entity }: { entity: EntityType }): void => {
+  const soldierCreate = ({ entity }: { entity: EntityType }): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
@@ -54,10 +91,65 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   *
+   * @param {Object} entity
+   * @returns
+   */
+  const unitUpdatePosition = ({ entity }: { entity: EntityType }): void => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+
+    const position = entity.data.position;
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+
+    if (!unit) return;
+    unit.setPosition(position);
+
+    ServerHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:unit-update-position",
+      { entity }
+    );
+  };
+
+  const unitMove = ({
+    entity,
+    goal,
+  }: {
+    entity: EntityType;
+    goal: Indices;
+  }): void => {
+    console.log(entity, goal);
+    const unit: Unit | undefined = setUnitStartIndices(entity);
+
+    if (!unit) return;
+
+    const path: Indices[] | undefined = calculatePath(
+      entity,
+      unit.getIndices(),
+      goal
+    );
+
+    if (!path) return;
+    console.log("Path: ", path);
+
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-move", {
+      entity,
+      path,
+    });
+  };
+  const unitReachedDestination = ({ entity }: { entity: EntityType }): void => {
+    setUnitStartIndices(entity);
+  };
+
   const deleteUnit = (unit: Unit): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     StateManager.deleteUnit(room, unit);
   };
 
-  socket.on("game:soldier-create", unitCreate);
+  socket.on("game:soldier-create", soldierCreate);
+  socket.on("game:unit-move", unitMove);
+  socket.on("game:unit-update-position", unitUpdatePosition);
+  socket.on("game:unit-reached-destination", unitReachedDestination);
 };
