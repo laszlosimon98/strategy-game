@@ -7,6 +7,8 @@ import { Position } from "@/utils/position";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
 import { calculatePositionFromIndices } from "@/utils/utils";
+import type { Cell } from "@/game/world/cell";
+import { UnitStates } from "@/enums/unitsState";
 
 export class UnitHandler extends Manager {
   private selectedUnit: Unit | undefined;
@@ -89,7 +91,16 @@ export class UnitHandler extends Manager {
       "game:unit-move",
       ({ entity, path }: { entity: EntityType; path: Indices[] }) => {
         const unit: Unit = StateManager.getUnit(entity);
-        console.log(unit, path);
+        const world: Cell[][] = StateManager.getWorld();
+        const calculatePath: Cell[] = [];
+
+        path.forEach((p) => {
+          const { i, j } = p;
+          calculatePath.push(world[i][j]);
+        });
+
+        unit.setPath(calculatePath);
+        unit.setState(UnitStates.Walking);
       }
     );
   }

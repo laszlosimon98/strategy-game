@@ -81,6 +81,10 @@ export abstract class Unit extends Entity implements RendererInterface {
 
     if (this.unitState !== UnitStates.Idle) {
       this.playAnimation(dt);
+
+      if (this.unitState === UnitStates.Walking) {
+        this.move(dt);
+      }
     }
 
     if (this.unitState === UnitStates.Idle) {
@@ -90,22 +94,33 @@ export abstract class Unit extends Entity implements RendererInterface {
         this.facingTimer.activate();
       }
     }
-
-    if (this.unitState === UnitStates.Walking) {
-      this.move(dt);
-    }
   }
 
   public getDimension(): Dimension {
     return this.dimension;
   }
 
-  public setUnitState(unitState: UnitStates): void {
-    this.unitState = unitState;
+  public setState(newState: UnitStates): void {
+    this.unitState = newState;
+
+    const name: string = this.entity.data.name;
+    const owner: string = this.entity.data.owner;
+    const color: string = StateManager.getPlayerColor(owner);
+
+    const entity: EntityType = {
+      data: {
+        ...this.entity.data,
+        url: StateManager.getImages("units", color, `${name}${this.unitState}`)
+          .url,
+      },
+    };
+
+    this.setEntity(entity);
+    this.updateImage();
   }
 
   public setPath(path: Cell[]): void {
-    this.path = [...path];
+    this.path = path;
   }
 
   private reset(): void {
@@ -123,7 +138,7 @@ export abstract class Unit extends Entity implements RendererInterface {
       const { x: endX, y: endY }: Position = nextPos;
 
       let dirVector: Vector = new Vector(endX - startX, endY - startY);
-      const distance = dirVector.getDistance();
+      const distance = dirVector.magnitude();
       const maxMove = settings.speed.unit * dt;
       let newPos: Position;
 
@@ -135,7 +150,11 @@ export abstract class Unit extends Entity implements RendererInterface {
         newPos = nextPos;
         this.path.shift();
       }
+
+      this.setPosition(newPos);
       // ySort(StateManager.getSoldiers(ServerHandler.getId()));
+    } else {
+      this.reset();
     }
   }
 
@@ -191,7 +210,7 @@ export abstract class Unit extends Entity implements RendererInterface {
     const nextCell: Cell = this.path[1];
 
     const indices: Indices = await ServerHandler.receiveAsyncMessage(
-      "game:unitMoving"
+      "game:unit-move"
     );
 
     this.setIndices(indices);
@@ -219,23 +238,4 @@ export abstract class Unit extends Entity implements RendererInterface {
   //   const nextCell: Cell = this.path[1];
   //   this.calculateFacing(currentCell, nextCell);
   // }
-
-  private setState(newState: UnitStates): void {
-    this.unitState = newState;
-
-    const name: string = this.entity.data.name;
-    const owner: string = this.entity.data.owner;
-    const color: string = StateManager.getPlayerColor(owner);
-
-    const entity: EntityType = {
-      data: {
-        ...this.entity.data,
-        url: StateManager.getImages("units", color, `${name}${this.unitState}`)
-          .url,
-      },
-    };
-
-    this.setEntity(entity);
-    this.updateImage();
-  }
 }

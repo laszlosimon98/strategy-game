@@ -61,7 +61,9 @@ export class Vector extends Position {
     return Vector.zero();
   }
 
-  public getDistance(): number {
-    return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+  public getDistance(other: Vector): number {
+    return Math.sqrt(
+      Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2)
+    );
   }
 }
