@@ -141,6 +141,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
     goal: Indices;
   }): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room || StateManager.isPlayerLostTheGame(socket, entity)) return;
+
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
 
     if (!unit) return;

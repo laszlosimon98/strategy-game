@@ -43,7 +43,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
   };
 
   const build = (entity: EntityType): void => {
-    if (!Validator.validateIndices(entity.data.indices)) {
+    if (
+      !Validator.validateIndices(entity.data.indices) ||
+      StateManager.isPlayerLostTheGame(socket, entity)
+    ) {
       return;
     }
     const room: string = ServerHandler.getCurrentRoom(socket);

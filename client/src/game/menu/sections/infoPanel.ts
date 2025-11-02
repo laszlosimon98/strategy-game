@@ -72,7 +72,9 @@ export class InfoPanel extends Section {
   }
 
   public update(dt: number, mousePos: Position): void {
-    this.deleteButton.update(dt, mousePos);
+    if (this.infoPanelData instanceof Building) {
+      this.deleteButton.update(dt, mousePos);
+    }
 
     if (this.infoPanelData) {
       if (this.infoPanelData instanceof Building) {
@@ -108,7 +110,10 @@ export class InfoPanel extends Section {
   }
 
   public handleClick(mousePos: Position): void {
-    if (this.deleteButton.isClicked(mousePos.x, mousePos.y)) {
+    if (
+      this.infoPanelData instanceof Building &&
+      this.deleteButton.isClicked(mousePos.x, mousePos.y)
+    ) {
       StateManager.setGameMenuState(StateManager.getPrevMenuState());
       ServerHandler.sendMessage(
         "game:destroy",
