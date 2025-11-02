@@ -11,7 +11,6 @@ import { UnitStates } from "@/enums/unitsState";
 
 export class UnitHandler extends Manager {
   private selectedUnit: Unit | undefined;
-  private dt: number = 0;
 
   public constructor() {
     super();
@@ -24,7 +23,6 @@ export class UnitHandler extends Manager {
 
   public update(dt: number, cameraScroll: Position): void {
     super.update(dt, cameraScroll, "units");
-    this.dt = dt;
   }
 
   public handleLeftClick(
@@ -47,8 +45,7 @@ export class UnitHandler extends Manager {
 
   public handleRightClick(indices: Indices): void {
     if (this.selectedUnit) {
-      const entity: EntityType = this.selectedUnit.getEntity();
-      this.sendMovingRequest(entity, indices);
+      this.sendMovingRequest(this.selectedUnit.getEntity(), indices);
     }
   }
 
@@ -58,9 +55,6 @@ export class UnitHandler extends Manager {
 
   public createUnit(entity: EntityType, properties: SoldierPropertyType): void {
     const unit: Soldier = this.creator<Soldier>(Soldier, entity, properties);
-    entity.data.position = calculatePositionFromIndices(entity.data.indices);
-
-    this.setObjectPosition(unit, entity.data.position);
     StateManager.createUnit(entity.data.owner, unit);
   }
 

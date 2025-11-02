@@ -8,10 +8,10 @@ import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Soldier } from "@/game/units/soldier";
 import { Cell } from "@/game/cell";
-import { AStar } from "@/pathFind/astar";
+import { AStar } from "@/game/pathFind/astar";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
-import { settings } from "@/settings";
+import { gameLoop } from "@/game/loop/gameLoop";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -23,7 +23,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
       ServerHandler.sendMessageToSender(socket, "game:info", {
         message: "Csak saját egységet irányítható!",
       });
-
       return;
     }
 
@@ -144,7 +143,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
     entity: EntityType;
     goal: Indices;
   }): void => {
-    unitPrepareForMovement(entity, goal);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+
+    if (!unit) return;
+
+    unitPrepareForMovement(unit.getEntity(), goal);
 
     ServerHandler.sendMessageToEveryOne(
       io,
@@ -157,35 +161,23 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const unitMoving = (entity: EntityType): void => {
-    console.log("unitmoving");
     const room: string = ServerHandler.getCurrentRoom(socket);
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
     if (!unit) return;
 
-    let lastTime = Date.now();
-    const tickRate = 1000 / settings.fps;
-
-    const t = setInterval(() => {
-      const now = Date.now();
-      const dt = (now - lastTime) / 1000;
-      lastTime = now;
+    gameLoop((dt, interval) => {
       const position: Position | null = unit.move(dt);
-
-      if (position === null) {
-        ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-moving", {
-          entity,
-          position,
-        });
-
-        clearInterval(t);
-        return;
-      }
 
       ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-moving", {
         entity,
         position,
       });
-    }, tickRate);
+
+      if (position === null) {
+        clearInterval(interval);
+        return;
+      }
+    });
   };
 
   const unitReachedDestination = ({ entity }: { entity: EntityType }): void => {
@@ -193,7 +185,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
-    const unit: Unit | undefined = setUnitIndices(entity);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
     if (!unit) return;
 
     const facing = unit.calculateNewIdleFacing();

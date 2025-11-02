@@ -1,5 +1,5 @@
 import { Cell } from "@/game/cell";
-import { AStar } from "@/pathFind/astar";
+import { AStar } from "@/game/pathFind/astar";
 import { Indices } from "@/utils/indices";
 
 export class PathFinder {

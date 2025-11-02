@@ -45,8 +45,7 @@ export class Unit extends Entity {
 
       if (distance > maxMove) {
         const moveVector: Vector = dirVector.normalize().mult(maxMove);
-        const pos: Position = this.getPosition();
-        newPos = pos.add(moveVector as Position);
+        newPos = currentPos.add(moveVector as Position);
       } else {
         newPos = nextPos;
         this.path.shift();
@@ -60,7 +59,7 @@ export class Unit extends Entity {
   }
 
   private initDirections(): Record<string, number> {
-    const assetSize: number = 64;
+    const assetSize: number = settings.assetSize;
 
     const result: Record<string, number> = {
       DOWN: assetSize * 0,
@@ -105,8 +104,8 @@ export class Unit extends Entity {
   } {
     const currentPos: Position = this.getPosition();
     const nextPos: Position = new Position(
-      this.path[1].getUnitPos().x - 64 / 2,
-      this.path[1].getUnitPos().y - 64
+      this.path[1].getUnitPos().x - settings.assetSize / 2,
+      this.path[1].getUnitPos().y - settings.assetSize
     );
 
     return {

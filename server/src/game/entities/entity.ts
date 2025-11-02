@@ -26,11 +26,10 @@ export abstract class Entity {
   }
 
   public setPosition(position: Position): void {
-    this.entity.data.position = position;
+    this.entity.data.position = new Position(position.x, position.y);
   }
 
   public getPosition(): Position {
-    const pos = this.entity.data.position;
-    return new Position(pos.x, pos.y);
+    return this.entity.data.position;
   }
 }

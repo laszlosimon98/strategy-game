@@ -9,6 +9,7 @@ export type Settings = {
   mapSeed: string;
   mapSize: number;
   cellSize: number;
+  assetSize: number;
   unitSpeed: number;
   startPositions: Indices[];
   fps: number;

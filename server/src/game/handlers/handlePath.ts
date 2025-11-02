@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { ServerHandler } from "@/server/serverHandler";
 import { Cell } from "@/game/cell";
 import { Unit } from "@/game/units/unit";
-import { PathFinder } from "@/pathFind/pathFinder";
+import { PathFinder } from "@/game/pathFind/pathFinder";
 import { Indices } from "@/utils/indices";
 import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
