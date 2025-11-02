@@ -39,6 +39,7 @@ export class StateManager {
       healingTimer: 0,
       productionTime: 0,
       isProductionBuilding: false,
+      facing: 0,
     },
   };
 

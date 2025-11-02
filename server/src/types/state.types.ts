@@ -31,6 +31,7 @@ export type EntityType = {
     attackTimer: number | null;
     healingTimer: number | null;
     isProductionBuilding: boolean;
+    facing: number;
   };
 };
 

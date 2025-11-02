@@ -35,20 +35,17 @@ export const handleUnits = (io: Server, socket: Socket) => {
     return path;
   };
 
-  const setUnitIndices = (entity: EntityType): Unit | undefined => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+  // const setUnitIndices = (entity: EntityType): Unit | undefined => {
 
-    const indices = entity.data.indices;
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+  //   if (!unit) return;
+  //   unit.setIndices(indices);
 
-    if (!unit) return;
-    unit.setIndices(indices);
-
-    return unit;
-  };
+  //   return unit;
+  // };
 
   const unitPrepareForMovement = (entity: EntityType, goal: Indices): void => {
-    const unit: Unit | undefined = setUnitIndices(entity);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
     if (!unit) return;
 
     const path: Indices[] | undefined = calculatePath(
@@ -166,22 +163,21 @@ export const handleUnits = (io: Server, socket: Socket) => {
     if (!unit) return;
 
     gameLoop((dt, interval) => {
-      const position: Position | null = unit.move(dt);
+      unit.move(dt);
 
       ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-moving", {
-        entity,
-        position,
+        entity: unit.getEntity(),
       });
 
-      if (position === null) {
+      if (!unit.isMoving()) {
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-stop", {
+          entity: unit.getEntity(),
+        });
+
         clearInterval(interval);
         return;
       }
     });
-  };
-
-  const unitReachedDestination = ({ entity }: { entity: EntityType }): void => {
-    setUnitIndices(entity);
   };
 
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
@@ -189,11 +185,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
     if (!unit) return;
 
-    const facing = unit.calculateNewIdleFacing();
+    unit.calculateNewIdleFacing();
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-idle-facing", {
-      entity,
-      facing,
+      entity: unit.getEntity(),
     });
   };
 
@@ -204,7 +199,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   socket.on("game:soldier-create", soldierCreate);
   socket.on("game:unit-start-movement", unitStartMovement);
-  socket.on("game:unit-update-position", unitUpdatePosition);
-  socket.on("game:unit-reached-destination", unitReachedDestination);
+  // socket.on("game:unit-update-position", unitUpdatePosition);
+  // socket.on("game:unit-reached-destination", unitReachedDestination);
   socket.on("game:unit-idle-facing", unitChangeFacing);
 };

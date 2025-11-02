@@ -8,7 +8,6 @@ import { Vector } from "@/utils/vector";
 
 export class Unit extends Entity {
   private path: Cell[];
-  private facing: string;
   private directions: Record<string, number>;
 
   public constructor(entity: EntityType) {
@@ -16,24 +15,27 @@ export class Unit extends Entity {
     this.path = [];
 
     this.directions = this.initDirections();
-    this.facing = getRandomElementFromArray<string>(
-      Object.keys(this.directions)
-    );
   }
 
-  public calculateNewIdleFacing(): number {
-    return this.directions[
-      getRandomElementFromArray<string>(Object.keys(this.directions))
-    ];
+  public calculateNewIdleFacing(): void {
+    this.entity.data.facing =
+      this.directions[
+        getRandomElementFromArray<string>(Object.keys(this.directions))
+      ];
   }
 
   public setPath(path: Cell[]): void {
     this.path = path;
   }
 
-  public move(dt: number): Position | null {
+  public isMoving(): boolean {
+    return this.path.length > 0;
+  }
+
+  public move(dt: number): void {
     if (this.path.length > 1) {
       const { currentPos, nextPos } = this.calculateCurrentAndNextPositions();
+      this.calculateFacing(this.path[0], this.path[1]);
 
       const { x: startX, y: startY }: Position = currentPos;
       const { x: endX, y: endY }: Position = nextPos;
@@ -49,12 +51,18 @@ export class Unit extends Entity {
       } else {
         newPos = nextPos;
         this.path.shift();
+        // this.updateIndices(this.path.shift());
       }
-
       this.setPosition(newPos);
-      return newPos;
     } else {
-      return null;
+      this.path.shift();
+      // this.updateIndices(this.path.shift());
+    }
+  }
+
+  private updateIndices(cell: Cell | undefined): void {
+    if (cell) {
+      this.setIndices(cell.getIndices());
     }
   }
 
@@ -79,23 +87,27 @@ export class Unit extends Entity {
     const { i: currentI, j: currentJ } = current.getIndices();
     const { i: nextI, j: nextJ } = next.getIndices();
 
+    let facing: string = "";
+
     if (nextI < currentI && nextJ < currentJ) {
-      this.facing = "UP";
+      facing = "UP";
     } else if (nextI === currentI && nextJ < currentJ) {
-      this.facing = "UP_RIGHT";
+      facing = "UP_RIGHT";
     } else if (nextI > currentI && nextJ < currentJ) {
-      this.facing = "RIGHT";
+      facing = "RIGHT";
     } else if (nextI > currentI && nextJ === currentJ) {
-      this.facing = "DOWN_RIGHT";
+      facing = "DOWN_RIGHT";
     } else if (nextI > currentI && nextJ > currentJ) {
-      this.facing = "DOWN";
+      facing = "DOWN";
     } else if (nextI === currentI && nextJ > currentJ) {
-      this.facing = "DOWN_LEFT";
+      facing = "DOWN_LEFT";
     } else if (nextI < currentI && nextJ > currentJ) {
-      this.facing = "LEFT";
+      facing = "LEFT";
     } else if (nextI < currentI && nextJ === currentJ) {
-      this.facing = "UP_LEFT";
+      facing = "UP_LEFT";
     }
+
+    this.entity.data.facing = this.directions[facing];
   }
 
   private calculateCurrentAndNextPositions(): {

@@ -6,7 +6,6 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
-import { calculatePositionFromIndices } from "@/utils/utils";
 import { UnitStates } from "@/enums/unitsState";
 
 export class UnitHandler extends Manager {
@@ -74,11 +73,11 @@ export class UnitHandler extends Manager {
 
     ServerHandler.receiveMessage(
       "game:unit-idle-facing",
-      ({ entity, facing }: { entity: EntityType; facing: number }) => {
+      ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
         if (!unit) return;
 
-        unit.setFacing(facing);
+        unit.setFacing(entity.data.facing);
       }
     );
 
@@ -94,22 +93,41 @@ export class UnitHandler extends Manager {
 
     ServerHandler.receiveMessage(
       "game:unit-moving",
-      ({
-        entity,
-        position,
-      }: {
-        entity: EntityType;
-        position: Position | null;
-      }) => {
+      ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
         if (!unit) return;
 
-        if (position === null) {
-          unit.reset();
-          return;
-        }
+        unit.setFacing(entity.data.facing);
 
-        unit.setPosition(position);
+        const pos: Position = new Position(
+          entity.data.position.x,
+          entity.data.position.y
+        );
+
+        const ind: Indices = new Indices(
+          entity.data.indices.i,
+          entity.data.indices.j
+        );
+
+        unit.setPosition(pos);
+        // unit.setIndices(ind);
+        // console.log(unit.getEntity().data.indices);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:unit-stop",
+      ({ entity }: { entity: EntityType }) => {
+        const unit: Unit | undefined = StateManager.getUnit(entity);
+        if (!unit) return;
+
+        const ind: Indices = new Indices(
+          entity.data.indices.i,
+          entity.data.indices.j
+        );
+
+        // unit.setIndices(ind);
+        unit.reset();
       }
     );
   }

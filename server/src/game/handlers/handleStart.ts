@@ -74,6 +74,7 @@ export const handleStart = (io: Server, socket: Socket) => {
         attackTimer: 0,
         healingTimer: 0,
         isProductionBuilding: false,
+        facing: 0,
       },
     };
 
