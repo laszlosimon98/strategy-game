@@ -86,7 +86,6 @@ export class UnitHandler extends Manager {
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
         if (!unit) return;
-        console.log(entity);
 
         unit.setState(UnitStates.Walking);
       }
