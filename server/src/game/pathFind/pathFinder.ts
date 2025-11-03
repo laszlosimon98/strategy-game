@@ -1,15 +1,18 @@
 import { Cell } from "@/game/cell";
 import { AStar } from "@/game/pathFind/astar";
+import { StateManager } from "@/manager/stateManager";
 import { Indices } from "@/utils/indices";
+import { Socket } from "socket.io";
 
 export class PathFinder {
   private constructor() {}
 
   public static getPath(
-    world: Cell[][],
+    socket: Socket,
     start: Indices,
     end: Indices
   ): Indices[] {
+    const world: Cell[][] = StateManager.getWorld(socket);
     this.resetWorld(world);
 
     const startCell: Cell = world[start.i][start.j];

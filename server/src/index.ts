@@ -8,7 +8,6 @@ import cookieParser from "cookie-parser";
 import { Loader } from "@/utils/imageLoader";
 import { handleUtils } from "@/game/handlers/handleUtils";
 import { handleBuildings } from "@/game/handlers/handleBuildings";
-import { handlePath } from "@/game/handlers/handlePath";
 import { handleStart } from "@/game/handlers/handleStart";
 import { handleUnits } from "@/game/handlers/handleUnits";
 import { handleConnection } from "@/game/handlers/handleConnection";
@@ -50,7 +49,6 @@ const onConnecton = async (socket: Socket) => {
   handleUtils(io, socket, await loadImages());
   handleConnection(io, socket);
   handleStart(io, socket);
-  handlePath(io, socket);
   handleBuildings(io, socket);
   handleUnits(io, socket);
   handleProduction(io, socket);

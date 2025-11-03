@@ -8,10 +8,10 @@ import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Soldier } from "@/game/units/soldier";
 import { Cell } from "@/game/cell";
-import { AStar } from "@/game/pathFind/astar";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { gameLoop } from "@/game/loop/gameLoop";
+import { PathFinder } from "@/game/pathFind/pathFinder";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -25,27 +25,15 @@ export const handleUnits = (io: Server, socket: Socket) => {
       });
       return;
     }
-
-    const world: Cell[][] = StateManager.getWorld(socket);
-
-    const startCell: Cell = world[start.i][start.j];
-    const endCell: Cell = world[end.i][end.j];
-    const path: Indices[] = AStar.getPath(startCell, endCell);
+    const path: Indices[] = PathFinder.getPath(socket, start, end);
 
     return path;
   };
 
-  // const setUnitIndices = (entity: EntityType): Unit | undefined => {
-
-  //   if (!unit) return;
-  //   unit.setIndices(indices);
-
-  //   return unit;
-  // };
-
   const unitPrepareForMovement = (entity: EntityType, goal: Indices): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
+
     if (!unit) return;
 
     const path: Indices[] | undefined = calculatePath(
@@ -116,23 +104,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
    * @param {Object} entity
    * @returns
    */
-  const unitUpdatePosition = ({ entity }: { entity: EntityType }): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-
-    const position: Position = entity.data.position;
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
-
-    if (!unit) return;
-    unit.setPosition(position);
-
-    ServerHandler.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:unit-update-position",
-      { entity }
-    );
-  };
-
   const unitStartMovement = ({
     entity,
     goal,
@@ -184,6 +155,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
     if (!unit) return;
 

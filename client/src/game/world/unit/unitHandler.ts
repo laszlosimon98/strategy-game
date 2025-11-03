@@ -86,6 +86,7 @@ export class UnitHandler extends Manager {
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
         if (!unit) return;
+        console.log(entity);
 
         unit.setState(UnitStates.Walking);
       }
@@ -110,8 +111,7 @@ export class UnitHandler extends Manager {
         );
 
         unit.setPosition(pos);
-        // unit.setIndices(ind);
-        // console.log(unit.getEntity().data.indices);
+        unit.setIndices(ind);
       }
     );
 
@@ -126,7 +126,7 @@ export class UnitHandler extends Manager {
           entity.data.indices.j
         );
 
-        // unit.setIndices(ind);
+        unit.setIndices(ind);
         unit.reset();
       }
     );

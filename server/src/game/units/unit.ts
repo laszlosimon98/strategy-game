@@ -50,13 +50,11 @@ export class Unit extends Entity {
         newPos = currentPos.add(moveVector as Position);
       } else {
         newPos = nextPos;
-        this.path.shift();
-        // this.updateIndices(this.path.shift());
+        this.updateIndices(this.path.shift());
       }
       this.setPosition(newPos);
     } else {
-      this.path.shift();
-      // this.updateIndices(this.path.shift());
+      this.updateIndices(this.path.shift());
     }
   }
 
