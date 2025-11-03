@@ -31,17 +31,23 @@ export class UnitManager extends Manager {
       entity.data.indices = new Indices(i + 1, j);
 
       const cell: Cell = StateManager.getWorld(socket)[i + 1][j];
-      // cell.addObstacle(ObstacleEnum.Unit);
+      cell.addObstacle(ObstacleEnum.Unit);
 
-      const soldier = this.creator<Soldier>(unitRegister[unitName], entity);
-      soldier.setOwner(entity.data.owner);
+      const soldier = this.creator<Soldier>(
+        unitRegister[unitName],
+        entity,
+        socket
+      );
 
       const cellPos = cell.getUnitPos();
       const soldierPos: Position = new Position(
         cellPos.x - settings.assetSize / 2,
         cellPos.y - settings.assetSize
       );
+
+      soldier.setOwner(entity.data.owner);
       soldier.setPosition(soldierPos);
+      soldier.setIndices(new Indices(i + 1, j));
 
       state[room].players[socket.id].units.push(soldier);
 

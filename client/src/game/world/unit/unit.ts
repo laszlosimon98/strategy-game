@@ -17,6 +17,7 @@ export abstract class Unit extends Entity implements RendererInterface {
   private facing: number;
   private unitState: UnitStates;
   private facingTimer: Timer;
+  private checkSurroundingsTimer: Timer;
   private animationCounter: number;
 
   public constructor(entity: EntityType) {
@@ -44,7 +45,13 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.facingTimer = new Timer(getRandomNumberFromInterval(2000, 5000), () =>
       this.newFacingRequets()
     );
+
+    this.checkSurroundingsTimer = new Timer(1000, () =>
+      this.checkSurroundings()
+    );
+
     this.facingTimer.activate();
+    this.checkSurroundingsTimer.activate();
   }
 
   public draw(): void {
@@ -72,6 +79,10 @@ export abstract class Unit extends Entity implements RendererInterface {
       if (this.facingTimer.isTimerActive()) {
         this.facingTimer.update();
       }
+    }
+
+    if (this.checkSurroundingsTimer.isTimerActive()) {
+      this.checkSurroundingsTimer.update();
     }
   }
 
@@ -122,5 +133,12 @@ export abstract class Unit extends Entity implements RendererInterface {
 
   private newFacingRequets(): void {
     ServerHandler.sendMessage("game:unit-idle-facing", { entity: this.entity });
+  }
+
+  private checkSurroundings(): void {
+    ServerHandler.sendMessage("game:unit-check-sorroundings", {
+      entity: this.entity,
+    });
+    this.checkSurroundingsTimer.activate();
   }
 }

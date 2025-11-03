@@ -11,6 +11,7 @@ import { Cell } from "@/game/cell";
 import { Indices } from "@/utils/indices";
 import { gameLoop } from "@/game/loop/gameLoop";
 import { PathFinder } from "@/game/pathFind/pathFinder";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -31,6 +32,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   const unitPrepareForMovement = (entity: EntityType, goal: Indices): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
 
     if (!unit) return;
@@ -147,7 +149,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     if (!room) return;
-
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
     if (!unit) return;
 
@@ -158,6 +159,20 @@ export const handleUnits = (io: Server, socket: Socket) => {
     });
   };
 
+  const checkSorroundings = ({ entity }: { entity: EntityType }): void => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+    const soldier: Soldier | undefined = StateManager.getSoldier(room, entity);
+    if (!soldier) return;
+
+    const range: Cell[] = StateManager.getWorldInRange(
+      socket,
+      soldier.getIndices(),
+      soldier.getProperties().range,
+      ObstacleEnum.Unit
+    );
+  };
+
   const deleteUnit = (unit: Unit): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     StateManager.deleteUnit(room, unit);
@@ -166,4 +181,5 @@ export const handleUnits = (io: Server, socket: Socket) => {
   socket.on("game:soldier-create", soldierCreate);
   socket.on("game:unit-start-movement", unitStartMovement);
   socket.on("game:unit-idle-facing", unitChangeFacing);
+  socket.on("game:unit-check-sorroundings", checkSorroundings);
 };

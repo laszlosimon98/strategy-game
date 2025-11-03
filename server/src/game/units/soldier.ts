@@ -1,14 +1,15 @@
 import { Unit } from "@/game/units/unit";
 import { EntityType } from "@/types/state.types";
 import { PropertyType } from "@/types/units.types";
+import { Socket } from "socket.io";
 
 export class Soldier extends Unit {
   protected damage: number;
   protected health: number;
   protected range: number;
 
-  public constructor(entity: EntityType) {
-    super(entity);
+  public constructor(entity: EntityType, socket: Socket) {
+    super(entity, socket);
     this.damage = 0;
     this.health = 0;
     this.range = 0;

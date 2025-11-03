@@ -5,22 +5,27 @@ import { getRandomElementFromArray } from "@/utils/utils";
 import { Position } from "@/utils/position";
 import { settings } from "@/settings";
 import { Vector } from "@/utils/vector";
+import { StateManager } from "@/manager/stateManager";
+import { ObstacleEnum } from "@/enums/ObstacleEnum";
+import { Indices } from "@/utils/indices";
+import { Socket } from "socket.io";
 
 export class Unit extends Entity {
   private path: Cell[];
-  private directions: Record<string, number>;
+  private socket: Socket;
 
-  public constructor(entity: EntityType) {
+  public constructor(entity: EntityType, socket: Socket) {
     super(entity);
     this.path = [];
-
-    this.directions = this.initDirections();
+    this.socket = socket;
   }
 
   public calculateNewIdleFacing(): void {
     this.entity.data.facing =
-      this.directions[
-        getRandomElementFromArray<string>(Object.keys(this.directions))
+      StateManager.directions()[
+        getRandomElementFromArray<string>(
+          Object.keys(StateManager.directions())
+        )
       ];
   }
 
@@ -35,7 +40,10 @@ export class Unit extends Entity {
   public move(dt: number): void {
     if (this.path.length > 1) {
       const { currentPos, nextPos } = this.calculateCurrentAndNextPositions();
-      this.calculateFacing(this.path[0], this.path[1]);
+      this.entity.data.facing =
+        StateManager.directions()[
+          StateManager.calculateFacing(this.path[0], this.path[1])
+        ];
 
       const { x: startX, y: startY }: Position = currentPos;
       const { x: endX, y: endY }: Position = nextPos;
@@ -50,62 +58,28 @@ export class Unit extends Entity {
         newPos = currentPos.add(moveVector as Position);
       } else {
         newPos = nextPos;
-        this.updateIndices(this.path.shift());
+        this.reachedNextCell();
       }
       this.setPosition(newPos);
     } else {
-      this.updateIndices(this.path.shift());
+      this.reachedNextCell();
     }
   }
 
-  private updateIndices(cell: Cell | undefined): void {
-    if (cell) {
-      this.setIndices(cell.getIndices());
-    }
+  private reachedNextCell(): void {
+    const reachedCell: Cell | undefined = this.path.shift();
+    this.updateIndices(reachedCell);
   }
 
-  private initDirections(): Record<string, number> {
-    const assetSize: number = settings.assetSize;
+  private updateIndices(nextCell: Cell | undefined): void {
+    if (nextCell) {
+      const { i, j }: Indices = this.entity.data.indices;
+      const currentcell: Cell = StateManager.getWorld(this.socket)[i][j];
+      currentcell.removeObstacle(ObstacleEnum.Unit);
 
-    const result: Record<string, number> = {
-      DOWN: assetSize * 0,
-      DOWN_LEFT: assetSize * 1,
-      LEFT: assetSize * 2,
-      UP_LEFT: assetSize * 3,
-      UP: assetSize * 4,
-      UP_RIGHT: assetSize * 5,
-      RIGHT: assetSize * 6,
-      DOWN_RIGHT: assetSize * 7,
-    };
-
-    return result;
-  }
-
-  private calculateFacing(current: Cell, next: Cell): void {
-    const { i: currentI, j: currentJ } = current.getIndices();
-    const { i: nextI, j: nextJ } = next.getIndices();
-
-    let facing: string = "";
-
-    if (nextI < currentI && nextJ < currentJ) {
-      facing = "UP";
-    } else if (nextI === currentI && nextJ < currentJ) {
-      facing = "UP_RIGHT";
-    } else if (nextI > currentI && nextJ < currentJ) {
-      facing = "RIGHT";
-    } else if (nextI > currentI && nextJ === currentJ) {
-      facing = "DOWN_RIGHT";
-    } else if (nextI > currentI && nextJ > currentJ) {
-      facing = "DOWN";
-    } else if (nextI === currentI && nextJ > currentJ) {
-      facing = "DOWN_LEFT";
-    } else if (nextI < currentI && nextJ > currentJ) {
-      facing = "LEFT";
-    } else if (nextI < currentI && nextJ === currentJ) {
-      facing = "UP_LEFT";
+      this.setIndices(nextCell.getIndices());
+      nextCell.addObstacle(ObstacleEnum.Unit);
     }
-
-    this.entity.data.facing = this.directions[facing];
   }
 
   private calculateCurrentAndNextPositions(): {

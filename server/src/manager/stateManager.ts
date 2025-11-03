@@ -317,12 +317,66 @@ export class StateManager {
     return UnitManager.getUnit(room, this.state, entity);
   }
 
+  public static getSoldier(
+    room: string,
+    entity: EntityType
+  ): Soldier | undefined {
+    const unit: Unit | undefined = this.getUnit(room, entity);
+    if (!unit) return;
+
+    if (unit instanceof Soldier) return unit;
+  }
+
   public static getUnitIndex(room: string, entity: EntityType): number {
     return UnitManager.getUnitIndex(room, this.state, entity);
   }
 
   public static deleteUnit(room: string, unit: Unit): void {
     UnitManager.deleteUnit(room, this.state, unit);
+  }
+
+  public static directions(): Record<string, number> {
+    const assetSize: number = settings.assetSize;
+
+    const result: Record<string, number> = {
+      DOWN: assetSize * 0,
+      DOWN_LEFT: assetSize * 1,
+      LEFT: assetSize * 2,
+      UP_LEFT: assetSize * 3,
+      UP: assetSize * 4,
+      UP_RIGHT: assetSize * 5,
+      RIGHT: assetSize * 6,
+      DOWN_RIGHT: assetSize * 7,
+    };
+
+    return result;
+  }
+
+  public static calculateFacing(current: Cell, next: Cell): string {
+    const { i: currentI, j: currentJ } = current.getIndices();
+    const { i: nextI, j: nextJ } = next.getIndices();
+
+    let facing: string = "";
+
+    if (nextI < currentI && nextJ < currentJ) {
+      facing = "UP";
+    } else if (nextI === currentI && nextJ < currentJ) {
+      facing = "UP_RIGHT";
+    } else if (nextI > currentI && nextJ < currentJ) {
+      facing = "RIGHT";
+    } else if (nextI > currentI && nextJ === currentJ) {
+      facing = "DOWN_RIGHT";
+    } else if (nextI > currentI && nextJ > currentJ) {
+      facing = "DOWN";
+    } else if (nextI === currentI && nextJ > currentJ) {
+      facing = "DOWN_LEFT";
+    } else if (nextI < currentI && nextJ > currentJ) {
+      facing = "LEFT";
+    } else if (nextI < currentI && nextJ === currentJ) {
+      facing = "UP_LEFT";
+    }
+
+    return facing;
   }
 
   // ------------------- Storage -------------------
