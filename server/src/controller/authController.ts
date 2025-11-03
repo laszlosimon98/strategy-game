@@ -189,3 +189,13 @@ export const handleLogout = async (request: Request, response: Response) => {
     return response.json(err);
   }
 };
+
+export const handleCheck = async (request: Request, response: Response) => {
+  const cookies = request.cookies;
+
+  if (!cookies?.refreshToken) {
+    return response.status(200).send({ success: false });
+  }
+
+  return response.status(200).send({ success: true });
+};

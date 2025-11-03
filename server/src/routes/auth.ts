@@ -1,4 +1,5 @@
 import {
+  handleCheck,
   handleLogin,
   handleLogout,
   handleRefreshToken,
@@ -12,3 +13,4 @@ authRoutes.post("/register", handleRegister);
 authRoutes.post("/login", handleLogin);
 authRoutes.post("/refresh", handleRefreshToken);
 authRoutes.post("/logout", handleLogout);
+authRoutes.post("/check", handleCheck);

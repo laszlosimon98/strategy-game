@@ -24,14 +24,18 @@ const initBuildingPrices = async () => {
 
 const checkUser = async () => {
   try {
+    const check = await authApi.post("/check");
+
+    if (!check.data.success) {
+      return;
+    }
+
     const response = await authApi.post("/refresh");
 
     if (response.data) {
       StateManager.setAccessToken(response.data.accessToken);
     }
-  } catch (err) {}
 
-  try {
     const user = await userApi.get("/getUser", {
       headers: {
         Authorization: `Bearer ${StateManager.getAccessToken()}`,

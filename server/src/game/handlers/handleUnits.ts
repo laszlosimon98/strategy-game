@@ -9,7 +9,6 @@ import { StorageType } from "@/types/storage.types";
 import { Soldier } from "@/game/units/soldier";
 import { Cell } from "@/game/cell";
 import { Indices } from "@/utils/indices";
-import { Position } from "@/utils/position";
 import { gameLoop } from "@/game/loop/gameLoop";
 import { PathFinder } from "@/game/pathFind/pathFinder";
 
@@ -174,7 +173,5 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   socket.on("game:soldier-create", soldierCreate);
   socket.on("game:unit-start-movement", unitStartMovement);
-  // socket.on("game:unit-update-position", unitUpdatePosition);
-  // socket.on("game:unit-reached-destination", unitReachedDestination);
   socket.on("game:unit-idle-facing", unitChangeFacing);
 };
