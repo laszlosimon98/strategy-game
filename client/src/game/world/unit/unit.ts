@@ -98,6 +98,10 @@ export abstract class Unit extends Entity implements RendererInterface {
     this.updateImage();
   }
 
+  public getState(): UnitStates {
+    return this.unitState;
+  }
+
   public setFacing(facing: number): void {
     this.facing = facing;
     this.facingTimer.activate();

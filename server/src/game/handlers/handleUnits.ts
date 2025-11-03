@@ -118,14 +118,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
     if (!unit) return;
 
     unitPrepareForMovement(unit.getEntity(), goal);
-
-    ServerHandler.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:unit-ready-for-move",
-      { entity }
-    );
-
     setTimeout(() => unitMoving(entity), 50);
   };
 

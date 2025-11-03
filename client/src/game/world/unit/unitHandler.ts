@@ -81,21 +81,19 @@ export class UnitHandler extends Manager {
       }
     );
 
-    ServerHandler.receiveMessage(
-      "game:unit-ready-for-move",
-      ({ entity }: { entity: EntityType }) => {
-        const unit: Unit | undefined = StateManager.getUnit(entity);
-        if (!unit) return;
+    this.movement();
+  }
 
-        unit.setState(UnitStates.Walking);
-      }
-    );
-
+  private movement(): void {
     ServerHandler.receiveMessage(
       "game:unit-moving",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
         if (!unit) return;
+
+        if (unit.getState() !== UnitStates.Walking) {
+          unit.setState(UnitStates.Walking);
+        }
 
         unit.setFacing(entity.data.facing);
 
