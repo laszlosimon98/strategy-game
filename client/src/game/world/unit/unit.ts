@@ -136,9 +136,11 @@ export abstract class Unit extends Entity implements RendererInterface {
   }
 
   private checkSurroundings(): void {
-    ServerHandler.sendMessage("game:unit-check-sorroundings", {
-      entity: this.entity,
-    });
-    this.checkSurroundingsTimer.activate();
+    if (this.entity.data.owner === ServerHandler.getId()) {
+      ServerHandler.sendMessage("game:unit-check-sorroundings", {
+        entity: this.entity,
+      });
+      this.checkSurroundingsTimer.activate();
+    }
   }
 }

@@ -165,12 +165,31 @@ export const handleUnits = (io: Server, socket: Socket) => {
     const soldier: Soldier | undefined = StateManager.getSoldier(room, entity);
     if (!soldier) return;
 
-    const range: Cell[] = StateManager.getWorldInRange(
+    const unitOnCells: Cell[] = StateManager.getWorldInRange(
       socket,
       soldier.getIndices(),
       soldier.getProperties().range,
       ObstacleEnum.Unit
     );
+
+    const enemyUnits: Unit[] = unitOnCells
+      .map((cell) => {
+        const unit: Unit | null = cell.getUnit() as Unit;
+        return unit;
+      })
+      .filter((unit) => {
+        const entity: EntityType | undefined = unit?.getEntity();
+
+        if (
+          entity &&
+          entity.data.owner !== socket.id &&
+          entity.data.id !== soldier.getEntity().data.id
+        ) {
+          return unit;
+        }
+      });
+
+    console.log("Enemy: ", enemyUnits);
   };
 
   const deleteUnit = (unit: Unit): void => {

@@ -71,14 +71,16 @@ export class Unit extends Entity {
     this.updateIndices(reachedCell);
   }
 
-  private updateIndices(nextCell: Cell | undefined): void {
-    if (nextCell) {
+  private updateIndices(currentCell: Cell | undefined): void {
+    if (currentCell) {
       const { i, j }: Indices = this.entity.data.indices;
-      const currentcell: Cell = StateManager.getWorld(this.socket)[i][j];
-      currentcell.removeObstacle(ObstacleEnum.Unit);
+      const prevCell: Cell = StateManager.getWorld(this.socket)[i][j];
+      prevCell.removeObstacle(ObstacleEnum.Unit);
+      prevCell.setUnit(null);
 
-      this.setIndices(nextCell.getIndices());
-      nextCell.addObstacle(ObstacleEnum.Unit);
+      this.setIndices(currentCell.getIndices());
+      currentCell.addObstacle(ObstacleEnum.Unit);
+      currentCell.setUnit(this);
     }
   }
 
