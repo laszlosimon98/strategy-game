@@ -152,6 +152,13 @@ export class UnitHandler extends Manager {
         unit.setHealth(health);
       }
     );
+
+    ServerHandler.receiveMessage(
+      "game:unit-dies",
+      ({ entity }: { entity: EntityType }) => {
+        StateManager.removeUnit(entity);
+      }
+    );
   }
 
   private sendMovingRequest(entity: EntityType, goal: Indices): void {

@@ -100,6 +100,19 @@ export const handleUnits = (io: Server, socket: Socket) => {
     enemySoldier.takeDamage(damage);
   };
 
+  const deleteUnit = (unit: Unit): void => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    restoreCell(unit.getIndices());
+    StateManager.deleteUnit(room, unit);
+  };
+
+  const restoreCell = (indices: Indices): void => {
+    const { i, j } = indices;
+    const cell: Cell = StateManager.getWorld(socket)[i][j];
+    cell.removeObstacle(ObstacleEnum.Unit);
+    cell.setSoldier(null);
+  };
+
   const soldierCreate = ({ entity }: { entity: EntityType }): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
@@ -282,11 +295,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
         );
       }
     }
-  };
-
-  const deleteUnit = (unit: Unit): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    StateManager.deleteUnit(room, unit);
   };
 
   socket.on("game:soldier-create", soldierCreate);
