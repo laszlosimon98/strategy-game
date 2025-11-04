@@ -68,7 +68,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   const getClosestUnit = (
     entity: EntityType,
-    soldiers: Soldier[]
+    enemySoldiers: Soldier[]
   ): Soldier | undefined => {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
@@ -78,21 +78,26 @@ export const handleUnits = (io: Server, socket: Socket) => {
     ) as Soldier;
     let closestUnit: Soldier | undefined;
 
-    for (let i = 0; i < soldiers.length; ++i) {
+    for (let i = 0; i < enemySoldiers.length; ++i) {
       if (
         Math.floor(
           calculateDistance(
             currentSoldier.getPosition(),
-            soldiers[i].getPosition()
+            enemySoldiers[i].getPosition()
           )
         ) <
         currentSoldier.getProperties().range * settings.cellSize + EPSILON
       ) {
-        closestUnit = soldiers[i];
+        closestUnit = enemySoldiers[i];
       }
     }
 
     return closestUnit;
+  };
+
+  const dealDamage = (currentSoldier: Soldier, enemySoldier: Soldier): void => {
+    const damage: number = currentSoldier.getProperties().damage;
+    enemySoldier.takeDamage(damage);
   };
 
   const soldierCreate = ({ entity }: { entity: EntityType }): void => {
@@ -193,13 +198,17 @@ export const handleUnits = (io: Server, socket: Socket) => {
   const checkSorroundings = ({ entity }: { entity: EntityType }): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     if (!room) return;
-    const soldier: Soldier | undefined = StateManager.getSoldier(room, entity);
-    if (!soldier) return;
+
+    const currentSoldier: Soldier | undefined = StateManager.getSoldier(
+      room,
+      entity
+    );
+    if (!currentSoldier) return;
 
     const unitOnCells: Cell[] = StateManager.getWorldInRange(
       socket,
-      soldier.getIndices(),
-      soldier.getProperties().range,
+      currentSoldier.getIndices(),
+      currentSoldier.getProperties().range,
       ObstacleEnum.Unit
     );
 
@@ -228,8 +237,50 @@ export const handleUnits = (io: Server, socket: Socket) => {
         io,
         socket,
         "game:unit-start-attacking",
-        { entity }
+        { entity: currentSoldier.getEntity() }
       );
+
+      dealDamage(currentSoldier, closestEnemySoldier);
+
+      // send
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-take-damage", {
+        entity: closestEnemySoldier.getEntity(),
+        health: closestEnemySoldier.getProperties().health,
+      });
+
+      if (!currentSoldier.isAlive()) {
+        deleteUnit(currentSoldier);
+
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-dies", {
+          entity: currentSoldier.getEntity(),
+        });
+
+        ServerHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:unit-stop-attacking",
+          {
+            entity: closestEnemySoldier.getEntity(),
+          }
+        );
+      }
+
+      if (!closestEnemySoldier.isAlive()) {
+        deleteUnit(closestEnemySoldier);
+
+        ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-dies", {
+          entity: closestEnemySoldier.getEntity(),
+        });
+
+        ServerHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:unit-stop-attacking",
+          {
+            entity: currentSoldier.getEntity(),
+          }
+        );
+      }
     }
   };
 

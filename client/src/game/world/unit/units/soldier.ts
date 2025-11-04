@@ -10,13 +10,13 @@ export class Soldier extends Unit {
   protected properties: SoldierPropertyType;
   // protected attackTimer: Timer;
 
-  private unitHealth: number;
+  private unitStartHealth: number;
   private rangeIndicator: RangeIndicator;
 
   constructor(entity: EntityType, properties: SoldierPropertyType) {
     super(entity);
     this.properties = properties;
-    this.unitHealth = this.properties.health;
+    this.unitStartHealth = this.properties.health;
 
     // this.attackTimer = new Timer(1500, () => this.attack());
     // this.attackTimer.activate();
@@ -33,7 +33,7 @@ export class Soldier extends Unit {
     }
     super.draw();
 
-    if (this.properties.health < this.unitHealth || this.isHovered) {
+    if (this.properties.health < this.unitStartHealth || this.isHovered) {
       this.drawHealthBar();
     }
   }
@@ -57,14 +57,18 @@ export class Soldier extends Unit {
   }
 
   public getCurrentHealth(): number {
-    return this.unitHealth;
+    return this.unitStartHealth;
+  }
+
+  public setHealth(health: number): void {
+    this.properties.health = health;
   }
 
   private drawHealthBar(): void {
     ctx.save();
     ctx.fillStyle = StateManager.getPlayerColor(this.entity.data.owner);
     ctx.fillRect(
-      this.renderPos.x + this.image.width / 2 - this.unitHealth / 4,
+      this.renderPos.x + this.image.width / 2 - this.unitStartHealth / 4,
       this.renderPos.y - 3,
       Math.max(0, this.properties.health / 2),
       7

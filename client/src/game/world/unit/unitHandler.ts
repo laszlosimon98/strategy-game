@@ -140,6 +140,18 @@ export class UnitHandler extends Manager {
         unit.setState(UnitStates.Attacking);
       }
     );
+
+    ServerHandler.receiveMessage(
+      "game:unit-take-damage",
+      ({ entity, health }: { entity: EntityType; health: number }) => {
+        const unit: Soldier | undefined = StateManager.getUnit(
+          entity
+        ) as Soldier;
+        if (!unit) return;
+
+        unit.setHealth(health);
+      }
+    );
   }
 
   private sendMovingRequest(entity: EntityType, goal: Indices): void {
