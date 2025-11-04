@@ -65,6 +65,29 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  const getClosestUnit = (entity: EntityType, soldiers: Soldier[]): Soldier => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+
+    const currentSoldier: Soldier = StateManager.getSoldier(
+      room,
+      entity
+    ) as Soldier;
+    let closestUnit: Soldier = soldiers[0] as Soldier;
+
+    for (let i = 1; i < soldiers.length; ++i) {
+      if (
+        calculateDistance(
+          currentSoldier.getPosition(),
+          soldiers[i].getPosition()
+        ) < currentSoldier.getProperties().range
+      ) {
+        closestUnit = soldiers[i];
+      }
+    }
+
+    return closestUnit;
+  };
+
   const soldierCreate = ({ entity }: { entity: EntityType }): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
@@ -185,6 +208,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
           return soldier;
         }
       });
+
+    let closestEnemySoldier: Soldier | undefined;
+
+    if (enemySoldiers.length > 0) {
+      closestEnemySoldier = getClosestUnit(entity, enemySoldiers);
+    }
   };
 
   const deleteUnit = (unit: Unit): void => {

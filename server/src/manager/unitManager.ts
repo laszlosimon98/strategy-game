@@ -32,7 +32,7 @@ export class UnitManager extends Manager {
 
       const cell: Cell = StateManager.getWorld(socket)[i + 1][j];
 
-      const soldier = this.creator<Soldier>(
+      const soldier: Soldier = this.creator<Soldier>(
         unitRegister[unitName],
         entity,
         socket
@@ -49,7 +49,7 @@ export class UnitManager extends Manager {
       soldier.setIndices(new Indices(i + 1, j));
 
       cell.addObstacle(ObstacleEnum.Unit);
-      cell.setUnit(soldier);
+      cell.setSoldier(soldier);
 
       state[room].players[socket.id].units.push(soldier);
 
