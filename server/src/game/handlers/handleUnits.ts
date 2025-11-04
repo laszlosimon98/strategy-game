@@ -12,6 +12,7 @@ import { Indices } from "@/utils/indices";
 import { gameLoop } from "@/game/loop/gameLoop";
 import { PathFinder } from "@/game/pathFind/pathFinder";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
+import { calculateDistance } from "@/utils/utils";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -172,24 +173,18 @@ export const handleUnits = (io: Server, socket: Socket) => {
       ObstacleEnum.Unit
     );
 
-    const enemyUnits: Unit[] = unitOnCells
+    const enemySoldiers: Soldier[] = unitOnCells
       .map((cell) => {
-        const unit: Unit | null = cell.getUnit() as Unit;
-        return unit;
+        const soldier: Soldier = cell.getSoldier() as Soldier;
+        return soldier;
       })
-      .filter((unit) => {
-        const entity: EntityType | undefined = unit?.getEntity();
+      .filter((soldier) => {
+        const entity: EntityType | undefined = soldier?.getEntity();
 
-        if (
-          entity &&
-          entity.data.owner !== socket.id &&
-          entity.data.id !== soldier.getEntity().data.id
-        ) {
-          return unit;
+        if (entity && entity.data.owner !== socket.id) {
+          return soldier;
         }
       });
-
-    console.log("Enemy: ", enemyUnits);
   };
 
   const deleteUnit = (unit: Unit): void => {

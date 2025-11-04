@@ -6,7 +6,7 @@ import { TileEnum } from "@/enums/tileEnum";
 import { Position } from "@/utils/position";
 import { Vector } from "@/utils/vector";
 import { settings } from "@/settings";
-import { Unit } from "@/game/units/unit";
+import { Soldier } from "@/game/units/soldier";
 
 const priorityList: Record<ObstacleEnum, number> = {
   [ObstacleEnum.Empty]: 0,
@@ -36,7 +36,7 @@ export class Cell {
 
   private instance: Instance;
   private building: Building | null;
-  private unit: Unit | null;
+  private soldier: Soldier | null;
 
   private owner: string | null;
   private hasTowerInfluence: boolean;
@@ -51,7 +51,7 @@ export class Cell {
     this.owner = null;
     this.hasTowerInfluence = false;
     this.building = null;
-    this.unit = null;
+    this.soldier = null;
 
     this.g = 0;
     this.h = 0;
@@ -187,12 +187,12 @@ export class Cell {
     this.building = building;
   }
 
-  public getUnit(): Unit | null {
-    return this.unit;
+  public getSoldier(): Soldier | null {
+    return this.soldier;
   }
 
-  public setUnit(unit: Unit | null): void {
-    this.unit = unit;
+  public setSoldier(soldier: Soldier | null): void {
+    this.soldier = soldier;
   }
 
   public isWalkAble(): boolean {

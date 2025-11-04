@@ -10,7 +10,7 @@ import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Indices } from "@/utils/indices";
 import { Socket } from "socket.io";
 
-export class Unit extends Entity {
+export abstract class Unit extends Entity {
   private path: Cell[];
   private socket: Socket;
 
@@ -76,11 +76,12 @@ export class Unit extends Entity {
       const { i, j }: Indices = this.entity.data.indices;
       const prevCell: Cell = StateManager.getWorld(this.socket)[i][j];
       prevCell.removeObstacle(ObstacleEnum.Unit);
-      prevCell.setUnit(null);
+      const prevSoldier = prevCell.getSoldier();
+      prevCell.setSoldier(null);
 
       this.setIndices(currentCell.getIndices());
       currentCell.addObstacle(ObstacleEnum.Unit);
-      currentCell.setUnit(this);
+      currentCell.setSoldier(prevSoldier);
     }
   }
 
