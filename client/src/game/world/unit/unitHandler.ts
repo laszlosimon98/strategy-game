@@ -82,6 +82,7 @@ export class UnitHandler extends Manager {
     );
 
     this.movement();
+    this.attack();
   }
 
   private movement(): void {
@@ -125,6 +126,18 @@ export class UnitHandler extends Manager {
 
         unit.setIndices(ind);
         unit.reset();
+      }
+    );
+  }
+
+  private attack(): void {
+    ServerHandler.receiveMessage(
+      "game:unit-start-attacking",
+      ({ entity }: { entity: EntityType }) => {
+        const unit: Unit | undefined = StateManager.getUnit(entity);
+        if (!unit) return;
+
+        unit.setState(UnitStates.Attacking);
       }
     );
   }

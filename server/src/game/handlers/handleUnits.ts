@@ -214,6 +214,16 @@ export const handleUnits = (io: Server, socket: Socket) => {
     if (enemySoldiers.length > 0) {
       closestEnemySoldier = getClosestUnit(entity, enemySoldiers);
     }
+
+    // TODO: meg kell határozni, hogy merre nézen a katona (facing)
+    if (closestEnemySoldier) {
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:unit-start-attacking",
+        { entity }
+      );
+    }
   };
 
   const deleteUnit = (unit: Unit): void => {
