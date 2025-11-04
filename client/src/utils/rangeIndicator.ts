@@ -4,7 +4,6 @@ import { Position } from "@/utils/position";
 import { cartesianToIsometric, isometricToCartesian } from "@/utils/utils";
 
 export class RangeIndicator {
-  private position: Position;
   private radius: number;
   private numPoints: number = 360;
 
@@ -12,8 +11,7 @@ export class RangeIndicator {
   private circlePoints: Position[];
   private color: string | undefined;
 
-  constructor(pos: Position, radius: number, color?: string) {
-    this.position = pos;
+  constructor(radius: number, color?: string) {
     this.radius = radius * settings.size.cell;
     this.color = color;
 

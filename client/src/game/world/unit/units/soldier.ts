@@ -21,15 +21,7 @@ export class Soldier extends Unit {
     // this.attackTimer = new Timer(1500, () => this.attack());
     // this.attackTimer.activate();
 
-    this.rangeIndicator = new RangeIndicator(
-      new Position(
-        this.renderPos.x + settings.size.unit.width / 2,
-        this.renderPos.y +
-          settings.size.unit.height -
-          settings.size.unit.height / 4
-      ),
-      this.properties.range
-    );
+    this.rangeIndicator = new RangeIndicator(this.properties.range);
   }
 
   public draw(): void {

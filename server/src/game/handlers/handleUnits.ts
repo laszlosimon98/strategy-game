@@ -13,6 +13,7 @@ import { gameLoop } from "@/game/loop/gameLoop";
 import { PathFinder } from "@/game/pathFind/pathFinder";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { calculateDistance } from "@/utils/utils";
+import { EPSILON, settings } from "@/settings";
 
 export const handleUnits = (io: Server, socket: Socket) => {
   const calculatePath = (
@@ -65,21 +66,27 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  const getClosestUnit = (entity: EntityType, soldiers: Soldier[]): Soldier => {
+  const getClosestUnit = (
+    entity: EntityType,
+    soldiers: Soldier[]
+  ): Soldier | undefined => {
     const room: string = ServerHandler.getCurrentRoom(socket);
 
     const currentSoldier: Soldier = StateManager.getSoldier(
       room,
       entity
     ) as Soldier;
-    let closestUnit: Soldier = soldiers[0] as Soldier;
+    let closestUnit: Soldier | undefined;
 
-    for (let i = 1; i < soldiers.length; ++i) {
+    for (let i = 0; i < soldiers.length; ++i) {
       if (
-        calculateDistance(
-          currentSoldier.getPosition(),
-          soldiers[i].getPosition()
-        ) < currentSoldier.getProperties().range
+        Math.floor(
+          calculateDistance(
+            currentSoldier.getPosition(),
+            soldiers[i].getPosition()
+          )
+        ) <
+        currentSoldier.getProperties().range * settings.cellSize + EPSILON
       ) {
         closestUnit = soldiers[i];
       }

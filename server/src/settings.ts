@@ -1,6 +1,8 @@
 import { Indices } from "@/utils/indices";
 import type { Settings } from "@/types/setting.types";
 
+export const EPSILON: number = 10;
+
 const MAP_SIZE: number = 80;
 const START_IDX: number = 10;
 const MAX_PLAYER: number = 4;
