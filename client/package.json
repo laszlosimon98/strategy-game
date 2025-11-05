@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@faker-js/faker": "^9.0.3",
     "@types/node": "^24.3.1",
     "@types/uuid": "^10.0.0",
     "typescript": "^5.2.2",
