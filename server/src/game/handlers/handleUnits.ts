@@ -24,6 +24,15 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  const getUnitHelper = (entity: EntityType): Unit | undefined => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+    if (!unit) return;
+
+    return unit;
+  };
+
   const getClosestUnit = (
     entity: EntityType,
     enemySoldiers: Soldier[]
@@ -121,11 +130,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
       return;
     }
 
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    if (!room || StateManager.isPlayerLostTheGame(socket, entity)) return;
-
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
-    if (!unit) return;
+    const unit: Unit | undefined = getUnitHelper(entity);
+    if (!unit || StateManager.isPlayerLostTheGame(socket, entity)) return;
 
     unit.setGoal(goal);
     unit.calculatePath();
@@ -133,8 +139,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const unitMoving = (entity: EntityType): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+    const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit) return;
 
     gameLoop((dt, interval) => {
@@ -156,9 +161,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    if (!room) return;
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
+    const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit) return;
 
     unit.calculateNewIdleFacing();
