@@ -16,12 +16,14 @@ export abstract class Unit extends Entity {
   private path: Cell[];
   private socket: Socket;
   private goal: Indices;
+  private interval: NodeJS.Timeout | null;
 
   public constructor(entity: EntityType, socket: Socket) {
     super(entity);
     this.path = [];
     this.socket = socket;
     this.goal = Indices.zero();
+    this.interval = null;
   }
 
   public setGoal(goal: Indices): void {
@@ -30,6 +32,14 @@ export abstract class Unit extends Entity {
 
   public getGoal(): Indices {
     return this.goal;
+  }
+
+  public setInterval(interval: NodeJS.Timeout | null): void {
+    this.interval = interval;
+  }
+
+  public getInterval(): NodeJS.Timeout | null {
+    return this.interval;
   }
 
   public calculatePath(): void {
