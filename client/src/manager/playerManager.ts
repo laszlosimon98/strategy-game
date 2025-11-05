@@ -10,7 +10,6 @@ export class PlayerManager {
         color: players[id].color,
         buildings: [],
         units: [],
-        movingUnits: [],
         storage: players[id].storage,
       };
     });

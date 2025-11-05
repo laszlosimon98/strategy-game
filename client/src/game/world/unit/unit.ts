@@ -132,7 +132,7 @@ export abstract class Unit extends Entity implements RendererInterface {
   }
 
   private newFacingRequets(): void {
-    ServerHandler.sendMessage("game:unit-idle-facing", { entity: this.entity });
+    ServerHandler.sendMessage("game:unit-facing", { entity: this.entity });
   }
 
   private checkSurroundings(): void {

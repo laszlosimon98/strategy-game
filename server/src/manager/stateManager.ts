@@ -353,30 +353,24 @@ export class StateManager {
   }
 
   public static calculateFacing(current: Cell, next: Cell): string {
-    const { i: currentI, j: currentJ } = current.getIndices();
-    const { i: nextI, j: nextJ } = next.getIndices();
+    const { i: ci, j: cj } = current.getIndices();
+    const { i: ni, j: nj } = next.getIndices();
 
-    let facing: string = "";
+    const di = ni - ci;
+    const dj = nj - cj;
 
-    if (nextI < currentI && nextJ < currentJ) {
-      facing = "UP";
-    } else if (nextI === currentI && nextJ < currentJ) {
-      facing = "UP_RIGHT";
-    } else if (nextI > currentI && nextJ < currentJ) {
-      facing = "RIGHT";
-    } else if (nextI > currentI && nextJ === currentJ) {
-      facing = "DOWN_RIGHT";
-    } else if (nextI > currentI && nextJ > currentJ) {
-      facing = "DOWN";
-    } else if (nextI === currentI && nextJ > currentJ) {
-      facing = "DOWN_LEFT";
-    } else if (nextI < currentI && nextJ > currentJ) {
-      facing = "LEFT";
-    } else if (nextI < currentI && nextJ === currentJ) {
-      facing = "UP_LEFT";
-    }
+    const directions: Record<string, string> = {
+      "-1,-1": "UP",
+      "0,-1": "UP_RIGHT",
+      "1,-1": "RIGHT",
+      "1,0": "DOWN_RIGHT",
+      "1,1": "DOWN",
+      "0,1": "DOWN_LEFT",
+      "-1,1": "LEFT",
+      "-1,0": "UP_LEFT",
+    };
 
-    return facing;
+    return directions[`${Math.sign(di)},${Math.sign(dj)}`] ?? "";
   }
 
   // ------------------- Storage -------------------

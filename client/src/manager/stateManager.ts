@@ -186,7 +186,6 @@ export class StateManager {
   public static playerLeft(id: string): void {
     const player = this.state.game.players[id];
     player.buildings = [];
-    player.movingUnits = [];
     player.storage = {} as StorageType;
     player.units = [];
 

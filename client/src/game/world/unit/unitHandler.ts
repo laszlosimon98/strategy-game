@@ -72,7 +72,7 @@ export class UnitHandler extends Manager {
     );
 
     ServerHandler.receiveMessage(
-      "game:unit-idle-facing",
+      "game:unit-facing",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
         if (!unit) return;

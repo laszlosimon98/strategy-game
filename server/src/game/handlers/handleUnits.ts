@@ -38,6 +38,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     enemySoldiers: Soldier[]
   ): Soldier | undefined => {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
 
     const currentSoldier: Soldier = StateManager.getSoldier(
       room,
@@ -69,6 +70,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   const deleteUnit = (unit: Unit): void => {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
     restoreCell(unit.getIndices());
     StateManager.deleteUnit(room, unit);
   };
@@ -129,7 +131,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
       });
       return;
     }
-
     const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit || StateManager.isPlayerLostTheGame(socket, entity)) return;
 
@@ -172,7 +173,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
     unit.calculateNewIdleFacing();
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-idle-facing", {
+    ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-facing", {
       entity: unit.getEntity(),
     });
   };
@@ -213,7 +214,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
       closestEnemySoldier = getClosestUnit(entity, enemySoldiers);
     }
 
-    // TODO: meg kell határozni, hogy merre nézen a katona (facing)
     if (closestEnemySoldier) {
       ServerHandler.sendMessageToEveryOne(
         io,
@@ -221,6 +221,16 @@ export const handleUnits = (io: Server, socket: Socket) => {
         "game:unit-start-attacking",
         { entity: currentSoldier.getEntity() }
       );
+
+      const facing = StateManager.calculateFacing(
+        currentSoldier.getCell(),
+        closestEnemySoldier.getCell()
+      );
+      currentSoldier.setFacing(facing);
+
+      ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-facing", {
+        entity: currentSoldier.getEntity(),
+      });
 
       dealDamage(currentSoldier, closestEnemySoldier);
 
@@ -267,6 +277,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   socket.on("game:soldier-create", soldierCreate);
   socket.on("game:unit-start-movement", unitStartMovement);
-  socket.on("game:unit-idle-facing", unitChangeFacing);
+  socket.on("game:unit-facing", unitChangeFacing);
   socket.on("game:unit-check-sorroundings", checkSorroundings);
 };

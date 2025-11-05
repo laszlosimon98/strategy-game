@@ -67,6 +67,15 @@ export abstract class Unit extends Entity {
       ];
   }
 
+  public getCell(): Cell {
+    const { i, j } = this.getIndices();
+    return StateManager.getWorld(this.socket)[i][j];
+  }
+
+  public setFacing(facing: string): void {
+    this.entity.data.facing = StateManager.directions()[facing];
+  }
+
   public setPath(path: Cell[]): void {
     this.path = path;
   }
