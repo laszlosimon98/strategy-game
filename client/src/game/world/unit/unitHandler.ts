@@ -159,6 +159,16 @@ export class UnitHandler extends Manager {
         StateManager.removeUnit(entity);
       }
     );
+
+    ServerHandler.receiveMessage(
+      "game:unit-stop-attacking",
+      ({ entity }: { entity: EntityType }) => {
+        const unit: Unit | undefined = StateManager.getUnit(entity);
+        if (!unit) return;
+
+        unit.reset();
+      }
+    );
   }
 
   private sendMovingRequest(entity: EntityType, goal: Indices): void {
