@@ -10,53 +10,11 @@ import { Soldier } from "@/game/units/soldier";
 import { Cell } from "@/game/cell";
 import { Indices } from "@/utils/indices";
 import { gameLoop } from "@/game/loop/gameLoop";
-import { PathFinder } from "@/game/pathFind/pathFinder";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { calculateDistance } from "@/utils/utils";
 import { EPSILON, settings } from "@/settings";
 
 export const handleUnits = (io: Server, socket: Socket) => {
-  const calculatePath = (
-    entity: EntityType,
-    start: Indices,
-    end: Indices
-  ): Indices[] | undefined => {
-    if (!Validator.verifyOwner(socket, entity)) {
-      ServerHandler.sendMessageToSender(socket, "game:info", {
-        message: "Csak saját egységet irányítható!",
-      });
-      return;
-    }
-    const path: Indices[] = PathFinder.getPath(socket, start, end);
-
-    return path;
-  };
-
-  const unitPrepareForMovement = (entity: EntityType, goal: Indices): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
-    if (!room) return;
-    const unit: Unit | undefined = StateManager.getUnit(room, entity);
-
-    if (!unit) return;
-
-    const path: Indices[] | undefined = calculatePath(
-      entity,
-      unit.getIndices(),
-      goal
-    );
-    if (!path) return;
-
-    const world: Cell[][] = StateManager.getWorld(socket);
-    const cellPath: Cell[] = [];
-
-    path.forEach((p) => {
-      const { i, j } = p;
-      cellPath.push(world[i][j]);
-    });
-
-    unit.setPath(cellPath);
-  };
-
   const calculateNewStorageValues = (room: string, name: string): void => {
     if (name === "knight") {
       StateManager.updateStorageItem(socket, room, "weapons", "sword", -1);
@@ -149,11 +107,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
-  /**
-   *
-   * @param {Object} entity
-   * @returns
-   */
   const unitStartMovement = ({
     entity,
     goal,
@@ -161,14 +114,21 @@ export const handleUnits = (io: Server, socket: Socket) => {
     entity: EntityType;
     goal: Indices;
   }): void => {
+    if (!Validator.verifyOwner(socket, entity)) {
+      ServerHandler.sendMessageToSender(socket, "game:info", {
+        message: "Csak saját egységet irányítható!",
+      });
+      return;
+    }
+
     const room: string = ServerHandler.getCurrentRoom(socket);
     if (!room || StateManager.isPlayerLostTheGame(socket, entity)) return;
 
     const unit: Unit | undefined = StateManager.getUnit(room, entity);
-
     if (!unit) return;
 
-    unitPrepareForMovement(unit.getEntity(), goal);
+    unit.setGoal(goal);
+    unit.calculatePath();
     setTimeout(() => unitMoving(entity), 50);
   };
 
@@ -255,7 +215,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
       dealDamage(currentSoldier, closestEnemySoldier);
 
-      // send
       ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-take-damage", {
         entity: closestEnemySoldier.getEntity(),
         health: closestEnemySoldier.getProperties().health,
