@@ -14,6 +14,7 @@ export class Building extends Entity implements RendererInterface {
 
   private productionTimer: Timer | null = null;
   private cooldownTimer: Timer | null = null;
+  private occupationTimer: Timer | null = null;
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
@@ -28,6 +29,10 @@ export class Building extends Entity implements RendererInterface {
       );
 
       this.cooldownTimer.activate();
+    }
+
+    if (entity.data.name === "guardhouse") {
+      this.occupationTimer = new Timer(1000, () => this.action());
     }
 
     if (hasFlag) {
@@ -76,6 +81,10 @@ export class Building extends Entity implements RendererInterface {
     if (this.cooldownTimer?.isTimerActive()) {
       this.cooldownTimer.update();
     }
+
+    if (this.occupationTimer?.isTimerActive()) {
+      this.occupationTimer.update();
+    }
   }
 
   public setPosition(pos: Position): void {
@@ -102,12 +111,18 @@ export class Building extends Entity implements RendererInterface {
   }
 
   public action(): void {
-    if (
-      this.entity.data.owner === ServerHandler.getId() &&
-      this.entity.data.isProductionBuilding
-    ) {
+    if (this.entity.data.owner === ServerHandler.getId()) {
+    }
+    if (this.entity.data.isProductionBuilding) {
       ServerHandler.sendMessage("game:production", { entity: this.entity });
       this.cooldownTimer?.activate();
+    }
+
+    if (this.entity.data.name === "guardhouse") {
+      ServerHandler.sendMessage("game:guardhouse-check", {
+        entity: this.entity,
+      });
+      this.occupationTimer?.activate();
     }
   }
 
