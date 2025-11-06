@@ -272,6 +272,15 @@ export const handleUnits = (io: Server, socket: Socket) => {
           }
         );
       }
+    } else {
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:unit-stop-attacking",
+        {
+          entity: currentSoldier.getEntity(),
+        }
+      );
     }
   };
 
