@@ -233,9 +233,10 @@ export class StateManager {
 
   public static createBuilding(
     socket: Socket,
-    entity: EntityType
+    entity: EntityType,
+    needMaterial: boolean = true
   ): Building | ReturnMessage {
-    return BuildingManager.build(socket, this.state, entity);
+    return BuildingManager.build(socket, this.state, entity, needMaterial);
   }
 
   public static getBuildings(room: string, owner: string): Building[] {
@@ -283,9 +284,10 @@ export class StateManager {
 
   public static destroyBuilding(
     socket: Socket,
-    entity: EntityType
+    entity: EntityType,
+    needValidation: boolean = true
   ): DestroyBuildingResponse | null {
-    return BuildingManager.destroy(socket, entity, this.state);
+    return BuildingManager.destroy(socket, entity, this.state, needValidation);
   }
 
   public static getBuidingPrices(): BuildingPrices {

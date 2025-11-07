@@ -21,6 +21,7 @@ export class GuardHouse extends Building {
       ObstacleEnum.Unit
     ).map((cell) => cell.getSoldier() as Soldier);
 
+    // TODO: mi van ha két különböző ellenség van a torony közelében, akkor se lehessen foglalni
     const hasEnemySoldier = soldiers.some(
       (soldier) =>
         soldier.getEntity().data.owner !== this.getEntity().data.owner
@@ -32,5 +33,22 @@ export class GuardHouse extends Building {
     );
 
     return !hasOwnSoldier && hasEnemySoldier;
+  }
+
+  public capturingBy(socket: Socket): string | undefined {
+    const soldiers: Soldier[] = StateManager.getWorldInRange(
+      socket,
+      this.getIndices(),
+      this.occupationRange,
+      ObstacleEnum.Unit
+    ).map((cell) => cell.getSoldier() as Soldier);
+
+    // TODO: mi van ha két különböző ellenség van a torony közelében, akkor se lehessen foglalni
+    const enemySoldier = soldiers.find(
+      (soldier) =>
+        soldier.getEntity().data.owner !== this.getEntity().data.owner
+    );
+
+    return enemySoldier?.getEntity().data.owner;
   }
 }

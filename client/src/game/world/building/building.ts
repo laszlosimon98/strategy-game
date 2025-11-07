@@ -14,7 +14,10 @@ export class Building extends Entity implements RendererInterface {
 
   private productionTimer: Timer | null = null;
   private cooldownTimer: Timer | null = null;
+  private occupationCheckTimer: Timer | null = null;
   private occupationTimer: Timer | null = null;
+
+  private enemyOwner: string = "";
 
   public constructor(entity: EntityType, hasFlag: boolean = true) {
     super(entity);
@@ -32,8 +35,10 @@ export class Building extends Entity implements RendererInterface {
     }
 
     if (entity.data.name === "guardhouse") {
-      this.occupationTimer = new Timer(1000, () => this.action());
-      this.occupationTimer.activate();
+      this.occupationCheckTimer = new Timer(1000, () => this.action());
+      this.occupationCheckTimer.activate();
+
+      this.occupationTimer = new Timer(5000, () => this.occupationTimerOver());
     }
 
     if (hasFlag) {
@@ -83,6 +88,10 @@ export class Building extends Entity implements RendererInterface {
       this.cooldownTimer.update();
     }
 
+    if (this.occupationCheckTimer?.isTimerActive()) {
+      this.occupationCheckTimer.update();
+    }
+
     if (this.occupationTimer?.isTimerActive()) {
       this.occupationTimer.update();
     }
@@ -113,21 +122,35 @@ export class Building extends Entity implements RendererInterface {
 
   public action(): void {
     if (this.entity.data.owner === ServerHandler.getId()) {
-    }
-    if (this.entity.data.isProductionBuilding) {
-      ServerHandler.sendMessage("game:production", { entity: this.entity });
-      this.cooldownTimer?.activate();
-    }
+      if (this.entity.data.isProductionBuilding) {
+        ServerHandler.sendMessage("game:production", { entity: this.entity });
+        this.cooldownTimer?.activate();
+      }
 
-    if (this.entity.data.name === "guardhouse") {
-      ServerHandler.sendMessage("game:guardhouse-check", {
+      if (this.entity.data.name === "guardhouse") {
+        ServerHandler.sendMessage("game:guardhouse-check", {
+          entity: this.entity,
+        });
+        this.occupationCheckTimer?.activate();
+      }
+    }
+  }
+
+  public occupationTimerOver(): void {
+    if (this.enemyOwner === ServerHandler.getId()) {
+      ServerHandler.sendMessage("game:guardhouse-occupied", {
         entity: this.entity,
       });
-      this.occupationTimer?.activate();
     }
   }
 
   public cooldown(): void {
     this.productionTimer?.activate();
+  }
+
+  public startOccupation(enemyOwner: string): void {
+    this.enemyOwner = enemyOwner;
+    this.occupationTimer?.activate();
+    this.occupationCheckTimer?.deactivate();
   }
 }

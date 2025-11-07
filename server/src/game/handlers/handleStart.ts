@@ -10,6 +10,7 @@ import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Cell } from "@/game/cell";
 import { Position } from "@/utils/position";
+import { calculatePositionFromIndices } from "@/utils/utils";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
@@ -67,7 +68,7 @@ export const handleStart = (io: Server, socket: Socket) => {
           width: 128,
           height: 128,
         },
-        position: calculateInitTowerPosition(indices),
+        position: calculatePositionFromIndices(indices),
         name: "guardhouse",
         productionTime: 0,
         cooldownTimer: 0,
@@ -83,7 +84,8 @@ export const handleStart = (io: Server, socket: Socket) => {
 
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
-      entity
+      entity,
+      false
     );
 
     if (response instanceof Building) {
@@ -95,7 +97,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       );
       return response;
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:error", response);
+      ServerHandler.sendMessageToSender(socket, "game:info", response);
       return null;
     }
   };
@@ -112,22 +114,6 @@ export const handleStart = (io: Server, socket: Socket) => {
         };
       }),
     });
-  };
-
-  const calculateInitTowerPosition = (indices: Indices): Position => {
-    const { i, j } = indices;
-
-    const normalPos = new Position(
-      i * settings.cellSize + settings.cellSize,
-      j * settings.cellSize + settings.cellSize
-    );
-
-    const isometricPos = new Position(
-      normalPos.x - normalPos.y,
-      (normalPos.x + normalPos.y) / 2
-    );
-
-    return isometricPos;
   };
 
   socket.on("game:starts", gameStarts);

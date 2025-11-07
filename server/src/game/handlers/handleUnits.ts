@@ -143,10 +143,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
     const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit) return;
 
-    const interval: NodeJS.Timeout | null = unit.getInterval();
-    if (interval) {
-      clearInterval(interval);
-    }
+    // const interval: NodeJS.Timeout | null = unit.getInterval();
+    // if (interval) {
+    //   clearInterval(interval);
+    // }
 
     gameLoop((dt, interval) => {
       unit.move(dt);

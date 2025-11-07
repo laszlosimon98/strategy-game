@@ -7,7 +7,10 @@ import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
 import { Buildings } from "@/types/building.types";
-import { getImageNameFromUrl } from "@/utils/utils";
+import {
+  calculatePositionFromIndices,
+  getImageNameFromUrl,
+} from "@/utils/utils";
 import { World } from "@/game/world";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Cell } from "@/game/cell";
@@ -96,14 +99,18 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
-  const destroy = (entity: EntityType): void => {
+  const destroy = (
+    entity: EntityType,
+    needValidation: boolean = true
+  ): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
 
     const cells: DestroyBuildingResponse | null = StateManager.destroyBuilding(
       socket,
-      entity
+      entity,
+      needValidation
     );
 
     if (cells === null) {
@@ -186,10 +193,70 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       room,
       entity
     ) as GuardHouse;
-    guardHouse.isCapturable(socket);
+
+    if (guardHouse.isCapturable(socket)) {
+      const enemyOwner = guardHouse.capturingBy(socket);
+      if (!enemyOwner) return;
+
+      console.log("start occupation");
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:guardhouse-start-occupation",
+        { entity, enemyOwner }
+      );
+    }
+  };
+
+  const reBuild = (entity: EntityType): void => {
+    const response: Building | ReturnMessage = StateManager.createBuilding(
+      socket,
+      entity,
+      false
+    );
+
+    if (response instanceof Building) {
+      ServerHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:build",
+        response.getEntity()
+      );
+
+      if (response instanceof GuardHouse) {
+        const updatedCells: Cell[] = World.updateTerritory(socket);
+
+        ServerHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:updateTerritory",
+          {
+            data: updatedCells.map((cell) => {
+              return {
+                indices: cell.getIndices(),
+                owner: cell.getOwner(),
+                obstacle: cell.getHighestPriorityObstacleType(),
+              };
+            }),
+          }
+        );
+      }
+    } else {
+      ServerHandler.sendMessageToSender(socket, "game:info", response);
+    }
+  };
+
+  const guardHouseOccupied = ({ entity }: { entity: EntityType }): void => {
+    destroy(entity, false);
+    entity.data.owner = socket.id;
+    entity.data.position = calculatePositionFromIndices(entity.data.indices);
+    const { i, j } = entity.data.indices;
+    StateManager.getWorld(socket)[i][j].setOwner(entity.data.owner);
+    reBuild(entity);
   };
 
   socket.on("game:build", build);
   socket.on("game:destroy", destroy);
   socket.on("game:guardhouse-check", guardHouseCheck);
+  socket.on("game:guardhouse-occupied", guardHouseOccupied);
 };

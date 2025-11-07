@@ -66,6 +66,10 @@ export class Building extends Entity implements ProductionBuildingInterface {
     return false;
   }
 
+  public capturingBy(socket: Socket): string | undefined {
+    return;
+  }
+
   protected handleCellObstacleChange(
     socket: Socket,
     findType: ObstacleEnum
