@@ -33,6 +33,7 @@ export class Building extends Entity implements RendererInterface {
 
     if (entity.data.name === "guardhouse") {
       this.occupationTimer = new Timer(1000, () => this.action());
+      this.occupationTimer.activate();
     }
 
     if (hasFlag) {

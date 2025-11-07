@@ -14,11 +14,13 @@ import { Server, Socket } from "socket.io";
 export class Building extends Entity implements ProductionBuildingInterface {
   protected production: Production | null;
   protected range: number;
+  protected occupationRange: number;
 
   public constructor(entity: EntityType) {
     super(entity);
     this.production = null;
     this.range = 0;
+    this.occupationRange = 0;
   }
 
   public getCooldown(): number | null {
@@ -58,6 +60,10 @@ export class Building extends Entity implements ProductionBuildingInterface {
 
   public getRange(): number {
     return this.range;
+  }
+
+  public isCapturable(socket: Socket): boolean {
+    return false;
   }
 
   protected handleCellObstacleChange(

@@ -50,6 +50,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
       entity
@@ -152,10 +154,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       );
 
       if (StateManager.isPlayerLostTheGame(socket, entity)) {
-        const user = StateManager.getPlayer(
-          ServerHandler.getCurrentRoom(socket),
-          socket
-        );
+        const room: string = ServerHandler.getCurrentRoom(socket);
+        if (!room) return;
+
+        const user = StateManager.getPlayer(room, socket);
 
         ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
           message: `${user.name} kiesett a játékból!`,
@@ -176,6 +178,18 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
+  const guardHouseCheck = ({ entity }: { entity: EntityType }): void => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
+    const guardHouse: GuardHouse = StateManager.getBuildingByEntity(
+      room,
+      entity
+    ) as GuardHouse;
+    guardHouse.isCapturable(socket);
+  };
+
   socket.on("game:build", build);
   socket.on("game:destroy", destroy);
+  socket.on("game:guardhouse-check", guardHouseCheck);
 };
