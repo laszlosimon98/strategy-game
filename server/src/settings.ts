@@ -8,7 +8,6 @@ const START_IDX: number = 10;
 const MAX_PLAYER: number = 4;
 const CODE_LENGTH: number = 2;
 const MAP_SEED: string = "seed";
-const SERVER_URL: string = "http://localhost:3000";
 const CELL_SIZE: number = 48;
 
 export const settings: Settings = {
@@ -22,7 +21,6 @@ export const settings: Settings = {
     "red",
     "white",
   ],
-  serverUrl: SERVER_URL,
   maxPlayer: MAX_PLAYER,
   codeLength: CODE_LENGTH,
   mapSeed: MAP_SEED,

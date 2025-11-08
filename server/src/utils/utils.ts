@@ -1,5 +1,6 @@
 import { Position } from "@/utils/position";
 import { Indices } from "@/utils/indices";
+import { settings } from "@/settings";
 
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;
@@ -16,19 +17,6 @@ export const calculateDistanceByIndices = (
   const j = to.j - from.j;
   const distance = Math.sqrt(Math.pow(i, 2) + Math.pow(j, 2));
   return distance;
-};
-
-export const calculatePositionFromIndices = (indices: Indices): Position => {
-  const { i, j } = indices;
-
-  const normalPos: Position = new Position(i * 48 + 48, j * 48 + 48);
-
-  const isometricPos: Position = new Position(
-    normalPos.x - normalPos.y,
-    (normalPos.x + normalPos.y) / 2
-  );
-
-  return isometricPos;
 };
 
 export const getRandomNumberFromInterval = (
@@ -48,4 +36,20 @@ export const getImageNameFromUrl = (url: string): string => {
 export const getRandomElementFromArray = <T>(arr: T[]): T => {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
+};
+
+export const calculatePositionFromIndices = (indices: Indices): Position => {
+  const { i, j } = indices;
+
+  const normalPos = new Position(
+    i * settings.cellSize + settings.cellSize,
+    j * settings.cellSize + settings.cellSize
+  );
+
+  const isometricPos = new Position(
+    normalPos.x - normalPos.y,
+    (normalPos.x + normalPos.y) / 2
+  );
+
+  return isometricPos;
 };

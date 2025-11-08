@@ -38,42 +38,23 @@ export class Camera {
   }
 
   private handleCameraMovementWithKeyboard(key: string): void {
-    switch (key) {
-      case "ArrowLeft": {
-        this.keyboardDir = new Vector(1, 0);
-        break;
-      }
-      case "ArrowRight": {
-        this.keyboardDir = new Vector(-1, 0);
-        break;
-      }
-      case "ArrowUp": {
-        this.keyboardDir = new Vector(0, 1);
-        break;
-      }
-      case "ArrowDown": {
-        this.keyboardDir = new Vector(0, -1);
-        break;
-      }
-      case "a": {
-        this.keyboardDir = new Vector(1, 0);
-        break;
-      }
-      case "d": {
-        this.keyboardDir = new Vector(-1, 0);
-        break;
-      }
-      case "w": {
-        this.keyboardDir = new Vector(0, 1);
-        break;
-      }
-      case "s": {
-        this.keyboardDir = new Vector(0, -1);
-        break;
-      }
-      default: {
-        this.keyboardDir = new Vector(0, 0);
-      }
+    const lowerKey: string = key.toLocaleLowerCase();
+
+    const directions: Record<string, Vector> = {
+      arrowleft: new Vector(1, 0),
+      arrowright: new Vector(-1, 0),
+      arrowup: new Vector(0, 1),
+      arrowdown: new Vector(0, -1),
+      a: new Vector(1, 0),
+      d: new Vector(-1, 0),
+      w: new Vector(0, 1),
+      s: new Vector(0, -1),
+    };
+
+    if (lowerKey in directions) {
+      this.keyboardDir = directions[lowerKey];
+    } else {
+      this.keyboardDir = Vector.zero();
     }
   }
 

@@ -9,40 +9,44 @@ import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Cell } from "@/game/cell";
-import { Position } from "@/utils/position";
+import { calculatePositionFromIndices } from "@/utils/utils";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
-    const currentRoom: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
 
-    StateManager.startGame(currentRoom);
+    StateManager.startGame(room);
     ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
-    initPlayers(currentRoom);
+    initPlayers(room);
     createWorld();
-    initPlayersStartPosition(currentRoom);
+    initPlayersStartPosition(room);
   };
 
-  const initPlayers = (currentRoom: string) => {
+  const initPlayers = (room: string) => {
     ServerHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:initPlayers",
-      StateManager.getPlayers(currentRoom)
+      StateManager.getPlayers(room)
     );
   };
 
   const createWorld = () => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     World.createWorld(socket);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:createWorld", {
-      tiles: World.getTiles(socket),
-      obstacles: World.getObstacles(socket),
+      tiles: World.getTiles(socket, room),
+      obstacles: World.getObstacles(socket, room),
     });
   };
 
-  const initPlayersStartPosition = (currentRoom: string): void => {
-    const players: PlayerType = StateManager.getPlayers(currentRoom);
+  const initPlayersStartPosition = (room: string): void => {
+    const players: PlayerType = StateManager.getPlayers(room);
     const startPositions: Indices[] = [...settings.startPositions];
 
     Object.keys(players).forEach((id) => {
@@ -60,14 +64,14 @@ export const handleStart = (io: Server, socket: Socket) => {
       data: {
         id: uuidv4(),
         owner: playerId,
-        url: `${settings.serverUrl}/assets/buildings/guardhouse.png`,
+        url: `${process.env.SERVER_URL}/assets/buildings/guardhouse.png`,
         static: "",
         indices,
         dimensions: {
           width: 128,
           height: 128,
         },
-        position: calculateInitTowerPosition(indices),
+        position: calculatePositionFromIndices(indices),
         name: "guardhouse",
         productionTime: 0,
         cooldownTimer: 0,
@@ -79,11 +83,15 @@ export const handleStart = (io: Server, socket: Socket) => {
     };
 
     const { i, j } = indices;
-    StateManager.getWorld(socket)[i][j].setOwner(playerId);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return null;
+
+    StateManager.getWorld(room, socket)[i][j].setOwner(playerId);
 
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
-      entity
+      entity,
+      false
     );
 
     if (response instanceof Building) {
@@ -95,7 +103,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       );
       return response;
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:error", response);
+      ServerHandler.sendMessageToSender(socket, "game:info", response);
       return null;
     }
   };
@@ -112,22 +120,6 @@ export const handleStart = (io: Server, socket: Socket) => {
         };
       }),
     });
-  };
-
-  const calculateInitTowerPosition = (indices: Indices): Position => {
-    const { i, j } = indices;
-
-    const normalPos = new Position(
-      i * settings.cellSize + settings.cellSize,
-      j * settings.cellSize + settings.cellSize
-    );
-
-    const isometricPos = new Position(
-      normalPos.x - normalPos.y,
-      (normalPos.x + normalPos.y) / 2
-    );
-
-    return isometricPos;
   };
 
   socket.on("game:starts", gameStarts);

@@ -25,12 +25,13 @@ export class UnitManager extends Manager {
   ): Soldier | ReturnMessage {
     const unitName: string = entity.data.name;
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return { message: "Nincs elegendő fegyver raktáron!" };
 
     if (this.storageHasWeapons(socket, room, unitName)) {
       const { i, j } = entity.data.indices;
       entity.data.indices = new Indices(i + 1, j);
 
-      const cell: Cell = StateManager.getWorld(socket)[i + 1][j];
+      const cell: Cell = StateManager.getWorld(room, socket)[i + 1][j];
 
       const soldier: Soldier = this.creator<Soldier>(
         unitRegister[unitName],

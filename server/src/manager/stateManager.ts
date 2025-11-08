@@ -127,6 +127,13 @@ export class StateManager {
 
   public static disconnectPlayer(room: string, socket: Socket): void {
     const player = this.state[room].players[socket.id];
+
+    player.units.forEach((unit) => {
+      const cell: Cell = unit.getCell(room);
+      cell.setOwner(null);
+      cell.removeObstacle(ObstacleEnum.Unit);
+    });
+
     player.buildings = [];
     player.units = [];
     player.storage = {} as StorageType;
@@ -155,13 +162,14 @@ export class StateManager {
     this.state[room].isGameStarted = true;
   }
 
-  public static getWorld(socket: Socket): Cell[][] {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+  public static getWorld(room: string, socket: Socket): Cell[][] {
     return this.state[room].world;
   }
 
   public static setWorld(socket: Socket, world: Cell[][]): void {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     this.state[room].world = world;
   }
 
@@ -196,11 +204,12 @@ export class StateManager {
     socket: Socket,
     indices: Indices,
     range: number,
-    obstacle: ObstacleEnum
+    obstacle: ObstacleEnum,
+    room: string
   ): Cell[] {
     const result: Cell[] = [];
 
-    const world: Cell[][] = this.getWorld(socket);
+    const world: Cell[][] = this.getWorld(room, socket);
     const { i: baseI, j: baseJ } = indices;
     const size: number = settings.mapSize;
 
@@ -233,9 +242,10 @@ export class StateManager {
 
   public static createBuilding(
     socket: Socket,
-    entity: EntityType
+    entity: EntityType,
+    needMaterial: boolean = true
   ): Building | ReturnMessage {
-    return BuildingManager.build(socket, this.state, entity);
+    return BuildingManager.build(socket, this.state, entity, needMaterial);
   }
 
   public static getBuildings(room: string, owner: string): Building[] {
@@ -283,9 +293,10 @@ export class StateManager {
 
   public static destroyBuilding(
     socket: Socket,
-    entity: EntityType
+    entity: EntityType,
+    needValidation: boolean = true
   ): DestroyBuildingResponse | null {
-    return BuildingManager.destroy(socket, entity, this.state);
+    return BuildingManager.destroy(socket, entity, this.state, needValidation);
   }
 
   public static getBuidingPrices(): BuildingPrices {
@@ -429,6 +440,7 @@ export class StateManager {
     entity: EntityType
   ): boolean {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return true;
 
     const buildings: Building[] = this.getBuildings(room, entity.data.owner);
     const guardHouses: GuardHouse[] = buildings.filter(
@@ -443,6 +455,8 @@ export class StateManager {
     let winner: string = "";
 
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return true;
+
     const playersBuildings: Record<string, Building[]> =
       this.getAllPlayerBuildingsSeparatedByKeys(room);
 
@@ -464,11 +478,15 @@ export class StateManager {
 
   public static getWinner(socket: Socket): string | null {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return null;
+
     return this.state[room].winner;
   }
 
   private static setWinner(socket: Socket, key: string): void {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     const { name } = this.getPlayers(room)[key];
     this.state[room].winner = name;
   }

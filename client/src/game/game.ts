@@ -6,6 +6,7 @@ import { StateManager } from "@/manager/stateManager";
 import { ServerHandler } from "@/server/serverHandler";
 import type {
   ColorType,
+  EntityType,
   MessageResponse,
   PlayerGameType,
 } from "@/types/game.types";
@@ -19,6 +20,7 @@ import type { Cell } from "@/game/world/cell";
 import { ObstacleEnum } from "@/game/enums/obstacleEnum";
 import { ChatInput } from "@/game/chat/chatInput";
 import { ChatFrame } from "@/game/chat/chatFrame";
+import type { Building } from "@/game/world/building/building";
 
 export class Game {
   private gameMenu: GameMenu;
@@ -178,6 +180,21 @@ export class Game {
         color: ColorType;
       }) => {
         this.chatFrame.pushText(name, message, color);
+      }
+    );
+
+    ServerHandler.receiveMessage(
+      "game:guardhouse-start-occupation",
+      ({ entity, enemyOwner }: { entity: EntityType; enemyOwner: string }) => {
+        const buildings: Building[] = StateManager.getBuildings(
+          entity.data.owner
+        );
+
+        const guardHouse: Building | undefined = buildings.find(
+          (building) => building.getEntity().data.id === entity.data.id
+        );
+
+        guardHouse?.startOccupation(enemyOwner);
       }
     );
   }

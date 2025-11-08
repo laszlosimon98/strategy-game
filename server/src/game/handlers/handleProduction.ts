@@ -47,7 +47,8 @@ export const handleProduction = (io: Server, socket: Socket) => {
     const category: CategoryType | null = building.getCategory();
     const item: ProductionItem | null | ReturnMessage = building.produce(
       io,
-      socket
+      socket,
+      room
     );
 
     if (!category || !item) return;
@@ -84,6 +85,8 @@ export const handleProduction = (io: Server, socket: Socket) => {
 
   const handleProductionRequest = ({ entity }: { entity: EntityType }) => {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     const building: Building | undefined = StateManager.getBuildingByEntity(
       room,
       entity
