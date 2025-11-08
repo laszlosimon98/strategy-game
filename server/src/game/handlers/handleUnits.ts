@@ -146,6 +146,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
     const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit) return;
 
+    if (unit instanceof Soldier) {
+      unit.setTarget(null);
+    }
+
     // const interval: NodeJS.Timeout | null = unit.getInterval();
     // if (interval) {
     //   clearInterval(interval);
@@ -212,13 +216,17 @@ export const handleUnits = (io: Server, socket: Socket) => {
         }
       });
 
-    let closestEnemySoldier: Soldier | undefined;
-
     if (enemySoldiers.length > 0) {
-      closestEnemySoldier = getClosestUnit(entity, enemySoldiers);
+      const target = getClosestUnit(entity, enemySoldiers);
+
+      if (target) {
+        currentSoldier.setTarget(target);
+      }
     }
 
-    if (closestEnemySoldier) {
+    const target: Soldier | null = currentSoldier.getTarget();
+
+    if (target && !currentSoldier.isMoving()) {
       ServerHandler.sendMessageToEveryOne(
         io,
         socket,
@@ -228,7 +236,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
       const facing = StateManager.calculateFacing(
         currentSoldier.getCell(room),
-        closestEnemySoldier.getCell(room)
+        target.getCell(room)
       );
       currentSoldier.setFacing(facing);
 
@@ -236,11 +244,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
         entity: currentSoldier.getEntity(),
       });
 
-      dealDamage(currentSoldier, closestEnemySoldier);
+      dealDamage(currentSoldier, target);
 
       ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-take-damage", {
-        entity: closestEnemySoldier.getEntity(),
-        health: closestEnemySoldier.getProperties().health,
+        entity: target.getEntity(),
+        health: target.getProperties().health,
       });
 
       if (!currentSoldier.isAlive()) {
@@ -255,16 +263,16 @@ export const handleUnits = (io: Server, socket: Socket) => {
           socket,
           "game:unit-stop-attacking",
           {
-            entity: closestEnemySoldier.getEntity(),
+            entity: target.getEntity(),
           }
         );
       }
 
-      if (!closestEnemySoldier.isAlive()) {
-        deleteUnit(closestEnemySoldier);
+      if (!target.isAlive()) {
+        deleteUnit(target);
 
         ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-dies", {
-          entity: closestEnemySoldier.getEntity(),
+          entity: target.getEntity(),
         });
 
         ServerHandler.sendMessageToEveryOne(

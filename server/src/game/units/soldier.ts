@@ -7,12 +7,15 @@ export class Soldier extends Unit {
   protected damage: number;
   protected health: number;
   protected range: number;
+  protected target: Soldier | null;
 
   public constructor(entity: EntityType, socket: Socket) {
     super(entity, socket);
     this.damage = 0;
     this.health = 0;
     this.range = 0;
+
+    this.target = null;
   }
 
   public getProperties(): PropertyType {
@@ -31,5 +34,13 @@ export class Soldier extends Unit {
 
   public isAlive(): boolean {
     return this.health > 0;
+  }
+
+  public setTarget(target: Soldier | null): void {
+    this.target = target;
+  }
+
+  public getTarget(): Soldier | null {
+    return this.target;
   }
 }
