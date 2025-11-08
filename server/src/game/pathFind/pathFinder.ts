@@ -8,11 +8,12 @@ export class PathFinder {
   private constructor() {}
 
   public static getPath(
+    room: string,
     socket: Socket,
     start: Indices,
     end: Indices
   ): Indices[] {
-    const world: Cell[][] = StateManager.getWorld(socket);
+    const world: Cell[][] = StateManager.getWorld(room, socket);
     this.resetWorld(world);
 
     const startCell: Cell = world[start.i][start.j];

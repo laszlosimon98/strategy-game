@@ -48,7 +48,8 @@ export class Building extends Entity implements ProductionBuildingInterface {
 
   public produce(
     io: Server,
-    socket: Socket
+    socket: Socket,
+    room: string
   ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
     return this.production.getProductionItem();
@@ -62,23 +63,25 @@ export class Building extends Entity implements ProductionBuildingInterface {
     return this.range;
   }
 
-  public isCapturable(socket: Socket): boolean {
+  public isCapturable(socket: Socket, room: string): boolean {
     return false;
   }
 
-  public capturingBy(socket: Socket): string | undefined {
+  public capturingBy(socket: Socket, room: string): string | undefined {
     return;
   }
 
   protected handleCellObstacleChange(
     socket: Socket,
-    findType: ObstacleEnum
+    findType: ObstacleEnum,
+    room: string
   ): Cell | null {
     const cells: Cell[] = StateManager.getWorldInRange(
       socket,
       this.entity.data.indices,
       this.range,
-      findType
+      findType,
+      room
     );
 
     const closestCell: Cell | null = StateManager.getClosestCell(

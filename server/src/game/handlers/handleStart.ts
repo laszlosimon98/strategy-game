@@ -9,41 +9,44 @@ import { StateManager } from "@/manager/stateManager";
 import { Building } from "@/game/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Cell } from "@/game/cell";
-import { Position } from "@/utils/position";
 import { calculatePositionFromIndices } from "@/utils/utils";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
-    const currentRoom: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
 
-    StateManager.startGame(currentRoom);
+    StateManager.startGame(room);
     ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
-    initPlayers(currentRoom);
+    initPlayers(room);
     createWorld();
-    initPlayersStartPosition(currentRoom);
+    initPlayersStartPosition(room);
   };
 
-  const initPlayers = (currentRoom: string) => {
+  const initPlayers = (room: string) => {
     ServerHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:initPlayers",
-      StateManager.getPlayers(currentRoom)
+      StateManager.getPlayers(room)
     );
   };
 
   const createWorld = () => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     World.createWorld(socket);
 
     ServerHandler.sendMessageToEveryOne(io, socket, "game:createWorld", {
-      tiles: World.getTiles(socket),
-      obstacles: World.getObstacles(socket),
+      tiles: World.getTiles(socket, room),
+      obstacles: World.getObstacles(socket, room),
     });
   };
 
-  const initPlayersStartPosition = (currentRoom: string): void => {
-    const players: PlayerType = StateManager.getPlayers(currentRoom);
+  const initPlayersStartPosition = (room: string): void => {
+    const players: PlayerType = StateManager.getPlayers(room);
     const startPositions: Indices[] = [...settings.startPositions];
 
     Object.keys(players).forEach((id) => {
@@ -61,7 +64,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       data: {
         id: uuidv4(),
         owner: playerId,
-        url: `${settings.serverUrl}/assets/buildings/guardhouse.png`,
+        url: `${process.env.SERVER_URL}/assets/buildings/guardhouse.png`,
         static: "",
         indices,
         dimensions: {
@@ -80,7 +83,10 @@ export const handleStart = (io: Server, socket: Socket) => {
     };
 
     const { i, j } = indices;
-    StateManager.getWorld(socket)[i][j].setOwner(playerId);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return null;
+
+    StateManager.getWorld(room, socket)[i][j].setOwner(playerId);
 
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,

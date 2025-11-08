@@ -3,7 +3,6 @@ import { Indices } from "@/utils/indices";
 
 export type Settings = {
   colors: ColorType[];
-  serverUrl: string;
   maxPlayer: number;
   codeLength: number;
   mapSeed: string;

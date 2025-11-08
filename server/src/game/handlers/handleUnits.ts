@@ -77,7 +77,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
 
   const restoreCell = (indices: Indices): void => {
     const { i, j } = indices;
-    const cell: Cell = StateManager.getWorld(socket)[i][j];
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
+    const cell: Cell = StateManager.getWorld(room, socket)[i][j];
     cell.removeObstacle(ObstacleEnum.Unit);
     cell.setSoldier(null);
   };
@@ -192,7 +195,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
       socket,
       currentSoldier.getIndices(),
       currentSoldier.getProperties().range,
-      ObstacleEnum.Unit
+      ObstacleEnum.Unit,
+      room
     );
 
     const enemySoldiers: Soldier[] = unitOnCells
@@ -223,8 +227,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
       );
 
       const facing = StateManager.calculateFacing(
-        currentSoldier.getCell(),
-        closestEnemySoldier.getCell()
+        currentSoldier.getCell(room),
+        closestEnemySoldier.getCell(room)
       );
       currentSoldier.setFacing(facing);
 

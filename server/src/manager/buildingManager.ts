@@ -49,15 +49,17 @@ export class BuildingManager extends Manager {
   ): Building | ReturnMessage {
     const { i, j } = entity.data.indices;
 
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return { message: "A kiválaszott helyre nem lehet építeni!" };
+
     if (
-      !this.isPossibleToBuild(i, j, socket) ||
-      !World.isCellInTerritory(socket, entity)
+      !this.isPossibleToBuild(i, j, socket, room) ||
+      !World.isCellInTerritory(socket, entity, room)
     ) {
       return { message: "A kiválaszott helyre nem lehet építeni!" };
     }
 
     const buildingName = entity.data.name;
-    const room: string = ServerHandler.getCurrentRoom(socket);
 
     if (
       needMaterial &&
@@ -73,7 +75,7 @@ export class BuildingManager extends Manager {
 
     building.setOwner(entity.data.owner);
     this.createBuilding(room, socket, state, building);
-    World.occupyCells(socket, building);
+    World.occupyCells(socket, building, room);
     this.setProduction(entity, building);
 
     return building;
@@ -86,7 +88,9 @@ export class BuildingManager extends Manager {
     needValidation: boolean = true
   ): DestroyBuildingResponse | null {
     const room: string = ServerHandler.getCurrentRoom(socket);
-    const world: Cell[][] = StateManager.getWorld(socket);
+    if (!room) return null;
+
+    const world: Cell[][] = StateManager.getWorld(room, socket);
     const { i, j } = entity.data.indices;
 
     if (world[i][j].getHighestPriorityObstacleType() !== ObstacleEnum.House) {
@@ -163,9 +167,10 @@ export class BuildingManager extends Manager {
   private static isPossibleToBuild = (
     xPos: number,
     yPos: number,
-    socket: Socket
+    socket: Socket,
+    room: string
   ): boolean => {
-    return StateManager.getWorld(socket)[xPos][yPos].isBuildAble();
+    return StateManager.getWorld(room, socket)[xPos][yPos].isBuildAble();
   };
 
   private static createBuilding(

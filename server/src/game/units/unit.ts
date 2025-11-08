@@ -51,10 +51,15 @@ export abstract class Unit extends Entity {
 
     const start: Indices =
       this.path.length > 0 ? this.path[0].getIndices() : current;
-    const path: Indices[] = PathFinder.getPath(this.socket, start, this.goal);
+    const path: Indices[] = PathFinder.getPath(
+      room,
+      this.socket,
+      start,
+      this.goal
+    );
     if (!path || path.length === 0) return;
 
-    const world: Cell[][] = StateManager.getWorld(this.socket);
+    const world: Cell[][] = StateManager.getWorld(room, this.socket);
     this.path = path.map(({ i, j }) => world[i][j]);
   }
 
@@ -67,9 +72,9 @@ export abstract class Unit extends Entity {
       ];
   }
 
-  public getCell(): Cell {
+  public getCell(room: string): Cell {
     const { i, j } = this.getIndices();
-    return StateManager.getWorld(this.socket)[i][j];
+    return StateManager.getWorld(room, this.socket)[i][j];
   }
 
   public setFacing(facing: string): void {
@@ -130,7 +135,7 @@ export abstract class Unit extends Entity {
 
       const { i, j }: Indices = this.entity.data.indices;
 
-      const prevCell: Cell = StateManager.getWorld(this.socket)[i][j];
+      const prevCell: Cell = StateManager.getWorld(room, this.socket)[i][j];
       prevCell.removeObstacle(ObstacleEnum.Unit);
 
       const prevSoldier = prevCell.getSoldier();

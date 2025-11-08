@@ -13,12 +13,13 @@ export class GuardHouse extends Building {
     this.occupationRange = 2;
   }
 
-  public isCapturable(socket: Socket): boolean {
+  public isCapturable(socket: Socket, room: string): boolean {
     const soldiers: Soldier[] = StateManager.getWorldInRange(
       socket,
       this.getIndices(),
       this.occupationRange,
-      ObstacleEnum.Unit
+      ObstacleEnum.Unit,
+      room
     ).map((cell) => cell.getSoldier() as Soldier);
 
     // TODO: mi van ha két különböző ellenség van a torony közelében, akkor se lehessen foglalni
@@ -35,12 +36,13 @@ export class GuardHouse extends Building {
     return !hasOwnSoldier && hasEnemySoldier;
   }
 
-  public capturingBy(socket: Socket): string | undefined {
+  public capturingBy(socket: Socket, room: string): string | undefined {
     const soldiers: Soldier[] = StateManager.getWorldInRange(
       socket,
       this.getIndices(),
       this.occupationRange,
-      ObstacleEnum.Unit
+      ObstacleEnum.Unit,
+      room
     ).map((cell) => cell.getSoldier() as Soldier);
 
     // TODO: mi van ha két különböző ellenség van a torony közelében, akkor se lehessen foglalni

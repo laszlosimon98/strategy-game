@@ -71,25 +71,29 @@ export class World {
     this.world = [];
   }
 
-  public static getTiles(socket: Socket): TileEnum[][] {
-    const tiles: TileEnum[][] = StateManager.getWorld(socket).map((cells) =>
-      cells.map((cell) => cell.getType())
+  public static getTiles(socket: Socket, room: string): TileEnum[][] {
+    const tiles: TileEnum[][] = StateManager.getWorld(room, socket).map(
+      (cells) => cells.map((cell) => cell.getType())
     );
 
     return tiles;
   }
 
-  public static getObstacles(socket: Socket): any {
-    const obstacles: any = StateManager.getWorld(socket).map((cells) =>
+  public static getObstacles(socket: Socket, room: string): any {
+    const obstacles: any = StateManager.getWorld(room, socket).map((cells) =>
       cells.map((cell) => cell.getHighestPriorityObstacleType())
     );
 
     return obstacles;
   }
 
-  public static isCellInTerritory(socket: Socket, entity: EntityType): boolean {
+  public static isCellInTerritory(
+    socket: Socket,
+    entity: EntityType,
+    room: string
+  ): boolean {
     const { i, j } = entity.data.indices;
-    const cells: Cell[][] = StateManager.getWorld(socket);
+    const cells: Cell[][] = StateManager.getWorld(room, socket);
 
     return cells[i][j].getOwner() === entity.data.owner;
   }
@@ -101,6 +105,7 @@ export class World {
     }
   ): Cell[] {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return [];
 
     let buildings: Building[];
     if (options && options.id) {
@@ -150,9 +155,9 @@ export class World {
     return updatedCells;
   }
 
-  public static occupyCells(socket: Socket, building: Building) {
+  public static occupyCells(socket: Socket, building: Building, room: string) {
     const { i, j } = building.getEntity().data.indices;
-    const world = StateManager.getWorld(socket);
+    const world = StateManager.getWorld(room, socket);
 
     world[i][j].setBuilding(building);
 
@@ -162,9 +167,9 @@ export class World {
     world[i][j].addObstacle(ObstacleEnum.House);
   }
 
-  public static restoreCells(socket: Socket, building: Building) {
+  public static restoreCells(socket: Socket, building: Building, room: string) {
     const { i, j } = building.getEntity().data.indices;
-    const world = StateManager.getWorld(socket);
+    const world = StateManager.getWorld(room, socket);
 
     this.updateWorldInRange(socket, building, 1, (cell: Cell) => {
       cell.removeObstacle(ObstacleEnum.Occupied);
@@ -194,13 +199,14 @@ export class World {
 
   public static markedLostBuildings(
     socket: Socket,
-    markedCells: Cell[]
+    markedCells: Cell[],
+    room: string
   ): Building[] {
     const lostCells: Cell[] = markedCells.filter(
       (cell) => !cell.getTowerInfluence()
     );
 
-    const world: Cell[][] = StateManager.getWorld(socket);
+    const world: Cell[][] = StateManager.getWorld(room, socket);
     const lostBuildings: Building[] = [];
 
     lostCells.forEach((cell) => {
@@ -233,11 +239,18 @@ export class World {
     building: Building
   ): DestroyBuildingResponse {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room)
+      return {
+        updatedCells: [],
+        markedCells: [],
+        lostBuildings: [],
+      };
+
     const state = StateManager.getState();
 
     if (!(building instanceof GuardHouse)) {
       BuildingManager.destroyBuilding(room, state, building);
-      World.restoreCells(socket, building);
+      World.restoreCells(socket, building, room);
 
       return {
         updatedCells: [],
@@ -249,18 +262,19 @@ export class World {
     const markedCells: Cell[] = World.markCellToRestore(socket, building) ?? [];
 
     BuildingManager.destroyBuilding(room, state, building);
-    World.restoreCells(socket, building);
+    World.restoreCells(socket, building, room);
 
     const updatedCells: Cell[] = World.updateTerritory(socket);
 
     const lostBuildings: Building[] = World.markedLostBuildings(
       socket,
-      markedCells
+      markedCells,
+      room
     );
 
     lostBuildings.forEach((building) => {
       BuildingManager.destroyBuilding(room, state, building);
-      World.restoreCells(socket, building);
+      World.restoreCells(socket, building, room);
     });
 
     return {
@@ -334,7 +348,10 @@ export class World {
     fn: (cell: Cell) => void,
     options?: { isCircle: boolean }
   ): void {
-    const world: Cell[][] = StateManager.getWorld(socket);
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
+    const world: Cell[][] = StateManager.getWorld(room, socket);
     const { i: baseI, j: baseJ } = building.getEntity().data.indices;
     const size: number = settings.mapSize;
     const isCircle = options?.isCircle ?? false;

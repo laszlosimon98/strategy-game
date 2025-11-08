@@ -17,11 +17,13 @@ export class Forester extends Building {
 
   public produce(
     io: Server,
-    socket: Socket
+    socket: Socket,
+    room: string
   ): ProductionItem | null | ReturnMessage {
     const closestCell: Cell | null = this.handleCellObstacleChange(
       socket,
-      ObstacleEnum.Empty
+      ObstacleEnum.Empty,
+      room
     );
 
     if (closestCell) {

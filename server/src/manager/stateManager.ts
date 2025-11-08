@@ -128,7 +128,7 @@ export class StateManager {
   public static disconnectPlayer(room: string, socket: Socket): void {
     const player = this.state[room].players[socket.id];
     player.buildings = [];
-    player.units = [];
+    // player.units = [];
     player.storage = {} as StorageType;
 
     delete this.state[room].players[socket.id];
@@ -155,8 +155,7 @@ export class StateManager {
     this.state[room].isGameStarted = true;
   }
 
-  public static getWorld(socket: Socket): Cell[][] {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+  public static getWorld(room: string, socket: Socket): Cell[][] {
     return this.state[room].world;
   }
 
@@ -196,11 +195,12 @@ export class StateManager {
     socket: Socket,
     indices: Indices,
     range: number,
-    obstacle: ObstacleEnum
+    obstacle: ObstacleEnum,
+    room: string
   ): Cell[] {
     const result: Cell[] = [];
 
-    const world: Cell[][] = this.getWorld(socket);
+    const world: Cell[][] = this.getWorld(room, socket);
     const { i: baseI, j: baseJ } = indices;
     const size: number = settings.mapSize;
 

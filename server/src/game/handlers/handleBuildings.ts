@@ -194,8 +194,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       entity
     ) as GuardHouse;
 
-    if (guardHouse.isCapturable(socket)) {
-      const enemyOwner = guardHouse.capturingBy(socket);
+    if (guardHouse.isCapturable(socket, room)) {
+      const enemyOwner = guardHouse.capturingBy(socket, room);
       if (!enemyOwner) return;
 
       console.log("start occupation");
@@ -247,11 +247,14 @@ export const handleBuildings = (io: Server, socket: Socket) => {
   };
 
   const guardHouseOccupied = ({ entity }: { entity: EntityType }): void => {
+    const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     destroy(entity, false);
     entity.data.owner = socket.id;
     entity.data.position = calculatePositionFromIndices(entity.data.indices);
     const { i, j } = entity.data.indices;
-    StateManager.getWorld(socket)[i][j].setOwner(entity.data.owner);
+    StateManager.getWorld(room, socket)[i][j].setOwner(entity.data.owner);
     reBuild(entity);
   };
 
