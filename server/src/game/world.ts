@@ -224,6 +224,8 @@ export class World {
 
   public static cleanupPlayerTerritory(socket: Socket, id: string): void {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     const buildings: Building[] = StateManager.getBuildings(room, id);
     const guardHouses: GuardHouse[] = buildings.filter(
       (building) => building.getEntity().data.name === "guardhouse"

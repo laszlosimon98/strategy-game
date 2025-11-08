@@ -127,8 +127,15 @@ export class StateManager {
 
   public static disconnectPlayer(room: string, socket: Socket): void {
     const player = this.state[room].players[socket.id];
+
+    player.units.forEach((unit) => {
+      const cell: Cell = unit.getCell(room);
+      cell.setOwner(null);
+      cell.removeObstacle(ObstacleEnum.Unit);
+    });
+
     player.buildings = [];
-    // player.units = [];
+    player.units = [];
     player.storage = {} as StorageType;
 
     delete this.state[room].players[socket.id];
@@ -161,6 +168,8 @@ export class StateManager {
 
   public static setWorld(socket: Socket, world: Cell[][]): void {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     this.state[room].world = world;
   }
 
@@ -431,6 +440,7 @@ export class StateManager {
     entity: EntityType
   ): boolean {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return true;
 
     const buildings: Building[] = this.getBuildings(room, entity.data.owner);
     const guardHouses: GuardHouse[] = buildings.filter(
@@ -445,6 +455,8 @@ export class StateManager {
     let winner: string = "";
 
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return true;
+
     const playersBuildings: Record<string, Building[]> =
       this.getAllPlayerBuildingsSeparatedByKeys(room);
 
@@ -466,11 +478,15 @@ export class StateManager {
 
   public static getWinner(socket: Socket): string | null {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return null;
+
     return this.state[room].winner;
   }
 
   private static setWinner(socket: Socket, key: string): void {
     const room: string = ServerHandler.getCurrentRoom(socket);
+    if (!room) return;
+
     const { name } = this.getPlayers(room)[key];
     this.state[room].winner = name;
   }
