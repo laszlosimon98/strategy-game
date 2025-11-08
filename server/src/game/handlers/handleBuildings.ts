@@ -242,7 +242,9 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         );
       }
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:info", response);
+      ServerHandler.sendMessageToSender(socket, "game:info", {
+        message: "Őrtorony sikeresen elfoglalva!",
+      });
     }
   };
 
