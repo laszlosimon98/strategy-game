@@ -13,7 +13,7 @@ export class IronMine extends Building {
   public constructor(building: EntityType) {
     super(building);
 
-    this.production = new Production(100, 700, "ores", "iron_ore");
+    this.production = new Production(10000, 7000, "ores", "iron_ore");
     this.range = 5;
   }
 
