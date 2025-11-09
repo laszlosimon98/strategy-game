@@ -14,7 +14,7 @@ export class IronMine extends Building {
     super(building);
 
     this.production = new Production(10000, 7000, "ores", "iron_ore");
-    this.range = 5;
+    this.range = 2;
   }
 
   public produce(
