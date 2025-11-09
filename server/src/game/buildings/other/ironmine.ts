@@ -1,7 +1,6 @@
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
-import { Coal } from "@/game/produceable/coal";
 import { IronOre } from "@/game/produceable/ironOre";
 import { Production } from "@/game/production";
 import { ReturnMessage } from "@/types/setting.types";
@@ -10,14 +9,12 @@ import { ProductionItem } from "@/types/storage.types";
 import { Instance } from "@/types/world.types";
 import { Server, Socket } from "socket.io";
 
-export class Mine extends Building {
-  private oreType: "iron_ore" | "coal";
-  public constructor(building: EntityType, oreType: "iron_ore" | "coal") {
+export class IronMine extends Building {
+  public constructor(building: EntityType) {
     super(building);
-    this.oreType = oreType;
 
-    this.production = new Production(10000, 7000, "materials", oreType);
-    this.range = 2;
+    this.production = new Production(100, 700, "ores", "iron_ore");
+    this.range = 5;
   }
 
   public produce(
@@ -29,18 +26,14 @@ export class Mine extends Building {
 
     const closestCell: Cell | null = this.handleCellObstacleChange(
       socket,
-      this.oreType === "coal" ? ObstacleEnum.Coal : ObstacleEnum.Iron_ore,
+      ObstacleEnum.IronOre,
       room
     );
 
     if (!closestCell) return null;
     const cellInstance: Instance = closestCell.getInstance();
 
-    if (
-      !cellInstance ||
-      (cellInstance &&
-        !(cellInstance instanceof Coal || cellInstance instanceof IronOre))
-    ) {
+    if (!cellInstance || (cellInstance && !(cellInstance instanceof IronOre))) {
       return null;
     }
 
@@ -50,9 +43,7 @@ export class Mine extends Building {
     }
 
     if (closestCell && cellInstance.getAmount() <= 1) {
-      closestCell.removeObstacle(
-        this.oreType === "coal" ? ObstacleEnum.Coal : ObstacleEnum.Iron_ore
-      );
+      closestCell.removeObstacle(ObstacleEnum.IronOre);
       closestCell.setInstance(null);
       this.sendMessage(
         io,

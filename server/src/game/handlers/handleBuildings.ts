@@ -46,6 +46,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
   };
 
   const build = (entity: EntityType): void => {
+    console.log(entity);
     if (
       !Validator.validateIndices(entity.data.indices) ||
       StateManager.isPlayerLostTheGame(socket, entity)

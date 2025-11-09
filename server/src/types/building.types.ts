@@ -13,7 +13,9 @@ export type Buildings =
   | "toolsmith"
   | "weaponsmith"
   | "well"
-  | "woodcutter";
+  | "woodcutter"
+  | "ironmine"
+  | "coalmine";
 
 type Price = {
   boards: number;

@@ -8,5 +8,5 @@ export enum ObstacleEnum {
   Unit = "unit",
   Border = "border",
   Coal = "coal",
-  Iron_ore = "iron_ore",
+  IronOre = "iron_ore",
 }

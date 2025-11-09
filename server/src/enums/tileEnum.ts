@@ -3,6 +3,5 @@ export enum TileEnum {
   Dirt = "dirt",
   Flower = "grass_flower",
   Rock = "grass_rock",
-  Iron_ore = "iron_ore",
-  Coal = "coal",
+  Mine = "mine_tile",
 }

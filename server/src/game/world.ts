@@ -316,11 +316,13 @@ export class World {
 
         if (terrainNoise >= 80 && terrainNoise <= 90) {
           if (cell.getHighestPriorityObstacleType() === ObstacleEnum.Empty) {
-            if (terrainNoise <= 85) {
-              cell.setType(TileEnum.Coal);
+            if (terrainNoise <= 86) {
+              cell.setType(TileEnum.Mine);
+              cell.addObstacle(ObstacleEnum.Coal);
               cell.setInstance(new Coal());
             } else {
-              cell.setType(TileEnum.Iron_ore);
+              cell.setType(TileEnum.Mine);
+              cell.addObstacle(ObstacleEnum.IronOre);
               cell.setInstance(new IronOre());
             }
           }

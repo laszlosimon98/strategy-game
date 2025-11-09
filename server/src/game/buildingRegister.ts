@@ -8,6 +8,8 @@ import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { IronSmelter } from "@/game/buildings/military/ironsmelter";
 import { ToolSmith } from "@/game/buildings/military/toolsmith";
 import { WeaponSmith } from "@/game/buildings/military/weaponsmith";
+import { CoalMine } from "@/game/buildings/other/coalmine";
+import { IronMine } from "@/game/buildings/other/ironmine";
 import { Residence } from "@/game/buildings/other/residence";
 import { Storage } from "@/game/buildings/other/storage";
 import { Forester } from "@/game/buildings/resources/forester";
@@ -31,4 +33,6 @@ export const buildingRegister: Record<string, typeof Building> = {
   weaponsmith: WeaponSmith,
   well: Well,
   woodcutter: Woodcutter,
+  coalmine: CoalMine,
+  ironmine: IronMine,
 };

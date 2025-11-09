@@ -31,6 +31,8 @@ export class BuildingManager extends Manager {
     weaponsmith: { boards: 2, stone: 2 },
     well: { boards: 2, stone: 0 },
     woodcutter: { boards: 2, stone: 0 },
+    coalmine: { boards: 4, stone: 0 },
+    ironmine: { boards: 4, stone: 0 },
   };
 
   protected constructor() {

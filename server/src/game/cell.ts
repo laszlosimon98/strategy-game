@@ -13,7 +13,7 @@ const priorityList: Record<ObstacleEnum, number> = {
   [ObstacleEnum.Decorated]: 1,
   [ObstacleEnum.Occupied]: 2,
   [ObstacleEnum.Coal]: 2,
-  [ObstacleEnum.Iron_ore]: 2,
+  [ObstacleEnum.IronOre]: 2,
   [ObstacleEnum.Border]: 3,
   [ObstacleEnum.House]: 4,
   [ObstacleEnum.Tree]: 4,
