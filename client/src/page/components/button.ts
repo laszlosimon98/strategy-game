@@ -46,5 +46,5 @@ export class Button extends Plate {
     return this.image.src;
   }
 
-  public async handleError(): Promise<any> {}
+  public async handleAsyncFunction(): Promise<any> {}
 }

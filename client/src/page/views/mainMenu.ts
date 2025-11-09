@@ -1,10 +1,19 @@
-import { authApi } from "@/api/api";
+import { authApi, userApi } from "@/api/api";
 import { PageState } from "@/enums/pageState";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Plate } from "@/page/components/plate";
 import { Page } from "@/page/views/page";
 import { settings } from "@/settings";
+import type { StatisticType } from "@/types/statistic.type";
+
+interface PlayerData {
+  username: string;
+  statistic: {
+    losses: number;
+    wins: number;
+  };
+}
 
 export class MainMenu extends Page {
   private newGame: Button;
@@ -67,12 +76,12 @@ export class MainMenu extends Page {
       settings.pos.mainMenu.statistic,
       settings.size.button,
       StateManager.getImages("ui", "plate"),
-      "statistic",
-      () => StateManager.setPageState(PageState.Statistic)
+      "statistic"
     );
 
     this.buttons.push(this.newGame);
     this.buttons.push(this.statistic);
+    this.statistic.handleAsyncFunction = this.fetchData;
 
     if (StateManager.getAccessToken()) {
       this.buttons.push(this.logout);
@@ -96,6 +105,52 @@ export class MainMenu extends Page {
         yFrom: this.namePlate.getPos().y,
         yTo: this.namePlate.getDimension().height,
       });
+    }
+  }
+
+  private async fetchData() {
+    try {
+      const playerData = await userApi.get("/statistic", {
+        headers: {
+          Authorization: `Bearer ${StateManager.getAccessToken()}`,
+        },
+      });
+
+      const topfivePlayers = await userApi.get("/top-five", {
+        headers: {
+          Authorization: `Bearer ${StateManager.getAccessToken()}`,
+        },
+      });
+
+      if (playerData.data) {
+        const { username } = playerData.data;
+        const { losses, wins } = playerData.data.statistic;
+
+        const result: StatisticType = {
+          username,
+          losses,
+          wins,
+        };
+
+        StateManager.savePlayerStat(result);
+      }
+
+      if (topfivePlayers.data) {
+        const result: StatisticType[] = topfivePlayers.data.map(
+          (player: PlayerData) => {
+            return {
+              username: player.username,
+              losses: player.statistic.losses,
+              wins: player.statistic.wins,
+            };
+          }
+        );
+        StateManager.saveTopFive(result);
+      }
+
+      StateManager.setPageState(PageState.Statistic);
+    } catch (e) {
+      console.warn(e);
     }
   }
 }

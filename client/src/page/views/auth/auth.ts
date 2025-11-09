@@ -90,7 +90,7 @@ export class Auth extends Page {
     this.inputs.push(this.nameInput);
     this.inputs.push(this.passwordInput);
 
-    this.actionButton.handleError = this.handleNext;
+    this.actionButton.handleAsyncFunction = this.handleNext;
   }
 
   public draw(): void {

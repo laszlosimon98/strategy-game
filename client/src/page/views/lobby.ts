@@ -78,7 +78,7 @@ export class Lobby extends Page {
     });
 
     this.handleCommunication();
-    this.start.handleError = this.handleError;
+    this.start.handleAsyncFunction = this.handleError;
   }
 
   public draw(): void {

@@ -21,6 +21,10 @@ export const getStatistic = async (request: Request, response: Response) => {
   const username = request["user"];
 
   const user = await prismaService.user.findUnique({
+    omit: {
+      password: true,
+      refreshToken: true,
+    },
     where: {
       username,
     },
@@ -32,18 +36,31 @@ export const getStatistic = async (request: Request, response: Response) => {
   if (!user) {
     return response.sendStatus(403);
   }
+
+  return response.status(200).json(user);
 };
 
-export const getTopTenStatistic = async (
+export const getTopFiveStatistic = async (
   request: Request,
   response: Response
 ) => {
-  return await prismaService.user.findMany({
-    take: 10,
+  const users = await prismaService.user.findMany({
     include: {
       statistic: true,
     },
+    omit: {
+      password: true,
+      refreshToken: true,
+    },
+    orderBy: {
+      statistic: {
+        wins: "desc",
+      },
+    },
+    take: 5,
   });
+
+  return response.status(200).json(users);
 };
 
 export const updateStatistic = async (request: Request, response: Response) => {

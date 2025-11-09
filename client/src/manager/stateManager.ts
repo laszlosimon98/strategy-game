@@ -18,6 +18,7 @@ import type {
   StateType,
   PlayerGameType,
 } from "@/types/game.types";
+import type { StatisticType } from "@/types/statistic.type";
 import type { StorageType } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
@@ -63,6 +64,14 @@ export class StateManager {
     player: {
       name: "Játékos",
       host: false,
+    },
+    statistic: {
+      player: {
+        username: "",
+        losses: 0,
+        wins: 0,
+      },
+      topfive: [],
     },
     infoPanel: {
       data: null,
@@ -318,5 +327,24 @@ export class StateManager {
 
   public static removeUnit(entity: EntityType): void {
     UnitManager.removeUnit(this.state, entity);
+  }
+
+  // ------------------- Statistic -------------------
+
+  public static savePlayerStat(stat: StatisticType): void {
+    this.state.statistic.player = stat;
+    console.log(this.state.statistic.player);
+  }
+
+  public static saveTopFive(stats: StatisticType[]): void {
+    this.state.statistic.topfive = [...stats];
+  }
+
+  public static getPlayerStat(): StatisticType {
+    return this.state.statistic.player;
+  }
+
+  public static getTopFive(): StatisticType[] {
+    return this.state.statistic.topfive;
   }
 }

@@ -21,9 +21,11 @@ export class Text {
     this.color = options && options.color ? options.color : settings.color.text;
     this.fontSize = options?.fontSize;
 
+    const originalFont = ctx.font;
     if (this.fontSize) {
       ctx.font = `${this.fontSize} sans-serif`;
     }
+    ctx.font = originalFont;
     this.metrics = ctx.measureText(this.text);
   }
 
@@ -59,11 +61,13 @@ export class Text {
   public setText(text: string): void {
     this.text = text;
 
+    const originalFont = ctx.font;
     if (this.fontSize) {
       ctx.font = `${this.fontSize} sans-serif`;
     }
 
     this.metrics = ctx.measureText(text);
+    ctx.font = originalFont;
   }
 
   public getText(): string {

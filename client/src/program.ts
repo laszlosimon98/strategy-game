@@ -109,7 +109,7 @@ export class Program {
       this.buttons?.map(async (btn) => {
         if (btn.isClicked(x, y)) {
           btn.click();
-          await btn.handleError();
+          await btn.handleAsyncFunction();
 
           this.updateButtons();
           this.updateInputs();

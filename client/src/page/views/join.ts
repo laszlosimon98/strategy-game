@@ -63,7 +63,7 @@ export class Join extends Page {
       { color: settings.color.error }
     );
 
-    this.joinButton.handleError = this.handleError;
+    this.joinButton.handleAsyncFunction = this.handleError;
   }
 
   public draw(): void {

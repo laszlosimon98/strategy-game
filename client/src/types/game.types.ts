@@ -5,6 +5,7 @@ import { Building } from "@/game/world/building/building";
 import type { Cell } from "@/game/world/cell";
 import { Unit } from "@/game/world/unit/unit";
 import { Soldier } from "@/game/world/unit/units/soldier";
+import type { StatisticType } from "@/types/statistic.type";
 import type { StorageType } from "@/types/storage.types";
 import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
@@ -78,6 +79,10 @@ type PlayerType = {
   player: {
     name: string;
     host: boolean;
+  };
+  statistic: {
+    player: StatisticType;
+    topfive: StatisticType[];
   };
 };
 
