@@ -34,7 +34,9 @@ export type Buildings =
   | "barracks"
   | "guardhouse"
   | "storage"
-  | "residence";
+  | "residence"
+  | "ironmine"
+  | "coalmine";
 
 export type Storage =
   | "wood"

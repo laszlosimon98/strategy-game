@@ -34,6 +34,8 @@ export const hu = {
     guardhouse: "Őrház",
     storage: "Raktár",
     residence: "Lakóhely",
+    ironmine: "Vasbánya",
+    coalmine: "Szénbánya",
   },
   storage: {
     wood: "Fa",
@@ -73,6 +75,8 @@ export const hu = {
     resource: "Erőforrás",
     food: "Élelem",
     military: "Haderő",
+    ironmine: "Vasbánya",
+    coalmine: "Szénbánya",
   },
   utils: {
     hitPoints: "Életerő",

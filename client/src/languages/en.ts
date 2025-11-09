@@ -34,6 +34,8 @@ export const en = {
     guardhouse: "Guardhouse",
     storage: "Storage",
     residence: "Residence",
+    ironmine: "Iron mine",
+    coalmine: "Coal Mine",
   },
   storage: {
     wood: "Wood",
@@ -73,6 +75,8 @@ export const en = {
     resource: "Resource",
     food: "Food",
     military: "Military",
+    ironmine: "Iron mine",
+    coalmine: "Coal Mine",
   },
   utils: {
     hitPoints: "Hitpoints",
