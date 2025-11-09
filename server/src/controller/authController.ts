@@ -32,11 +32,19 @@ export const handleRegister = async (request: Request, response: Response) => {
       parseInt(process.env.HASHROUND || "10")
     );
 
-    await prismaService.user.create({
+    const createdUser = await prismaService.user.create({
       data: {
         username,
         password: hashedPassword,
         refreshToken: "",
+      },
+    });
+
+    await prismaService.statistic.create({
+      data: {
+        usersid: createdUser.id,
+        losses: 0,
+        wins: 0,
       },
     });
 
