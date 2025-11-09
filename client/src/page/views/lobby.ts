@@ -18,6 +18,7 @@ export class Lobby extends Page {
   private playersContainer: Frame;
   private players: Record<string, Text>[] = [];
   private playerLabel: Text;
+  private errorMessage: Text;
 
   public constructor(title: string) {
     super(title);
@@ -72,7 +73,12 @@ export class Lobby extends Page {
       new Dimension(580, Math.max(canvasHeight / 3, 200))
     );
 
+    this.errorMessage = new Text(new Position(0, 0), "", {
+      color: settings.color.error,
+    });
+
     this.handleCommunication();
+    this.start.handleError = this.handleError;
   }
 
   public draw(): void {
@@ -81,6 +87,7 @@ export class Lobby extends Page {
     this.info.draw();
     this.playersContainer.draw();
     this.playerLabel.draw();
+    this.errorMessage.draw();
 
     this.players.forEach((player) => {
       Object.values(player)[0].draw();
@@ -206,4 +213,21 @@ export class Lobby extends Page {
       }
     );
   }
+
+  private handleError = async () => {
+    const error: string = await ServerHandler.receiveAsyncMessage(
+      "connect:error"
+    );
+
+    if (error) {
+      StateManager.setPageState(PageState.Lobby);
+      this.errorMessage.setText(error);
+      this.errorMessage.setCenter({
+        xFrom: 0,
+        xTo: canvasWidth,
+        yFrom: settings.pos.default.back.y - 150,
+        yTo: 0,
+      });
+    }
+  };
 }

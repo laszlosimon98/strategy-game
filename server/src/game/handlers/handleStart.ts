@@ -16,6 +16,15 @@ export const handleStart = (io: Server, socket: Socket) => {
     const room: string = ServerHandler.getCurrentRoom(socket);
     if (!room) return;
 
+    if (Object.keys(StateManager.getPlayers(room)).length <= 1) {
+      ServerHandler.sendMessageToSender(
+        socket,
+        "connect:error",
+        "A játék egy játékossal nem indítható!"
+      );
+      return;
+    }
+
     StateManager.startGame(room);
     ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
