@@ -7,4 +7,6 @@ export enum ObstacleEnum {
   House = "house",
   Unit = "unit",
   Border = "border",
+  Coal = "coal",
+  Iron_ore = "iron_ore",
 }

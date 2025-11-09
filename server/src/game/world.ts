@@ -17,6 +17,8 @@ import { TileEnum } from "@/enums/tileEnum";
 import { calculateDistanceByIndices } from "@/utils/utils";
 import { BuildingManager } from "@/manager/buildingManager";
 import { DestroyBuildingResponse } from "@/types/world.types";
+import { Coal } from "@/game/produceable/coal";
+import { IronOre } from "@/game/produceable/ironOre";
 
 export class World {
   private static world: Cell[][] = [];
@@ -314,7 +316,13 @@ export class World {
 
         if (terrainNoise >= 80 && terrainNoise <= 90) {
           if (cell.getHighestPriorityObstacleType() === ObstacleEnum.Empty) {
-            cell.setType(TileEnum.Dirt);
+            if (terrainNoise <= 85) {
+              cell.setType(TileEnum.Coal);
+              cell.setInstance(new Coal());
+            } else {
+              cell.setType(TileEnum.Iron_ore);
+              cell.setInstance(new IronOre());
+            }
           }
         }
       }
