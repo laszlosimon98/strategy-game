@@ -33,18 +33,18 @@ export const handleUnits = (io: Server, socket: Socket) => {
     return unit;
   };
 
-  const getClosestUnit = (
+  const getUnitInRange = (
     entity: EntityType,
     enemySoldiers: Soldier[]
-  ): Soldier | undefined => {
+  ): Soldier | null => {
     const room: string = ServerHandler.getCurrentRoom(socket);
-    if (!room) return;
+    if (!room) return null;
 
     const currentSoldier: Soldier = StateManager.getSoldier(
       room,
       entity
     ) as Soldier;
-    let closestUnit: Soldier | undefined;
+    let unitInRange: Soldier | null = null;
 
     for (let i = 0; i < enemySoldiers.length; ++i) {
       if (
@@ -56,11 +56,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
         ) <
         currentSoldier.getProperties().range * settings.cellSize + EPSILON
       ) {
-        closestUnit = enemySoldiers[i];
+        unitInRange = enemySoldiers[i];
       }
     }
 
-    return closestUnit;
+    return unitInRange;
   };
 
   const dealDamage = (currentSoldier: Soldier, enemySoldier: Soldier): void => {
@@ -216,13 +216,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
         }
       });
 
-    if (enemySoldiers.length > 0) {
-      const target = getClosestUnit(entity, enemySoldiers);
-
-      if (target) {
-        currentSoldier.setTarget(target);
-      }
-    }
+    console.log(enemySoldiers);
+    currentSoldier.setTarget(getUnitInRange(entity, enemySoldiers));
 
     const target: Soldier | null = currentSoldier.getTarget();
 
@@ -252,6 +247,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
       });
 
       if (!currentSoldier.isAlive()) {
+        currentSoldier.setTarget(null);
+        target.setTarget(null);
         deleteUnit(currentSoldier);
 
         ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-dies", {
@@ -269,6 +266,8 @@ export const handleUnits = (io: Server, socket: Socket) => {
       }
 
       if (!target.isAlive()) {
+        currentSoldier.setTarget(null);
+        target.setTarget(null);
         deleteUnit(target);
 
         ServerHandler.sendMessageToEveryOne(io, socket, "game:unit-dies", {

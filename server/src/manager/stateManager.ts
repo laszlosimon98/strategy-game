@@ -129,6 +129,15 @@ export class StateManager {
     const player = this.state[room].players[socket.id];
 
     player.units.forEach((unit) => {
+      if (unit instanceof Soldier) {
+        const target = unit.getTarget();
+
+        if (target) {
+          target.setTarget(null);
+        }
+
+        unit.setTarget(null);
+      }
       const cell: Cell = unit.getCell(room);
       cell.setOwner(null);
       cell.removeObstacle(ObstacleEnum.Unit);

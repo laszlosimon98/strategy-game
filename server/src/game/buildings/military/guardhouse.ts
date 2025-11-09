@@ -9,7 +9,7 @@ export class GuardHouse extends Building {
   public constructor(building: EntityType) {
     super(building);
 
-    this.range = 11;
+    this.range = 30;
     this.occupationRange = 2;
   }
 
@@ -22,11 +22,16 @@ export class GuardHouse extends Building {
       room
     ).map((cell) => cell.getSoldier() as Soldier);
 
-    if (!soldiers) return false;
-
     const idSet: Set<string> = new Set(
-      soldiers.map((soldier) => soldier.getEntity().data.owner)
+      soldiers
+        .map((soldier) => {
+          if (soldier) {
+            return soldier.getEntity().data.owner;
+          }
+        })
+        .filter((owner): owner is string => owner !== undefined)
     );
+
     const idArray: string[] = Array.from(idSet);
 
     return idArray.length === 1 && idArray[1] !== this.getEntity().data.owner;
