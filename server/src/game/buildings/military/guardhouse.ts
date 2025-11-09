@@ -9,7 +9,7 @@ export class GuardHouse extends Building {
   public constructor(building: EntityType) {
     super(building);
 
-    this.range = 30;
+    this.range = 11;
     this.occupationRange = 2;
   }
 
