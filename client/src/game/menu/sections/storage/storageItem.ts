@@ -27,8 +27,12 @@ export class StorageItem extends PageComponents {
   ) {
     super(pos, dim);
 
-    this.material = new Text(new Position(pos.x, pos.y), "");
-    this.amount = new Text(new Position(pos.x, pos.y + 25), "");
+    this.material = new Text(new Position(pos.x, pos.y), "", {
+      fontSize: "16px",
+    });
+    this.amount = new Text(new Position(pos.x, pos.y + 25), "", {
+      fontSize: "16px",
+    });
 
     const getStorageItem = () => {
       const group = storage[path] as any;

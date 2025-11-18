@@ -75,7 +75,7 @@ export class SoldierPanel extends Section {
 
       this.healthText.setCenter({
         xFrom: this.pos.x,
-        xTo: this.dim.width,
+        xTo: this.dim.width + 25,
         yFrom: this.pos.y + this.dim.height - 80,
         yTo: 0,
       });

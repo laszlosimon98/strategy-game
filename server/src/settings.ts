@@ -6,7 +6,7 @@ export const EPSILON: number = 10;
 const MAP_SIZE: number = 80;
 const START_IDX: number = 10;
 const MAX_PLAYER: number = 4;
-const CODE_LENGTH: number = 2;
+const CODE_LENGTH: number = 6;
 const MAP_SEED: string = "seed";
 const CELL_SIZE: number = 48;
 

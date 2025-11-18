@@ -54,13 +54,13 @@ export class StorageSection extends Section {
         "boards"
       );
       this.createItem(
-        new Position(this.pos.x + 120, this.pos.y + 25),
+        new Position(this.pos.x + 150, this.pos.y + 25),
         "materials",
         "stone"
       );
 
       this.createItem(
-        new Position(this.pos.x + 10, this.pos.y + 100),
+        new Position(this.pos.x, this.pos.y + 100),
         "foods",
         "grain"
       );
@@ -70,7 +70,7 @@ export class StorageSection extends Section {
         "flour"
       );
       this.createItem(
-        new Position(this.pos.x + 130, this.pos.y + 100),
+        new Position(this.pos.x + 125, this.pos.y + 100),
         "foods",
         "bread"
       );
@@ -108,7 +108,7 @@ export class StorageSection extends Section {
         "shield"
       );
       this.createItem(
-        new Position(this.pos.x + 140, this.pos.y + 325),
+        new Position(this.pos.x + 150, this.pos.y + 325),
         "weapons",
         "bow"
       );
