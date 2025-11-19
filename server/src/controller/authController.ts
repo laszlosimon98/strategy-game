@@ -20,7 +20,7 @@ export const handleRegister = async (request: Request, response: Response) => {
     });
 
     if (user) {
-      return response.status(400).send("A felhasználónév foglalt!");
+      return response.status(409).send("A felhasználónév foglalt!");
     }
 
     if (!username || !password) {
@@ -48,7 +48,7 @@ export const handleRegister = async (request: Request, response: Response) => {
       },
     });
 
-    return response.status(200).send("Sikeres regisztráció!");
+    return response.status(201).send("Sikeres regisztráció!");
   } catch (err) {
     return response.status(500).send("Sikertelen regisztráció!");
   }
@@ -65,7 +65,7 @@ export const handleLogin = async (request: Request, response: Response) => {
     });
 
     if (!user) {
-      return response.status(400).send("A felhasználó nem található!");
+      return response.status(404).send("A felhasználó nem található!");
     }
 
     const isPasswordValid: boolean = await bcrypt.compare(
@@ -74,7 +74,7 @@ export const handleLogin = async (request: Request, response: Response) => {
     );
 
     if (!isPasswordValid) {
-      return response.status(400).send("Rossz felhasználónév vagy jelszó!");
+      return response.status(401).send("Rossz felhasználónév vagy jelszó!");
     }
 
     const accessToken = jwt.sign(
@@ -148,7 +148,7 @@ export const handleRefreshToken = async (
         { expiresIn: "5m" }
       );
 
-      response.json({ accessToken });
+      response.status(200).json({ accessToken });
     }
   );
 };
