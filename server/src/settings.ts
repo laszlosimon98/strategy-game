@@ -1,0 +1,38 @@
+import { Indices } from "@/utils/indices";
+import type { Settings } from "@/types/setting.types";
+
+export const EPSILON: number = 10;
+
+const MAP_SIZE: number = 80;
+const START_IDX: number = 10;
+const MAX_PLAYER: number = 4;
+const CODE_LENGTH: number = 6;
+const MAP_SEED: string = "seed";
+const CELL_SIZE: number = 48;
+
+export const settings: Settings = {
+  colors: [
+    "black",
+    "blue",
+    "brown",
+    "green",
+    "orange",
+    "purple",
+    "red",
+    "white",
+  ],
+  maxPlayer: MAX_PLAYER,
+  codeLength: CODE_LENGTH,
+  mapSeed: MAP_SEED,
+  mapSize: 80,
+  unitSpeed: 80,
+  cellSize: CELL_SIZE,
+  assetSize: 64,
+  fps: 60,
+  startPositions: [
+    new Indices(START_IDX, START_IDX),
+    new Indices(MAP_SIZE - 1 - START_IDX, START_IDX),
+    new Indices(START_IDX, MAP_SIZE - 1 - START_IDX),
+    new Indices(MAP_SIZE - 1 - START_IDX, MAP_SIZE - 1 - START_IDX),
+  ],
+};
