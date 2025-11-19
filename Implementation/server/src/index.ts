@@ -6,7 +6,7 @@ import { authHandler } from "./handlers/authHandler";
 import { connectionHandler } from "./handlers/connectionHandler";
 import { gameHandler } from "./handlers/gameHandler/gameHandler";
 import path from "path";
-import { imageHandler, imageHandler2 } from "./handlers/imageHandler";
+import { imageHandler } from "./handlers/imageHandler";
 import { Loader } from "./classes/imageLoader";
 
 const PORT = 3000;
@@ -19,11 +19,7 @@ app.use(express.static(path.join(__dirname, "..", "/public")));
 const io: Server = new Server(httpServer, {
   cors: {
     // origin: "*",
-    origin: [
-      "http://localhost:5173",
-      "http://192.168.1.70:5173",
-      "http://localhost:5174",
-    ],
+    origin: ["http://localhost:5173", "http://192.168.1.70:5173"],
   },
 });
 
@@ -34,10 +30,9 @@ let images: any;
   );
 })();
 
-const onConnecton = (socket: Socket) => {
+const onConnecton = async (socket: Socket) => {
+  await imageHandler(io, socket, images);
   connectionHandler(io, socket);
-  imageHandler(io, socket);
-  imageHandler2(io, socket, images);
   gameHandler(io, socket);
   // authHandler();
 };

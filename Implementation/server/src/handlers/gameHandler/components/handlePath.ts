@@ -10,12 +10,6 @@ import { state } from "../../../data/state";
 import { EntityType } from "../../../types/types";
 
 export const handlePath = (io: Server, socket: Socket) => {
-  /**
-   * Meghatározza az utat az egységtől a cél koordinátáig és elküldi a kliensnek
-   * @param {EntityType} entity egység
-   * @param {Indeces} goal cél koordináta
-   * @returns
-   */
   const pathFind = ({
     entity,
     goal,

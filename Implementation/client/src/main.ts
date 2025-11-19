@@ -28,4 +28,4 @@ const main = async () => {
   next();
 };
 
-main();
+await main();

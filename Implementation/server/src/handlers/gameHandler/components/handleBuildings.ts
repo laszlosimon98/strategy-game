@@ -2,17 +2,12 @@ import { Server, Socket } from "socket.io";
 import { Communicate } from "../../../classes/communicate";
 import { Builder } from "../../../classes/game/builder";
 import { Building } from "../../../classes/game/building";
+import { Cell } from "../../../classes/game/cell";
 import { Indices } from "../../../classes/utils/indices";
 import { Validator } from "../../../classes/validator";
 import { EntityType } from "../../../types/types";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
-  /**
-   * A tulajdonságok alapján lerakja a megfelelő cellára az épületet és
-   * üzenetet küld a játékosoknak
-   * @param {EntityType} entity épület
-   * @returns
-   */
   const build = (entity: EntityType): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
@@ -30,11 +25,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
-  /**
-   * Lerombolja az épületet, majd értesíti a játékosokat
-   * @param {Indices} indices épület koordináták
-   * @returns
-   */
   const destroy = (indices: Indices): void => {
     if (!Validator.validateIndices(indices)) {
       return;

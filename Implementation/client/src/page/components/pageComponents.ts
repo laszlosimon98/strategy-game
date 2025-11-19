@@ -1,7 +1,8 @@
+import { RenderInterface } from "../../interfaces/render";
 import { Dimension } from "../../utils/dimension";
 import { Position } from "../../utils/position";
 
-export abstract class PageComponents {
+export abstract class PageComponents implements RenderInterface {
   protected pos: Position;
   protected dim: Dimension;
 

@@ -16,8 +16,9 @@ import { Game } from "./game/game";
 import { ServerHandler } from "./server/serverHandler";
 import { Position } from "./utils/position";
 import { state } from "./data/state";
+import { RenderInterface } from "./interfaces/render";
 
-export class Program {
+export class Program implements RenderInterface {
   private pages: Partial<Record<PageState, Page>>;
   private buttons?: Button[];
   private inputs?: TextInput[];

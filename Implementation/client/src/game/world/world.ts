@@ -1,8 +1,6 @@
 import { state } from "../../data/state";
-import { ctx } from "../../init";
 import { MouseClicker } from "../../interfaces/mouseClicker";
 import { ServerHandler } from "../../server/serverHandler";
-import { CELL_SIZE, ERROR_COLOR } from "../../settings";
 import { TileType } from "../../types/gameType";
 import { Indices } from "../../utils/indices";
 import { Position } from "../../utils/position";
@@ -65,38 +63,6 @@ export class World implements MouseClicker {
       }
     );
   }
-  private printMouseCoords(): void {
-    ctx.save();
-
-    ctx.fillStyle = ERROR_COLOR;
-    const position = this.convertIsometricCoordsToCartesianCoords(
-      new Position(this.mousePos.x, this.mousePos.y)
-    );
-    const text = `x: ${position.i}, y: ${position.j}`;
-
-    ctx.fillText(
-      text,
-      this.mousePos.x - ctx.measureText(text).width / 2,
-      this.mousePos.y - 5
-    );
-
-    ctx.restore();
-  }
-
-  private convertIsometricCoordsToCartesianCoords = (
-    position: Position
-  ): Indices => {
-    const world_x = position.x - this.camera.getScroll().x;
-    const world_y = position.y - this.camera.getScroll().y;
-
-    const cart_y = (2 * world_y - world_x) / 2;
-    const cart_x = cart_y + world_x;
-
-    const grid_x = Math.floor(cart_x / CELL_SIZE);
-    const grid_y = Math.floor(cart_y / CELL_SIZE);
-
-    return new Indices(grid_x, grid_y);
-  };
 
   public draw(): void {
     this.world.forEach((tiles) => {
@@ -107,7 +73,6 @@ export class World implements MouseClicker {
     });
     this.unitManager.draw();
     this.buildingManager.draw();
-    this.printMouseCoords();
 
     // this.world.forEach((tiles) => {
     //   tiles.forEach((tile) => {

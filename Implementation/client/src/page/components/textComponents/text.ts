@@ -1,4 +1,4 @@
-import { ctx } from "../../../init";
+import { canvasWidth, ctx } from "../../../init";
 import { TEXT_COLOR } from "../../../settings";
 import { Dimension } from "../../../utils/dimension";
 import { Position } from "../../../utils/position";

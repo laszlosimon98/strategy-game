@@ -6,13 +6,6 @@ export class AStar {
 
   private constructor() {}
 
-  /**
-   * Kiszámol egy heurisztikát a aktuális és a cél cella között,
-   * ez segíti az algoritmus az útkeresésben
-   * @param current aktuális cella
-   * @param end  cél cella
-   * @returns kiszámolt heurisztika
-   */
   private static heuristic(current: Cell, end: Cell): number {
     const { i: ci, j: cj } = current.getIndices();
     const { i: ei, j: ej } = current.getIndices();
@@ -21,11 +14,6 @@ export class AStar {
     // return Math.abs(current.i - end.i) + Math.abs(current.j - end.j);
   }
 
-  /**
-   * törli a megadott cellát a megadott cella tömből
-   * @param {Cell[]} arr cella tömb
-   * @param {Cell} element cella
-   */
   private static removeElementFromList(arr: Cell[], element: Cell): void {
     for (let i = arr.length - 1; i >= 0; --i) {
       if (arr[i].equals(element)) {
@@ -34,11 +22,6 @@ export class AStar {
     }
   }
 
-  /**
-   * beállítja az F, H és G értékeket a szomszéd cellának
-   * @param {Cell} neighbor egy szomszéd
-   * @param {Cell} end a cél cella
-   */
   private static updateNeighbor(neighbor: Cell, end: Cell): void {
     neighbor.setG(
       this.currentCell.getG() + this.heuristic(this.currentCell, neighbor)
@@ -47,12 +30,6 @@ export class AStar {
     neighbor.setF(neighbor.getG() + neighbor.getH());
   }
 
-  /**
-   * Meghatározza az A* algoritmussal az útat a két megadott cella között
-   * @param {Cell} start start cella
-   * @param {Cell} end cél cella
-   * @returns sikeres volt-e az útépítés a start és a cél cella között
-   */
   private static calculatePath(start: Cell, end: Cell): boolean {
     const openList: Cell[] = [];
     const closedList: Cell[] = [];
@@ -102,12 +79,6 @@ export class AStar {
     return false;
   }
 
-  /**
-   * Meghatározza az utat két cella között, felépíti az utat és átalakítja indexeké
-   * @param {Cell} start start cella
-   * @param {Cell} end cél cella
-   * @returns Visszatér egy index tömbbel, ami az optimális utat jelöli
-   */
   public static getPath(start: Cell, end: Cell): Indices[] {
     this.calculatePath(start, end);
     const path: Cell[] = this.buildPath();
@@ -117,10 +88,6 @@ export class AStar {
     return pathIndices;
   }
 
-  /**
-   *
-   * @returns Felépíti az útat a start és a cél cella között
-   */
   private static buildPath(): Cell[] {
     const path: Cell[] = [];
     let current: Cell | undefined = this.currentCell;
@@ -147,11 +114,6 @@ export class AStar {
     }
   }
 
-  /**
-   *
-   * @param {Cell[]} path a start és a cél cella közötti cellák, amiket a algoritmus megtalált, mint optimális út
-   * @returns Visszatér az útból kinyert indexekel
-   */
   private static convertPathToIndices(path: Cell[]): Indices[] {
     const result = path.map((cell) => {
       return cell.getIndices();

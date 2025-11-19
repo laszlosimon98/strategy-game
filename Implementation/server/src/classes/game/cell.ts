@@ -101,10 +101,6 @@ export class Cell {
     return this.f;
   }
 
-  /**
-   * Hozzáadja a szomszéd listához a cellát
-   * @param {Cell} cell szomszédos cella
-   */
   public addNeighbors(cell: Cell): void {
     this.neighbors.push(cell);
   }
@@ -113,27 +109,14 @@ export class Cell {
     return this.neighbors;
   }
 
-  /**
-   *
-   * @returns megnézi, hogy van-e a cellán akadály
-   */
   public isWalkAble(): boolean {
     return !this.hasObstacle;
   }
 
-  /**
-   *
-   * @returns megnézi, hogy a cellára lehet-e építeni
-   */
   public isBuildAble(): boolean {
     return this.type === "grass" && this.isWalkAble();
   }
 
-  /**
-   *
-   * @param {Cell} other másik cella
-   * @returns egyenlő-e a két cella
-   */
   public equals(other: Cell) {
     return (
       this.indices.i === other.indices.i && this.indices.j === other.indices.j
