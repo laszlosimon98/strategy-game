@@ -1,11 +1,14 @@
 import { authApi, userApi } from "@/api/api";
 import { PageState } from "@/enums/pageState";
+import { canvasWidth } from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Plate } from "@/page/components/plate";
+import { Text } from "@/page/components/text";
 import { Page } from "@/page/views/page";
 import { settings } from "@/settings";
 import type { StatisticType } from "@/types/statistic.type";
+import { Position } from "@/utils/position";
 
 interface PlayerData {
   username: string;
@@ -22,6 +25,8 @@ export class MainMenu extends Page {
   private registration: Button;
   private logout: Button;
   private namePlate: Plate;
+
+  private error: Text;
 
   public constructor(title: string) {
     super(title);
@@ -79,9 +84,11 @@ export class MainMenu extends Page {
       "statistic"
     );
 
+    this.error = new Text(Position.zero(), "");
+
     this.buttons.push(this.newGame);
     this.buttons.push(this.statistic);
-    this.statistic.handleAsyncFunction = this.fetchData;
+    this.statistic.handleAsyncFunction = this.fetchData.bind(this);
 
     if (StateManager.getAccessToken()) {
       this.buttons.push(this.logout);
@@ -94,6 +101,10 @@ export class MainMenu extends Page {
   public draw(): void {
     super.draw();
     this.namePlate.draw();
+
+    if (this.error.getText() !== "") {
+      this.error.draw();
+    }
   }
 
   public update(): void {
@@ -104,6 +115,15 @@ export class MainMenu extends Page {
         xTo: this.namePlate.getDimension().width,
         yFrom: this.namePlate.getPos().y,
         yTo: this.namePlate.getDimension().height,
+      });
+    }
+
+    if (this.error.getText() !== "") {
+      this.error.setCenter({
+        xFrom: 0,
+        xTo: canvasWidth,
+        yFrom: this.namePlate.getPos().y + 200,
+        yTo: 0,
       });
     }
   }
@@ -150,7 +170,7 @@ export class MainMenu extends Page {
 
       StateManager.setPageState(PageState.Statistic);
     } catch (e) {
-      console.warn(e);
+      this.error.setText("Megtekintés csak bejelentkezett felhasználóknak!");
     }
   }
 }
