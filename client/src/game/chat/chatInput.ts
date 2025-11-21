@@ -53,10 +53,14 @@ export class ChatInput extends TextInput {
   }
 
   private sendMessage(): void {
-    ServerHandler.sendMessage("chat:message", {
-      message: super.getText(),
-      name: StateManager.getPlayerName(),
-      color: StateManager.getPlayerColor(ServerHandler.getId()),
-    });
+    if (super.getText() === "togglegamemenu") {
+      StateManager.toggleGameMenu();
+    } else {
+      ServerHandler.sendMessage("chat:message", {
+        message: super.getText(),
+        name: StateManager.getPlayerName(),
+        color: StateManager.getPlayerColor(ServerHandler.getId()),
+      });
+    }
   }
 }

@@ -70,7 +70,9 @@ export class Game {
 
   public draw(): void {
     this.world?.draw();
-    this.gameMenu.draw();
+    if (!StateManager.isGameMenuHiddenFn()) {
+      this.gameMenu.draw();
+    }
 
     this.gameMenu.drawTooltips();
     this.messageIndicator.draw();

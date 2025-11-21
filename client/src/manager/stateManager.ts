@@ -84,6 +84,7 @@ export class StateManager {
         data: { ...this.initEntity.data },
       },
       isChatOpen: false,
+      isGameMenuHidden: false,
     },
   };
 
@@ -346,5 +347,15 @@ export class StateManager {
 
   public static getTopFive(): StatisticType[] {
     return this.state.statistic.topfive;
+  }
+
+  // ------------------- Utils -------------------
+
+  public static isGameMenuHiddenFn(): boolean {
+    return this.state.game.isGameMenuHidden;
+  }
+
+  public static toggleGameMenu(): void {
+    this.state.game.isGameMenuHidden = !this.state.game.isGameMenuHidden;
   }
 }

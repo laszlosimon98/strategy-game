@@ -110,6 +110,7 @@ type Game = {
     players: PlayerGameType;
     builder: EntityType;
     isChatOpen: boolean;
+    isGameMenuHidden: boolean;
   };
 };
 
