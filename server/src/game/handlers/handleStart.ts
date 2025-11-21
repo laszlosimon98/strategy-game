@@ -73,7 +73,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       data: {
         id: uuidv4(),
         owner: playerId,
-        url: `${process.env.SERVER_URL}/assets/buildings/guardhouse.png`,
+        url: `http://${process.env.HOST}:${process.env.PORT}/assets/buildings/guardhouse.png`,
         static: "",
         indices,
         dimensions: {

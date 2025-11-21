@@ -57,5 +57,7 @@ const onConnecton = async (socket: Socket) => {
 io.on("connection", onConnecton);
 
 httpServer.listen(process.env.PORT, () => {
-  console.log(`Játék szerver elindult a ${process.env.SERVER_URL} címen.`);
+  console.log(
+    `Játék szerver elindult a http://${process.env.HOST}:${process.env.PORT} címen.`
+  );
 });

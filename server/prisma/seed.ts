@@ -1,7 +1,13 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
 import * as bcrypt from "bcrypt";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const connectionString = `${process.env.DATABASE_URL}`;
+
+const adapter = new PrismaBetterSqlite3({ url: connectionString });
+const prisma = new PrismaClient({ adapter });
+
 const HASHROUND = parseInt(process.env.HASHROUND || "6");
 
 const seedUsers = async () => {

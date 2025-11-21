@@ -122,7 +122,7 @@ export class MainMenu extends Page {
       this.error.setCenter({
         xFrom: 0,
         xTo: canvasWidth,
-        yFrom: this.namePlate.getPos().y + 200,
+        yFrom: this.newGame.getPos().y - 75,
         yTo: 0,
       });
     }

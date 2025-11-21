@@ -33,7 +33,7 @@ export class Loader {
       const name = path.basename(filePath, ".png");
       const dirParts = parts.slice(0, -1);
 
-      const url = `${process.env.SERVER_URL}/assets/${relativePath}`;
+      const url = `http://${process.env.HOST}:${process.env.PORT}/assets/${relativePath}`;
 
       let current = routes;
       for (const dir of dirParts) {
