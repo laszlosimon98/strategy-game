@@ -26,9 +26,17 @@ export class Program {
   private mousePos: Position;
   private key: string;
 
+  private backgroundImage: HTMLImageElement;
+
   public constructor() {
     this.mousePos = Position.zero();
     this.key = "";
+
+    this.backgroundImage = new Image();
+    this.backgroundImage.src = StateManager.getImages(
+      "background",
+      "backgroundImage"
+    ).url;
 
     this.pages = {
       [PageState.MainMenu]: new MainMenu("menu"),
@@ -75,13 +83,13 @@ export class Program {
 
   public draw(): void {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     if (StateManager.getPageState() !== PageState.Game) {
-      ctx.fillStyle = settings.color.background;
+      ctx.drawImage(this.backgroundImage, 0, 0);
       this.pages[StateManager.getPageState()]?.draw();
     } else {
       ctx.fillStyle = settings.color.black;
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       this.game?.draw();
     }
   }

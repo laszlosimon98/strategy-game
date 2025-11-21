@@ -73,9 +73,7 @@ export class Lobby extends Page {
       new Dimension(580, Math.max(canvasHeight / 3, 200))
     );
 
-    this.errorMessage = new Text(new Position(0, 0), "", {
-      color: settings.color.error,
-    });
+    this.errorMessage = new Text(new Position(0, 0), "");
 
     this.handleCommunication();
     this.start.handleAsyncFunction = this.handleError;
@@ -175,7 +173,6 @@ export class Lobby extends Page {
       "connect:newPlayer",
       ({ players, message }: { players: string[]; message: string }) => {
         this.info.setText(message);
-        this.info.setColor(settings.color.info);
         this.info.setCenter({
           xFrom: 0,
           xTo: canvasWidth,
@@ -197,8 +194,6 @@ export class Lobby extends Page {
           yFrom: settings.pos.titlePos.y + settings.margin + 125,
           yTo: 0,
         });
-
-        this.info.setColor(settings.color.error);
 
         this.removePlayer(name);
       }
