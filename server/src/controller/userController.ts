@@ -11,7 +11,9 @@ export const handleUser = async (request: Request, response: Response) => {
   });
 
   if (!user) {
-    return response.sendStatus(403);
+    return response
+      .status(403)
+      .send("Megtekintés csak bejelentkezett felhasználóknak!");
   }
 
   return response.status(200).json({ username: user.username });
@@ -34,7 +36,9 @@ export const getStatistic = async (request: Request, response: Response) => {
   });
 
   if (!user) {
-    return response.sendStatus(403);
+    return response
+      .status(403)
+      .send("Megtekintés csak bejelentkezett felhasználóknak!");
   }
 
   return response.status(200).json(user);
@@ -62,8 +66,3 @@ export const getTopFiveStatistic = async (
 
   return response.status(200).json(users);
 };
-
-export const updateStatistic = async (
-  request: Request,
-  response: Response
-) => {};
