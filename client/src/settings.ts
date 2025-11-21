@@ -77,6 +77,10 @@ export const settings = {
       ),
       logout: new Position(canvasWidth - BUTTON_DIMENSION.width - MARGIN, 60),
       namePlate: new Position(MARGIN, 60),
+      codePlate: new Position(
+        canvasWidth - MARGIN - BUTTON_DIMENSION.width,
+        60
+      ),
     },
     newGame: {
       back: new Position(

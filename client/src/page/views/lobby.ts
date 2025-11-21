@@ -3,6 +3,7 @@ import { canvasWidth, canvasHeight } from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Frame } from "@/page/components/frame";
+import { Plate } from "@/page/components/plate";
 import { Text } from "@/page/components/text";
 import { Page } from "@/page/views/page";
 import { ServerHandler } from "@/server/serverHandler";
@@ -13,15 +14,30 @@ import { Position } from "@/utils/position";
 export class Lobby extends Page {
   private backButton: Button;
   private start: Button;
-  private gameCode: Text;
   private info: Text;
   private playersContainer: Frame;
   private players: Record<string, Text>[] = [];
-  private playerLabel: Text;
   private errorMessage: Text;
+
+  private namePlate: Plate;
+  private codePlate: Plate;
 
   public constructor(title: string) {
     super(title);
+
+    this.namePlate = new Plate(
+      settings.pos.mainMenu.namePlate,
+      settings.size.button,
+      StateManager.getImages("ui", "plate"),
+      "name"
+    );
+
+    this.codePlate = new Plate(
+      settings.pos.mainMenu.codePlate,
+      settings.size.button,
+      StateManager.getImages("ui", "plate"),
+      "empty"
+    );
 
     this.start = new Button(
       settings.pos.default.next,
@@ -41,28 +57,6 @@ export class Lobby extends Page {
 
     this.buttons.push(this.backButton);
 
-    this.playerLabel = new Text(
-      new Position(0, settings.pos.titlePos.y + settings.margin + 55),
-      StateManager.getPlayerName(),
-      { color: settings.color.black }
-    );
-
-    this.playerLabel.setCenter({
-      xFrom: 0,
-      xTo: canvasWidth,
-      yFrom: settings.pos.titlePos.y + settings.margin + 55,
-      yTo: 0,
-    });
-
-    this.gameCode = new Text(
-      new Position(
-        settings.pos.titlePos.x - settings.margin * 2,
-        settings.pos.titlePos.y + settings.margin + 100
-      ),
-      "Játék Kód:",
-      { color: settings.color.black }
-    );
-
     this.info = new Text(new Position(0, 0), "");
 
     this.playersContainer = new Frame(
@@ -81,10 +75,10 @@ export class Lobby extends Page {
 
   public draw(): void {
     super.draw();
-    this.gameCode.draw();
+    this.namePlate.draw();
+    this.codePlate.draw();
     this.info.draw();
     this.playersContainer.draw();
-    this.playerLabel.draw();
     this.errorMessage.draw();
 
     this.players.forEach((player) => {
@@ -94,9 +88,22 @@ export class Lobby extends Page {
 
   public update(): void {
     super.update();
-    if (this.playerLabel.getText() !== StateManager.getPlayerName()) {
-      this.playerLabel.setText(StateManager.getPlayerName());
+    if (this.namePlate.getText() !== StateManager.getPlayerName()) {
+      this.namePlate.setText(StateManager.getPlayerName());
+      this.namePlate.setCenter({
+        xFrom: this.namePlate.getPos().x,
+        xTo: this.namePlate.getDimension().width,
+        yFrom: this.namePlate.getPos().y,
+        yTo: this.namePlate.getDimension().height,
+      });
     }
+
+    this.codePlate.setCenter({
+      xFrom: this.codePlate.getPos().x,
+      xTo: this.codePlate.getDimension().width,
+      yFrom: this.codePlate.getPos().y,
+      yTo: this.codePlate.getDimension().height,
+    });
 
     if (StateManager.isPlayerHost() && this.buttons.length === 1) {
       this.buttons.push(this.start);
@@ -118,7 +125,6 @@ export class Lobby extends Page {
   };
 
   private clearPage(): void {
-    this.gameCode.setText("Játék Kód:");
     this.info.setText("");
     this.players = [];
   }
@@ -165,7 +171,7 @@ export class Lobby extends Page {
     ServerHandler.receiveMessage(
       "connect:code",
       ({ code }: { code: string }) => {
-        this.gameCode.setText(`Játék Kód: ${code}`);
+        this.codePlate.setText(`${code}`);
       }
     );
 
