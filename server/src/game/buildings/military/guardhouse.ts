@@ -20,21 +20,30 @@ export class GuardHouse extends Building {
       this.occupationRange,
       ObstacleEnum.Unit,
       room
-    ).map((cell) => cell.getSoldier() as Soldier);
+    )
+      .map((cell) => cell.getSoldier())
+      .filter(
+        (soldier): soldier is Soldier =>
+          soldier !== null && soldier !== undefined
+      );
+
+    if (soldiers.length === 0) return false;
 
     const idSet: Set<string> = new Set(
       soldiers
         .map((soldier) => {
-          if (soldier) {
-            return soldier.getEntity().data.owner;
-          }
+          const entity = soldier?.getEntity();
+          return entity?.data?.owner;
         })
-        .filter((owner): owner is string => owner !== undefined)
+        .filter(
+          (owner): owner is string => owner !== undefined && owner !== null
+        )
     );
 
     const idArray: string[] = Array.from(idSet);
+    const buildingOwner = this.getEntity()?.data?.owner;
 
-    return idArray.length === 1 && idArray[1] !== this.getEntity().data.owner;
+    return idArray.length === 1 && idArray[0] !== buildingOwner;
   }
 
   public capturingBy(socket: Socket, room: string): string | undefined {
@@ -44,14 +53,23 @@ export class GuardHouse extends Building {
       this.occupationRange,
       ObstacleEnum.Unit,
       room
-    ).map((cell) => cell.getSoldier() as Soldier);
-    if (!soldiers) return;
+    )
+      .map((cell) => cell.getSoldier())
+      .filter(
+        (soldier): soldier is Soldier =>
+          soldier !== null && soldier !== undefined
+      );
 
-    const enemySoldier = soldiers.find(
-      (soldier) =>
-        soldier.getEntity().data.owner !== this.getEntity().data.owner
-    );
+    if (soldiers.length === 0) return undefined;
 
-    return enemySoldier?.getEntity().data.owner;
+    const enemySoldier = soldiers.find((soldier) => {
+      const entity = soldier?.getEntity();
+      const soldierOwner = entity?.data?.owner;
+      const buildingOwner = this.getEntity()?.data?.owner;
+
+      return soldierOwner && buildingOwner && soldierOwner !== buildingOwner;
+    });
+
+    return enemySoldier?.getEntity()?.data?.owner;
   }
 }
