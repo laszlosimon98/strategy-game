@@ -216,7 +216,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
         }
       });
 
-    console.log(enemySoldiers);
     currentSoldier.setTarget(getUnitInRange(entity, enemySoldiers));
 
     const target: Soldier | null = currentSoldier.getTarget();

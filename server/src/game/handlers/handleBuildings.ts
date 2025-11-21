@@ -198,7 +198,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       const enemyOwner = guardHouse.capturingBy(socket, room);
       if (!enemyOwner) return;
 
-      console.log("start occupation");
       ServerHandler.sendMessageToEveryOne(
         io,
         socket,

@@ -63,7 +63,7 @@ export const getTopFiveStatistic = async (
   return response.status(200).json(users);
 };
 
-export const updateStatistic = async (request: Request, response: Response) => {
-  console.log(request["user"]);
-  console.log(request.body);
-};
+export const updateStatistic = async (
+  request: Request,
+  response: Response
+) => {};
