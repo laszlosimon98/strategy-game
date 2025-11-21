@@ -98,9 +98,10 @@ export const handleLogin = async (request: Request, response: Response) => {
 
     response.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
+      sameSite: process.env.HOST === "localhost" ? "none" : "lax",
+      secure: process.env.HOST === "localhost",
+      maxAge: 24 * 60 * 60 * 1000,
+      domain: process.env.HOST,
     });
 
     return response.status(200).json({ accessToken });
@@ -171,8 +172,9 @@ export const handleLogout = async (request: Request, response: Response) => {
   if (!user) {
     response.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      sameSite: process.env.HOST === "localhost" ? "none" : "lax",
+      secure: process.env.HOST === "localhost",
+      domain: process.env.HOST,
     });
     return response.sendStatus(204);
   }
@@ -189,8 +191,9 @@ export const handleLogout = async (request: Request, response: Response) => {
 
     response.clearCookie("refreshToken", {
       httpOnly: true,
-      sameSite: "none",
-      secure: true,
+      sameSite: process.env.HOST === "localhost" ? "none" : "lax",
+      secure: process.env.HOST === "localhost",
+      domain: process.env.HOST,
     });
     return response.sendStatus(204);
   } catch (err) {
