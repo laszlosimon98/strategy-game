@@ -76,7 +76,7 @@ export const settings = {
         BUTTON_DIMENSION.height / 2 + MARGIN + 10
       ),
       logout: new Position(canvasWidth - BUTTON_DIMENSION.width - MARGIN, 60),
-      namePlate: new Position(50, canvasHeight - 125),
+      namePlate: new Position(MARGIN, 60),
     },
     newGame: {
       back: new Position(
