@@ -20,7 +20,6 @@ import { credentials } from "@/middleware/credentials";
 import { verifyJWT } from "@/middleware/verifyJWT";
 import { userRoutes } from "@/routes/user";
 
-const PORT = 3000;
 const app = express();
 const httpServer = createServer(app);
 
@@ -57,6 +56,6 @@ const onConnecton = async (socket: Socket) => {
 
 io.on("connection", onConnecton);
 
-httpServer.listen(PORT, () => {
-  console.log(`Játék szerver elindult a ${PORT} porton.`);
+httpServer.listen(process.env.PORT, () => {
+  console.log(`Játék szerver elindult a ${process.env.SERVER_URL} címen.`);
 });
