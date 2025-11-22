@@ -39,7 +39,6 @@ export class Building extends Entity implements RendererInterface {
     }
 
     if (entity.data.name === "guardhouse") {
-      console.log("build guardhouse");
       this.occupationCheckTimer = new Timer(500, () => this.action());
       this.occupationCheckTimer.activate();
 
@@ -152,16 +151,12 @@ export class Building extends Entity implements RendererInterface {
   public startOccupation(enemyOwner: string): void {
     this.enemyOwner = enemyOwner;
     if (!this.occupationTimer?.isTimerActive()) {
-      console.log("start capturing");
       this.occupationTimer?.activate();
     }
   }
 
   public stopOccupation(): void {
-    if (!this.occupationTimer?.isTimerActive()) {
-      console.log("stop capturing");
-      this.occupationTimer?.deactivate();
-    }
+    this.occupationTimer?.deactivate();
   }
 
   private sendProductionRequest(): void {

@@ -198,6 +198,7 @@ export class Game {
           (building) => building.getEntity().data.id === entity.data.id
         );
 
+          console.log("Start ", entity.data.id)
         guardHouse?.startOccupation(enemyOwner);
       }
     );
@@ -211,6 +212,7 @@ export class Game {
         const guardHouse: Building | undefined = buildings.find(
           (building) => building.getEntity().data.id === entity.data.id
         );
+        console.log("STOP ", entity.data.id)
 
         guardHouse?.stopOccupation();
       }
