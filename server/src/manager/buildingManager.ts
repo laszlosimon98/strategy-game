@@ -131,18 +131,20 @@ export class BuildingManager extends Manager {
     state: StateType,
     building: Building
   ): void {
-    const buildingIndex: number = state[room].players[
-      building.getEntity().data.owner
-    ].buildings.findIndex(
+    const owner = building.getEntity().data.owner;
+    const player = state[room].players[owner];
+
+    if (!player) {
+      return;
+    }
+
+    const buildingIndex: number = player.buildings.findIndex(
       (b) => b.getEntity().data.id === building.getEntity().data.id
     );
 
     if (buildingIndex === -1) return;
 
-    state[room].players[building.getEntity().data.owner].buildings.splice(
-      buildingIndex,
-      1
-    );
+    player.buildings.splice(buildingIndex, 1);
   }
 
   public static getBuildings(
