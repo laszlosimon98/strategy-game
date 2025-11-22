@@ -215,9 +215,35 @@ export class World {
       const { i, j } = cell.getIndices();
       const getCellBuilding: Building | null = world[i][j].getBuilding();
 
-      if (getCellBuilding !== null) {
-        world[i][j].setBuilding(null);
+      if (
+        getCellBuilding !== null &&
+        !(getCellBuilding instanceof GuardHouse)
+      ) {
         lostBuildings.push(getCellBuilding);
+        world[i][j].setBuilding(null);
+      }
+    });
+
+    // Ellenőrizzük az ÖSSZES marked cellát, nem csak azokat ahol towerInfluence = false
+    // Mert ha egy épület tulajdonosa különbözik a cella tulajdonosától,
+    // akkor azt is el kell bontani (elfoglalt terület esetén)
+    markedCells.forEach((cell) => {
+      const { i, j } = cell.getIndices();
+      const getCellBuilding: Building | null = world[i][j].getBuilding();
+
+      if (
+        getCellBuilding !== null &&
+        !(getCellBuilding instanceof GuardHouse) &&
+        !lostBuildings.includes(getCellBuilding)
+      ) {
+        const buildingOwner = getCellBuilding.getEntity().data.owner;
+        const cellOwner = cell.getOwner();
+
+        // Ha a cella tulajdonosa különbözik az épület tulajdonosától, akkor elveszett
+        if (cellOwner && cellOwner !== buildingOwner) {
+          lostBuildings.push(getCellBuilding);
+          world[i][j].setBuilding(null);
+        }
       }
     });
 
