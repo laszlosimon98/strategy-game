@@ -19,6 +19,7 @@ import { corsOptions } from "@/config/corsOptions";
 import { credentials } from "@/middleware/credentials";
 import { verifyJWT } from "@/middleware/verifyJWT";
 import { userRoutes } from "@/routes/user";
+import { statisticRoutes } from "@/routes/statistic";
 
 const app = express();
 const httpServer = createServer(app);
@@ -33,6 +34,7 @@ app.use("/auth", authRoutes);
 
 app.use(verifyJWT);
 app.use("/user", userRoutes);
+app.use("/statistic", statisticRoutes);
 
 const io: Server = new Server(httpServer, {
   cors: {

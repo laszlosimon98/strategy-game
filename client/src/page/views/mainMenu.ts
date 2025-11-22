@@ -1,4 +1,4 @@
-import { authApi, userApi } from "@/api/api";
+import { authApi, statisticApi, userApi } from "@/api/api";
 import { PageState } from "@/enums/pageState";
 import { canvasWidth } from "@/init";
 import { StateManager } from "@/manager/stateManager";
@@ -130,13 +130,13 @@ export class MainMenu extends Page {
 
   private async fetchData() {
     try {
-      const playerData = await userApi.get("/statistic", {
+      const playerData = await statisticApi.get("/statistic", {
         headers: {
           Authorization: `Bearer ${StateManager.getAccessToken()}`,
         },
       });
 
-      const topfivePlayers = await userApi.get("/top-five", {
+      const topfivePlayers = await statisticApi.get("/top-five", {
         headers: {
           Authorization: `Bearer ${StateManager.getAccessToken()}`,
         },

@@ -13,3 +13,11 @@ export const userApi = axios.create({
     Authorization: `Bearer ${StateManager.getAccessToken()}`,
   },
 });
+
+export const statisticApi = axios.create({
+  baseURL: `${(import.meta as any).env.VITE_SERVER_URL}/statistic`,
+  withCredentials: true,
+  headers: {
+    Authorization: `Bearer ${StateManager.getAccessToken()}`,
+  },
+});
