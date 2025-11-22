@@ -1,4 +1,4 @@
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { CommunicationHandler } from "@/communication/communicationHandler";
 import { StateManager } from "@/manager/stateManager";
 import { Requirement } from "@/types/production.types";

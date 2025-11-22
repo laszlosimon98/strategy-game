@@ -1,5 +1,5 @@
-import { Building } from "@/game/building";
-import { Production } from "@/game/production";
+import { Building } from "@/game/buildings/building";
+import { Production } from "@/game/buildings/production";
 import { EntityType } from "@/types/state.types";
 
 export class Farm extends Building {

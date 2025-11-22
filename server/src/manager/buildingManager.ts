@@ -1,5 +1,5 @@
-import { Building } from "@/game/building";
-import { buildingRegister } from "@/game/buildingRegister";
+import { Building } from "@/game/buildings/building";
+import { buildingRegister } from "@/game/buildings/buildingRegister";
 import { Cell } from "@/game/cell";
 import { World } from "@/game/world";
 import { CommunicationHandler } from "@/communication/communicationHandler";

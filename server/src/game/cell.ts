@@ -1,7 +1,7 @@
 import { Indices } from "@/utils/indices";
 import type { Instance } from "@/types/world.types";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { TileEnum } from "@/enums/tileEnum";
 import { Position } from "@/utils/position";
 import { Vector } from "@/utils/vector";

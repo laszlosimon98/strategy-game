@@ -1,4 +1,4 @@
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { EntityType } from "@/types/state.types";
 
 export class Barracks extends Building {

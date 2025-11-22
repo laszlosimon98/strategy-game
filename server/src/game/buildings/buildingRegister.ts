@@ -1,4 +1,4 @@
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { Bakery } from "@/game/buildings/food/bakery";
 import { Farm } from "@/game/buildings/food/farm";
 import { Mill } from "@/game/buildings/food/mill";

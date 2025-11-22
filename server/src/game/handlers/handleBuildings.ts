@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { CommunicationHandler } from "@/communication/communicationHandler";
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";

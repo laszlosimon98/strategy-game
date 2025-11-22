@@ -1,8 +1,8 @@
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { Cell } from "@/game/cell";
 import { Stone } from "@/game/produceable/stone";
-import { Production } from "@/game/production";
+import { Production } from "@/game/buildings/production";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";

@@ -1,5 +1,5 @@
-import { Building } from "@/game/building";
-import { Production } from "@/game/production";
+import { Building } from "@/game/buildings/building";
+import { Production } from "@/game/buildings/production";
 import { Requirement } from "@/types/production.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";

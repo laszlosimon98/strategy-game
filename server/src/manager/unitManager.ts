@@ -6,7 +6,7 @@ import { EntityType, StateType } from "@/types/state.types";
 import { Socket } from "socket.io";
 import { Manager } from "@/manager/manager";
 import { Soldier } from "@/game/units/soldier";
-import { unitRegister } from "@/game/unitRegister";
+import { unitRegister } from "@/game/units/unitRegister";
 import { Indices } from "@/utils/indices";
 import { Cell } from "@/game/cell";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";

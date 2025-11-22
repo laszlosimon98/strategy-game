@@ -6,7 +6,7 @@ import { Indices } from "@/utils/indices";
 import type { EntityType, PlayerType } from "@/types/state.types";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { ReturnMessage } from "@/types/setting.types";
 import { Cell } from "@/game/cell";
 import { calculatePositionFromIndices } from "@/utils/utils";

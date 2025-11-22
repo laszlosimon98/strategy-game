@@ -1,7 +1,7 @@
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Cell } from "@/game/cell";
 import { Entity } from "@/game/entities/entity";
-import { Production } from "@/game/production";
+import { Production } from "@/game/buildings/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
 import { StateManager } from "@/manager/stateManager";
 import { CommunicationHandler } from "@/communication/communicationHandler";

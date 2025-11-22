@@ -10,7 +10,7 @@ import { StateManager } from "@/manager/stateManager";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Tree } from "@/game/produceable/tree";
 import { Stone } from "@/game/produceable/stone";
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { EntityType } from "@/types/state.types";
 import { TileEnum } from "@/enums/tileEnum";

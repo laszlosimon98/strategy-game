@@ -1,5 +1,5 @@
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { Soldier } from "@/game/units/soldier";
 import { StateManager } from "@/manager/stateManager";
 import { EntityType } from "@/types/state.types";

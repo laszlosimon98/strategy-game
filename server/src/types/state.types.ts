@@ -1,4 +1,4 @@
-import { Building } from "@/game/building";
+import { Building } from "@/game/buildings/building";
 import { Cell } from "@/game/cell";
 import { Unit } from "@/game/units/unit";
 import { Dimension } from "@/utils/dimension";
