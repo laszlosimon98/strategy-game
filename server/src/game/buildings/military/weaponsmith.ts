@@ -1,8 +1,10 @@
 import { Building } from "@/game/building";
 import { Production } from "@/game/production";
 import { Requirement } from "@/types/production.types";
+import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";
+import { Server, Socket } from "socket.io";
 
 export class WeaponSmith extends Building {
   private counter: number;
@@ -31,11 +33,19 @@ export class WeaponSmith extends Building {
     };
   }
 
-  public getProductionItem(): ProductionItem | null {
+  public produce(
+    io: Server,
+    socket: Socket,
+    room: string
+  ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
     this.counter++;
+
     const currentItem: ProductionItem | null =
       this.production.getProductionItem();
+
+    console.log(currentItem);
+
     const nextItem: ProductionItem = this.productionList[
       this.counter % 3
     ] as ProductionItem;
