@@ -25,8 +25,8 @@ export class Text {
     if (this.fontSize) {
       ctx.font = `${this.fontSize} sans-serif`;
     }
-    ctx.font = originalFont;
     this.metrics = ctx.measureText(this.text);
+    ctx.font = originalFont;
   }
 
   public setCenter(values: {
@@ -47,7 +47,10 @@ export class Text {
   }
 
   public setEnd(pos: Position, dim: Dimension): void {
-    this.pos = new Position(pos.x + dim.width - this.metrics.width, this.pos.y);
+    this.pos = new Position(
+      pos.x + dim.width - this.metrics.width - 5,
+      this.pos.y
+    );
   }
 
   public getPos(): Position {

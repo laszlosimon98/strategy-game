@@ -11,7 +11,7 @@ const HOUSEITEM_DIMENSION: Dimension = new Dimension(96, 96);
 const TOOLTIP_DIMENDION: Dimension = new Dimension(120, 100);
 const MESSAGE_INDICATOR: Dimension = new Dimension(500, 50);
 const CHAT_INPUT: Dimension = new Dimension(650, 50);
-const CHAT_FRAME: Dimension = new Dimension(300, 200);
+const CHAT_FRAME: Dimension = new Dimension(550, 200);
 const CELL_SIZE: number = 48;
 
 export const settings = {

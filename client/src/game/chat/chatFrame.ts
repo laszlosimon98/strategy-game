@@ -14,23 +14,24 @@ export class ChatFrame extends Frame {
   private maxTextItem: number = 7;
 
   constructor(pos: Position, dim: Dimension) {
-    super(pos, dim, 1);
+    super(pos, dim, { alpha: 0.9, color: "#2d2d32d9" });
 
     this.texts = [];
     this.positions = {
-      0: new Position(pos.x, pos.y),
-      1: new Position(pos.x, pos.y + 30),
-      2: new Position(pos.x, pos.y + 60),
-      3: new Position(pos.x, pos.y + 90),
-      4: new Position(pos.x, pos.y + 120),
-      5: new Position(pos.x, pos.y + 150),
-      6: new Position(pos.x, pos.y + 180),
+      0: new Position(pos.x, pos.y + 25),
+      1: new Position(pos.x, pos.y + 55),
+      2: new Position(pos.x, pos.y + 85),
+      3: new Position(pos.x, pos.y + 115),
+      4: new Position(pos.x, pos.y + 145),
+      5: new Position(pos.x, pos.y + 175),
+      6: new Position(pos.x, pos.y + 205),
     };
   }
 
   public draw(): void {
+    super.draw();
+
     this.texts.forEach(({ text }) => {
-      text.setEnd(this.pos, this.dim);
       text.draw();
     });
   }
@@ -51,6 +52,9 @@ export class ChatFrame extends Frame {
       color,
       fontSize: "24px",
     });
+
+    text.setEnd(this.pos, this.dim);
+
     const timer: Timer = new Timer(7000, () => this.removeElement());
 
     this.texts.unshift({ text, timer });
@@ -70,6 +74,9 @@ export class ChatFrame extends Frame {
   }
 
   private reOrderTexts(): void {
-    this.texts.forEach(({ text }, idx) => text.setPos(this.positions[idx]));
+    this.texts.forEach(({ text }, idx) => {
+      text.setPos(this.positions[idx]);
+      text.setEnd(this.pos, this.dim);
+    });
   }
 }

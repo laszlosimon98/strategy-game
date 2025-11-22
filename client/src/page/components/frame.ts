@@ -5,13 +5,20 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+interface FrameOptions {
+  alpha?: number;
+  color?: string;
+}
+
 export class Frame extends PageComponents {
   protected buttons: Button[] = [];
   private alpha: number;
+  private color: string;
 
-  public constructor(pos: Position, dim: Dimension, alpha: number = 1) {
+  public constructor(pos: Position, dim: Dimension, options: FrameOptions) {
     super(pos, dim);
-    this.alpha = alpha;
+    this.alpha = options?.alpha || 1;
+    this.color = options?.color || settings.color.brown;
   }
 
   public draw(): void {
@@ -42,7 +49,7 @@ export class Frame extends PageComponents {
     ctx.quadraticCurveTo(x, y, x + radius, y);
     ctx.closePath();
 
-    ctx.fillStyle = this.hexToRgba(settings.color.brown, this.alpha);
+    ctx.fillStyle = this.hexToRgba(this.color, this.alpha);
     ctx.fill();
 
     this.buttons.forEach((btn) => btn.draw());
