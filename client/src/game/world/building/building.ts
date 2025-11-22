@@ -14,7 +14,11 @@ export class Building extends Entity implements RendererInterface {
 
   private productionTimer: Timer | null = null;
   private cooldownTimer: Timer | null = null;
+
+  // Milyen időközönként ellenőrzi, hogy van-e közelben ellenség
   private occupationCheckTimer: Timer | null = null;
+
+  // Meddig tart a foglalás
   private occupationTimer: Timer | null = null;
 
   private enemyOwner: string = "";
@@ -35,7 +39,8 @@ export class Building extends Entity implements RendererInterface {
     }
 
     if (entity.data.name === "guardhouse") {
-      this.occupationCheckTimer = new Timer(1000, () => this.action());
+      console.log("build guardhouse");
+      this.occupationCheckTimer = new Timer(500, () => this.action());
       this.occupationCheckTimer.activate();
 
       this.occupationTimer = new Timer(5000, () => this.occupationTimerOver());
@@ -123,17 +128,11 @@ export class Building extends Entity implements RendererInterface {
   public action(): void {
     if (this.entity.data.owner === CommunicationHandler.getId()) {
       if (this.entity.data.isProductionBuilding) {
-        CommunicationHandler.sendMessage("game:production", {
-          entity: this.entity,
-        });
-        this.cooldownTimer?.activate();
+        this.sendProductionRequest();
       }
 
       if (this.entity.data.name === "guardhouse") {
-        CommunicationHandler.sendMessage("game:guardhouse-check", {
-          entity: this.entity,
-        });
-        this.occupationCheckTimer?.activate();
+        this.sendCheckRequest();
       }
     }
   }
@@ -152,7 +151,30 @@ export class Building extends Entity implements RendererInterface {
 
   public startOccupation(enemyOwner: string): void {
     this.enemyOwner = enemyOwner;
-    this.occupationTimer?.activate();
-    this.occupationCheckTimer?.deactivate();
+    if (!this.occupationTimer?.isTimerActive()) {
+      console.log("start capturing");
+      this.occupationTimer?.activate();
+    }
+  }
+
+  public stopOccupation(): void {
+    if (!this.occupationTimer?.isTimerActive()) {
+      console.log("stop capturing");
+      this.occupationTimer?.deactivate();
+    }
+  }
+
+  private sendProductionRequest(): void {
+    CommunicationHandler.sendMessage("game:production", {
+      entity: this.entity,
+    });
+    this.cooldownTimer?.activate();
+  }
+
+  private sendCheckRequest(): void {
+    CommunicationHandler.sendMessage("game:guardhouse-check", {
+      entity: this.entity,
+    });
+    this.occupationCheckTimer?.activate();
   }
 }

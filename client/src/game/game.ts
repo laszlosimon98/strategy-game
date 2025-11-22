@@ -201,5 +201,19 @@ export class Game {
         guardHouse?.startOccupation(enemyOwner);
       }
     );
+
+    CommunicationHandler.receiveMessage(
+      "game:guardhouse-stop-occupation",
+      ({ entity }: { entity: EntityType }) => {
+        const buildings: Building[] = StateManager.getBuildings(
+          entity.data.owner
+        );
+        const guardHouse: Building | undefined = buildings.find(
+          (building) => building.getEntity().data.id === entity.data.id
+        );
+
+        guardHouse?.stopOccupation();
+      }
+    );
   }
 }

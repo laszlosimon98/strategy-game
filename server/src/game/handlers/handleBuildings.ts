@@ -210,6 +210,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     ) as GuardHouse;
 
     if (guardHouse.isCapturable(socket, room)) {
+      console.log("Start capturing");
       const enemyOwner = guardHouse.capturingBy(socket, room);
       if (!enemyOwner) return;
 
@@ -218,6 +219,14 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         socket,
         "game:guardhouse-start-occupation",
         { entity, enemyOwner }
+      );
+    } else {
+      console.log("Stop capturing");
+      CommunicationHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:guardhouse-stop-occupation",
+        { entity }
       );
     }
   };
