@@ -1,4 +1,4 @@
-import { authApi, statisticApi, userApi } from "@/api/api";
+import { authApi, statisticApi } from "@/api/api";
 import { PageState } from "@/enums/pageState";
 import { canvasWidth } from "@/init";
 import { StateManager } from "@/manager/stateManager";
