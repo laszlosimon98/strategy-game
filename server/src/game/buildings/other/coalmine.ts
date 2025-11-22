@@ -3,6 +3,7 @@ import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
 import { Coal } from "@/game/produceable/coal";
 import { Production } from "@/game/production";
+import { Requirement } from "@/types/production.types";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType } from "@/types/state.types";
 import { ProductionItem } from "@/types/storage.types";
@@ -56,6 +57,12 @@ export class CoalMine extends Building {
 
     return {
       message: "Nem található nyersanyag a közelben",
+    };
+  }
+
+  public getRequirements(): Requirement | null {
+    return {
+      primary: { type: "foods", name: "bread" },
     };
   }
 }
