@@ -2,7 +2,7 @@ import { Building } from "@/game/building";
 import { buildingRegister } from "@/game/buildingRegister";
 import { Cell } from "@/game/cell";
 import { World } from "@/game/world";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { getImageNameFromUrl } from "@/utils/utils";
 import { Validator } from "@/utils/validator";
 import { StateManager } from "@/manager/stateManager";
@@ -51,7 +51,7 @@ export class BuildingManager extends Manager {
   ): Building | ReturnMessage {
     const { i, j } = entity.data.indices;
 
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return { message: "A kiválaszott helyre nem lehet építeni!" };
 
     if (
@@ -89,7 +89,7 @@ export class BuildingManager extends Manager {
     state: StateType,
     needValidation: boolean = true
   ): DestroyBuildingResponse | null {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return null;
 
     const world: Cell[][] = StateManager.getWorld(room, socket);

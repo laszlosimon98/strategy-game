@@ -13,7 +13,7 @@ import { MainMenu } from "@/page/views/mainMenu";
 import { NewGame } from "@/page/views/newGame";
 import { Page } from "@/page/views/page";
 import { Statistic } from "@/page/views/statistic";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 
@@ -75,7 +75,7 @@ export class Program {
       this.pages[StateManager.getPageState()]?.resize();
     });
 
-    ServerHandler.receiveMessage("game:starts", () => {
+    CommunicationHandler.receiveMessage("game:starts", () => {
       StateManager.setPageState(PageState.Game);
       this.game = new Game();
     });

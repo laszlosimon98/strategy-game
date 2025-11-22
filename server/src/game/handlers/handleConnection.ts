@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 import { World } from "@/game/world";
@@ -16,13 +16,15 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
     socket.join(room);
 
-    ServerHandler.sendMessageToSender(socket, "connect:code", { code: room });
+    CommunicationHandler.sendMessageToSender(socket, "connect:code", {
+      code: room,
+    });
     StateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const joinGame = ({ code: room, name }: { code: string; name: string }) => {
     if (!StateManager.isRoomExists(room, io)) {
-      ServerHandler.sendMessageToSender(
+      CommunicationHandler.sendMessageToSender(
         socket,
         "connect:error",
         "Rossz csatlakozási kód!"
@@ -31,7 +33,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
     }
 
     if (StateManager.getRoomSize(room, io) >= settings.maxPlayer) {
-      ServerHandler.sendMessageToSender(
+      CommunicationHandler.sendMessageToSender(
         socket,
         "connect:error",
         "A váró megtelt!"
@@ -40,7 +42,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
     }
 
     if (StateManager.isGameStarted(room)) {
-      ServerHandler.sendMessageToSender(
+      CommunicationHandler.sendMessageToSender(
         socket,
         "connect:error",
         "Sikertelen csatlakozás. A játék elkezdődött!"
@@ -52,13 +54,15 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
     socket.join(room);
 
-    ServerHandler.sendMessageToSender(socket, "connect:error", "");
-    ServerHandler.sendMessageToSender(socket, "connect:code", { code: room });
+    CommunicationHandler.sendMessageToSender(socket, "connect:error", "");
+    CommunicationHandler.sendMessageToSender(socket, "connect:code", {
+      code: room,
+    });
     StateManager.newPlayerMessage(io, socket, room, name);
   };
 
   const disconnect = () => {
-    const room = ServerHandler.getCurrentRoom(socket);
+    const room = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const user = StateManager.getPlayer(room, socket);
@@ -84,21 +88,30 @@ export const handleConnection = (io: Server, socket: Socket) => {
       handleNewHost(room);
     }
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
+    CommunicationHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
       id: user.id,
       data: playerOldTerritory.map(formatCell),
     });
 
     const updatedCells: Cell[] = World.updateTerritory(socket);
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      data: updatedCells.map(formatCell),
-    });
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:updateTerritory",
+      {
+        data: updatedCells.map(formatCell),
+      }
+    );
 
-    ServerHandler.sendMessageToEveryOneExceptSender(socket, "chat:message", {
-      message: `${user.name} elhagyta a játékot!`,
-      name: "Rendszer",
-      color: "#000",
-    });
+    CommunicationHandler.sendMessageToEveryOneExceptSender(
+      socket,
+      "chat:message",
+      {
+        message: `${user.name} elhagyta a játékot!`,
+        name: "Rendszer",
+        color: "#000",
+      }
+    );
   };
 
   const handleNewHost = (room: string) => {
@@ -110,9 +123,14 @@ export const handleConnection = (io: Server, socket: Socket) => {
         playerKeys[Math.floor(Math.random() * playerKeys.length)];
       const newHost: string = players[randomKey].name;
 
-      ServerHandler.sendMessageToEveryOne(io, socket, "connect:newHost", {
-        name: newHost,
-      });
+      CommunicationHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "connect:newHost",
+        {
+          name: newHost,
+        }
+      );
     }
   };
 

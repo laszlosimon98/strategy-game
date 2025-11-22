@@ -3,7 +3,7 @@ import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -63,7 +63,7 @@ export abstract class Manager implements MouseHandlerInterface {
     return {
       data: {
         ...StateManager.getInitData().data,
-        owner: ServerHandler.getId(),
+        owner: CommunicationHandler.getId(),
       },
     };
   }
@@ -86,9 +86,9 @@ export abstract class Manager implements MouseHandlerInterface {
     key: string
   ): void {
     if (StateManager.getState() !== GameState.Build) {
-      const objectArray: T[] = StateManager.getPlayers()[ServerHandler.getId()][
-        key
-      ] as unknown as T[];
+      const objectArray: T[] = StateManager.getPlayers()[
+        CommunicationHandler.getId()
+      ][key] as unknown as T[];
 
       objectArray.forEach((object) => {
         object.setHover(isMouseIntersect(mousePos.sub(cameraScroll), object));
@@ -101,9 +101,9 @@ export abstract class Manager implements MouseHandlerInterface {
     cameraScroll: Position,
     key: string
   ): T | undefined {
-    const objectArray: T[] = StateManager.getPlayers()[ServerHandler.getId()][
-      key
-    ] as unknown as T[];
+    const objectArray: T[] = StateManager.getPlayers()[
+      CommunicationHandler.getId()
+    ][key] as unknown as T[];
 
     const selectedObject = objectArray.find((object) => {
       if (isMouseIntersect(mousePos.sub(cameraScroll), object)) {

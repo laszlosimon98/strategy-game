@@ -3,7 +3,7 @@ import { MouseButtons } from "@/enums/mouse";
 import { GameMenu } from "@/game/menu/gameMenu";
 import { World } from "@/game/world/world";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type {
   ColorType,
   EntityType,
@@ -121,7 +121,9 @@ export class Game {
   }
 
   private async init(): Promise<void> {
-    const players = await ServerHandler.receiveAsyncMessage("game:initPlayers");
+    const players = await CommunicationHandler.receiveAsyncMessage(
+      "game:initPlayers"
+    );
     this.initPlayers(players);
 
     StateManager.setGameState(GameState.Default);
@@ -134,7 +136,7 @@ export class Game {
   }
 
   private async handleCommunication(): Promise<void> {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:playerLeft",
       ({
         id,
@@ -163,14 +165,14 @@ export class Game {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:info",
       ({ message }: MessageResponse) => {
         this.messageIndicator.setText(message);
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "chat:message",
       ({
         message,
@@ -185,7 +187,7 @@ export class Game {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:guardhouse-start-occupation",
       ({ entity, enemyOwner }: { entity: EntityType; enemyOwner: string }) => {
         const buildings: Building[] = StateManager.getBuildings(

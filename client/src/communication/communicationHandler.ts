@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 
-export class ServerHandler {
+export class CommunicationHandler {
   private static socket: Socket;
   private constructor() {}
 

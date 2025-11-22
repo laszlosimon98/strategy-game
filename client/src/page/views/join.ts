@@ -5,7 +5,7 @@ import { Button } from "@/page/components/button";
 import { Text } from "@/page/components/text";
 import { TextInput } from "@/page/components/textInput";
 import { Page } from "@/page/views/page";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -74,7 +74,7 @@ export class Join extends Page {
   }
 
   private handleJoin = () => {
-    ServerHandler.sendMessage("connect:join", {
+    CommunicationHandler.sendMessage("connect:join", {
       code: this.codeInput.getText(),
       name: StateManager.getPlayerName(),
     });
@@ -87,7 +87,7 @@ export class Join extends Page {
   };
 
   private handleError = async () => {
-    const error: string = await ServerHandler.receiveAsyncMessage(
+    const error: string = await CommunicationHandler.receiveAsyncMessage(
       "connect:error"
     );
 

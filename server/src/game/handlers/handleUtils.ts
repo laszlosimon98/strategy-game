@@ -1,15 +1,15 @@
 import { Server, Socket } from "socket.io";
 
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { StateManager } from "@/manager/stateManager";
 
 export const handleUtils = (io: Server, socket: Socket, images: any) => {
   const page = () => {
-    ServerHandler.sendMessageToSender(socket, "start:page", images);
+    CommunicationHandler.sendMessageToSender(socket, "start:page", images);
   };
 
   const prices = () => {
-    ServerHandler.sendMessageToSender(
+    CommunicationHandler.sendMessageToSender(
       socket,
       "start:prices",
       StateManager.getBuidingPrices()

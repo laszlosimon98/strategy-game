@@ -1,7 +1,7 @@
 import { UnitStates } from "@/enums/unitsState";
 import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
@@ -132,12 +132,14 @@ export abstract class Unit extends Entity implements RendererInterface {
   }
 
   private newFacingRequets(): void {
-    ServerHandler.sendMessage("game:unit-facing", { entity: this.entity });
+    CommunicationHandler.sendMessage("game:unit-facing", {
+      entity: this.entity,
+    });
   }
 
   private checkSurroundings(): void {
-    if (this.entity.data.owner === ServerHandler.getId()) {
-      ServerHandler.sendMessage("game:unit-check-sorroundings", {
+    if (this.entity.data.owner === CommunicationHandler.getId()) {
+      CommunicationHandler.sendMessage("game:unit-check-sorroundings", {
         entity: this.entity,
       });
       this.checkSurroundingsTimer.activate();

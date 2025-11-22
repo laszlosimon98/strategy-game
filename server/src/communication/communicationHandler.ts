@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 
-export class ServerHandler {
+export class CommunicationHandler {
   private constructor() {}
 
   public static getCurrentRoom(socket: Socket): string {

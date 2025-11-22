@@ -9,7 +9,7 @@ import { BuildingManager } from "@/manager/buldingManager";
 import { PlayerManager } from "@/manager/playerManager";
 import { StorageManager } from "@/manager/storageManager";
 import { UnitManager } from "@/manager/unitManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { BuildingPrices } from "@/types/building.types";
 import type {
   ColorType,
@@ -28,7 +28,7 @@ export class StateManager {
   private static initEntity: EntityType = {
     data: {
       id: "",
-      owner: ServerHandler.getId(),
+      owner: CommunicationHandler.getId(),
       url: "",
       static: "",
       name: "",

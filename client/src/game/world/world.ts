@@ -5,7 +5,7 @@ import { Cell } from "@/game/world/cell";
 import { UnitHandler } from "@/game/world/unit/unitHandler";
 import type { MouseHandlerInterface } from "@/interfaces/mouseHandlerInterface";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { Territory, TileType } from "@/types/world.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -31,7 +31,7 @@ export class World implements MouseHandlerInterface {
   public init(): void {
     console.log(StateManager.getPlayers());
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any[][] }) => {
         const world: Cell[][] = tiles.map((row, i) =>
@@ -58,7 +58,7 @@ export class World implements MouseHandlerInterface {
         );
         StateManager.setWorld(world);
 
-        ServerHandler.receiveMessage("game:startPos", (pos: Indices) => {
+        CommunicationHandler.receiveMessage("game:startPos", (pos: Indices) => {
           const cell = StateManager.getWorld()[pos.i][pos.j];
           if (cell) this.camera.setScroll(cell.getCameraPos());
         });
@@ -212,7 +212,7 @@ export class World implements MouseHandlerInterface {
   }
 
   private handleCommunication(): void {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:updateCell",
       ({
         indices,
@@ -227,7 +227,7 @@ export class World implements MouseHandlerInterface {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:updateTerritory",
       ({ data }: { data: Territory[] }) => {
         data.forEach(({ indices, owner, obstacle }) => {

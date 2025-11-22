@@ -1,6 +1,6 @@
 import { Manager } from "@/game/world/manager";
 import { Soldier } from "@/game/world/unit/units/soldier";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { EntityType, SoldierPropertyType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -58,7 +58,7 @@ export class UnitHandler extends Manager {
   }
 
   protected handleCommunication(): void {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:soldier-create",
       ({
         entity,
@@ -71,7 +71,7 @@ export class UnitHandler extends Manager {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-facing",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
@@ -86,7 +86,7 @@ export class UnitHandler extends Manager {
   }
 
   private movement(): void {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-moving",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
@@ -113,7 +113,7 @@ export class UnitHandler extends Manager {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-stop",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
@@ -131,7 +131,7 @@ export class UnitHandler extends Manager {
   }
 
   private attack(): void {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-start-attacking",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
@@ -141,7 +141,7 @@ export class UnitHandler extends Manager {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-take-damage",
       ({ entity, health }: { entity: EntityType; health: number }) => {
         const unit: Soldier | undefined = StateManager.getUnit(
@@ -153,14 +153,14 @@ export class UnitHandler extends Manager {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-dies",
       ({ entity }: { entity: EntityType }) => {
         StateManager.removeUnit(entity);
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:unit-stop-attacking",
       ({ entity }: { entity: EntityType }) => {
         const unit: Unit | undefined = StateManager.getUnit(entity);
@@ -172,7 +172,7 @@ export class UnitHandler extends Manager {
   }
 
   private sendMovingRequest(entity: EntityType, goal: Indices): void {
-    ServerHandler.sendMessage("game:unit-start-movement", {
+    CommunicationHandler.sendMessage("game:unit-start-movement", {
       entity,
       goal,
     });

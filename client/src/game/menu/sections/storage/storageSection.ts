@@ -1,7 +1,7 @@
 import { Section } from "@/game/menu/sections/section";
 import { StorageItem } from "@/game/menu/sections/storage/storageItem";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { StorageResponse } from "@/types/game.types";
 import type {
   CombinedType,
@@ -18,7 +18,7 @@ export class StorageSection extends Section {
 
   constructor(pos: Position, dim: Dimension) {
     super(pos, dim);
-    this.playerId = ServerHandler.getId();
+    this.playerId = CommunicationHandler.getId();
 
     this.initializeStorage();
     this.handleCommunication();
@@ -133,7 +133,7 @@ export class StorageSection extends Section {
   }
 
   private handleCommunication() {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:storageUpdate",
       ({ storage }: StorageResponse) => {
         StateManager.updateStorage(this.playerId, storage);

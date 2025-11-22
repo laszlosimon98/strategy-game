@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { Server, Socket } from "socket.io";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { World } from "@/game/world";
 import { Indices } from "@/utils/indices";
 import type { EntityType, PlayerType } from "@/types/state.types";
@@ -13,11 +13,11 @@ import { calculatePositionFromIndices } from "@/utils/utils";
 
 export const handleStart = (io: Server, socket: Socket) => {
   const gameStarts = async () => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     if (Object.keys(StateManager.getPlayers(room)).length <= 1) {
-      ServerHandler.sendMessageToSender(
+      CommunicationHandler.sendMessageToSender(
         socket,
         "connect:error",
         "A játék egy játékossal nem indítható!"
@@ -26,7 +26,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     }
 
     StateManager.startGame(room);
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
+    CommunicationHandler.sendMessageToEveryOne(io, socket, "game:starts", {});
 
     initPlayers(room);
     createWorld();
@@ -34,7 +34,7 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const initPlayers = (room: string) => {
-    ServerHandler.sendMessageToEveryOne(
+    CommunicationHandler.sendMessageToEveryOne(
       io,
       socket,
       "game:initPlayers",
@@ -43,12 +43,12 @@ export const handleStart = (io: Server, socket: Socket) => {
   };
 
   const createWorld = () => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     World.createWorld(socket);
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:createWorld", {
+    CommunicationHandler.sendMessageToEveryOne(io, socket, "game:createWorld", {
       tiles: World.getTiles(socket, room),
       obstacles: World.getObstacles(socket, room),
     });
@@ -61,7 +61,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     Object.keys(players).forEach((id) => {
       const idx: number = Math.floor(Math.random() * startPositions.length);
       const pos = startPositions.splice(idx, 1)[0];
-      ServerHandler.sendPrivateMessage(io, id, "game:startPos", pos);
+      CommunicationHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
       placeTower(id, pos);
       updateTerritory(id);
@@ -92,7 +92,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     };
 
     const { i, j } = indices;
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return null;
 
     StateManager.getWorld(room, socket)[i][j].setOwner(playerId);
@@ -104,7 +104,7 @@ export const handleStart = (io: Server, socket: Socket) => {
     );
 
     if (response instanceof Building) {
-      ServerHandler.sendMessageToEveryOne(
+      CommunicationHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:build",
@@ -112,7 +112,7 @@ export const handleStart = (io: Server, socket: Socket) => {
       );
       return response;
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:info", response);
+      CommunicationHandler.sendMessageToSender(socket, "game:info", response);
       return null;
     }
   };
@@ -120,15 +120,20 @@ export const handleStart = (io: Server, socket: Socket) => {
   const updateTerritory = (id: string) => {
     const updatedCells: Cell[] = World.updateTerritory(socket);
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-      data: updatedCells.map((cell) => {
-        return {
-          indices: cell.getIndices(),
-          owner: cell.getOwner(),
-          obstacle: cell.getHighestPriorityObstacleType(),
-        };
-      }),
-    });
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:updateTerritory",
+      {
+        data: updatedCells.map((cell) => {
+          return {
+            indices: cell.getIndices(),
+            owner: cell.getOwner(),
+            obstacle: cell.getHighestPriorityObstacleType(),
+          };
+        }),
+      }
+    );
   };
 
   socket.on("game:starts", gameStarts);

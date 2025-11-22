@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
@@ -41,7 +41,7 @@ export class BarracksPanel extends Section {
   }
 
   private initButtons(): void {
-    const playerId = ServerHandler.getId();
+    const playerId = CommunicationHandler.getId();
     const players = StateManager.getPlayers();
 
     if (playerId in players) {
@@ -78,7 +78,7 @@ export class BarracksPanel extends Section {
   }
 
   private createUnit(btn: LabelButton): void {
-    const playerId: string = ServerHandler.getId();
+    const playerId: string = CommunicationHandler.getId();
     const color: string = StateManager.getPlayerColor(playerId);
     const data = StateManager.getInfoPanelData();
     const name = btn.getName();
@@ -107,6 +107,6 @@ export class BarracksPanel extends Section {
   }
 
   private sendUnitCreateRequest(entity: EntityType): void {
-    ServerHandler.sendMessage("game:soldier-create", { entity });
+    CommunicationHandler.sendMessage("game:soldier-create", { entity });
   }
 }

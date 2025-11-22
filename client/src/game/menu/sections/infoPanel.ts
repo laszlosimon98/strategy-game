@@ -2,7 +2,7 @@ import { Section } from "@/game/menu/sections/section";
 import { ctx } from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Building } from "@/game/world/building/building";
@@ -115,7 +115,7 @@ export class InfoPanel extends Section {
       this.deleteButton.isClicked(mousePos.x, mousePos.y)
     ) {
       StateManager.setGameMenuState(StateManager.getPrevMenuState());
-      ServerHandler.sendMessage(
+      CommunicationHandler.sendMessage(
         "game:destroy",
         StateManager.getInfoPanelData()?.getEntity()
       );

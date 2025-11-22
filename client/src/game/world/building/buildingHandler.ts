@@ -5,7 +5,7 @@ import { GameState } from "@/enums/gameState";
 import { Building } from "@/game/world/building/building";
 import { FakeBuilding } from "@/game/world/building/fakeBuilding";
 import { Manager } from "@/game/world/manager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { EntityType } from "@/types/game.types";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
@@ -71,18 +71,18 @@ export class BuildingHandler extends Manager {
   }
 
   protected handleCommunication(): void {
-    ServerHandler.receiveMessage("game:build", (entity: EntityType) => {
+    CommunicationHandler.receiveMessage("game:build", (entity: EntityType) => {
       this.build(entity);
     });
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:destroy",
       ({ entity }: { entity: EntityType }) => {
         this.destroy(entity);
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "game:destroyLostTerritoryBuildings",
       ({ entities }: { entities: EntityType[] }) => {
         entities.forEach((entity) => this.destroy(entity));
@@ -111,7 +111,7 @@ export class BuildingHandler extends Manager {
       data: {
         ...StateManager.getBuilder().data,
         position: this.pos,
-        owner: ServerHandler.getId(),
+        owner: CommunicationHandler.getId(),
         id: uuidv4(),
         indices,
       },
@@ -144,13 +144,13 @@ export class BuildingHandler extends Manager {
         data: {
           ...StateManager.getBuilder().data,
           indices,
-          owner: ServerHandler.getId(),
+          owner: CommunicationHandler.getId(),
           position: this.pos,
           id: uuidv4(),
         },
       };
 
-      ServerHandler.sendMessage("game:build", entity);
+      CommunicationHandler.sendMessage("game:build", entity);
     }
   }
 }

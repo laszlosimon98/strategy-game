@@ -6,7 +6,7 @@ import { Frame } from "@/page/components/frame";
 import { Plate } from "@/page/components/plate";
 import { Text } from "@/page/components/text";
 import { Page } from "@/page/views/page";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
@@ -115,11 +115,11 @@ export class Lobby extends Page {
   }
 
   private handleStart = () => {
-    ServerHandler.sendMessage("game:starts", {});
+    CommunicationHandler.sendMessage("game:starts", {});
   };
 
   private handleLeaveRoom = (): void => {
-    ServerHandler.sendMessage("connect:disconnect", {});
+    CommunicationHandler.sendMessage("connect:disconnect", {});
     this.clearPage();
     StateManager.setPageState(PageState.NewGame);
   };
@@ -168,14 +168,14 @@ export class Lobby extends Page {
   }
 
   private handleCommunication(): void {
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "connect:code",
       ({ code }: { code: string }) => {
         this.codePlate.setText(`${code}`);
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "connect:newPlayer",
       ({ players, message }: { players: string[]; message: string }) => {
         this.info.setText(message);
@@ -190,7 +190,7 @@ export class Lobby extends Page {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "connect:playerLeft",
       ({ name, message }: { name: string; message: string }) => {
         this.info.setText(message);
@@ -205,7 +205,7 @@ export class Lobby extends Page {
       }
     );
 
-    ServerHandler.receiveMessage(
+    CommunicationHandler.receiveMessage(
       "connect:newHost",
       ({ name }: { name: string }) => {
         if (StateManager.getPlayerName() === name) {
@@ -216,7 +216,7 @@ export class Lobby extends Page {
   }
 
   private handleError = async () => {
-    const error: string = await ServerHandler.receiveAsyncMessage(
+    const error: string = await CommunicationHandler.receiveAsyncMessage(
       "connect:error"
     );
 

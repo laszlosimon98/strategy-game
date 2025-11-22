@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Building } from "@/game/building";
 import { Validator } from "@/utils/validator";
 import type { EntityType } from "@/types/state.types";
@@ -52,7 +52,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     ) {
       return;
     }
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const response: Building | ReturnMessage = StateManager.createBuilding(
@@ -65,7 +65,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
 
       const storage: StorageType = StateManager.getStorage(socket, room);
 
-      ServerHandler.sendMessageToEveryOne(
+      CommunicationHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:build",
@@ -75,7 +75,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       if (response instanceof GuardHouse) {
         const updatedCells: Cell[] = World.updateTerritory(socket);
 
-        ServerHandler.sendMessageToEveryOne(
+        CommunicationHandler.sendMessageToEveryOne(
           io,
           socket,
           "game:updateTerritory",
@@ -91,11 +91,11 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         );
       }
 
-      ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
+      CommunicationHandler.sendMessageToSender(socket, "game:storageUpdate", {
         storage,
       });
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:info", response);
+      CommunicationHandler.sendMessageToSender(socket, "game:info", response);
     }
   };
 
@@ -114,43 +114,53 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     );
 
     if (cells === null) {
-      ServerHandler.sendMessageToSender(socket, "game:info", {
+      CommunicationHandler.sendMessageToSender(socket, "game:info", {
         message: "Sikertelen épület elbontás!",
       });
       return;
     }
 
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
+    CommunicationHandler.sendMessageToEveryOne(io, socket, "game:destroy", {
       id: socket.id,
       entity,
     });
 
-    ServerHandler.sendMessageToSender(socket, "game:info", {
+    CommunicationHandler.sendMessageToSender(socket, "game:info", {
       message: "Épület sikeresen elbontva!",
     });
 
     if (entity.data.name === "guardhouse") {
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-        data: cells.markedCells.map((cell) => {
-          return {
-            indices: cell.getIndices(),
-            owner: cell.getOwner(),
-            obstacle: cell.getHighestPriorityObstacleType(),
-          };
-        }),
-      });
+      CommunicationHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:updateTerritory",
+        {
+          data: cells.markedCells.map((cell) => {
+            return {
+              indices: cell.getIndices(),
+              owner: cell.getOwner(),
+              obstacle: cell.getHighestPriorityObstacleType(),
+            };
+          }),
+        }
+      );
 
-      ServerHandler.sendMessageToEveryOne(io, socket, "game:updateTerritory", {
-        data: cells.updatedCells.map((cell) => {
-          return {
-            indices: cell.getIndices(),
-            owner: cell.getOwner(),
-            obstacle: cell.getHighestPriorityObstacleType(),
-          };
-        }),
-      });
+      CommunicationHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:updateTerritory",
+        {
+          data: cells.updatedCells.map((cell) => {
+            return {
+              indices: cell.getIndices(),
+              owner: cell.getOwner(),
+              obstacle: cell.getHighestPriorityObstacleType(),
+            };
+          }),
+        }
+      );
 
-      ServerHandler.sendMessageToEveryOne(
+      CommunicationHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:destroyLostTerritoryBuildings",
@@ -161,12 +171,12 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       );
 
       if (StateManager.isPlayerLostTheGame(socket, entity)) {
-        const room: string = ServerHandler.getCurrentRoom(socket);
+        const room: string = CommunicationHandler.getCurrentRoom(socket);
         if (!room) return;
 
         const user = StateManager.getPlayer(room, socket);
 
-        ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+        CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
           message: `${user.name} kiesett a játékból!`,
           name: "Rendszer",
           color: "#000",
@@ -175,18 +185,23 @@ export const handleBuildings = (io: Server, socket: Socket) => {
 
       if (StateManager.isGameOver(socket)) {
         setTimeout(() => {
-          ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
-            message: `${StateManager.getWinner(socket)} megnyerte a játékot!`,
-            name: "Rendszer",
-            color: "#000",
-          });
+          CommunicationHandler.sendMessageToEveryOne(
+            io,
+            socket,
+            "chat:message",
+            {
+              message: `${StateManager.getWinner(socket)} megnyerte a játékot!`,
+              name: "Rendszer",
+              color: "#000",
+            }
+          );
         }, 1000);
       }
     }
   };
 
   const guardHouseCheck = ({ entity }: { entity: EntityType }): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const guardHouse: GuardHouse = StateManager.getBuildingByEntity(
@@ -198,7 +213,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       const enemyOwner = guardHouse.capturingBy(socket, room);
       if (!enemyOwner) return;
 
-      ServerHandler.sendMessageToEveryOne(
+      CommunicationHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:guardhouse-start-occupation",
@@ -215,7 +230,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     );
 
     if (response instanceof Building) {
-      ServerHandler.sendMessageToEveryOne(
+      CommunicationHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:build",
@@ -225,7 +240,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       if (response instanceof GuardHouse) {
         const updatedCells: Cell[] = World.updateTerritory(socket);
 
-        ServerHandler.sendMessageToEveryOne(
+        CommunicationHandler.sendMessageToEveryOne(
           io,
           socket,
           "game:updateTerritory",
@@ -241,14 +256,14 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         );
       }
     } else {
-      ServerHandler.sendMessageToSender(socket, "game:info", {
+      CommunicationHandler.sendMessageToSender(socket, "game:info", {
         message: "Őrtorony sikeresen elfoglalva!",
       });
     }
   };
 
   const guardHouseOccupied = ({ entity }: { entity: EntityType }): void => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     destroy(entity, false);

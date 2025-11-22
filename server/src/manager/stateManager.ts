@@ -1,4 +1,4 @@
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Building } from "@/game/building";
 import { Cell } from "@/game/cell";
 import { Unit } from "@/game/units/unit";
@@ -39,10 +39,15 @@ export class StateManager {
     name: string
   ): void {
     const names = this.getPlayersNameInRoom(room);
-    ServerHandler.sendMessageToEveryOne(io, socket, "connect:newPlayer", {
-      players: names,
-      message: `${name} csatlakozott a váróhoz!`,
-    });
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "connect:newPlayer",
+      {
+        players: names,
+        message: `${name} csatlakozott a váróhoz!`,
+      }
+    );
   }
 
   public static playerleftMessage(
@@ -50,10 +55,15 @@ export class StateManager {
     socket: Socket,
     name: string
   ): void {
-    ServerHandler.sendMessageToEveryOne(io, socket, "connect:playerLeft", {
-      name,
-      message: `${name} elhagyta a várót!`,
-    });
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "connect:playerLeft",
+      {
+        name,
+        message: `${name} elhagyta a várót!`,
+      }
+    );
   }
 
   public static generateGameCode(): string {
@@ -176,7 +186,7 @@ export class StateManager {
   }
 
   public static setWorld(socket: Socket, world: Cell[][]): void {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     this.state[room].world = world;
@@ -448,7 +458,7 @@ export class StateManager {
     socket: Socket,
     entity: EntityType
   ): boolean {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return true;
 
     const buildings: Building[] = this.getBuildings(room, entity.data.owner);
@@ -463,7 +473,7 @@ export class StateManager {
     let count: number = 0;
     let winner: string = "";
 
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return true;
 
     const playersBuildings: Record<string, Building[]> =
@@ -486,14 +496,14 @@ export class StateManager {
   }
 
   public static getWinner(socket: Socket): string | null {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return null;
 
     return this.state[room].winner;
   }
 
   private static setWinner(socket: Socket, key: string): void {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const { name } = this.getPlayers(room)[key];

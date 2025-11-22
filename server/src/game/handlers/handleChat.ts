@@ -1,4 +1,4 @@
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { ColorType } from "@/types/state.types";
 import { Server, Socket } from "socket.io";
 
@@ -12,7 +12,7 @@ export const handleChat = (io: Server, socket: Socket) => {
     name: string;
     color: ColorType;
   }) => {
-    ServerHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+    CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
       message,
       name,
       color,

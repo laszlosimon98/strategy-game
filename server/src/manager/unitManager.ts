@@ -1,5 +1,5 @@
 import { Unit } from "@/game/units/unit";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { EntityType, StateType } from "@/types/state.types";
@@ -24,7 +24,7 @@ export class UnitManager extends Manager {
     entity: EntityType
   ): Soldier | ReturnMessage {
     const unitName: string = entity.data.name;
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return { message: "Nincs elegendő fegyver raktáron!" };
 
     if (this.storageHasWeapons(socket, room, unitName)) {

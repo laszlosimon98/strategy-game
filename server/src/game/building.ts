@@ -4,7 +4,7 @@ import { Entity } from "@/game/entities/entity";
 import { Production } from "@/game/production";
 import { ProductionBuildingInterface } from "@/interfaces/ProductionBuildingInterface";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Requirement } from "@/types/production.types";
 import { ReturnMessage } from "@/types/setting.types";
 import type { EntityType } from "@/types/state.types";
@@ -98,7 +98,7 @@ export class Building extends Entity implements ProductionBuildingInterface {
     closestCell: Cell,
     sendType: ObstacleEnum
   ): void {
-    ServerHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
+    CommunicationHandler.sendMessageToEveryOne(io, socket, "game:updateCell", {
       indices: closestCell.getIndices(),
       obstacle: sendType,
       owner: closestCell.getOwner(),

@@ -1,6 +1,6 @@
 import { StateManager } from "@/manager/stateManager";
 import { TextInput } from "@/page/components/textInput";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import type { Dimension } from "@/utils/dimension";
 import type { Position } from "@/utils/position";
@@ -56,10 +56,10 @@ export class ChatInput extends TextInput {
     if (super.getText() === "togglegamemenu") {
       StateManager.toggleGameMenu();
     } else {
-      ServerHandler.sendMessage("chat:message", {
+      CommunicationHandler.sendMessage("chat:message", {
         message: super.getText(),
         name: StateManager.getPlayerName(),
-        color: StateManager.getPlayerColor(ServerHandler.getId()),
+        color: StateManager.getPlayerColor(CommunicationHandler.getId()),
       });
     }
   }

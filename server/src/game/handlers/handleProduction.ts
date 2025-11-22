@@ -1,5 +1,5 @@
 import { Building } from "@/game/building";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { StateManager } from "@/manager/stateManager";
 import { Requirement } from "@/types/production.types";
 import { EntityType } from "@/types/state.types";
@@ -84,7 +84,7 @@ export const handleProduction = (io: Server, socket: Socket) => {
   };
 
   const handleProductionRequest = ({ entity }: { entity: EntityType }) => {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const building: Building | undefined = StateManager.getBuildingByEntity(
@@ -105,7 +105,7 @@ export const handleProduction = (io: Server, socket: Socket) => {
     }
 
     const storage: StorageType = StateManager.getStorage(socket, room);
-    ServerHandler.sendMessageToSender(socket, "game:storageUpdate", {
+    CommunicationHandler.sendMessageToSender(socket, "game:storageUpdate", {
       storage,
     });
   };

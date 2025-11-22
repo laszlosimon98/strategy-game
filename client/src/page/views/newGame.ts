@@ -2,7 +2,7 @@ import { PageState } from "@/enums/pageState";
 import { StateManager } from "@/manager/stateManager";
 import { Button } from "@/page/components/button";
 import { Page } from "@/page/views/page";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 
 export class NewGame extends Page {
@@ -43,7 +43,7 @@ export class NewGame extends Page {
   }
 
   private handleCreate = () => {
-    ServerHandler.sendMessage("connect:create", {
+    CommunicationHandler.sendMessage("connect:create", {
       name: StateManager.getPlayerName(),
     });
     StateManager.setPageState(PageState.Lobby);

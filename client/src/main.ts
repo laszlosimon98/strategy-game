@@ -2,19 +2,19 @@ import { authApi, userApi } from "@/api/api";
 import init from "@/init";
 import { StateManager } from "@/manager/stateManager";
 import { Program } from "@/program";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 
 const initImages = async () => {
-  ServerHandler.sendMessage("start:page", {});
-  const images = await ServerHandler.receiveAsyncMessage("start:page");
+  CommunicationHandler.sendMessage("start:page", {});
+  const images = await CommunicationHandler.receiveAsyncMessage("start:page");
   StateManager.setImages(images);
   console.log(StateManager.getImages());
 };
 
 const initBuildingPrices = async () => {
-  ServerHandler.sendMessage("start:prices", {});
-  const buildingPrices = await ServerHandler.receiveAsyncMessage(
+  CommunicationHandler.sendMessage("start:prices", {});
+  const buildingPrices = await CommunicationHandler.receiveAsyncMessage(
     "start:prices"
   );
 

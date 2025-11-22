@@ -3,7 +3,7 @@ import { Entity } from "@/game/world/entity";
 import { ctx } from "@/init";
 import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { StateManager } from "@/manager/stateManager";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
@@ -121,14 +121,16 @@ export class Building extends Entity implements RendererInterface {
   }
 
   public action(): void {
-    if (this.entity.data.owner === ServerHandler.getId()) {
+    if (this.entity.data.owner === CommunicationHandler.getId()) {
       if (this.entity.data.isProductionBuilding) {
-        ServerHandler.sendMessage("game:production", { entity: this.entity });
+        CommunicationHandler.sendMessage("game:production", {
+          entity: this.entity,
+        });
         this.cooldownTimer?.activate();
       }
 
       if (this.entity.data.name === "guardhouse") {
-        ServerHandler.sendMessage("game:guardhouse-check", {
+        CommunicationHandler.sendMessage("game:guardhouse-check", {
           entity: this.entity,
         });
         this.occupationCheckTimer?.activate();
@@ -137,8 +139,8 @@ export class Building extends Entity implements RendererInterface {
   }
 
   public occupationTimerOver(): void {
-    if (this.enemyOwner === ServerHandler.getId()) {
-      ServerHandler.sendMessage("game:guardhouse-occupied", {
+    if (this.enemyOwner === CommunicationHandler.getId()) {
+      CommunicationHandler.sendMessage("game:guardhouse-occupied", {
         entity: this.entity,
       });
     }

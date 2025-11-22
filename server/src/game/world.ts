@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import alea from "alea";
 import { createNoise2D } from "simplex-noise";
 
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Cell } from "@/game/cell";
 import { Indices } from "@/utils/indices";
 import { settings } from "@/settings";
@@ -106,7 +106,7 @@ export class World {
       id: string;
     }
   ): Cell[] {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return [];
 
     let buildings: Building[];
@@ -225,7 +225,7 @@ export class World {
   }
 
   public static cleanupPlayerTerritory(socket: Socket, id: string): void {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const buildings: Building[] = StateManager.getBuildings(room, id);
@@ -242,7 +242,7 @@ export class World {
     socket: Socket,
     building: Building
   ): DestroyBuildingResponse {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room)
       return {
         updatedCells: [],
@@ -360,7 +360,7 @@ export class World {
     fn: (cell: Cell) => void,
     options?: { isCircle: boolean }
   ): void {
-    const room: string = ServerHandler.getCurrentRoom(socket);
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
     const world: Cell[][] = StateManager.getWorld(room, socket);

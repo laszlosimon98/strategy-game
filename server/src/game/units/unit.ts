@@ -10,7 +10,7 @@ import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Indices } from "@/utils/indices";
 import { Socket } from "socket.io";
 import { PathFinder } from "@/game/pathFind/pathFinder";
-import { ServerHandler } from "@/server/serverHandler";
+import { CommunicationHandler } from "@/communication/communicationHandler";
 
 export abstract class Unit extends Entity {
   private path: Cell[];
@@ -43,7 +43,7 @@ export abstract class Unit extends Entity {
   }
 
   public calculatePath(): void {
-    const room: string = ServerHandler.getCurrentRoom(this.socket);
+    const room: string = CommunicationHandler.getCurrentRoom(this.socket);
     if (!room) return;
 
     const current: Indices = this.getIndices();
@@ -130,7 +130,7 @@ export abstract class Unit extends Entity {
 
   private updateIndices(currentCell: Cell | undefined): void {
     if (currentCell) {
-      const room: string = ServerHandler.getCurrentRoom(this.socket);
+      const room: string = CommunicationHandler.getCurrentRoom(this.socket);
       if (!room) return;
 
       const { i, j }: Indices = this.entity.data.indices;
