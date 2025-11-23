@@ -15,6 +15,7 @@ import { World } from "@/game/world";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Cell } from "@/game/cell";
 import { DestroyBuildingResponse } from "@/types/world.types";
+import { prismaService } from "@/prisma/prisma";
 
 export const handleBuildings = (io: Server, socket: Socket) => {
   const calculateNewStorageValues = (
@@ -99,10 +100,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
-  const destroy = (
+  const destroy = async (
     entity: EntityType,
     needValidation: boolean = true
-  ): void => {
+  ): Promise<void> => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
     }
@@ -130,51 +131,14 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     });
 
     if (entity.data.name === "guardhouse") {
-      CommunicationHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:updateTerritory",
-        {
-          data: cells.markedCells.map((cell) => {
-            return {
-              indices: cell.getIndices(),
-              owner: cell.getOwner(),
-              obstacle: cell.getHighestPriorityObstacleType(),
-            };
-          }),
-        }
-      );
-
-      CommunicationHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:updateTerritory",
-        {
-          data: cells.updatedCells.map((cell) => {
-            return {
-              indices: cell.getIndices(),
-              owner: cell.getOwner(),
-              obstacle: cell.getHighestPriorityObstacleType(),
-            };
-          }),
-        }
-      );
-
-      CommunicationHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:destroyLostTerritoryBuildings",
-        {
-          id: socket.id,
-          entities: cells.lostBuildings.map((building) => building.getEntity()),
-        }
-      );
+      sendGuardHouseRelatedMessages(cells);
 
       if (StateManager.isPlayerLostTheGame(socket, entity)) {
         const room: string = CommunicationHandler.getCurrentRoom(socket);
         if (!room) return;
 
-        const user = StateManager.getPlayer(room, socket);
+        const user = StateManager.getPlayers(room)[entity.data.owner];
+        await updateStatistic(user.name, "lose");
 
         CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
           message: `${user.name} kiesett a játékból!`,
@@ -184,13 +148,18 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       }
 
       if (StateManager.isGameOver(socket)) {
+        const winner: string | null = StateManager.getWinner(socket);
+
+        if (!winner) return;
+
+        await updateStatistic(winner, "win");
         setTimeout(() => {
           CommunicationHandler.sendMessageToEveryOne(
             io,
             socket,
             "chat:message",
             {
-              message: `${StateManager.getWinner(socket)} megnyerte a játékot!`,
+              message: `${winner} megnyerte a játékot!`,
               name: "Rendszer",
               color: "#000",
             }
@@ -252,13 +221,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
           socket,
           "game:updateTerritory",
           {
-            data: updatedCells.map((cell) => {
-              return {
-                indices: cell.getIndices(),
-                owner: cell.getOwner(),
-                obstacle: cell.getHighestPriorityObstacleType(),
-              };
-            }),
+            data: updatedCells.map(formatCell),
           }
         );
       }
@@ -273,14 +236,80 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
-    console.log('captured')
-
     destroy(entity, false);
     entity.data.owner = socket.id;
     entity.data.position = calculatePositionFromIndices(entity.data.indices);
     const { i, j } = entity.data.indices;
     StateManager.getWorld(room, socket)[i][j].setOwner(entity.data.owner);
     reBuild(entity);
+  };
+
+  const formatCell = (cell: Cell) => ({
+    indices: cell.getIndices(),
+    owner: cell.getOwner(),
+    obstacle: cell.getHighestPriorityObstacleType(),
+  });
+
+  const sendGuardHouseRelatedMessages = (cells: DestroyBuildingResponse) => {
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:updateTerritory",
+      {
+        data: cells.markedCells.map(formatCell),
+      }
+    );
+
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:updateTerritory",
+      {
+        data: cells.updatedCells.map(formatCell),
+      }
+    );
+
+    CommunicationHandler.sendMessageToEveryOne(
+      io,
+      socket,
+      "game:destroyLostTerritoryBuildings",
+      {
+        id: socket.id,
+        entities: cells.lostBuildings.map((building) => building.getEntity()),
+      }
+    );
+  };
+
+  const updateStatistic = async (username: string, status: "win" | "lose") => {
+    const user = await prismaService.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (!user) return;
+
+    try {
+      const currentStatistic = await prismaService.statistic.findUnique({
+        where: {
+          usersid: user.id,
+        },
+      });
+
+      await prismaService.statistic.update({
+        where: {
+          usersid: user.id,
+        },
+        data: {
+          losses:
+            status === "lose" ? (currentStatistic?.losses ?? 0) + 1 : undefined,
+          wins:
+            status === "win" ? (currentStatistic?.wins ?? 0) + 1 : undefined,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   socket.on("game:build", build);
