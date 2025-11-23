@@ -61,7 +61,7 @@ export const handleConnection = (io: Server, socket: Socket) => {
     StateManager.newPlayerMessage(io, socket, room, name);
   };
 
-  const disconnect = () => {
+  const disconnect = async () => {
     const room = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
@@ -112,6 +112,30 @@ export const handleConnection = (io: Server, socket: Socket) => {
         color: "#000",
       }
     );
+
+    console.log(StateManager.getRemainigPlayerCount(socket));
+
+    if (StateManager.getRemainigPlayerCount(socket) === 1) {
+      console.log(user.name + " lost");
+      const lastUser = StateManager.getLastPlayer(socket);
+      if (!lastUser) return;
+
+      console.log(lastUser + " won");
+
+      await StateManager.updateStatistic(user.name, "lose");
+      await StateManager.updateStatistic(lastUser, "win");
+
+      CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
+        message: `${lastUser} megnyerte a játékot!`,
+        name: "Rendszer",
+        color: "#000",
+      });
+    }
+
+    if (StateManager.getRemainigPlayerCount(socket) > 1) {
+      console.log(user.name + " lost");
+      await StateManager.updateStatistic(user.name, "lose");
+    }
   };
 
   const handleNewHost = (room: string) => {

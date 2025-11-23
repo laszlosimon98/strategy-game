@@ -493,7 +493,23 @@ export class StateManager {
       this.setWinner(socket, winner);
       return true;
     }
+
     return false;
+  }
+
+  public static getRemainigPlayerCount(socket: Socket): number {
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
+    if (!room) return 0;
+
+    return Object.keys(StateManager.getPlayers(room)).length;
+  }
+
+  public static getLastPlayer(socket: Socket): string | null {
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
+    if (!room) return null;
+
+    const key = Object.keys(StateManager.getPlayers(room))[0];
+    return StateManager.getPlayers(room)[key].name;
   }
 
   public static getWinner(socket: Socket): string | null {
@@ -519,7 +535,7 @@ export class StateManager {
     return playerColor;
   }
 
-  // ------------------- Game Over -------------------
+  // ------------------- Statistic -------------------
 
   public static async updateStatistic(
     username: string,

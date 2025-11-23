@@ -138,8 +138,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         if (!room) return;
 
         const user = StateManager.getPlayers(room)[entity.data.owner];
-        await StateManager.updateStatistic(user.name, "lose");
-
         CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
           message: `${user.name} kiesett a játékból!`,
           name: "Rendszer",
@@ -149,10 +147,8 @@ export const handleBuildings = (io: Server, socket: Socket) => {
 
       if (StateManager.isGameOver(socket)) {
         const winner: string | null = StateManager.getWinner(socket);
-
         if (!winner) return;
 
-        await StateManager.updateStatistic(winner, "win");
         setTimeout(() => {
           CommunicationHandler.sendMessageToEveryOne(
             io,
@@ -279,8 +275,6 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       }
     );
   };
-
-  
 
   socket.on("game:build", build);
   socket.on("game:destroy", destroy);
