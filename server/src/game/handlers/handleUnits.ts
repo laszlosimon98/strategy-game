@@ -34,33 +34,30 @@ export const handleUnits = (io: Server, socket: Socket) => {
   };
 
   const getUnitInRange = (
-    entity: EntityType,
+    currentSoldier: Soldier,
     enemySoldiers: Soldier[]
   ): Soldier | null => {
-    const room: string = CommunicationHandler.getCurrentRoom(socket);
-    if (!room) return null;
-
-    const currentSoldier: Soldier = StateManager.getSoldier(
-      room,
-      entity
-    ) as Soldier;
-    let unitInRange: Soldier | null = null;
-
     for (let i = 0; i < enemySoldiers.length; ++i) {
-      if (
-        Math.floor(
-          calculateDistance(
-            currentSoldier.getPosition(),
-            enemySoldiers[i].getPosition()
-          )
-        ) <
-        currentSoldier.getProperties().range * settings.cellSize + EPSILON
-      ) {
-        unitInRange = enemySoldiers[i];
+      const enemy = enemySoldiers[i];
+      if (enemy && enemy.isAlive() && isTargetInRange(currentSoldier, enemy)) {
+        return enemy;
       }
     }
 
-    return unitInRange;
+    return null;
+  };
+
+  const isTargetInRange = (
+    currentSoldier: Soldier,
+    target: Soldier
+  ): boolean => {
+    const distance = Math.floor(
+      calculateDistance(currentSoldier.getPosition(), target.getPosition())
+    );
+    return (
+      distance <
+      currentSoldier.getProperties().range * settings.cellSize + EPSILON
+    );
   };
 
   const dealDamage = (currentSoldier: Soldier, enemySoldier: Soldier): void => {
@@ -71,6 +68,25 @@ export const handleUnits = (io: Server, socket: Socket) => {
   const deleteUnit = (unit: Unit): void => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
+
+    if (unit instanceof Soldier) {
+      const players = StateManager.getPlayers(room);
+      Object.values(players).forEach((player) => {
+        player.units.forEach((otherUnit: Unit) => {
+          if (otherUnit instanceof Soldier) {
+            if (otherUnit.getTarget() === unit) {
+              otherUnit.setTarget(null);
+              const interval = otherUnit.getInterval();
+              if (interval) {
+                clearInterval(interval);
+                otherUnit.setInterval(null);
+              }
+            }
+          }
+        });
+      });
+    }
+
     restoreCell(unit.getIndices());
     StateManager.deleteUnit(room, unit);
   };
@@ -158,6 +174,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
     const interval: NodeJS.Timeout | null = unit.getInterval();
     if (interval) {
       clearInterval(interval);
+      unit.setInterval(null);
     }
 
     gameLoop((dt, interval) => {
@@ -195,6 +212,7 @@ export const handleUnits = (io: Server, socket: Socket) => {
         );
 
         clearInterval(interval);
+        unit.setInterval(null);
         return;
       }
     });
@@ -235,14 +253,30 @@ export const handleUnits = (io: Server, socket: Socket) => {
         return soldier;
       })
       .filter((soldier) => {
+        if (!soldier) return false;
+
         const entity: EntityType | undefined = soldier?.getEntity();
 
-        if (entity && entity.data.owner !== socket.id) {
-          return soldier;
+        if (entity && entity.data.owner !== socket.id && soldier.isAlive()) {
+          return true;
         }
+        return false;
       });
 
-    currentSoldier.setTarget(getUnitInRange(entity, enemySoldiers));
+    const currentTarget = currentSoldier.getTarget();
+
+    if (currentTarget) {
+      if (
+        !currentTarget.isAlive() ||
+        !isTargetInRange(currentSoldier, currentTarget)
+      ) {
+        currentSoldier.setTarget(null);
+      }
+    }
+
+    if (!currentSoldier.getTarget()) {
+      currentSoldier.setTarget(getUnitInRange(currentSoldier, enemySoldiers));
+    }
 
     const target: Soldier | null = currentSoldier.getTarget();
 
@@ -254,20 +288,21 @@ export const handleUnits = (io: Server, socket: Socket) => {
         { entity: currentSoldier.getEntity() }
       );
 
-      const facing = StateManager.calculateFacing(
-        currentSoldier.getCell(room),
-        target.getCell(room)
-      );
-      currentSoldier.setFacing(facing);
+      const targetCell = target.getCell(room);
+      const currentCell = currentSoldier.getCell(room);
+      if (targetCell && currentCell) {
+        const facing = StateManager.calculateFacing(currentCell, targetCell);
+        currentSoldier.setFacing(facing);
 
-      CommunicationHandler.sendMessageToEveryOne(
-        io,
-        socket,
-        "game:unit-facing",
-        {
-          entity: currentSoldier.getEntity(),
-        }
-      );
+        CommunicationHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:unit-facing",
+          {
+            entity: currentSoldier.getEntity(),
+          }
+        );
+      }
 
       dealDamage(currentSoldier, target);
 
@@ -280,30 +315,6 @@ export const handleUnits = (io: Server, socket: Socket) => {
           health: target.getProperties().health,
         }
       );
-
-      if (!currentSoldier.isAlive()) {
-        currentSoldier.setTarget(null);
-        target.setTarget(null);
-        deleteUnit(currentSoldier);
-
-        CommunicationHandler.sendMessageToEveryOne(
-          io,
-          socket,
-          "game:unit-dies",
-          {
-            entity: currentSoldier.getEntity(),
-          }
-        );
-
-        CommunicationHandler.sendMessageToEveryOne(
-          io,
-          socket,
-          "game:unit-stop-attacking",
-          {
-            entity: target.getEntity(),
-          }
-        );
-      }
 
       if (!target.isAlive()) {
         currentSoldier.setTarget(null);
@@ -327,6 +338,34 @@ export const handleUnits = (io: Server, socket: Socket) => {
             entity: currentSoldier.getEntity(),
           }
         );
+      }
+
+      if (!currentSoldier.isAlive()) {
+        currentSoldier.setTarget(null);
+        if (target) {
+          target.setTarget(null);
+        }
+        deleteUnit(currentSoldier);
+
+        CommunicationHandler.sendMessageToEveryOne(
+          io,
+          socket,
+          "game:unit-dies",
+          {
+            entity: currentSoldier.getEntity(),
+          }
+        );
+
+        if (target && target.isAlive()) {
+          CommunicationHandler.sendMessageToEveryOne(
+            io,
+            socket,
+            "game:unit-stop-attacking",
+            {
+              entity: target.getEntity(),
+            }
+          );
+        }
       }
     } else {
       CommunicationHandler.sendMessageToEveryOne(
