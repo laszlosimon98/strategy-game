@@ -22,6 +22,7 @@ import { calculateDistanceByIndices } from "@/utils/utils";
 import { DestroyBuildingResponse } from "@/types/world.types";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Soldier } from "@/game/units/soldier";
+import { prismaService } from "@/prisma/prisma";
 
 export class StateManager {
   private static state: StateType = {};
@@ -516,5 +517,42 @@ export class StateManager {
     const playerColor = colors[randomNumber];
     colors.splice(randomNumber, 1);
     return playerColor;
+  }
+
+  // ------------------- Game Over -------------------
+
+  public static async updateStatistic(
+    username: string,
+    status: "win" | "lose"
+  ) {
+    const user = await prismaService.user.findUnique({
+      where: {
+        username,
+      },
+    });
+
+    if (!user) return;
+
+    try {
+      const currentStatistic = await prismaService.statistic.findUnique({
+        where: {
+          usersid: user.id,
+        },
+      });
+
+      await prismaService.statistic.update({
+        where: {
+          usersid: user.id,
+        },
+        data: {
+          losses:
+            status === "lose" ? (currentStatistic?.losses ?? 0) + 1 : undefined,
+          wins:
+            status === "win" ? (currentStatistic?.wins ?? 0) + 1 : undefined,
+        },
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }
 }

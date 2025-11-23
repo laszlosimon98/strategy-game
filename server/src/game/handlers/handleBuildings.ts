@@ -138,7 +138,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
         if (!room) return;
 
         const user = StateManager.getPlayers(room)[entity.data.owner];
-        await updateStatistic(user.name, "lose");
+        await StateManager.updateStatistic(user.name, "lose");
 
         CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
           message: `${user.name} kiesett a játékból!`,
@@ -152,7 +152,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
 
         if (!winner) return;
 
-        await updateStatistic(winner, "win");
+        await StateManager.updateStatistic(winner, "win");
         setTimeout(() => {
           CommunicationHandler.sendMessageToEveryOne(
             io,
@@ -280,37 +280,7 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     );
   };
 
-  const updateStatistic = async (username: string, status: "win" | "lose") => {
-    const user = await prismaService.user.findUnique({
-      where: {
-        username,
-      },
-    });
-
-    if (!user) return;
-
-    try {
-      const currentStatistic = await prismaService.statistic.findUnique({
-        where: {
-          usersid: user.id,
-        },
-      });
-
-      await prismaService.statistic.update({
-        where: {
-          usersid: user.id,
-        },
-        data: {
-          losses:
-            status === "lose" ? (currentStatistic?.losses ?? 0) + 1 : undefined,
-          wins:
-            status === "win" ? (currentStatistic?.wins ?? 0) + 1 : undefined,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
+  
 
   socket.on("game:build", build);
   socket.on("game:destroy", destroy);
