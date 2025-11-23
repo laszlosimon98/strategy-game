@@ -155,10 +155,10 @@ export const handleUnits = (io: Server, socket: Socket) => {
       unit.setTarget(null);
     }
 
-    // const interval: NodeJS.Timeout | null = unit.getInterval();
-    // if (interval) {
-    //   clearInterval(interval);
-    // }
+    const interval: NodeJS.Timeout | null = unit.getInterval();
+    if (interval) {
+      clearInterval(interval);
+    }
 
     gameLoop((dt, interval) => {
       unit.move(dt);
