@@ -137,13 +137,11 @@ export abstract class Unit extends Entity {
 
       const prevCell: Cell = StateManager.getWorld(room, this.socket)[i][j];
       prevCell.removeObstacle(ObstacleEnum.Unit);
-
-      const prevSoldier = prevCell.getSoldier();
       prevCell.setSoldier(null);
 
       this.setIndices(currentCell.getIndices());
       currentCell.addObstacle(ObstacleEnum.Unit);
-      currentCell.setSoldier(prevSoldier);
+      currentCell.setSoldier(this as any);
     }
   }
 
