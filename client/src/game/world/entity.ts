@@ -39,8 +39,8 @@ export abstract class Entity implements RendererInterface {
 
   public update(dt: number, cameraScroll: Position): void {
     this.renderPos = new Position(
-      this.entity.data.position.x + cameraScroll.x,
-      this.entity.data.position.y + cameraScroll.y
+      Math.round(this.entity.data.position.x + cameraScroll.x),
+      Math.round(this.entity.data.position.y + cameraScroll.y)
     );
   }
 

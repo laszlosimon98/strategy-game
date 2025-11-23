@@ -164,12 +164,23 @@ export const handleUnits = (io: Server, socket: Socket) => {
       unit.move(dt);
       unit.setInterval(interval);
 
+      const entity = {
+        ...unit.getEntity(),
+        data: {
+          ...unit.getEntity().data,
+          position: {
+            x: Math.round(unit.getEntity().data.position.x),
+            y: Math.round(unit.getEntity().data.position.y),
+          },
+        },
+      };
+
       CommunicationHandler.sendMessageToEveryOne(
         io,
         socket,
         "game:unit-moving",
         {
-          entity: unit.getEntity(),
+          entity,
         }
       );
 

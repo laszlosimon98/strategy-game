@@ -61,15 +61,15 @@ export abstract class Unit extends Entity implements RendererInterface {
       this.facing,
       settings.size.unitAsset,
       settings.size.unitAsset,
-      this.renderPos.x,
-      this.renderPos.y,
+      Math.round(this.renderPos.x),
+      Math.round(this.renderPos.y),
       settings.size.unitAsset,
       settings.size.unitAsset
     );
   }
 
-  public update(dt: number, mousePos: Position): void {
-    super.update(dt, mousePos);
+  public update(dt: number, cameraScroll: Position): void {
+    super.update(dt, cameraScroll);
 
     if (this.unitState !== UnitStates.Idle) {
       this.playAnimation(dt);
