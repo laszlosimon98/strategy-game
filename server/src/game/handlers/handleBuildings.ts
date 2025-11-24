@@ -169,12 +169,12 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
-    const guardHouse: GuardHouse = StateManager.getBuildingByEntity(
+    const guardHouse: GuardHouse | undefined = StateManager.getBuildingByEntity(
       room,
       entity
-    ) as GuardHouse;
+    );
 
-    if (guardHouse.isCapturable(socket, room)) {
+    if (guardHouse && guardHouse.isCapturable(socket, room)) {
       const enemyOwner = guardHouse.capturingBy(socket, room);
       if (!enemyOwner) return;
 
