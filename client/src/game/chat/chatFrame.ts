@@ -29,11 +29,13 @@ export class ChatFrame extends Frame {
   }
 
   public draw(): void {
-    super.draw();
+    if (this.texts.length > 0) {
+      super.draw();
 
-    this.texts.forEach(({ text }) => {
-      text.draw();
-    });
+      this.texts.forEach(({ text }) => {
+        text.draw();
+      });
+    }
   }
 
   public update(dt: number, mousePos: Position): void {
