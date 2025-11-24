@@ -69,13 +69,13 @@ export const handleUnits = (io: Server, socket: Socket) => {
     cell.setSoldier(null);
   };
 
-  const getEnemySoldiersOnCells = (unitOnCells: Cell[]) => {
+  const getEnemySoldiersOnCells = (unitOnCells: Cell[]): Soldier[] => {
     return unitOnCells
       .map((cell) => {
-        const soldier: Soldier = cell.getSoldier() as Soldier;
+        const soldier: Soldier | null = cell.getSoldier();
         return soldier;
       })
-      .filter((soldier) => {
+      .filter((soldier): soldier is Soldier => {
         if (!soldier) return false;
 
         const entity: EntityType | undefined = soldier?.getEntity();
