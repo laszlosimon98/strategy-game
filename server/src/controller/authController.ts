@@ -27,6 +27,10 @@ export const handleRegister = async (request: Request, response: Response) => {
       return response.status(400).send("Az adatok megadása kötelező!");
     }
 
+    if (password.length < 5) {
+      return response.status(400).send("Legalább 5 hosszú jelszó!");
+    }
+
     const hashedPassword: string = await bcrypt.hash(
       password,
       parseInt(process.env.HASHROUND || "10")
