@@ -13,7 +13,7 @@ export class Woodcutter extends Building {
   public constructor(building: EntityType) {
     super(building);
     this.production = new Production(6000, 7500, "materials", "wood");
-    this.range = 3;
+    this.range = 7;
   }
 
   public produce(

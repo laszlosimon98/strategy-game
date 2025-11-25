@@ -13,7 +13,7 @@ export class Stonecutter extends Building {
   public constructor(building: EntityType) {
     super(building);
     this.production = new Production(7000, 8000, "materials", "stone");
-    this.range = 3;
+    this.range = 4;
   }
 
   public produce(
