@@ -30,7 +30,10 @@ export class Auth extends Page {
       settings.size.button,
       StateManager.getImages("ui", "plate"),
       "back",
-      () => StateManager.setPageState(PageState.MainMenu)
+      () => {
+        StateManager.setPageState(PageState.MainMenu);
+        this.errorText.setText("");
+      }
     );
 
     this.actionButton = new Button(
@@ -42,10 +45,7 @@ export class Auth extends Page {
 
     this.nameText = new Text(
       new Position(settings.pos.auth.name.x, settings.pos.auth.name.y - 10),
-      "Felhasználó név: ",
-      {
-        color: settings.color.brown,
-      }
+      "Felhasználó név: "
     );
 
     this.nameInput = new TextInput(
@@ -59,10 +59,7 @@ export class Auth extends Page {
         settings.pos.auth.password.x,
         settings.pos.auth.password.y - 10
       ),
-      "Jelszó: ",
-      {
-        color: settings.color.brown,
-      }
+      "Jelszó: "
     );
 
     this.passwordInput = new TextInput(
@@ -79,10 +76,7 @@ export class Auth extends Page {
         settings.pos.auth.password.x,
         settings.pos.auth.password.y + 30
       ),
-      "",
-      {
-        color: settings.color.error,
-      }
+      ""
     );
 
     this.buttons.push(this.backButton);

@@ -43,7 +43,10 @@ export class MainMenu extends Page {
       settings.size.button,
       StateManager.getImages("ui", "plate"),
       "registration",
-      () => StateManager.setPageState(PageState.Registration)
+      () => {
+        StateManager.setPageState(PageState.Registration);
+        this.error.setText("");
+      }
     );
 
     this.login = new Button(
@@ -51,7 +54,10 @@ export class MainMenu extends Page {
       settings.size.button,
       StateManager.getImages("ui", "plate"),
       "login",
-      () => StateManager.setPageState(PageState.Login)
+      () => {
+        StateManager.setPageState(PageState.Login);
+        this.error.setText("");
+      }
     );
 
     this.logout = new Button(
@@ -74,7 +80,10 @@ export class MainMenu extends Page {
       settings.size.button,
       StateManager.getImages("ui", "plate"),
       "newGame",
-      () => StateManager.setPageState(PageState.NewGame)
+      () => {
+        StateManager.setPageState(PageState.NewGame);
+        this.error.setText("");
+      }
     );
 
     this.statistic = new Button(
@@ -169,6 +178,7 @@ export class MainMenu extends Page {
       }
 
       StateManager.setPageState(PageState.Statistic);
+      this.error.setText("");
     } catch (e) {
       this.error.setText("Megtekintés csak bejelentkezett felhasználóknak!");
     }
