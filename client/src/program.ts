@@ -86,6 +86,8 @@ export class Program {
 
     if (StateManager.getPageState() !== PageState.Game) {
       ctx.drawImage(this.backgroundImage, 0, 0);
+      ctx.fillStyle = "rgba(40, 30, 20, 0.5)";
+      ctx.fillRect(0, 0, canvasWidth, canvasHeight);
       this.pages[StateManager.getPageState()]?.draw();
     } else {
       ctx.fillStyle = settings.color.black;
