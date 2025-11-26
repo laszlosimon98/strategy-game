@@ -36,9 +36,7 @@ export class Join extends Page {
       this.handleJoin
     );
 
-    this.codeText = new Text(Position.zero(), "Játék kód:", {
-      color: settings.color.black,
-    });
+    this.codeText = new Text(Position.zero(), "Játék kód:");
 
     this.codeText.setCenter({
       xFrom: 0,
@@ -59,8 +57,7 @@ export class Join extends Page {
 
     this.errorMessage = new Text(
       new Position(0, settings.pos.titlePos.y + settings.margin * 2),
-      "",
-      { color: settings.color.error }
+      ""
     );
 
     this.joinButton.handleAsyncFunction = this.handleError;

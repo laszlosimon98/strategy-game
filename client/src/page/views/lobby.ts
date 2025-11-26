@@ -138,9 +138,9 @@ export class Lobby extends Page {
             settings.margin / 1.5 +
             (settings.margin / 1.5) * index
         ),
-        player,
-        { color: settings.color.text }
+        player
       );
+      this.errorMessage.setText("");
 
       return { [player]: text };
     });
