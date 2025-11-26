@@ -97,11 +97,18 @@ export class StateManager {
     return result;
   }
 
-  public static getPlayer(room: string, socket: Socket): PlayerType[""] {
+  public static getPlayer(
+    room: string,
+    socket: Socket
+  ): PlayerType[""] | undefined {
+    if (!this.state[room]) return undefined;
     return this.state[room].players[socket.id];
   }
 
   public static getPlayers = (room: string): PlayerType => {
+    console.log(room);
+    console.log(this.state);
+    console.log(this.state[room]);
     return this.state[room].players;
   };
 

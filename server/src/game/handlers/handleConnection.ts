@@ -136,6 +136,8 @@ export const handleConnection = (io: Server, socket: Socket) => {
       console.log(user.name + " lost");
       await StateManager.updateStatistic(user.name, "lose");
     }
+
+    socket.leave(room);
   };
 
   const handleNewHost = (room: string) => {
