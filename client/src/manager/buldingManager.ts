@@ -21,6 +21,8 @@ export class BuildingManager {
     weaponsmith: { boards: 0, stone: 0 },
     well: { boards: 0, stone: 0 },
     woodcutter: { boards: 0, stone: 0 },
+    coalmine: { boards: 0, stone: 0 },
+    ironmine: { boards: 0, stone: 0 },
   };
   private constructor() {}
 

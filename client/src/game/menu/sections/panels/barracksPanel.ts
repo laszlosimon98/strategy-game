@@ -99,6 +99,7 @@ export class BarracksPanel extends Section {
           healingTimer: 0,
           productionTime: 0,
           isProductionBuilding: false,
+          facing: 0,
         },
       };
 

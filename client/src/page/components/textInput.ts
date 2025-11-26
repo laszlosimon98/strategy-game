@@ -17,7 +17,7 @@ export class TextInput extends Frame {
     alpha: number,
     options?: Options
   ) {
-    super(pos, dim, alpha);
+    super(pos, dim, { alpha });
     this.pos = pos;
     this.text = new Text(pos, "", options);
     this.dim = dim;

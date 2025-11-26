@@ -10,7 +10,7 @@ export class MessagePopup extends Frame {
   private visibilityTimer: Timer;
 
   constructor(pos: Position, dim: Dimension) {
-    super(pos, dim, 0.85);
+    super(pos, dim, { alpha: 0.85 });
 
     this.text = new Text(new Position(this.pos.x, this.pos.y), "", {
       fontSize: "16px",

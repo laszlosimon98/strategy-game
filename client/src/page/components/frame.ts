@@ -15,7 +15,7 @@ export class Frame extends PageComponents {
   private alpha: number;
   private color: string;
 
-  public constructor(pos: Position, dim: Dimension, options: FrameOptions) {
+  public constructor(pos: Position, dim: Dimension, options?: FrameOptions) {
     super(pos, dim);
     this.alpha = options?.alpha || 1;
     this.color = options?.color || settings.color.brown;
