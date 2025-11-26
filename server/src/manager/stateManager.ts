@@ -132,15 +132,34 @@ export class StateManager {
     socket: Socket,
     isHost: boolean
   ): void {
+    const uniqueName = this.generateUniqueName(room, name);
     this.state[room].players[socket.id] = {
       id: socket.id,
-      name,
+      name: uniqueName,
       isHost,
       color: this.chooseColor(this.state[room].remainingColors),
       buildings: [],
       units: [],
       storage: StorageManager.getInitStorage(),
     };
+  }
+
+  private static generateUniqueName(room: string, name: string): string {
+    const existingNames = this.getPlayersNameInRoom(room);
+
+    if (!existingNames.includes(name)) {
+      return name;
+    }
+
+    let counter = 1;
+    let uniqueName = `${name}_${counter}`;
+
+    while (existingNames.includes(uniqueName)) {
+      counter++;
+      uniqueName = `${name}_${counter}`;
+    }
+
+    return uniqueName;
   }
 
   public static disconnectPlayer(room: string, socket: Socket): void {

@@ -176,6 +176,13 @@ export class Lobby extends Page {
     );
 
     CommunicationHandler.receiveMessage(
+      "connect:uniqueName",
+      ({ name }: { name: string }) => {
+        StateManager.setPlayerName(name);
+      }
+    );
+
+    CommunicationHandler.receiveMessage(
       "connect:newPlayer",
       ({ players, message }: { players: string[]; message: string }) => {
         this.info.setText(message);

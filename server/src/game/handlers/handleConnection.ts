@@ -16,10 +16,16 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
     socket.join(room);
 
+    const player = StateManager.getPlayer(room, socket);
+    const uniqueName = player?.name || name;
+
     CommunicationHandler.sendMessageToSender(socket, "connect:code", {
       code: room,
     });
-    StateManager.newPlayerMessage(io, socket, room, name);
+    CommunicationHandler.sendMessageToSender(socket, "connect:uniqueName", {
+      name: uniqueName,
+    });
+    StateManager.newPlayerMessage(io, socket, room, uniqueName);
   };
 
   const joinGame = ({ code: room, name }: { code: string; name: string }) => {
@@ -54,11 +60,17 @@ export const handleConnection = (io: Server, socket: Socket) => {
 
     socket.join(room);
 
+    const player = StateManager.getPlayer(room, socket);
+    const uniqueName = player?.name || name;
+
     CommunicationHandler.sendMessageToSender(socket, "connect:error", "");
     CommunicationHandler.sendMessageToSender(socket, "connect:code", {
       code: room,
     });
-    StateManager.newPlayerMessage(io, socket, room, name);
+    CommunicationHandler.sendMessageToSender(socket, "connect:uniqueName", {
+      name: uniqueName,
+    });
+    StateManager.newPlayerMessage(io, socket, room, uniqueName);
   };
 
   const disconnect = async () => {
