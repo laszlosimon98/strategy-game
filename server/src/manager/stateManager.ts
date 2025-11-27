@@ -106,9 +106,6 @@ export class StateManager {
   }
 
   public static getPlayers = (room: string): PlayerType => {
-    console.log(room);
-    console.log(this.state);
-    console.log(this.state[room]);
     return this.state[room].players;
   };
 
@@ -141,6 +138,7 @@ export class StateManager {
       buildings: [],
       units: [],
       storage: StorageManager.getInitStorage(),
+      isStatisticUpdated: false,
     };
   }
 
@@ -528,14 +526,6 @@ export class StateManager {
     if (!room) return 0;
 
     return Object.keys(StateManager.getPlayers(room)).length;
-  }
-
-  public static getLastPlayer(socket: Socket): string | null {
-    const room: string = CommunicationHandler.getCurrentRoom(socket);
-    if (!room) return null;
-
-    const key = Object.keys(StateManager.getPlayers(room))[0];
-    return StateManager.getPlayers(room)[key].name;
   }
 
   public static getWinner(socket: Socket): string | null {

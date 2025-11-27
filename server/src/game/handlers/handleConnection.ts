@@ -77,13 +77,20 @@ export const handleConnection = (io: Server, socket: Socket) => {
     const room = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
-    const user = StateManager.getPlayer(room, socket);
+    const user: PlayerType[""] | undefined = StateManager.getPlayer(
+      room,
+      socket
+    );
     if (!user) return;
 
     const playerOldTerritory: Cell[] = World.updateTerritory(socket, {
       id: user.id,
     });
     World.cleanupPlayerTerritory(socket, user.id);
+
+    if (StateManager.isGameStarted(room)) {
+      handleStatisticUpdate(user);
+    }
 
     StateManager.handlePlayerDisconnect(socket, room, user.color);
     StateManager.playerleftMessage(io, socket, user.name);
@@ -100,56 +107,54 @@ export const handleConnection = (io: Server, socket: Socket) => {
       handleNewHost(room);
     }
 
-    CommunicationHandler.sendMessageToEveryOne(io, socket, "game:playerLeft", {
-      id: user.id,
-      data: playerOldTerritory.map(formatCell),
-    });
+    if (StateManager.isGameStarted(room)) {
+      CommunicationHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:playerLeft",
+        {
+          id: user.id,
+          data: playerOldTerritory.map(formatCell),
+        }
+      );
 
-    const updatedCells: Cell[] = World.updateTerritory(socket);
-    CommunicationHandler.sendMessageToEveryOne(
-      io,
-      socket,
-      "game:updateTerritory",
-      {
-        data: updatedCells.map(formatCell),
-      }
-    );
+      const updatedCells: Cell[] = World.updateTerritory(socket);
+      CommunicationHandler.sendMessageToEveryOne(
+        io,
+        socket,
+        "game:updateTerritory",
+        {
+          data: updatedCells.map(formatCell),
+        }
+      );
 
-    CommunicationHandler.sendMessageToEveryOneExceptSender(
-      socket,
-      "chat:message",
-      {
-        message: `${user.name} elhagyta a játékot!`,
-        name: "Rendszer",
-        color: "#000",
-      }
-    );
-
-    console.log(StateManager.getRemainigPlayerCount(socket));
-
-    if (StateManager.getRemainigPlayerCount(socket) === 1) {
-      console.log(user.name + " lost");
-      const lastUser = StateManager.getLastPlayer(socket);
-      if (!lastUser) return;
-
-      console.log(lastUser + " won");
-
-      await StateManager.updateStatistic(user.name, "lose");
-      await StateManager.updateStatistic(lastUser, "win");
-
-      CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
-        message: `${lastUser} megnyerte a játékot!`,
-        name: "Rendszer",
-        color: "#000",
-      });
-    }
-
-    if (StateManager.getRemainigPlayerCount(socket) > 1) {
-      console.log(user.name + " lost");
-      await StateManager.updateStatistic(user.name, "lose");
+      CommunicationHandler.sendMessageToEveryOneExceptSender(
+        socket,
+        "chat:message",
+        {
+          message: `${user.name} elhagyta a játékot!`,
+          name: "Rendszer",
+          color: "#000",
+        }
+      );
     }
 
     socket.leave(room);
+  };
+
+  const handleStatisticUpdate = async (user: PlayerType[""]): Promise<void> => {
+    // itt kell megnézni, hogy mennyi player van a szobába,
+    // ha 1 akkor az az utolsó és akkor meg kell nézni, illetve a többinél is érdemes, hogy igaz-e
+    // a isStatisticUpdate, hanem akkor win, mások lose
+    if (user.isStatisticUpdated) {
+      return;
+    }
+
+    if (StateManager.getRemainigPlayerCount(socket) === 1) {
+      await StateManager.updateStatistic(user.name, "win");
+    } else {
+      await StateManager.updateStatistic(user.name, "lose");
+    }
   };
 
   const handleNewHost = (room: string) => {

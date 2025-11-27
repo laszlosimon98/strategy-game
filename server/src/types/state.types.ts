@@ -44,6 +44,7 @@ export type PlayerType = {
     buildings: Building[];
     units: Unit[];
     storage: StorageType;
+    isStatisticUpdated: boolean;
   };
 };
 
