@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { CommunicationHandler } from "@/communication/communicationHandler";
 import { Building } from "@/game/buildings/building";
 import { Validator } from "@/utils/validator";
-import type { EntityType } from "@/types/state.types";
+import type { EntityType, PlayerType } from "@/types/state.types";
 import { StateManager } from "@/manager/stateManager";
 import { ReturnMessage } from "@/types/setting.types";
 import { StorageType } from "@/types/storage.types";
@@ -108,6 +108,12 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       return;
     }
 
+    const room: string = CommunicationHandler.getCurrentRoom(socket);
+    if (!room) return;
+
+    const user = StateManager.getPlayers(room)[entity.data.owner];
+    if (!user) return;
+
     const cells: DestroyBuildingResponse | null = StateManager.destroyBuilding(
       socket,
       entity,
@@ -134,10 +140,9 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       sendGuardHouseRelatedMessages(cells);
 
       if (StateManager.isPlayerLostTheGame(socket, entity)) {
-        const room: string = CommunicationHandler.getCurrentRoom(socket);
-        if (!room) return;
+        StateManager.updateStatistic(user.name, "lose");
+        StateManager.setPlayerStatisticToUpdated(user);
 
-        const user = StateManager.getPlayers(room)[entity.data.owner];
         CommunicationHandler.sendMessageToEveryOne(io, socket, "chat:message", {
           message: `${user.name} kiesett a játékból!`,
           name: "Rendszer",
@@ -148,6 +153,15 @@ export const handleBuildings = (io: Server, socket: Socket) => {
       if (StateManager.isGameOver(socket)) {
         const winner: string | null = StateManager.getWinner(socket);
         if (!winner) return;
+
+        const user: PlayerType[""] | undefined = StateManager.getPlayerByName(
+          room,
+          winner
+        );
+        if (!user) return;
+
+        StateManager.updateStatistic(winner, "win");
+        StateManager.setPlayerStatisticToUpdated(user);
 
         setTimeout(() => {
           CommunicationHandler.sendMessageToEveryOne(

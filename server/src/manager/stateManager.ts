@@ -109,6 +109,16 @@ export class StateManager {
     return this.state[room].players;
   };
 
+  public static getPlayerByName = (
+    room: string,
+    name: string
+  ): PlayerType[""] | undefined => {
+    const players = Object.values(this.getPlayers(room));
+    const player = players.find((player) => player.name === name);
+
+    return player;
+  };
+
   public static restoreColor(room: string, color: ColorType): void {
     this.state[room].remainingColors.push(color);
   }
@@ -586,5 +596,9 @@ export class StateManager {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  public static setPlayerStatisticToUpdated(user: PlayerType[""]): void {
+    user.isStatisticUpdated = true;
   }
 }
