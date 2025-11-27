@@ -1,6 +1,12 @@
 import { prismaService } from "@/prisma/prisma";
 import { Response, Request } from "express";
 
+/**
+ * Lekéri a bejelentkezett felhasználó eredményeit
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const getStatistic = async (request: Request, response: Response) => {
   const username = request["user"];
 
@@ -26,6 +32,12 @@ export const getStatistic = async (request: Request, response: Response) => {
   return response.status(200).json(user);
 };
 
+/**
+ * Lekéri az 5 legjobb játékos eredményeit
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const getTopFiveStatistic = async (
   request: Request,
   response: Response

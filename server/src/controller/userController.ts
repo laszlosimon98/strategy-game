@@ -1,6 +1,12 @@
 import { prismaService } from "@/prisma/prisma";
 import { Response, Request } from "express";
 
+/**
+ * Lekérhető a bejelentkezett felhasználó adata
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const handleUser = async (request: Request, response: Response) => {
   const username = request["user"];
 

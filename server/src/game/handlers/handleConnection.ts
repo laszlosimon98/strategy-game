@@ -7,8 +7,17 @@ import { World } from "@/game/world";
 import { Cell } from "@/game/cell";
 import { PlayerType } from "@/types/state.types";
 
-export const handleConnection = (io: Server, socket: Socket) => {
-  const createGame = ({ name }: { name: string }) => {
+/**
+ * Kezeli a játék létrehozást, csatlakozást, hibaüzeneteket és a kliens lecsatlakozását
+ * @param io Socket.IO szerver
+ * @param socket csatlakozott kliens
+ */
+export const handleConnection = (io: Server, socket: Socket): void => {
+  /**
+   * Inicializálja a szobát és hozzáadja a játékost
+   * @param param0 játékos neve
+   */
+  const createGame = ({ name }: { name: string }): void => {
     const room = StateManager.generateGameCode();
 
     StateManager.initRoom(room);
@@ -28,7 +37,22 @@ export const handleConnection = (io: Server, socket: Socket) => {
     StateManager.newPlayerMessage(io, socket, room, uniqueName);
   };
 
-  const joinGame = ({ code: room, name }: { code: string; name: string }) => {
+  /**
+   * Kezeli a játék csatlakozását a megadott azonsoítójú szobához.
+   * Hibaüzenetet dob,
+   *  - ha nem létezik az azonsítóval ellátott szoba
+   *  - ha megtelt a létszám
+   *  - ha elindult a játék
+   * @param param0 csatlakozási kód és a csatlakozó játékos neve
+   * @returns
+   */
+  const joinGame = ({
+    code: room,
+    name,
+  }: {
+    code: string;
+    name: string;
+  }): void => {
     if (!StateManager.isRoomExists(room, io)) {
       CommunicationHandler.sendMessageToSender(
         socket,
@@ -73,7 +97,11 @@ export const handleConnection = (io: Server, socket: Socket) => {
     StateManager.newPlayerMessage(io, socket, room, uniqueName);
   };
 
-  const disconnect = async () => {
+  /**
+   * Kezeli a kliens lecsatlakozását
+   * @returns
+   */
+  const disconnect = async (): Promise<void> => {
     const room = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
 
@@ -142,10 +170,12 @@ export const handleConnection = (io: Server, socket: Socket) => {
     socket.leave(room);
   };
 
+  /**
+   * Statisztika frissítés
+   * @param user játékos
+   * @returns
+   */
   const handleStatisticUpdate = async (user: PlayerType[""]): Promise<void> => {
-    // itt kell megnézni, hogy mennyi player van a szobába,
-    // ha 1 akkor az az utolsó és akkor meg kell nézni, illetve a többinél is érdemes, hogy igaz-e
-    // a isStatisticUpdate, hanem akkor win, mások lose
     if (user.isStatisticUpdated) {
       return;
     }
@@ -157,6 +187,10 @@ export const handleConnection = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Kezeli a váróban az új host kiválasztását
+   * @param room szoba azonosító
+   */
   const handleNewHost = (room: string) => {
     const players: PlayerType = StateManager.getPlayers(room);
     const playerKeys: string[] = Object.keys(players);

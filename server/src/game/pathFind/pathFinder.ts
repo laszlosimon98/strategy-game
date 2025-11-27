@@ -7,6 +7,14 @@ import { Socket } from "socket.io";
 export class PathFinder {
   private constructor() {}
 
+  /**
+   * Meghatározza a kezdőpontól a célig az utat
+   * @param room szoba azonosító
+   * @param socket csatlakozott socket
+   * @param start kezdő indexek
+   * @param end cél indexek
+   * @returns a megtalált út celláinak `Indices[]` tömbje
+   */
   public static getPath(
     room: string,
     socket: Socket,
@@ -24,6 +32,10 @@ export class PathFinder {
     return path;
   }
 
+  /**
+   * Visszaállítja a cellák `previous` hivatkozásait
+   * @param world a világ cellái
+   */
   private static resetWorld(world: Cell[][]): void {
     world.forEach((cells) =>
       cells.forEach((cell) => cell.setPrevious(undefined))

@@ -1,5 +1,10 @@
 import { ProductionItem, CategoryType } from "@/types/storage.types";
 
+/**
+ * Egy épület termelési beállításait tárolja: termelési idő, pihenési idő
+ * a termelés kategóriája és maga a termelt tétel.
+ * Alapvető getter és setter metódusokkal
+ */
 export class Production {
   private productionTime: number;
   private cooldownTime: number;

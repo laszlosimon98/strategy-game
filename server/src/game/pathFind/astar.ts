@@ -1,20 +1,37 @@
 import { Cell } from "@/game/cell";
 import { Indices } from "@/utils/indices";
 
+/**
+ * AStar útkeresés
+ *
+ * Egyszerű A* algoritmust valósít meg rács alapú térképekhez. Visszaadja
+ * a kezdő- és végcella közötti cellaindexek sorozatát, ha út található.
+ */
 export class AStar {
   private static currentCell: Cell;
 
   private constructor() {}
 
+  /**
+   * Visszaadja a kezdő és célcella között talált út celláinak indexeit.
+   * @param start - a kezdő cella
+   * @param end - a cél cella
+   * @returns a megtalált út celláinak `Indices[]` tömbje
+   */
   public static getPath(start: Cell, end: Cell): Indices[] {
     this.calculatePath(start, end);
     const path: Cell[] = this.buildPath();
     const pathIndices = this.convertPathToIndices(path);
-    // this.destroyPath();
 
     return pathIndices;
   }
 
+  /**
+   * Heurisztikus függvény: becsült távolság két cella között.
+   * @param current - a jelenlegi cella
+   * @param end - a cél cella
+   * @returns a két cella közötti becsült távolság
+   */
   private static heuristic(current: Cell, end: Cell): number {
     const { i: ci, j: cj } = current.getIndices();
     const { i: ei, j: ej } = current.getIndices();
@@ -23,6 +40,11 @@ export class AStar {
     // return Math.abs(current.i - end.i) + Math.abs(current.j - end.j);
   }
 
+  /**
+   * Eltávolít egy cellát egy listából.
+   * @param arr - a cellákat tartalmazó tömb
+   * @param element - a törlendő cella
+   */
   private static removeElementFromList(arr: Cell[], element: Cell): void {
     for (let i = arr.length - 1; i >= 0; --i) {
       if (arr[i].equals(element)) {
@@ -31,6 +53,11 @@ export class AStar {
     }
   }
 
+  /**
+   * Frissíti egy szomszéd cella G, H és F értékeit a jelenlegi cella alapján.
+   * @param neighbor - a frissítendő szomszéd cella
+   * @param end - a cél cella
+   */
   private static updateNeighbor(neighbor: Cell, end: Cell): void {
     neighbor.setG(
       this.currentCell.getG() + this.heuristic(this.currentCell, neighbor)
@@ -39,6 +66,12 @@ export class AStar {
     neighbor.setF(neighbor.getG() + neighbor.getH());
   }
 
+  /**
+   * Lefuttatja az A* keresést a `start` és `end` cellák között.
+   * @param start - kezdő cella
+   * @param end - cél cella
+   * @returns `true`, ha út található, különben `false`
+   */
   private static calculatePath(start: Cell, end: Cell): boolean {
     const openList: Cell[] = [];
     const closedList: Cell[] = [];
@@ -88,6 +121,10 @@ export class AStar {
     return false;
   }
 
+  /**
+   * Visszaépíti az utat a `previous` hivatkozások mentén, a célból a kezdő felé.
+   * @returns a path cellákat tartalmazó tömb (kezdő -> cél)
+   */
   private static buildPath(): Cell[] {
     const path: Cell[] = [];
     let current: Cell | undefined = this.currentCell;
@@ -104,16 +141,11 @@ export class AStar {
     return path;
   }
 
-  private static destroyPath(): void {
-    let current: Cell | undefined = this.currentCell;
-
-    while (current!.getPrevious()) {
-      let prev: Cell | undefined = current?.getPrevious();
-      current!.setPrevious(undefined);
-      current = prev;
-    }
-  }
-
+  /**
+   * Átalakítja a cella objektumokból álló utat egy `Indices[]` tömbbé.
+   * @param path - a cellákból álló út
+   * @returns az út celláinak indexei
+   */
   private static convertPathToIndices(path: Cell[]): Indices[] {
     const result = path.map((cell) => {
       return cell.getIndices();

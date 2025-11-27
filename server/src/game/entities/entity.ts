@@ -2,6 +2,9 @@ import { Position } from "@/utils/position";
 import { EntityType } from "@/types/state.types";
 import { Indices } from "@/utils/indices";
 
+/**
+ * Ősosztálya a Buildingnek és a Unitnak, alapvető getter és setter metódusokkal
+ */
 export abstract class Entity {
   protected entity: EntityType;
 

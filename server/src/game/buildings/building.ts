@@ -11,6 +11,9 @@ import type { EntityType } from "@/types/state.types";
 import { CategoryType, ProductionItem } from "@/types/storage.types";
 import { Server, Socket } from "socket.io";
 
+/**
+ * Az épületek ősosztálya
+ */
 export class Building extends Entity implements ProductionBuildingInterface {
   protected production: Production | null;
   protected range: number;
@@ -46,6 +49,13 @@ export class Building extends Entity implements ProductionBuildingInterface {
     return this.production.getCategory();
   }
 
+  /**
+   * Egyedi termelési logika adható meg ebben a függvényben
+   * @param io Socket.IO szerver
+   * @param socket csatlakozott kliens
+   * @param room szoba azonosító
+   * @returns termelt tétel | semmi | válaszüzenet
+   */
   public produce(
     io: Server,
     socket: Socket,
@@ -71,7 +81,14 @@ export class Building extends Entity implements ProductionBuildingInterface {
     return;
   }
 
-  protected handleCellObstacleChange(
+  /**
+   * Visszaadja a legközelebbi cellát, amin megtalálható a paraméterben megadott ObstacleEnum tag
+   * @param socket csatlakozott kliens
+   * @param findType a keresendő `obstacle` megnevezése
+   * @param room szoba azonosító
+   * @returns ha van akkor a legközelebbi cella, különben null
+   */
+  protected getClosestCell(
     socket: Socket,
     findType: ObstacleEnum,
     room: string
@@ -92,6 +109,13 @@ export class Building extends Entity implements ProductionBuildingInterface {
     return closestCell;
   }
 
+  /**
+   * Elküldi a frissített cellát és a hozzátartozó obstacle-t a klienseknek
+   * @param io Socket.IO szerver
+   * @param socket csatlakozott kliens
+   * @param closestCell a megtalált legközelebbi cella
+   * @param sendType a cellán található `obstacle` megnevezése
+   */
   protected sendMessage(
     io: Server,
     socket: Socket,

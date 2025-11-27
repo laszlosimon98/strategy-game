@@ -20,7 +20,7 @@ export class Forester extends Building {
     socket: Socket,
     room: string
   ): ProductionItem | null | ReturnMessage {
-    const closestCell: Cell | null = this.handleCellObstacleChange(
+    const closestCell: Cell | null = this.getClosestCell(
       socket,
       ObstacleEnum.Empty,
       room

@@ -1,5 +1,10 @@
 import { settings } from "@/settings";
 
+/**
+ * Játékciklus
+ *
+ * Egyszerű ticker, amely minden tickben meghívja a kapott callbacket.
+ */
 export const gameLoop = (
   fn: (dt: number, interval: NodeJS.Timeout) => void
 ): void => {

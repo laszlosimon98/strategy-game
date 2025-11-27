@@ -23,7 +23,7 @@ export class Woodcutter extends Building {
   ): ProductionItem | null | ReturnMessage {
     if (this.production === null) return null;
 
-    const closestCell: Cell | null = this.handleCellObstacleChange(
+    const closestCell: Cell | null = this.getClosestCell(
       socket,
       ObstacleEnum.Tree,
       room

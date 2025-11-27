@@ -5,6 +5,9 @@ import { PropertyType } from "@/types/units.types";
 import { calculateDistance } from "@/utils/utils";
 import { Socket } from "socket.io";
 
+/**
+ * Irányítható katonák osztálya
+ */
 export class Soldier extends Unit {
   protected damage: number;
   protected health: number;
@@ -20,6 +23,10 @@ export class Soldier extends Unit {
     this.target = null;
   }
 
+  /**
+   * Visszaadja a katona tulajdonságait
+   * @returns objektum: `damage`: sebzés mértéke, `health`: katona életereje, `range`: hatótávolság
+   */
   public getProperties(): PropertyType {
     const properties: PropertyType = {
       damage: this.damage,
@@ -30,6 +37,10 @@ export class Soldier extends Unit {
     return properties;
   }
 
+  /**
+   * Csökkenti a katona életerejét
+   * @param damage sebzés mértéke
+   */
   public takeDamage(damage: number): void {
     this.health -= damage;
   }
@@ -46,6 +57,11 @@ export class Soldier extends Unit {
     return this.target;
   }
 
+  /**
+   * Megkeresi azt a katonát, amelyik bent van a hatótávolságban.
+   * @param enemySoldiers ellenséges katonák tömbje
+   * @returns Ha talál, akkor visszadja azt a katonát ami a hatótávon belül van, különben null
+   */
   public getEnemySoldierInRange(enemySoldiers: Soldier[]): Soldier | null {
     for (let i = 0; i < enemySoldiers.length; ++i) {
       const enemy = enemySoldiers[i];
@@ -57,6 +73,11 @@ export class Soldier extends Unit {
     return null;
   }
 
+  /**
+   * Kiszámolja a katona és a célpont közötti távolságot
+   * @param target a célpont
+   * @returns
+   */
   public isTargetInRange(target: Soldier): boolean {
     const distance = Math.floor(
       calculateDistance(this.getPosition(), target.getPosition())

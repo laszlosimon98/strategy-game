@@ -12,6 +12,9 @@ import { Socket } from "socket.io";
 import { PathFinder } from "@/game/pathFind/pathFinder";
 import { CommunicationHandler } from "@/communication/communicationHandler";
 
+/**
+ * Az egységek ősosztálya
+ */
 export abstract class Unit extends Entity {
   private path: Cell[];
   private socket: Socket;
@@ -42,6 +45,10 @@ export abstract class Unit extends Entity {
     return this.interval;
   }
 
+  /**
+   * Meghatározza az utat a katonától a cél celláig
+   * @returns
+   */
   public calculatePath(): void {
     const room: string = CommunicationHandler.getCurrentRoom(this.socket);
     if (!room) return;
@@ -63,6 +70,9 @@ export abstract class Unit extends Entity {
     this.path = path.map(({ i, j }) => world[i][j]);
   }
 
+  /**
+   * Beállít egy véletlenszerű irányt, amerre néz a egység, amikor tétlen
+   */
   public calculateNewIdleFacing(): void {
     this.entity.data.facing =
       StateManager.directions()[
@@ -89,6 +99,12 @@ export abstract class Unit extends Entity {
     return this.path.length > 0;
   }
 
+  /**
+   * Elmozdítja a katonát a megadott irányba.
+   * Amikor a következő cellára ér, frissíti a cella `instance`-ot.
+   * @param dt delta time, két frissítés között eltelt idő
+   * @returns
+   */
   public move(dt: number): void {
     if (this.path.length <= 1) {
       this.reachedNextCell();
@@ -128,6 +144,12 @@ export abstract class Unit extends Entity {
     this.updateIndices(reachedCell);
   }
 
+  /**
+   * Törli a régi cella értékeit és frissíti az aktuális cellát.
+   * Eltávolítja a `Unit` típusú `obstacle` a régi celláról és hozzáadja az újhoz.
+   * @param currentCell jelenlegi cella
+   * @returns
+   */
   private updateIndices(currentCell: Cell | undefined): void {
     if (currentCell) {
       const room: string = CommunicationHandler.getCurrentRoom(this.socket);
@@ -145,6 +167,10 @@ export abstract class Unit extends Entity {
     }
   }
 
+  /**
+   * Visszaadja az egység jelenlegi pozícióját és a következő célpozíciót.
+   * @returns objektum: `currentPos` (jelenlegi pozíció), `nextPos` (következő célpozíció)
+   */
   private calculateCurrentAndNextPositions(): {
     currentPos: Position;
     nextPos: Position;

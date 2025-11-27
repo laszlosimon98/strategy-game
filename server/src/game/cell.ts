@@ -21,6 +21,9 @@ const priorityList: Record<ObstacleEnum, number> = {
   [ObstacleEnum.Unit]: 4,
 };
 
+/**
+ * A világot felépítő cellák osztálya
+ */
 export class Cell {
   private indices: Indices;
 
@@ -93,10 +96,18 @@ export class Cell {
     this.obstacleTypes.push(type);
   }
 
+  /**
+   * Törli a paraméterben megadott `obstacle`-t
+   * @param obstacle `obstacle` megnevezése
+   */
   public removeObstacle(obstacle: ObstacleEnum): void {
     this.obstacleTypes = this.obstacleTypes.filter((obs) => obs !== obstacle);
   }
 
+  /**
+   * Visszaadja a legmagasabb prioritású `obstacle`-t a cellán.
+   * @returns a legmagasabb prioritású `obstacle`
+   */
   public getHighestPriorityObstacleType(): ObstacleEnum {
     let highestPriority: ObstacleEnum = ObstacleEnum.Empty;
 
@@ -197,16 +208,23 @@ export class Cell {
     this.soldier = soldier;
   }
 
+  /**
+   * Megvizsgálja, hogy az egységek közlekedhetnek-e a cellán
+   * @returns járható-e a cella
+   */
   public isWalkAble(): boolean {
     return [
       ObstacleEnum.Empty,
       ObstacleEnum.Decorated,
       ObstacleEnum.Occupied,
       ObstacleEnum.Border,
-      // ObstacleEnum.Unit,
     ].includes(this.getHighestPriorityObstacleType());
   }
 
+  /**
+   * Megvizsgálja, hogy  a cellára építhető-e épület
+   * @returns építhető-e a cella
+   */
   public isBuildAble(): boolean {
     return (
       this.type === TileEnum.Grass &&
@@ -214,7 +232,12 @@ export class Cell {
     );
   }
 
-  public equals(other: Cell) {
+  /**
+   * Megvizsgálja, hogy a két cella egyezik-e
+   * @param other vizsgálandó cella
+   * @returns egyezik-e a két cella
+   */
+  public equals(other: Cell): boolean {
     return (
       this.indices.i === other.indices.i && this.indices.j === other.indices.j
     );

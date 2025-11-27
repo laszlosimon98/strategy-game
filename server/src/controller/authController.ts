@@ -9,6 +9,14 @@ interface DecodedToken {
   exp: number;
 }
 
+/**
+ * Regisztráció kezelés
+ * Ellenőrzi, hogy a felhasználó létezik-e, megadott felhasználó nevet és jelszót, a jelszó legalább 5 karakter hosszú,
+ * majd létrehozza a felhasználót
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const handleRegister = async (request: Request, response: Response) => {
   const { username, password } = request.body;
 
@@ -58,6 +66,12 @@ export const handleRegister = async (request: Request, response: Response) => {
   }
 };
 
+/**
+ * Kezeli a bejelentkezést, megvizsgálja, hogy létezik-e a felhasználó, majd generál egy accessTokent és egy refreshTokent
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const handleLogin = async (request: Request, response: Response) => {
   const { username, password } = request.body;
 
@@ -114,6 +128,12 @@ export const handleLogin = async (request: Request, response: Response) => {
   }
 };
 
+/**
+ * Érvényes refreshToken esetén, generál egy új accessTokent a felhasználónak
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const handleRefreshToken = async (
   request: Request,
   response: Response
@@ -158,6 +178,12 @@ export const handleRefreshToken = async (
   );
 };
 
+/**
+ * Kezeli a kijelentkezést és törli a http-only refreshTokent.
+ * @param request Request
+ * @param response Response
+ * @returns
+ */
 export const handleLogout = async (request: Request, response: Response) => {
   const cookies = request.cookies;
 

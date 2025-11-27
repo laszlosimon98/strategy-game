@@ -47,7 +47,7 @@ const loadImages = async () => {
 };
 
 const onConnecton = async (socket: Socket) => {
-  handleUtils(io, socket, await loadImages());
+  handleUtils(socket, await loadImages());
   handleConnection(io, socket);
   handleStart(io, socket);
   handleBuildings(io, socket);

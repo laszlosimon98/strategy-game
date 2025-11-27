@@ -1,9 +1,14 @@
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 
 import { CommunicationHandler } from "@/communication/communicationHandler";
 import { StateManager } from "@/manager/stateManager";
 
-export const handleUtils = (io: Server, socket: Socket, images: any) => {
+/**
+ * Elküldi a klienseknek az asseteket és az épület költségeket
+ * @param socket csatlakozott kliens
+ * @param images assetek
+ */
+export const handleUtils = (socket: Socket, images: any) => {
   const page = () => {
     CommunicationHandler.sendMessageToSender(socket, "start:page", images);
   };

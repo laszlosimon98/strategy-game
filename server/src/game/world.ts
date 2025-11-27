@@ -28,34 +28,11 @@ export class World {
   private static mapSize = Math.floor(settings.mapSize / 2);
   private constructor() {}
 
-  private static initNeighbor() {
-    const size = settings.mapSize;
-    const dirs = [
-      [-1, 0],
-      [1, 0],
-      [0, -1],
-      [0, 1],
-      [-1, -1],
-      [1, 1],
-      [-1, 1],
-      [1, -1],
-    ];
-
-    for (let i = 0; i < size; ++i) {
-      for (let j = 0; j < size; ++j) {
-        const cell: Cell = this.world[i][j];
-        for (const [di, dj] of dirs) {
-          const ni = i + di;
-          const nj = j + dj;
-
-          if (ni >= 0 && ni < size && nj >= 0 && nj < size) {
-            cell.addNeighbors(this.world[ni][nj]);
-          }
-        }
-      }
-    }
-  }
-
+  /**
+   * Létrehozza a világot a `settings.mapSize` érték szerint.
+   * Létrehozáskor feltötli akadályokkal és nyersanyagokkal, tükrözi a világot.
+   * @param socket csatlakozott kliens
+   */
   public static createWorld(socket: Socket): void {
     for (let i = 0; i < settings.mapSize; ++i) {
       this.world.push([]);
@@ -73,6 +50,12 @@ export class World {
     this.world = [];
   }
 
+  /**
+   * Visszaadja a cellák típusát
+   * @param socket csatlakozott kliens
+   * @param room szoba azonosító
+   * @returns
+   */
   public static getTiles(socket: Socket, room: string): TileEnum[][] {
     const tiles: TileEnum[][] = StateManager.getWorld(room, socket).map(
       (cells) => cells.map((cell) => cell.getType())
@@ -81,6 +64,12 @@ export class World {
     return tiles;
   }
 
+  /**
+   * Visszaadja a cellákon található akadályokat
+   * @param socket csatlakozott kliens
+   * @param room szoba azonosító
+   * @returns
+   */
   public static getObstacles(socket: Socket, room: string): any {
     const obstacles: any = StateManager.getWorld(room, socket).map((cells) =>
       cells.map((cell) => cell.getHighestPriorityObstacleType())
@@ -89,6 +78,13 @@ export class World {
     return obstacles;
   }
 
+  /**
+   * Megvizsgálja, hogy a cella az adott kliens területén belül van-e
+   * @param socket csatlakozott kliens
+   * @param entity entitás
+   * @param room szoba azonosító
+   * @returns
+   */
   public static isCellInTerritory(
     socket: Socket,
     entity: EntityType,
@@ -100,6 +96,13 @@ export class World {
     return cells[i][j].getOwner() === entity.data.owner;
   }
 
+  /**
+   * Frissíti a cellák tulajdonosát, amelyek az őrtornyok által meghatározott területen
+   * belülre esenek.
+   * @param socket csatlakozott kliens
+   * @param options opcionális id
+   * @returns frissített cella tömb
+   */
   public static updateTerritory(
     socket: Socket,
     options?: {
@@ -157,7 +160,17 @@ export class World {
     return updatedCells;
   }
 
-  public static occupyCells(socket: Socket, building: Building, room: string) {
+  /**
+   * Foglaltnak jelöli az épített épület melletti cellákat
+   * @param socket csatlakozott kliens
+   * @param building épített épület
+   * @param room szoba azonosító
+   */
+  public static occupyCells(
+    socket: Socket,
+    building: Building,
+    room: string
+  ): void {
     const { i, j } = building.getEntity().data.indices;
     const world = StateManager.getWorld(room, socket);
 
@@ -169,7 +182,17 @@ export class World {
     world[i][j].addObstacle(ObstacleEnum.House);
   }
 
-  public static restoreCells(socket: Socket, building: Building, room: string) {
+  /**
+   * Szabaddá teszi az elbontott épület melletti cellákat
+   * @param socket csatlakozott kliens
+   * @param building elbontott épület
+   * @param room szoba azonosító
+   */
+  public static restoreCells(
+    socket: Socket,
+    building: Building,
+    room: string
+  ): void {
     const { i, j } = building.getEntity().data.indices;
     const world = StateManager.getWorld(room, socket);
 
@@ -179,6 +202,13 @@ export class World {
     world[i][j].removeObstacle(ObstacleEnum.House);
   }
 
+  /**
+   * Terület vesztés esetén, megjelöli a paraméterben megadott
+   * épület hatótávolságába eső cellákat, mint potenciálisan elveszett cellák
+   * @param socket csatlakozott kliens
+   * @param building
+   * @returns frissített cella tömb
+   */
   public static markCellToRestore(socket: Socket, building: Building): Cell[] {
     const range: number = building.getRange();
     const markedCells: Cell[] = [];
@@ -199,6 +229,13 @@ export class World {
     return markedCells;
   }
 
+  /**
+   * Megkeresi azokat az épületeket, amik terület vesztés miatt, az új területen kívülre esnek
+   * @param socket csatlakozott kliens
+   * @param markedCells potenciálisan elvesztett cellák
+   * @param room szoba azonosító
+   * @returns elveszített épületek tömbje
+   */
   public static markedLostBuildings(
     socket: Socket,
     markedCells: Cell[],
@@ -224,9 +261,6 @@ export class World {
       }
     });
 
-    // Ellenőrizzük az ÖSSZES marked cellát, nem csak azokat ahol towerInfluence = false
-    // Mert ha egy épület tulajdonosa különbözik a cella tulajdonosától,
-    // akkor azt is el kell bontani (elfoglalt terület esetén)
     markedCells.forEach((cell) => {
       const { i, j } = cell.getIndices();
       const getCellBuilding: Building | null = world[i][j].getBuilding();
@@ -239,7 +273,6 @@ export class World {
         const buildingOwner = getCellBuilding.getEntity().data.owner;
         const cellOwner = cell.getOwner();
 
-        // Ha a cella tulajdonosa különbözik az épület tulajdonosától, akkor elveszett
         if (cellOwner && cellOwner !== buildingOwner) {
           lostBuildings.push(getCellBuilding);
           world[i][j].setBuilding(null);
@@ -250,6 +283,12 @@ export class World {
     return lostBuildings;
   }
 
+  /**
+   * Felszabadítja a kilépett játékos területét
+   * @param socket csatlakozott kliens
+   * @param id játékos azonosító
+   * @returns
+   */
   public static cleanupPlayerTerritory(socket: Socket, id: string): void {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
@@ -264,6 +303,13 @@ export class World {
     });
   }
 
+  /**
+   * Őrtorony elbontás esetén frissíti a területet és elbontja a régi területen
+   * található épületeket
+   * @param socket csatlakozott kliens
+   * @param building elbontott épület
+   * @returns
+   */
   public static cleanTerritory(
     socket: Socket,
     building: Building
@@ -314,6 +360,40 @@ export class World {
     };
   }
 
+  /**
+   * Inicializálja a cella szomszédjait
+   */
+  private static initNeighbor() {
+    const size = settings.mapSize;
+    const dirs = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+      [-1, -1],
+      [1, 1],
+      [-1, 1],
+      [1, -1],
+    ];
+
+    for (let i = 0; i < size; ++i) {
+      for (let j = 0; j < size; ++j) {
+        const cell: Cell = this.world[i][j];
+        for (const [di, dj] of dirs) {
+          const ni = i + di;
+          const nj = j + dj;
+
+          if (ni >= 0 && ni < size && nj >= 0 && nj < size) {
+            cell.addNeighbors(this.world[ni][nj]);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Feltölti a világot akadályokkal, nyersanyagokkal
+   */
   private static populateWorld() {
     for (let i = 0; i < this.mapSize; ++i) {
       for (let j = 0; j < this.mapSize; ++j) {
@@ -357,6 +437,9 @@ export class World {
     }
   }
 
+  /**
+   * Tükrözzi a világot
+   */
   private static mirrorWorld() {
     for (let i = 0; i < this.mapSize; ++i) {
       for (let j = 0; j < this.mapSize; ++j) {
@@ -379,6 +462,15 @@ export class World {
     mirroredCell.setInstance(originalCell.getInstance());
   }
 
+  /**
+   * Segédfüggvény a világ frissítéshez.
+   * @param socket csatlakozott kliens
+   * @param building épített / elbontott épület
+   * @param range az a hatókör, amiben frissülnek a cellák
+   * @param fn meghívandó függvény
+   * @param options opcionális, négyzetben vagy köralakúan frissítse a cellákat
+   * @returns
+   */
   private static updateWorldInRange(
     socket: Socket,
     building: Building,
@@ -418,6 +510,11 @@ export class World {
     }
   }
 
+  /**
+   * Megvizsgálja, hogy a cella határcella-e
+   * @param cell vizsgált cella
+   * @returns a cella határcella-e
+   */
   private static isCellBorder(cell: Cell): boolean {
     return cell
       .getNeighbors()
