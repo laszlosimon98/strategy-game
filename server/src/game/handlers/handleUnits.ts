@@ -12,7 +12,17 @@ import { Indices } from "@/utils/indices";
 import { gameLoop } from "@/game/loop/gameLoop";
 import { ObstacleEnum } from "@/enums/ObstacleEnum";
 
+/**
+ * Kezeli az egység létrehozását, törlését, mozgását és támadását.
+ * @param io Socket.io szerver
+ * @param socket Socket
+ */
 export const handleUnits = (io: Server, socket: Socket) => {
+  /**
+   * Csökkenti a raktár mennyiséget a létrehozáskor szükséges eszközökkel
+   * @param room szoba azonosító
+   * @param name katona neve
+   */
   const calculateNewStorageValues = (room: string, name: string): void => {
     if (name === "knight") {
       StateManager.updateStorageItem(socket, room, "weapons", "sword", -1);
@@ -22,6 +32,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Helper függvény az egység lekérdezéséhez
+   * @param entity entitás
+   * @returns Ha talált egységet akkor visszaadja azt
+   */
   const getUnitHelper = (entity: EntityType): Unit | undefined => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
@@ -31,6 +46,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
     return unit;
   };
 
+  /**
+   * Törli az egységet az állapottérből, törli az egységhez tartozó `target` értéket,
+   * valamint a intervalt
+   * @param unit törlendő egység
+   * @returns
+   */
   const deleteUnit = (unit: Unit): void => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
@@ -59,6 +80,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     StateManager.deleteUnit(room, unit);
   };
 
+  /**
+   * Visszaállítja a cella értékeit a katona elesése után
+   * @param indices vissza állítandó cella indexe
+   * @returns
+   */
   const restoreCell = (indices: Indices): void => {
     const { i, j } = indices;
     const room: string = CommunicationHandler.getCurrentRoom(socket);
@@ -69,6 +95,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     cell.setSoldier(null);
   };
 
+  /**
+   * Megvizsgálva az egységeket tartalmazó cellákat, visszaadja azokat, amelyek ellenséges egységek.
+   * @param unitOnCells egységeket tartalmazó cella tömb
+   * @returns
+   */
   const getEnemySoldiersOnCells = (unitOnCells: Cell[]): Soldier[] => {
     return unitOnCells
       .map((cell) => {
@@ -87,6 +118,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
       });
   };
 
+  /**
+   * Létrehozza a katonát, majd elküldi a frissítéseket a klienseknek
+   * @param room szoba azonosító
+   * @param entity entitás adatok
+   * @param response létrehozandó katona
+   */
   const createSoldier = (
     room: string,
     entity: EntityType,
@@ -110,6 +147,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     });
   };
 
+  /**
+   * Kezeli a klienstől érkezett egység létrehozás `request`-et
+   * @param param0 entitás adatok
+   * @returns
+   */
   const handleSoldierCreation = ({ entity }: { entity: EntityType }): void => {
     if (!Validator.validateIndices(entity.data.indices)) {
       return;
@@ -138,6 +180,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Meghatározza az útvonalat és megkezdi az egység elmozdítását.
+   * @param param0 entitás adatok, cél indexek
+   * @returns
+   */
   const unitStartMovement = ({
     entity,
     goal,
@@ -159,6 +206,13 @@ export const handleUnits = (io: Server, socket: Socket) => {
     setTimeout(() => unitMoving(entity), 50);
   };
 
+  /**
+   * Az alábbi függvény kezeli az egység mozgást, addig fog az egység mozogni, amig
+   * el nem ért a cél cellára.
+   * Folyamatosan szinkronban tartja a klienseket
+   * @param entity entitás adatok
+   * @returns
+   */
   const unitMoving = (entity: EntityType): void => {
     const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit) return;
@@ -214,6 +268,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     });
   };
 
+  /**
+   * Ha az egység tétlen, akkor véletlenszerű irányokban fog forogni
+   * @param param0 entitás adatok
+   * @returns
+   */
   const unitChangeFacing = ({ entity }: { entity: EntityType }): void => {
     const unit: Unit | undefined = getUnitHelper(entity);
     if (!unit) return;
@@ -225,6 +284,13 @@ export const handleUnits = (io: Server, socket: Socket) => {
     });
   };
 
+  /**
+   * Vizsgálja, hogy a katonák életben vannak-e még,
+   * illetve figyeli, hogy ha a célpont elhagyta a támadási hatókört
+   * @param currentSoldier jelenlegi katona
+   * @param currentTarget jelenlegi célpont
+   * @param enemySoldiers ellenséges katonák tömbje
+   */
   const checkTarget = (
     currentSoldier: Soldier,
     currentTarget: Soldier | null,
@@ -246,6 +312,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Biztosítja, hogy harc közben a két katona egymás felé nézzen
+   * @param room szoba azonosító
+   * @param target célpont
+   * @param currentSoldier jelenlegi katona
+   */
   const handleCurrentAndTargetFacing = (
     room: string,
     target: Soldier,
@@ -268,6 +340,11 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Kezeli a katona elhalálozásának logikáját
+   * @param deadUnit elhalálozott egység
+   * @param otherUnit másik egység
+   */
   const handleUnitDeath = (
     deadUnit: Soldier,
     otherUnit: Soldier | null
@@ -294,6 +371,12 @@ export const handleUnits = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Figyeli az adott katona körüli területet, ellenséget keresve.
+   * Ha talált ellenséget, megkezdi a támadást
+   * @param param0 entitás adatok
+   * @returns
+   */
   const checkSorroundings = ({ entity }: { entity: EntityType }): void => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;

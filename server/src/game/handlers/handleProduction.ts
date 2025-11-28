@@ -11,7 +11,19 @@ import {
 import { Server, Socket } from "socket.io";
 import { ReturnMessage } from "@/types/setting.types";
 
+/**
+ * Termelésért felelős logika
+ * @param io Socket.IO szerver
+ * @param socket csatlakozott kliens
+ */
 export const handleProduction = (io: Server, socket: Socket) => {
+  /**
+   * Megvizsgálja, hogy a raktárban rendelkezésre állnak-e az `requirements`-ben
+   * meghatározott anyagköltségek
+   * @param room szoba azonosító
+   * @param requirements anyagköltség
+   * @returns van-e raktáron a kért anyagból
+   */
   const hasRequiredMaterials = (
     room: string,
     requirements: Requirement
@@ -43,6 +55,12 @@ export const handleProduction = (io: Server, socket: Socket) => {
     return true;
   };
 
+  /**
+   * Előállítja az épület által termelhető tételt, majd frissíti a raktárat
+   * @param room szoba azonosító
+   * @param building termelő épület
+   * @returns
+   */
   const produceItem = (room: string, building: Building): void => {
     const category: CategoryType | null = building.getCategory();
     const item: ProductionItem | null | ReturnMessage = building.produce(
@@ -58,6 +76,13 @@ export const handleProduction = (io: Server, socket: Socket) => {
     StateManager.updateStorageItem(socket, room, category, item, 1);
   };
 
+  /**
+   * Csökkenti a raktárban a termelésnél felhasznált anyagszükségletek mennyiségét
+   * @param socket csatlakozott kliens
+   * @param room szoba azonosítója
+   * @param requirements anyagszükségletek
+   * @returns
+   */
   const updateMaterialsForProduction = (
     socket: Socket,
     room: string,
@@ -83,6 +108,11 @@ export const handleProduction = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Kezeli a klienstől értkezett request-et
+   * @param param0 entitás adatok
+   * @returns
+   */
   const handleProductionRequest = ({ entity }: { entity: EntityType }) => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;

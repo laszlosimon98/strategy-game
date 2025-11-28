@@ -15,9 +15,21 @@ import { World } from "@/game/world";
 import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Cell } from "@/game/cell";
 import { DestroyBuildingResponse } from "@/types/world.types";
-import { prismaService } from "@/prisma/prisma";
 
+/**
+ * Kezeli az épületekkel kapcsolatos logikát,
+ *  - építés
+ *  - elbontás
+ *  - raktár frissítés
+ * @param io Socket.IO szerver
+ * @param socket csatlakozott kliens
+ */
 export const handleBuildings = (io: Server, socket: Socket) => {
+  /**
+   * Csökkenti a raktár mennyiséget, az épülethez szükséges költségekkel
+   * @param room szoba azonosító
+   * @param building épített épület
+   */
   const calculateNewStorageValues = (
     room: string,
     building: Building
@@ -46,6 +58,11 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     );
   };
 
+  /**
+   * Kezeli az épület építés logikáját, és elküldi a változásokat a kliensnek
+   * @param entity entitás adatok
+   * @returns
+   */
   const build = (entity: EntityType): void => {
     if (
       !Validator.validateIndices(entity.data.indices) ||
@@ -100,6 +117,14 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Kezeli az épület elbontásával kapcsolatos, logikát.
+   * Vizsgálja, hogy a játéknak vége van-e, ha igen, akkor statisztika frissítő hívásokat tesz.
+   * A változásokat elküldi a klienseknek
+   * @param entity entitás adatok
+   * @param needValidation szükséges-e validáció az épület elbontásához
+   * @returns
+   */
   const destroy = async (
     entity: EntityType,
     needValidation: boolean = true
@@ -179,6 +204,12 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Ellenőrzi, hogy az őrtorony foglalható, ha igen akkor foglalja-e valaki.
+   * Értesítés küld a klienseknek ha elkezdődött a foglalás, illetve ha megszakadt
+   * @param param0 entitás adatok
+   * @returns
+   */
   const guardHouseCheck = ({ entity }: { entity: EntityType }): void => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
@@ -208,6 +239,10 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Elfoglalás után újra építés logika
+   * @param entity entitás adatok
+   */
   const reBuild = (entity: EntityType): void => {
     const response: Building | ReturnMessage = StateManager.createBuilding(
       socket,
@@ -242,6 +277,11 @@ export const handleBuildings = (io: Server, socket: Socket) => {
     }
   };
 
+  /**
+   * Őrtorony elfoglalásának menete
+   * @param param0 entitás adatok
+   * @returns
+   */
   const guardHouseOccupied = ({ entity }: { entity: EntityType }): void => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;

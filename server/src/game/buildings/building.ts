@@ -54,7 +54,7 @@ export class Building extends Entity implements ProductionBuildingInterface {
    * @param io Socket.IO szerver
    * @param socket csatlakozott kliens
    * @param room szoba azonosító
-   * @returns termelt tétel | semmi | válaszüzenet
+   * @returns termelt tétel | null | válasz üzenet
    */
   public produce(
     io: Server,

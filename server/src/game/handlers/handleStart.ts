@@ -11,7 +11,18 @@ import { ReturnMessage } from "@/types/setting.types";
 import { Cell } from "@/game/cell";
 import { calculatePositionFromIndices } from "@/utils/utils";
 
+/**
+ * A játék inicializálásáért felelő függvény
+ * @param io Socket.IO szerver
+ * @param socket csatlakozott kliens
+ */
 export const handleStart = (io: Server, socket: Socket) => {
+  /**
+   * Megvizsgálja, hogy legalább 2 játékos van a szobába, majd elindítja a játékot
+   * Inicializálja a játékosokat a szobába, meghívva a World osztály metódusát, létrehozza a világot
+   * Elhelyezi a játékosok tornyait a kezdőpozícióra
+   * @returns
+   */
   const gameStarts = async () => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
@@ -33,6 +44,10 @@ export const handleStart = (io: Server, socket: Socket) => {
     initPlayersStartPosition(room);
   };
 
+  /**
+   * Elküldi a klienseknek a játékosok adatait
+   * @param room szoba azonosító
+   */
   const initPlayers = (room: string) => {
     CommunicationHandler.sendMessageToEveryOne(
       io,
@@ -42,6 +57,10 @@ export const handleStart = (io: Server, socket: Socket) => {
     );
   };
 
+  /**
+   * Világ létrehozása
+   * @returns
+   */
   const createWorld = () => {
     const room: string = CommunicationHandler.getCurrentRoom(socket);
     if (!room) return;
@@ -54,6 +73,10 @@ export const handleStart = (io: Server, socket: Socket) => {
     });
   };
 
+  /**
+   * Kezdeti kamera pozíciók meghatározása
+   * @param room szoba azonosító
+   */
   const initPlayersStartPosition = (room: string): void => {
     const players: PlayerType = StateManager.getPlayers(room);
     const startPositions: Indices[] = [...settings.startPositions];
@@ -64,10 +87,16 @@ export const handleStart = (io: Server, socket: Socket) => {
       CommunicationHandler.sendPrivateMessage(io, id, "game:startPos", pos);
 
       placeTower(id, pos);
-      updateTerritory(id);
+      updateTerritory();
     });
   };
 
+  /**
+   * Elhelyezi a kezdeti pozícióra a játékos tornyát
+   * @param playerId játékos azonosítója
+   * @param indices torony építéshez szükséges indexek
+   * @returns sikeres építés esetén visszaadja az épített épületet
+   */
   const placeTower = (playerId: string, indices: Indices): Building | null => {
     const entity: EntityType = {
       data: {
@@ -117,7 +146,10 @@ export const handleStart = (io: Server, socket: Socket) => {
     }
   };
 
-  const updateTerritory = (id: string) => {
+  /**
+   * Frissíti a torony által meghatározott játékos területét, majd elküldi a résztvevőknek
+   */
+  const updateTerritory = () => {
     const updatedCells: Cell[] = World.updateTerritory(socket);
 
     CommunicationHandler.sendMessageToEveryOne(

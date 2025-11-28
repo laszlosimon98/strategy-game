@@ -18,6 +18,14 @@ export class UnitManager extends Manager {
     super();
   }
 
+  /**
+   * Amennyiben van elegendő fegyver az adott típusú katonához, akkor létrehozásra kerül.
+   * Beállításra kerülnek a tulajdonsi adatok, pozicíó, indexek.
+   * @param socket csatlakozott kliens
+   * @param state állapottér
+   * @param entity entitás adatok
+   * @returns
+   */
   public static createSoldier(
     socket: Socket,
     state: StateType,
@@ -98,6 +106,12 @@ export class UnitManager extends Manager {
     return indx;
   }
 
+  /**
+   * Törli az állapottérből az egységet
+   * @param room szoba azonosító
+   * @param state állapottér
+   * @param unit egység
+   */
   public static deleteUnit(room: string, state: StateType, unit: Unit): void {
     const entity: EntityType = unit.getEntity();
 

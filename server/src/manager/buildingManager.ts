@@ -3,7 +3,6 @@ import { buildingRegister } from "@/game/buildings/buildingRegister";
 import { Cell } from "@/game/cell";
 import { World } from "@/game/world";
 import { CommunicationHandler } from "@/communication/communicationHandler";
-import { getImageNameFromUrl } from "@/utils/utils";
 import { Validator } from "@/utils/validator";
 import { StateManager } from "@/manager/stateManager";
 import { BuildingPrices, Buildings } from "@/types/building.types";
@@ -14,6 +13,9 @@ import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { DestroyBuildingResponse } from "@/types/world.types";
 import { Manager } from "@/manager/manager";
 
+/**
+ * Épületekért felelős állapottér menedzser osztály
+ */
 export class BuildingManager extends Manager {
   private static buildingPrices: BuildingPrices = {
     bakery: { boards: 2, stone: 2 },
@@ -43,6 +45,16 @@ export class BuildingManager extends Manager {
     return this.buildingPrices;
   }
 
+  /**
+   * Az épület létrehozásáért felelős metódus,
+   * megvizsgálja, hogy építhető-e az épület, rendelkezésre áll-e építési anyag a raktárban,
+   * beállítja a tulajdonost.
+   * @param socket csatlakozott kliens
+   * @param state állapottér
+   * @param entity entitás adatok
+   * @param needMaterial szükséges-e építési anyag
+   * @returns
+   */
   public static build(
     socket: Socket,
     state: StateType,
@@ -83,6 +95,15 @@ export class BuildingManager extends Manager {
     return building;
   }
 
+  /**
+   * Kezeli az épület elbontási logikát,
+   * ha őrtorony, akkor frissíti a területet, meghívva a World metódusait
+   * @param socket csatlakozott kliens
+   * @param entity entitás adatok
+   * @param state állapottér
+   * @param needValidation szükséges-e validáció az elbontáshoz
+   * @returns
+   */
   public static destroy(
     socket: Socket,
     entity: EntityType,
@@ -126,6 +147,13 @@ export class BuildingManager extends Manager {
     };
   }
 
+  /**
+   * Törli az állapottérből az épületet
+   * @param room szoba azonosító
+   * @param state állapottér
+   * @param building elbontandó épület
+   * @returns
+   */
   public static destroyBuilding(
     room: string,
     state: StateType,
@@ -188,6 +216,13 @@ export class BuildingManager extends Manager {
     );
   }
 
+  /**
+   * Ellenőrzi, hogy az épülethez rendelkezésre állnak-e a szükséges építőanyagok.
+   * @param socket csatlakozott kliens
+   * @param room szoba azonosító
+   * @param buildingName épület neve
+   * @returns
+   */
   private static hasMaterialsToBuild(
     socket: Socket,
     room: string,
@@ -213,6 +248,11 @@ export class BuildingManager extends Manager {
     return hasPlayerEnoughBoards && hasPlayerEnoughStone;
   }
 
+  /**
+   * Beállítja az épület termelési értékeit
+   * @param entity entitás adatok
+   * @param building épület
+   */
   private static setProduction(entity: EntityType, building: Building) {
     entity.data.cooldownTimer = building.getCooldown();
     entity.data.productionTime = building.getProductionTime();

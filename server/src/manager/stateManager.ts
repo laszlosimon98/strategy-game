@@ -152,6 +152,13 @@ export class StateManager {
     };
   }
 
+  /**
+   * Ha a játékos nincs bejelentkezve, alapértelmezetten a "Játékos" nevet fogja megkapni.
+   * A megkülönböztethetőség miatt a további ilyen játékosokat megszámozza.
+   * @param room szoba azonosító
+   * @param name név
+   * @returns
+   */
   private static generateUniqueName(room: string, name: string): string {
     const existingNames = this.getPlayersNameInRoom(room);
 
@@ -170,6 +177,13 @@ export class StateManager {
     return uniqueName;
   }
 
+  /**
+   * Kezeli a játékos kilépéséhez szükséges logikát.
+   * Törli az épületeit, egységeit, az egységekhez tartozó célpontokat,
+   * visszaállítja a birtokolt területeit
+   * @param room szoba azonosító
+   * @param socket csatlakozott kliens
+   */
   public static disconnectPlayer(room: string, socket: Socket): void {
     const player = this.state[room].players[socket.id];
 
@@ -227,6 +241,12 @@ export class StateManager {
     this.state[room].world = world;
   }
 
+  /**
+   * Vissza adja az épülethez legközelebbi speciális cellát
+   * @param objIndices objektum indexe
+   * @param cells cellák, amiből vissza kell adni a legközelebbit
+   * @returns
+   */
   public static getClosestCell(
     objIndices: Indices,
     cells: Cell[]
@@ -254,6 +274,15 @@ export class StateManager {
     return closestCell;
   }
 
+  /**
+   * Helper függvény az adott indexű épület / egység körülötti cellák figyeléséhez
+   * @param socket csatlakozott kliens
+   * @param indices adott objektum indexe
+   * @param range hatótávolság
+   * @param obstacle `obstacle` megnevezés, ami a cellákon található
+   * @param room szoba azonosító
+   * @returns
+   */
   public static getWorldInRange(
     socket: Socket,
     indices: Indices,
@@ -319,6 +348,11 @@ export class StateManager {
     return buildings;
   }
 
+  /**
+   * Visszaadja külön-külön a játékosokhoz tartozó épületeket
+   * @param room szoba azonosító
+   * @returns
+   */
   public static getAllPlayerBuildingsSeparatedByKeys(
     room: string
   ): Record<string, Building[]> {
@@ -400,6 +434,11 @@ export class StateManager {
     UnitManager.deleteUnit(room, this.state, unit);
   }
 
+  /**
+   * Visszaadja, hogy a kliensen, melyik assetet kell betöltenie.
+   * Biztosítva a 8 irányba való elfordulást
+   * @returns
+   */
   public static directions(): Record<string, number> {
     const assetSize: number = settings.assetSize;
 
@@ -417,6 +456,13 @@ export class StateManager {
     return result;
   }
 
+  /**
+   * Meghatározza a jelenlegi és a következő cella szerint, hogy merre kell nézzen
+   * az egység
+   * @param current jelenlegi cella
+   * @param next következő cella
+   * @returns meghatározott irány
+   */
   public static calculateFacing(current: Cell, next: Cell): string {
     const { i: ci, j: cj } = current.getIndices();
     const { i: ni, j: nj } = next.getIndices();
@@ -489,6 +535,12 @@ export class StateManager {
 
   // ------------------- Game Over -------------------
 
+  /**
+   * Vizsgálja, hogy a játékosnak rendelkezésre áll-e még őrtorony
+   * @param socket csatlakozott kliens
+   * @param entity entitás adatok
+   * @returns a játékos veszített-e
+   */
   public static isPlayerLostTheGame(
     socket: Socket,
     entity: EntityType
@@ -504,6 +556,12 @@ export class StateManager {
     return guardHouses.length === 0;
   }
 
+  /**
+   * Vizsgálja, hogy a játékosoknak van-e még épülete,
+   * ha csak egy játékosnak maradt épülete a játék véget ért.
+   * @param socket csatlakozott kliens
+   * @returns véget ért a játék
+   */
   public static isGameOver(socket: Socket): boolean {
     let count: number = 0;
     let winner: string = "";
@@ -563,6 +621,12 @@ export class StateManager {
 
   // ------------------- Statistic -------------------
 
+  /**
+   * Frissíti az adatbázisban a felhasználónévhez tartozó statisztikát
+   * @param username felhasználónév
+   * @param status nyert vagy vesztett érték
+   * @returns
+   */
   public static async updateStatistic(
     username: string,
     status: "win" | "lose"
@@ -598,6 +662,11 @@ export class StateManager {
     }
   }
 
+  /**
+   * Helper függvény, segít, hogy ne essen meg az, hogy többször frissül
+   * egy játékos statisztikai bejegyzése, ugyanabban a játékmenetben
+   * @param user felhasználó adatai az állapottérből
+   */
   public static setPlayerStatisticToUpdated(user: PlayerType[""]): void {
     user.isStatisticUpdated = true;
   }
