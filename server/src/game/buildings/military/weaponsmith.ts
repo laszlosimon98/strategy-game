@@ -44,8 +44,6 @@ export class WeaponSmith extends Building {
     const currentItem: ProductionItem | null =
       this.production.getProductionItem();
 
-    console.log(currentItem);
-
     const nextItem: ProductionItem = this.productionList[
       this.counter % 3
     ] as ProductionItem;

@@ -100,7 +100,6 @@ export class Statistic extends Page {
 
   private initTopFive(): void {
     this.topFiveStats = StateManager.getTopFive();
-    console.log(this.topFiveStats);
 
     this.topFiveText = new Text(Position.zero(), "Top 5 játékos:", {
       fontSize: "24px",

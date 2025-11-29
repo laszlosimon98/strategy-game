@@ -34,8 +34,6 @@ export class World implements MouseHandlerInterface {
    * Beállítja a kamera kezdő pozícióját.
    */
   public init(): void {
-    console.log(StateManager.getPlayers());
-
     CommunicationHandler.receiveMessage(
       "game:createWorld",
       ({ tiles, obstacles }: { tiles: TileType[][]; obstacles: any[][] }) => {

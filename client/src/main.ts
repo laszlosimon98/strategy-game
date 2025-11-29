@@ -12,7 +12,6 @@ const initImages = async () => {
   CommunicationHandler.sendMessage("start:page", {});
   const images = await CommunicationHandler.receiveAsyncMessage("start:page");
   StateManager.setImages(images);
-  console.log(StateManager.getImages());
 };
 
 /**
@@ -25,7 +24,6 @@ const initBuildingPrices = async () => {
   );
 
   StateManager.setBuildingPrices(buildingPrices);
-  console.log(StateManager.getBuildingPrices());
 };
 
 /**
