@@ -54,13 +54,6 @@ export class GameMenu implements RendererInterface {
         ),
         new Dimension(dim.width, dim.height - settings.offset.menuItem)
       ),
-      [MainMenuState.Population]: new Section(
-        new Position(
-          pos.x,
-          pos.y + settings.offset.menuItem + settings.offset.menuMargin
-        ),
-        new Dimension(dim.width, dim.height - settings.offset.menuItem)
-      ),
       [MainMenuState.Info]: new InfoPanel(
         new Position(
           pos.x,

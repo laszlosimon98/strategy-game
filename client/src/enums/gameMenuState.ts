@@ -2,7 +2,6 @@ export enum MainMenuState {
   Unselected,
   House,
   Storage,
-  Population,
   Info,
 }
 

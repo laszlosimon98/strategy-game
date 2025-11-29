@@ -40,20 +40,6 @@ export class MainSection extends Section {
           hasPrice: false,
           type: "house",
         }
-      ),
-      new LabelButton(
-        new Position(
-          pos.x + (dim.width * 5) / 6 - settings.size.menuItem.width / 2,
-          pos.y - settings.size.menuItem.height / 2 + dim.height / 2
-        ),
-        settings.size.menuItem,
-        StateManager.getImages("ui", "gamemenu", "population"),
-        "empty",
-        {
-          hasTooltip: true,
-          hasPrice: false,
-          type: "house",
-        }
       )
     );
   }
