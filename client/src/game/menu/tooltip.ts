@@ -8,6 +8,10 @@ import type { Price } from "@/types/building.types";
 import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Rövid információs ablak, amely megjeleníti egy épület vagy egység
+ * nevét és a szükséges erőforrásokat.
+ */
 export class Tooltip extends Frame {
   private triangleSize: number = 12;
 
@@ -84,6 +88,10 @@ export class Tooltip extends Frame {
     });
   }
 
+  /**
+   * Beállítja az adott házhoz tartozó árakat, amelyek megjelennek az ikon felett
+   * @param houseName ház neve
+   */
   public setHousePrices(houseName: string): void {
     const prices: Price | undefined =
       StateManager.getBuildingPrices()[houseName as Buildings];
@@ -107,6 +115,10 @@ export class Tooltip extends Frame {
     }
   }
 
+  /**
+   * Beállítja az adott egységhez tartozó árakat, amelyek megjelennek az ikon felett
+   * @param houseName egység neve
+   */
   public setUnitPrices(unitName: string): void {
     const swordText: string =
       language[StateManager.getLanguage()].storage.sword;

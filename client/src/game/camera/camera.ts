@@ -3,6 +3,9 @@ import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 import { Vector } from "@/utils/vector";
 
+/**
+ * Világ kamera megvalósító osztály.
+ */
 export class Camera {
   private mouseDir: Vector;
   private keyboardDir: Vector;
@@ -24,6 +27,12 @@ export class Camera {
     this.scroll = scroll;
   }
 
+  /**
+   * Kezeli a kamera elmozdulást.
+   * @param dt delta time, két frissítés között eltelt idő
+   * @param mousePos egér koordináta
+   * @param key leütött billenyű
+   */
   public update(dt: number, mousePos: Position, key: string): void {
     this.handleCameraMovementWithKeyboard(key);
     // this.handleCameraMovementWithMouse(mousePos);
@@ -37,6 +46,10 @@ export class Camera {
     this.scroll.y += this.speed * dt * movementDir.y;
   }
 
+  /**
+   * Kezeli az elmozdulást egy megadott billenytű alapján
+   * @param key leütött billentyű
+   */
   private handleCameraMovementWithKeyboard(key: string): void {
     const lowerKey: string = key.toLocaleLowerCase();
 
@@ -58,6 +71,10 @@ export class Camera {
     }
   }
 
+  /**
+   * Kezeli az elmozdulást az egér alapján
+   * @param mousePos egér koordináta
+   */
   private handleCameraMovementWithMouse(mousePos: Position): void {
     if (mousePos.x > 0 && mousePos.x < canvasWidth * 0.05) {
       this.mouseDir.x = 1;

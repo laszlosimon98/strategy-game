@@ -4,6 +4,9 @@ import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Házakhoz tartozó, játékos színével megegyező zászlók osztálya.
+ */
 export class Flag extends Entity implements RendererInterface {
   constructor(entity: EntityType) {
     super(entity);

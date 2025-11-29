@@ -6,6 +6,9 @@ import type { SoldierPropertyType, EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { RangeIndicator } from "@/utils/rangeIndicator";
 
+/**
+ * Katonák osztálya, származik a `Unit` osztályból
+ */
 export class Soldier extends Unit {
   protected properties: SoldierPropertyType;
   // protected attackTimer: Timer;

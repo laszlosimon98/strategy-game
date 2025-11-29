@@ -6,6 +6,9 @@ import type { Options } from "@/types/text.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Szövegbeviteli mező kerettel, amely kezeli a beírt szöveget.
+ */
 export class TextInput extends Frame {
   private text: Text;
   private isSelected: boolean;

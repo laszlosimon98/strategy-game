@@ -12,6 +12,9 @@ import type { RendererInterface } from "@/interfaces/rendererInterface";
 import { settings } from "@/settings";
 import { StateManager } from "@/manager/stateManager";
 
+/**
+ * Egység osztály, származik az `Entity` osztályból
+ */
 export abstract class Unit extends Entity implements RendererInterface {
   private dimension: Dimension;
   private facing: number;

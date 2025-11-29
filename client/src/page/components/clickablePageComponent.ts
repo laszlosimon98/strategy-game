@@ -2,6 +2,9 @@ import { PageComponents } from "@/page/components/pageComponents";
 import type { Dimension } from "@/utils/dimension";
 import type { Position } from "@/utils/position";
 
+/**
+ * Kibővíti a `PageComponents` osztályt kattintás figyelővel
+ */
 export abstract class ClickablePageComponents extends PageComponents {
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);

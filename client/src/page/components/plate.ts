@@ -8,6 +8,10 @@ import { StateManager } from "@/manager/stateManager";
 import { ClickablePageComponents } from "@/page/components/clickablePageComponent";
 import type { ImageItemType } from "@/types/game.types";
 
+/**
+ * Egy képet és középre igazított szöveget jelenít meg.
+ * Kattintható komponensként alapjaként használható.
+ */
 export class Plate extends ClickablePageComponents {
   protected image: HTMLImageElement;
   private text: Text;

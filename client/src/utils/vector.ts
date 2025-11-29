@@ -1,6 +1,9 @@
 import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 
+/**
+ * Vektor osztály
+ */
 export class Vector extends Position {
   public constructor(x: number, y: number) {
     super(x, y);
@@ -15,6 +18,10 @@ export class Vector extends Position {
     this.y = other.y;
   }
 
+  /**
+   * Visszaadja a kartéziánus pozíciókat
+   * @returns
+   */
   public getNormalPos(): Position[] {
     return [
       new Position(this.x * settings.size.cell, this.y * settings.size.cell),
@@ -33,6 +40,10 @@ export class Vector extends Position {
     ];
   }
 
+  /**
+   * Visszaadja az isometrikus pozíciókat
+   * @returns
+   */
   public getIsometricPos(): Position[] {
     return this.getNormalPos().map(
       (vector) => new Position(vector.x - vector.y, (vector.x + vector.y) / 2)

@@ -3,6 +3,9 @@ import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 import { cartesianToIsometric, isometricToCartesian } from "@/utils/utils";
 
+/**
+ * Hatótávolságot kirajzoló osztály
+ */
 export class RangeIndicator {
   private radius: number;
   private numPoints: number = 360;
@@ -54,6 +57,11 @@ export class RangeIndicator {
     this.circlePoints = this.generateCirclePoints(this.cartesianCenter);
   }
 
+  /**
+   * Meghatároz egy `numPoints` mennyiségű `radius` méretű pontokból álló kört
+   * @param center az a pozíció, ahol az objektum található
+   * @returns koordináta lista
+   */
   private generateCirclePoints(center: Position): Position[] {
     const points: Position[] = [];
 

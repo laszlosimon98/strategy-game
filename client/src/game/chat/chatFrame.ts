@@ -5,6 +5,9 @@ import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
 
+/**
+ * Az érkezett üzenetek, itt fognak megjelenni.
+ */
 export class ChatFrame extends Frame {
   private texts: {
     text: Text;
@@ -48,6 +51,12 @@ export class ChatFrame extends Frame {
     });
   }
 
+  /**
+   * Új üzenet hozzáadása a listához
+   * @param name játékos neve
+   * @param message üzenet
+   * @param color szín
+   */
   public pushText(name: string, message: string, color: ColorType): void {
     const t: string = `${name}: ${message}`;
     const text: Text = new Text(this.positions[0], t, {

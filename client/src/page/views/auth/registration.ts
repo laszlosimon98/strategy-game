@@ -6,6 +6,10 @@ export class Registration extends Auth {
     super(title);
   }
 
+  /**
+   * Regisztráció kezelés
+   * @returns
+   */
   public async handleAuth(): Promise<any> {
     const data = this.getInputData();
     return await authApi.post("/register", data);

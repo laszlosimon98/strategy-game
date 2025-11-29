@@ -22,6 +22,10 @@ import { ChatInput } from "@/game/chat/chatInput";
 import { ChatFrame } from "@/game/chat/chatFrame";
 import type { Building } from "@/game/world/building/building";
 
+/**
+ * A játék fő kezelő osztálya.
+ * Kezeli az egér és billentyűzet eseményeketet, a szerverről érkező üzeneteket
+ */
 export class Game {
   private gameMenu: GameMenu;
   private world: World | undefined;
@@ -90,6 +94,11 @@ export class Game {
     this.key = "";
   }
 
+  /**
+   * Egér kattintás kezelő.
+   * Külön kezeli a bal, jobb és középső egérgomb kattintást.
+   * @param e MouseEvent
+   */
   public handleClick(e: MouseEvent) {
     const button = e.button;
 
@@ -110,16 +119,27 @@ export class Game {
     }
   }
 
+  /**
+   * Egér elmozdulás
+   * @param pos koordináta
+   */
   public handleMouseMove(pos: Position): void {
     this.mousePos.setPosition(pos);
     this.world?.handleMouseMove(pos);
   }
 
+  /**
+   * Billentyű leütés
+   * @param key leütött billenytű
+   */
   public handleKeyPress(key: string): void {
     this.key = key;
     this.chatInput.toggleVisibility(key);
   }
 
+  /**
+   * Inicializálja a játékosokat és a világot
+   */
   private async init(): Promise<void> {
     const players = await CommunicationHandler.receiveAsyncMessage(
       "game:initPlayers"
@@ -135,6 +155,15 @@ export class Game {
     StateManager.initPlayers(players);
   }
 
+  /**
+   * Fogadja és kezeli a szerverről érkező üzenetcsomagokat
+   * Események:
+   *    - Játékos elhagyta a szobát (game:playerLeft)
+   *    - Szerverről érkező értesítések beállítása (game:info)
+   *    - Chat üzenet fogadása (chat:message)
+   *    - Őrtorony foglalás elkezdődött (game:guardhouse-start-occupation)
+   *    - Őrtorony foglalás megszakadt game:guardhouse-start-occupation
+   */
   private async handleCommunication(): Promise<void> {
     CommunicationHandler.receiveMessage(
       "game:playerLeft",

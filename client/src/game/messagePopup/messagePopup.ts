@@ -5,6 +5,9 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
 
+/**
+ * Játék közbeni szerveroldali értesítések megjelenítésére szolgáló osztály
+ */
 export class MessagePopup extends Frame {
   private text: Text;
   private visibilityTimer: Timer;

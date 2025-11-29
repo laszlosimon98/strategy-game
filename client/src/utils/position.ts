@@ -1,3 +1,6 @@
+/**
+ * Pozíció osztály
+ */
 export class Position {
   public x: number;
   public y: number;

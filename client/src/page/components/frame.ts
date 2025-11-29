@@ -10,6 +10,9 @@ interface FrameOptions {
   color?: string;
 }
 
+/**
+ * Keret komponens, amely háttérként és egyszerű panelként szolgál.
+ */
 export class Frame extends PageComponents {
   protected buttons: Button[] = [];
   private alpha: number;

@@ -11,6 +11,9 @@ import type {
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * A raktár megjelenítése a raktár szekció menüpont alatt
+ */
 export class StorageSection extends Section {
   private playerId: string;
   private storage: StorageType | null = null;

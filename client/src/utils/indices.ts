@@ -1,3 +1,6 @@
+/**
+ * Indexeket meghatározó osztály
+ */
 export class Indices {
   public i: number;
   public j: number;

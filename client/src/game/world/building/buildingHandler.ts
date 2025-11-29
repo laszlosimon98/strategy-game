@@ -13,6 +13,9 @@ import { convertIsometricCoordsToCartesianCoords, ySort } from "@/utils/utils";
 import { StateManager } from "@/manager/stateManager";
 import type { Cell } from "@/game/world/cell";
 
+/**
+ * Épület kezelő osztály, származik a `Manager` osztályból.
+ */
 export class BuildingHandler extends Manager {
   private fakeHouse: FakeBuilding;
 
@@ -70,6 +73,13 @@ export class BuildingHandler extends Manager {
     this.hoverObject(mousePos, cameraScroll, "buildings");
   }
 
+  /**
+   * Fogadja és kezeli a szerverről érkező üzenetcsomagokat.
+   * Események:
+   *    - Építés (game:build)
+   *    - Elbontás (game:destroy)
+   *    - Területen kívül eső házak elbontása (game:destroyLostTerritoryBuildings)
+   */
   protected handleCommunication(): void {
     CommunicationHandler.receiveMessage("game:build", (entity: EntityType) => {
       this.build(entity);
@@ -90,6 +100,10 @@ export class BuildingHandler extends Manager {
     );
   }
 
+  /**
+   * Kezeli az új ház létrehozását.
+   * @param entity entitás adatok
+   */
   private build(entity: EntityType): void {
     const newBuilding: Building = this.creator<Building>(Building, entity);
     const { i, j } = entity.data.indices;
@@ -101,6 +115,11 @@ export class BuildingHandler extends Manager {
     ySort(StateManager.getBuildings(entity.data.owner));
   }
 
+  /**
+   * Létrehoz egy ideiglenes épületet, ami mutatja, hogy hova fog kerülni építéskor.
+   * @param mousePos egér koordináta
+   * @param cameraScroll kamera elmozdulás
+   */
   private setFakeHouse(mousePos: Position, cameraScroll: Position): void {
     const indices: Indices = convertIsometricCoordsToCartesianCoords(
       mousePos,
@@ -126,6 +145,10 @@ export class BuildingHandler extends Manager {
     }
   }
 
+  /**
+   * Épület elbontás
+   * @param entity entitás adatok
+   */
   private destroy(entity: EntityType): void {
     const { i, j } = entity.data.indices;
 

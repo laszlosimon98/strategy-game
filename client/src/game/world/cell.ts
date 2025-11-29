@@ -5,6 +5,9 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { Vector } from "@/utils/vector";
 
+/**
+ * A világ celláinak leíró osztálya.
+ */
 export class Cell {
   private indices: Indices;
   private position: Vector;

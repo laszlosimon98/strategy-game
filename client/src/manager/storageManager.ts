@@ -1,6 +1,9 @@
 import type { PlayerGameType } from "@/types/game.types";
 import type { StorageType, CategoryType } from "@/types/storage.types";
 
+/**
+ * Raktár kezelő osztály
+ */
 export class StorageManager {
   private constructor() {}
 
@@ -18,6 +21,14 @@ export class StorageManager {
     player.storage = { ...newStorageValues };
   }
 
+  /**
+   * A megadott `CategoryTyp` és `name` alapján frissíti a raktárat
+   * @param player játékos
+   * @param type kategória
+   * @param name tétel neve
+   * @param amount mennyiség
+   * @returns
+   */
   public static updateStorageItem(
     player: PlayerGameType[""],
     type: CategoryType,

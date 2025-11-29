@@ -12,9 +12,10 @@ import type {
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Raktár elem
+ */
 export class StorageItem extends PageComponents {
-  // később
-  // private image: HTMLImageElement;
   private material: Text;
   private amount: Text;
 

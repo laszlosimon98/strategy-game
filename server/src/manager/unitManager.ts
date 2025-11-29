@@ -13,6 +13,9 @@ import { ObstacleEnum } from "@/enums/ObstacleEnum";
 import { Position } from "@/utils/position";
 import { settings } from "@/settings";
 
+/**
+ * Egység kezelő osztály
+ */
 export class UnitManager extends Manager {
   protected constructor() {
     super();

@@ -5,6 +5,9 @@ import { Program } from "@/program";
 import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 
+/**
+ * Kép betöltő
+ */
 const initImages = async () => {
   CommunicationHandler.sendMessage("start:page", {});
   const images = await CommunicationHandler.receiveAsyncMessage("start:page");
@@ -12,6 +15,9 @@ const initImages = async () => {
   console.log(StateManager.getImages());
 };
 
+/**
+ * Épület költség betöltő
+ */
 const initBuildingPrices = async () => {
   CommunicationHandler.sendMessage("start:prices", {});
   const buildingPrices = await CommunicationHandler.receiveAsyncMessage(
@@ -22,6 +28,10 @@ const initBuildingPrices = async () => {
   console.log(StateManager.getBuildingPrices());
 };
 
+/**
+ * Ellenőrzi, hogy van-e bejelentkezett felhasználó
+ * @returns
+ */
 const checkUser = async () => {
   try {
     const check = await authApi.post("/check");
@@ -48,6 +58,11 @@ const checkUser = async () => {
   } catch (err) {}
 };
 
+/**
+ * Program belépési pontja.
+ * Inicializálás, képek és épület költségek betöltése.
+ * Game loop
+ */
 const main = async () => {
   init();
   await checkUser();

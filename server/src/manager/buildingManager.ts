@@ -14,7 +14,7 @@ import { DestroyBuildingResponse } from "@/types/world.types";
 import { Manager } from "@/manager/manager";
 
 /**
- * Épületekért felelős állapottér menedzser osztály
+ * Épület kezelő osztály
  */
 export class BuildingManager extends Manager {
   private static buildingPrices: BuildingPrices = {

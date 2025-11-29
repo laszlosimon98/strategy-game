@@ -28,6 +28,11 @@ export class World implements MouseHandlerInterface {
     this.handleCommunication();
   }
 
+  /**
+   * Világ inicializálása.
+   * Beállítja a szerverről érkező mező típusokat és elhelyezi az akadályokat.
+   * Beállítja a kamera kezdő pozícióját.
+   */
   public init(): void {
     console.log(StateManager.getPlayers());
 
@@ -114,7 +119,7 @@ export class World implements MouseHandlerInterface {
     }
   }
 
-  handleMiddleClick(): void {
+  public handleMiddleClick(): void {
     const indices: Indices = convertIsometricCoordsToCartesianCoords(
       new Position(this.mousePos.x, this.mousePos.y),
       this.getCameraScroll()
@@ -157,6 +162,11 @@ export class World implements MouseHandlerInterface {
     }
   }
 
+  /**
+   * Megvizsgálja, hogy a paraméterben kapott index, a játék pályára esik-e
+   * @param indices cella indexek
+   * @returns az index a pályára esik-e
+   */
   public isActionInsideOfTheMap(indices: Indices): boolean {
     return (
       indices.i >= 0 &&
@@ -170,6 +180,12 @@ export class World implements MouseHandlerInterface {
     return this.camera.getScroll();
   }
 
+  /**
+   * Frissíti a cellához tartozó képeket, az adott `obstacle` alapján
+   * @param indices cella koordináta
+   * @param obstacle akadály
+   * @param owner tulajdonos id
+   */
   private updateCellVisual(
     indices: Indices,
     obstacle: ObstacleEnum,
@@ -210,6 +226,12 @@ export class World implements MouseHandlerInterface {
     }
   }
 
+  /**
+   * Fogadja és kezeli a szerverről érkező üzenetcsomagokat
+   * Események:
+   *    - Cella frissítés (game:updateCell)
+   *    - Frissíti a játékos terület megjelenítését (game:updateTerritory)
+   */
   private handleCommunication(): void {
     CommunicationHandler.receiveMessage(
       "game:updateCell",

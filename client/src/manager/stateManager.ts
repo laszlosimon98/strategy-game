@@ -24,6 +24,9 @@ import { Dimension } from "@/utils/dimension";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
+/**
+ * Állapottér kezelő osztály
+ */
 export class StateManager {
   private static initEntity: EntityType = {
     data: {
@@ -109,6 +112,11 @@ export class StateManager {
     this.state.images = images;
   }
 
+  /**
+   * Lekér egy képet az `images` struktúrából a megadott útvonal szerint.
+   * @param path - a mappakulcsok
+   * @returns a megtalált `ImageItemType`
+   */
   public static getImages(...path: string[]): ImageItemType {
     return path.reduce(
       (acc: any, key: string) => acc?.[key],
@@ -334,7 +342,6 @@ export class StateManager {
 
   public static savePlayerStat(stat: StatisticType): void {
     this.state.statistic.player = stat;
-    console.log(this.state.statistic.player);
   }
 
   public static saveTopFive(stats: StatisticType[]): void {

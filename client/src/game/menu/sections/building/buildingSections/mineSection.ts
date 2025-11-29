@@ -5,7 +5,10 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
-export class StorageSection extends Section {
+/**
+ * Bányákhoz kapcsolódó épületek listáját tartalmazó menüszekció.
+ */
+export class MineSection extends Section {
   private coalMine: LabelButton;
   private ironMine: LabelButton;
 

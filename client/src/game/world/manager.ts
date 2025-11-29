@@ -11,6 +11,10 @@ import { isMouseIntersect } from "@/utils/utils";
 import type { Entity } from "@/game/world/entity";
 import type { Soldier } from "@/game/world/unit/units/soldier";
 
+/**
+ * Absztrakt osztály a játék objektumok kezeléséhez.
+ * Tartalmaz függvényeket a megrajzoláshoz, frissítéshez, létrehozáshoz és kiválasztáshoz.
+ */
 export abstract class Manager implements MouseHandlerInterface {
   protected pos: Position;
 
@@ -26,6 +30,10 @@ export abstract class Manager implements MouseHandlerInterface {
 
   protected abstract handleCommunication(): void;
 
+  /**
+   * Kirajzolja az összes játékos megadott típusú objektumát (pl. egységek, épületek).
+   * @param objectKey - az objektumtípus kulcsa
+   */
   protected draw<T extends Entity>(objectKey: string): void {
     Object.keys(StateManager.getPlayers()).forEach((key) => {
       const arr: T[] = StateManager.getPlayers()[key][
@@ -35,6 +43,12 @@ export abstract class Manager implements MouseHandlerInterface {
     });
   }
 
+  /**
+   * Frissíti az összes játékos megadott típusú objektumát.
+   * @param dt - delta time
+   * @param cameraScroll - kamera eltolás gyártásához
+   * @param objectKey - az objektumtípus kulcsa
+   */
   protected update<T extends Entity>(
     dt: number,
     cameraScroll: Position,
@@ -48,13 +62,17 @@ export abstract class Manager implements MouseHandlerInterface {
     });
   }
 
-  protected creator<T>(
+  /**
+   * Segédfüggvény egy új objektum példányosításához.
+   */
+  protected creator<T extends Entity>(
     Creator: new (...args: any[]) => T,
     ...args: ConstructorParameters<typeof Creator>
   ): T {
     return new Creator(...args);
   }
 
+  /** Beállítja a Manager pozícióját. */
   public setPos(pos: Position): void {
     this.pos = pos;
   }
@@ -68,6 +86,9 @@ export abstract class Manager implements MouseHandlerInterface {
     };
   }
 
+  /**
+   * Beállítja egy objektum képernyőpozícióját úgy.
+   */
   protected setObjectPosition<T extends Entity>(
     object: T,
     objectPos: Position
@@ -80,6 +101,12 @@ export abstract class Manager implements MouseHandlerInterface {
     object.setPosition(newObjectPos);
   }
 
+  /**
+   * Beállítja az objektumok hover állapotát.
+   * @param mousePos - egér pozíció
+   * @param cameraScroll - kamera eltolás
+   * @param key - objektumtípus kulcsa
+   */
   protected hoverObject<T extends Entity>(
     mousePos: Position,
     cameraScroll: Position,
@@ -96,6 +123,10 @@ export abstract class Manager implements MouseHandlerInterface {
     }
   }
 
+  /**
+   * Kiválaszt egy objektumot a megadott típusból az egér pozíció alapján és frissíti az állapotot.
+   * @returns a kiválasztott objektum
+   */
   protected selectObject<T extends Building & Soldier>(
     mousePos: Position,
     cameraScroll: Position,

@@ -4,6 +4,9 @@ import type { Options } from "@/types/text.types";
 import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Egyszerű szövegkomponens: megjelenít szöveget.
+ */
 export class Text {
   protected pos: Position;
   protected text: string;

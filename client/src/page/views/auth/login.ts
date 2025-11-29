@@ -7,6 +7,10 @@ export class Login extends Auth {
     super(title);
   }
 
+  /**
+   * Bejelentkezés kezelés
+   * @returns
+   */
   public async handleAuth(): Promise<any> {
     const data = this.getInputData();
     const response = await authApi.post("/login", data);

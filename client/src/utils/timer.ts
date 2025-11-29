@@ -1,3 +1,6 @@
+/**
+ * Időzítő osztály, a megadott időpont lejárata után végrehatja a megadott függvényt.
+ */
 export class Timer {
   private duration: number;
   private func: Function | undefined;

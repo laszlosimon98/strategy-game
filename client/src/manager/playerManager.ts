@@ -3,6 +3,10 @@ import type { PlayerGameType, ColorType, StateType } from "@/types/game.types";
 export class PlayerManager {
   private constructor() {}
 
+  /**
+   * Inicializálja a játékosoket. Beállítja a nevet, színt, inicializálja a épületek és egységes tömöböt üresen,
+   * valamint beállítja a raktár mennyiséget
+   */
   public static initPlayers(state: StateType, players: PlayerGameType): void {
     Object.keys(players).forEach((id) => {
       state.game.players[id] = {

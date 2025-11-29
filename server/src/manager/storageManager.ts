@@ -2,6 +2,9 @@ import { StateType } from "@/types/state.types";
 import { CombinedType, StorageType, CategoryType } from "@/types/storage.types";
 import { Socket } from "socket.io";
 
+/**
+ * Raktár kezelő osztály
+ */
 export class StorageManager {
   private static initStorage: StorageType = {
     materials: {

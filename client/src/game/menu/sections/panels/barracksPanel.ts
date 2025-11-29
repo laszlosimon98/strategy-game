@@ -9,6 +9,9 @@ import type { EntityType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Laktanya részletező panel.
+ */
 export class BarracksPanel extends Section {
   private barracksButtons: LabelButton[] = [];
   private isPlayerInitialized: boolean = false;
@@ -77,6 +80,10 @@ export class BarracksPanel extends Section {
     }
   }
 
+  /**
+   * Előkészíti küldésre a kiválasztott egység adatait.
+   * @param btn kiválaszott egység gomb
+   */
   private createUnit(btn: LabelButton): void {
     const playerId: string = CommunicationHandler.getId();
     const color: string = StateManager.getPlayerColor(playerId);

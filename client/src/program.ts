@@ -17,6 +17,9 @@ import { CommunicationHandler } from "@/communication/communicationHandler";
 import { settings } from "@/settings";
 import { Position } from "@/utils/position";
 
+/**
+ * Ablak váltás, eseménykezelő (egér kattintás, billentyű leütés) regisztrálás felelős osztály.
+ */
 export class Program {
   private pages: Partial<Record<PageState, Page>>;
   private buttons?: Button[];

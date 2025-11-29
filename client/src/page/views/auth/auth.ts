@@ -10,6 +10,9 @@ import type { AuthType } from "@/types/auth.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Általános bejelentkező/registrációs komponens felhasználónév és jelszó.
+ */
 export class Auth extends Page {
   protected backButton: Button;
   protected actionButton: Button;
@@ -112,6 +115,9 @@ export class Auth extends Page {
     };
   }
 
+  /**
+   * Hitelesítés kezelő. Sikertelen hitelesítés esetén hibaüzenet.
+   */
   public handleNext = async () => {
     try {
       await this.handleAuth();

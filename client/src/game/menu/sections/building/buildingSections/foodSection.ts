@@ -5,6 +5,9 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Élelmiszerhez kapcsolódó épületek listáját tartalmazó menüszekció.
+ */
 export class FoodSection extends Section {
   private farm: LabelButton;
   private mill: LabelButton;

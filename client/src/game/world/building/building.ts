@@ -8,6 +8,9 @@ import type { EntityType } from "@/types/game.types";
 import { Position } from "@/utils/position";
 import { Timer } from "@/utils/timer";
 
+/**
+ * Épület osztály, származik az `Entity` osztályból
+ */
 export class Building extends Entity implements RendererInterface {
   private flagEntity: EntityType | undefined;
   private flag: Flag | undefined;
@@ -124,6 +127,10 @@ export class Building extends Entity implements RendererInterface {
     this.image.src = this.entity.data.url;
   }
 
+  /**
+   * Ha termelő épület, akkor elküld a szervernek egy requestet, ami jelzi, hogy készen áll a termelésre.
+   * Ha őrtorony típusú, akkor ellenőrzést küld, hogy nincs-e a közelben ellenséges katona, aki foglalni akarja.
+   */
   public action(): void {
     if (this.entity.data.owner === CommunicationHandler.getId()) {
       if (this.entity.data.isProductionBuilding) {
@@ -136,6 +143,9 @@ export class Building extends Entity implements RendererInterface {
     }
   }
 
+  /**
+   * Letelt a foglalás. Őrtorony elfoglalva üzenetcsomag küldése a szervernek.
+   */
   public occupationTimerOver(): void {
     if (this.enemyOwner === CommunicationHandler.getId()) {
       CommunicationHandler.sendMessage("game:guardhouse-occupied", {
@@ -148,6 +158,10 @@ export class Building extends Entity implements RendererInterface {
     this.productionTimer?.activate();
   }
 
+  /**
+   * Megkezdődött a foglalás, időzítő elinditása.
+   * @param enemyOwner ellenséges őrtorony tulajdonosa
+   */
   public startOccupation(enemyOwner: string): void {
     this.enemyOwner = enemyOwner;
     if (!this.occupationTimer?.isTimerActive()) {

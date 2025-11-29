@@ -12,6 +12,10 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
 
+/**
+ * A játék menüje, itt található meg a házak és a raktár szekció.
+ * A házakon belül különböző szekcióban vannak sorolva az egyes épületek.
+ */
 export class GameMenu implements RendererInterface {
   private mainSection: MainSection;
   private frames: Record<MainMenuState, Section>;
@@ -103,6 +107,10 @@ export class GameMenu implements RendererInterface {
     this.frames[StateManager.getGameMenuState()].update(dt, mousePos);
   }
 
+  /**
+   * Kezeli az egér pozíciójában történő ikon kattintást
+   * @param mousePos egér koordináta
+   */
   public handleClick(mousePos: Position): void {
     this.updateImages("Main", mousePos, this.mainSection.getButtons());
     this.updateImages(
@@ -114,6 +122,13 @@ export class GameMenu implements RendererInterface {
     this.frames[StateManager.getGameMenuState()].handleClick(mousePos);
   }
 
+  /**
+   * Módosítja a kattintott gombot, így látható, hogy melyik menü szekció aktív
+   * @param type `Main` azaz a menü fejléce vagy `sub`, egy alszekció típus megnevezés
+   * @param mousePos egér koordináta
+   * @param buttons kattintható gombok
+   * @returns
+   */
   public updateImages(
     type: string,
     mousePos: Position,
@@ -139,6 +154,10 @@ export class GameMenu implements RendererInterface {
     });
   }
 
+  /**
+   * Megszünteti az aktív állapotot
+   * @param buttons kattintható gombok
+   */
   private resetButtonImage(buttons: Button[]): void {
     buttons.forEach((button) => {
       let image: string = getImageNameFromUrl(button.getImage());

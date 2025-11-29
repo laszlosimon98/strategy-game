@@ -6,6 +6,9 @@ import { Frame } from "@/page/components/frame";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Menüpont szekció összefoglaló komponens
+ */
 export class Section {
   private section: Frame;
   protected subSections: Partial<Record<SubMenuState, Section>> = {};

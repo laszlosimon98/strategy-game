@@ -8,6 +8,10 @@ import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
 
+/**
+ * Az épületek és egyégek ősosztálya.
+ * Tartalmaz alapvető gettereket és settereket
+ */
 export abstract class Entity implements RendererInterface {
   protected image: HTMLImageElement;
   protected renderPos: Position;

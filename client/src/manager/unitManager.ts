@@ -2,6 +2,9 @@ import type { Unit } from "@/game/world/unit/unit";
 import { PlayerManager } from "@/manager/playerManager";
 import type { EntityType, StateType } from "@/types/game.types";
 
+/**
+ * Egység kezelő osztály
+ */
 export class UnitManager {
   private constructor() {}
 

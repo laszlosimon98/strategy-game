@@ -5,6 +5,9 @@ import { settings } from "@/settings";
 import type { Dimension } from "@/utils/dimension";
 import type { Position } from "@/utils/position";
 
+/**
+ * Chat beviteli mező
+ */
 export class ChatInput extends TextInput {
   private isPanelVisible: boolean;
 
@@ -32,6 +35,10 @@ export class ChatInput extends TextInput {
     }
   }
 
+  /**
+   * Megjelíni / elrejti a beviteli mezőt
+   * @param key leütött billenytű
+   */
   public toggleVisibility(key: string): void {
     switch (key) {
       case "Enter": {

@@ -6,6 +6,11 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Az oldal komponensek fő osztálya.
+ * Kezeli a cím és a gombok kirajzolását.
+ */
+
 export abstract class Page {
   protected buttons: Button[];
   protected inputs: TextInput[];

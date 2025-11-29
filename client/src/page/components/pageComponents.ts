@@ -1,6 +1,10 @@
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Egy olyan komponens amiből származnak az oldalakat felépítő komponensek.
+ * Alapvető getter-t és setter-t tartalmazz.
+ */
 export abstract class PageComponents {
   protected pos: Position;
   protected dim: Dimension;

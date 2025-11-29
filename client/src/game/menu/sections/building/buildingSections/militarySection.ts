@@ -5,6 +5,9 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Haderőhöz kapcsolódó épületek listáját tartalmazó menüszekció.
+ */
 export class MilitarySection extends Section {
   private ironSmelter: LabelButton;
   private weaponSmith: LabelButton;

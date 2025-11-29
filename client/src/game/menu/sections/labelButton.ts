@@ -8,6 +8,9 @@ import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 import { getImageNameFromUrl } from "@/utils/utils";
 
+/**
+ * Olyan gomb ami rendelkezik a `tooltip` komponensel
+ */
 export class LabelButton extends Button {
   private name: string;
   private tooltip?: Tooltip;

@@ -24,6 +24,9 @@ import { GuardHouse } from "@/game/buildings/military/guardhouse";
 import { Soldier } from "@/game/units/soldier";
 import { prismaService } from "@/prisma/prisma";
 
+/**
+ * Állapottér kezelő osztály
+ */
 export class StateManager {
   private static state: StateType = {};
 

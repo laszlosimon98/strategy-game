@@ -5,6 +5,9 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Nyersanyagokhoz kapcsolódó épületek listáját tartalmazó menüszekció.
+ */
 export class ResourceSection extends Section {
   private woodCutter: LabelButton;
   private stoneCutter: LabelButton;

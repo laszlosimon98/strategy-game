@@ -4,6 +4,11 @@ import { settings } from "@/settings";
 import { Indices } from "@/utils/indices";
 import { Position } from "@/utils/position";
 
+/**
+ * Visszaadja az url-ből a kép nevét.
+ * @param url
+ * @returns
+ */
 export const getImageNameFromUrl = (url: string): string => {
   const split = url.split("/");
   const length = split.length;
@@ -11,6 +16,12 @@ export const getImageNameFromUrl = (url: string): string => {
   return split[length - 1].split(".")[0];
 };
 
+/**
+ * Megvizsgálja, hogy az egér metszi-e az objektumot
+ * @param mousePos egér koordináta
+ * @param element objektum
+ * @returns metszi-e az egér az objektumot
+ */
 export const isMouseIntersect = (
   mousePos: Position,
   element: Entity | GameMenu
@@ -24,6 +35,12 @@ export const isMouseIntersect = (
   return horizontal && vertical;
 };
 
+/**
+ * Átalakítja az isometrikus koordinátákat cella indexeké
+ * @param position megadott koordináta
+ * @param cameraScroll kamera elmozdulás
+ * @returns cella index
+ */
 export const convertIsometricCoordsToCartesianCoords = (
   position: Position,
   cameraScroll: Position
@@ -40,6 +57,11 @@ export const convertIsometricCoordsToCartesianCoords = (
   return new Indices(grid_x, grid_y);
 };
 
+/**
+ * Átalakítja a kartéziánus koordinátákat isometrius koordinátáká
+ * @param pos megadott koordináta
+ * @returns isometrikus koordináta
+ */
 export const cartesianToIsometric = (pos: Position): Position => {
   const { x, y } = pos;
   const isoX = (x - y) * Math.cos(Math.PI / 6);
@@ -47,12 +69,22 @@ export const cartesianToIsometric = (pos: Position): Position => {
   return new Position(isoX, isoY);
 };
 
+/**
+ * Átalakaítja az isometrikus koordinátát, kartéziánus koordinátává
+ * @param iso isometrikus koordináta
+ * @returns kartéziánus koordináta
+ */
 export const isometricToCartesian = (iso: Position): Position => {
   const x = (iso.x / Math.cos(Math.PI / 6) + iso.y / Math.sin(Math.PI / 6)) / 2;
   const y = (iso.y / Math.sin(Math.PI / 6) - iso.x / Math.cos(Math.PI / 6)) / 2;
   return new Position(x, y);
 };
 
+/**
+ * Kiszámolja a megadott indexekből a koordinátákat
+ * @param indices cella index
+ * @returns kiszámolt koordináta
+ */
 export const calculatePositionFromIndices = (indices: Indices): Position => {
   const { i, j } = indices;
 
@@ -66,6 +98,12 @@ export const calculatePositionFromIndices = (indices: Indices): Position => {
   return isometricPos;
 };
 
+/**
+ * Visszaadd egy véletlen számot a megadott intervalumból
+ * @param min minimum érték
+ * @param max maximum érték
+ * @returns véletlen szám min és max között
+ */
 export const getRandomNumberFromInterval = (
   min: number,
   max: number
@@ -73,6 +111,10 @@ export const getRandomNumberFromInterval = (
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
+/**
+ * A kirajzoláshoz a megfelelő sorrendre hozza a tömböket
+ * @param entityArray entitás tömb (Unit, Building)
+ */
 export const ySort = (entityArray: Entity[]): void => {
   entityArray.sort((a: Entity, b: Entity) => {
     const { x: ax, y: ay } = a.getPosition();
@@ -92,6 +134,12 @@ export const ySort = (entityArray: Entity[]): void => {
   });
 };
 
+/**
+ * Kiszámolja a két koordináta közötti távolságot
+ * @param from kezdeti koordináta
+ * @param to cél koordináta
+ * @returns két koordináta távolsága
+ */
 export const calculateDistance = (from: Position, to: Position): number => {
   const x = to.x - from.x;
   const y = to.y - from.y;
@@ -99,6 +147,11 @@ export const calculateDistance = (from: Position, to: Position): number => {
   return distance;
 };
 
+/**
+ * Kitörli a megadott tömből az elemet
+ * @param arr entitás tömb
+ * @param element törölni kívánt elem
+ */
 export const removeElementFromArray = (arr: Entity[], element: Entity) => {
   for (let i = arr.length - 1; i >= 0; --i) {
     if (arr[i] == element) {
@@ -107,6 +160,11 @@ export const removeElementFromArray = (arr: Entity[], element: Entity) => {
   }
 };
 
+/**
+ * Visszaadd egy véleltlen elemet a tömbből
+ * @param arr generikus tömb
+ * @returns véletlen generikus elem a tömbből
+ */
 export const getRandomElementFromArray = <T>(arr: T[]): T => {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];

@@ -9,6 +9,9 @@ canvas.height = window.innerHeight;
 export let canvasWidth = canvas.width;
 export let canvasHeight = canvas.height;
 
+/**
+ * HTML Canvas inicializáló függvény
+ */
 const init = () => {
   const updateCanvasSize = () => {
     canvas.width = window.innerWidth;

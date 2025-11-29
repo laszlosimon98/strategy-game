@@ -4,6 +4,9 @@ import type { BuildingPrices } from "@/types/building.types";
 import type { EntityType, ImageItemType, StateType } from "@/types/game.types";
 import { getImageNameFromUrl } from "@/utils/utils";
 
+/**
+ * Épület kezelő osztály
+ */
 export class BuildingManager {
   private static buildingPrices: BuildingPrices = {
     bakery: { boards: 0, stone: 0 },
@@ -26,10 +29,20 @@ export class BuildingManager {
   };
   private constructor() {}
 
+  /**
+   * Visszaállítja az építő (builder) entitás adatait egy alapértelmezett entitásból.
+   * @param state - állatottér
+   * @param entity - az alapértelmezett entitás
+   */
   public static resetBuilder(state: StateType, entity: EntityType): void {
     state.game.builder.data = { ...entity.data };
   }
 
+  /**
+   * Beállítja a builderhez rendelt képi információkat és a kép nevéből létrehozza a `name` mezőt.
+   * @param state - állatottér
+   * @param image - kiválasztott kép
+   */
   public static setBuilder(state: StateType, image: ImageItemType) {
     state.game.builder.data = {
       ...state.game.builder.data,

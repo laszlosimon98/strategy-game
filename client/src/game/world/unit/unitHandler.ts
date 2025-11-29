@@ -8,6 +8,9 @@ import { Unit } from "@/game/world/unit/unit";
 import { StateManager } from "@/manager/stateManager";
 import { UnitStates } from "@/enums/unitsState";
 
+/**
+ * Egyésg kezelő osztály, származik a `Manager` osztályból.
+ */
 export class UnitHandler extends Manager {
   private selectedUnit: Unit | undefined;
 
@@ -57,6 +60,17 @@ export class UnitHandler extends Manager {
     StateManager.createUnit(entity.data.owner, unit);
   }
 
+  /**
+   * Fogadja és kezeli a szerverről érkező üzenetcsomagokat
+   * Események:
+   *    - Katona készítés (game:soldier-create)
+   *    - Egység irányváltoztatás (game:unit-facing)
+   *    - Egység mozgatás (game:unit-moving)
+   *    - Egység megáll (game:unit-stop)
+   *    - Egység megkezdi a támadást (game:unit-start-attacking)
+   *    - Egység sebzést kap (game:unit-take-damage)
+   *    - Egyésg felfüggeszti a támadást (game:unit-stop-attacking)
+   */
   protected handleCommunication(): void {
     CommunicationHandler.receiveMessage(
       "game:soldier-create",

@@ -4,6 +4,9 @@ import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Kattintható gomb, amely a `Plate` elemet használja és kattintásokor meghív egy függvényt
+ */
 export class Button extends Plate {
   private func: Function[];
   protected isHovered: boolean;

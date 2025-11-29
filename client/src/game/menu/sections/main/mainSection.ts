@@ -5,6 +5,9 @@ import { settings } from "@/settings";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Menü fejléc szekció
+ */
 export class MainSection extends Section {
   public constructor(pos: Position, dim: Dimension) {
     super(pos, dim);

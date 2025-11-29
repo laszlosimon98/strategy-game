@@ -12,6 +12,9 @@ import { BarracksPanel } from "@/game/menu/sections/panels/barracksPanel";
 import { Soldier } from "@/game/world/unit/units/soldier";
 import { SoldierPanel } from "@/game/menu/sections/panels/soldierPanel";
 
+/**
+ * Objektum részletező panel
+ */
 export class InfoPanel extends Section {
   private deleteButton: Button;
   private image: HTMLImageElement;

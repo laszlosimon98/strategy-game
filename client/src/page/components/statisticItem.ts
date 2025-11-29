@@ -1,6 +1,9 @@
 import { Text } from "@/page/components/text";
 import { Position } from "@/utils/position";
 
+/**
+ * Statisztika-komponens (név, győzelmek, vereségek) megjelenítésére szolgál.
+ */
 export class StatisticItem {
   private nameText: Text;
   private winsText: Text;

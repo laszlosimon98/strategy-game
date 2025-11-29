@@ -7,6 +7,9 @@ import { Text } from "@/page/components/text";
 import type { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Katona részletező panel
+ */
 export class SoldierPanel extends Section {
   private currentHealthText: Text;
   private defaultHealthText: Text;

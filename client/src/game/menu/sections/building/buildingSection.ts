@@ -3,7 +3,7 @@ import { GameState } from "@/enums/gameState";
 import { FoodSection } from "@/game/menu/sections/building/buildingSections/foodSection";
 import { MilitarySection } from "@/game/menu/sections/building/buildingSections/militarySection";
 import { ResourceSection } from "@/game/menu/sections/building/buildingSections/resourceSection";
-import { StorageSection } from "@/game/menu/sections/building/buildingSections/storageSection";
+import { MineSection } from "@/game/menu/sections/building/buildingSections/mineSection";
 import { LabelButton } from "@/game/menu/sections/labelButton";
 import { Section } from "@/game/menu/sections/section";
 import { StateManager } from "@/manager/stateManager";
@@ -12,6 +12,9 @@ import type { ImageItemType } from "@/types/game.types";
 import { Dimension } from "@/utils/dimension";
 import { Position } from "@/utils/position";
 
+/**
+ * Épületeket tartalmazó menüszekció.
+ */
 export class BuildingSection extends Section {
   private readonly margin: number = 125;
 
@@ -31,7 +34,7 @@ export class BuildingSection extends Section {
         new Position(pos.x + 10, pos.y + this.margin / 2 + 15),
         new Dimension(dim.width - 10, dim.height - this.margin)
       ),
-      [SubMenuState.Other]: new StorageSection(
+      [SubMenuState.Other]: new MineSection(
         new Position(pos.x + 10, pos.y + this.margin / 2 + 15),
         new Dimension(dim.width - 10, dim.height - this.margin)
       ),
