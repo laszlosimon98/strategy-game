@@ -79,8 +79,8 @@ export class Statistic extends Page {
         settings.pos.titlePos.y + settings.margin + 50 + 35
       ),
       "Név",
-      "Nyert",
-      "Vesztett"
+      "Győzelem",
+      "Vereség"
     );
   }
 
