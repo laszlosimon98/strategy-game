@@ -3,4 +3,4 @@ import express from "express";
 
 export const userRoutes = express.Router();
 
-userRoutes.get("/getUser", handleUser);
+userRoutes.get("/get-user", handleUser);

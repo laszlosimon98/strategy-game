@@ -44,7 +44,7 @@ const checkUser = async () => {
       StateManager.setAccessToken(response.data.accessToken);
     }
 
-    const user = await userApi.get("/getUser", {
+    const user = await userApi.get("/get-user", {
       headers: {
         Authorization: `Bearer ${StateManager.getAccessToken()}`,
       },

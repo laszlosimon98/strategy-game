@@ -139,7 +139,7 @@ export class MainMenu extends Page {
 
   private async fetchData() {
     try {
-      const playerData = await statisticApi.get("/statistic", {
+      const playerData = await statisticApi.get("/get-user-statistic", {
         headers: {
           Authorization: `Bearer ${StateManager.getAccessToken()}`,
         },

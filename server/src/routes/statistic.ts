@@ -6,5 +6,5 @@ import express from "express";
 
 export const statisticRoutes = express.Router();
 
-statisticRoutes.get("/statistic", getStatistic);
+statisticRoutes.get("/get-user-statistic", getStatistic);
 statisticRoutes.get("/top-five", getTopFiveStatistic);
